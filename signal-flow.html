@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Flow · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+/* 折叠侧边栏 */
+
+.chart-row{display:flex;gap:12px;margin-bottom:24px}
+.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
+.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
+.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
+.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
+.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
+.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
+/* Signal Flow Page */
+.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:14px}
+.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
+.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.vs-col.wrong .vs-title{color:#DC2626}
+.vs-col.right .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:12px;line-height:2}
+.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
+.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
+.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.flow-step{display:flex;align-items:stretch;gap:0}
+.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.flow-step-num .line{flex:1;width:2px;margin-top:2px}
+.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
+.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
+.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
+.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
+.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+</style>
+<style>
+/* V15 升级版左侧导航 */
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Signal Flow</h1><span class="tag">Trusted Signal Execution Chain</span></div>
+<div style="padding:32px;overflow-y:auto">
+
+<!-- 底层公理 — 同学原文 -->
+<div class="axiom-box">
+  <div class="axiom-label">底层公理</div>
+  <div class="axiom-text">Unverified Data ≠ Signal</div>
+  <div class="axiom-sub">未经验证的数据不叫Signal。这是 Fly 的核心哲学。</div>
+</div>
+
+<!-- Signal 定义 — 同学原文 -->
+<div class="def-box">
+  <div class="def-label">Signal 定义</div>
+  <div class="def-text">Signal = Verified State Transition（已验证状态跃迁）</div>
+  <div class="def-sub">
+    Signal ≠ Event<br>
+    Signal ≠ Log<br>
+    Signal ≠ Chat<br>
+    Signal ≠ Agent Output<br>
+    只有"状态跃迁"经过验证后才能成为Signal。
+  </div>
+</div>
+
+<!-- 不是Signal vs 是Signal — 同学原文 -->
+<div class="vs-row">
+  <div class="vs-col wrong">
+    <div class="vs-title">✗ 不是 Signal</div>
+    <div class="vs-item">conversation signal</div>
+    <div class="vs-item">intent signal</div>
+    <div class="vs-item">engagement signal</div>
+    <div class="vs-item">AI signal</div>
+    <div class="vs-item">它们不可验证。</div>
+  </div>
+  <div class="vs-col right">
+    <div class="vs-title">✓ Verified Signals</div>
+    <div class="vs-item">verified_visit</div>
+    <div class="vs-item">verified_chat</div>
+    <div class="vs-item">verified_conversion</div>
+    <div class="vs-item">verified_share</div>
+    <div class="vs-item">这才符合 V4 的 4-signal freeze。</div>
+  </div>
+</div>
+
+<!-- 6步状态演进流 — 同学原文 -->
+<div class="card" style="margin-bottom:24px">
+  <div class="lb">Fly Trusted Signal Flow</div>
+  <div class="row" style="font-family:var(--mono);font-size:13px;color:var(--deep-green);letter-spacing:0.5px;line-height:2.4">
+    1. Capture 采集原始行为<br>
+    2. Normalize 标准化上下文<br>
+    3. Verify 验证行为真实性<br>
+    4. Commit Signal 生成可信Signal<br>
+    5. Attribution 建立归因关系<br>
+    6. Optimize 反馈优化策略
+  </div>
+</div>
+
+<!-- 流程详解 -->
+<div class="flow-pipeline">
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:var(--text4)">1</div><div class="line" style="background:var(--border)"></div></div>
+    <div class="flow-step-body">
+      <h3>Capture · 采集原始行为</h3>
+      <p>捕获Raw Event。此时数据未经任何校验，不叫Signal。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:var(--text4)">2</div><div class="line" style="background:var(--border)"></div></div>
+    <div class="flow-step-body">
+      <h3>Normalize · 标准化上下文</h3>
+      <p>Context Normalization。统一格式，剥离噪声，保留可验证结构。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:#DC2626">3</div><div class="line" style="background:#DC2626"></div></div>
+    <div class="flow-step-body">
+      <h3 style="color:#DC2626">Verify · 验证行为真实性</h3>
+      <p>Verification Engine。行为真实性校验：排除Bot、AI幻觉、无效数据。<br><strong>Verification 前 Signal 还不存在。</strong></p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:var(--deep-green)">4</div><div class="line" style="background:var(--deep-green)"></div></div>
+    <div class="flow-step-body">
+      <h3 style="color:var(--deep-green)">Commit Signal · 生成可信Signal</h3>
+      <p>Trusted Signal Commit + Action ID。SHA-256哈希链签名，不可篡改。<br><strong>Signal 在此刻才诞生。</strong></p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:var(--deep-green)">5</div><div class="line" style="background:var(--deep-green)"></div></div>
+    <div class="flow-step-body">
+      <h3>Attribution · 建立归因关系</h3>
+      <p>Attribution Engine。基于Trusted Signal建立归因：哪个渠道、哪个Agent、哪个推荐产生了真实转化。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num"><div class="circle" style="background:var(--deep-green)">6</div></div>
+    <div class="flow-step-body">
+      <h3>Optimize · 反馈优化策略</h3>
+      <p>Optimization Engine → Business Twin Feedback。归因结果反馈驱动策略迭代，优化基于Verified数据。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Verification Gate — 同学原文 -->
+<div class="gate-card">
+  <div class="gate-badge">Verification Gate</div>
+  <div class="gate-row">
+    <span>Agent Runtime</span>
+    <span style="color:var(--text4)">→</span>
+    <span class="gate-claim">Claim</span>
+    <span style="color:var(--text4)">→</span>
+    <span style="font-weight:700;color:#DC2626">Verification</span>
+    <span style="color:var(--text4)">→</span>
+    <span class="gate-ok">Signal Commit</span>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">
+    AI 可以幻觉。Agent Output ≠ Trusted Signal。必须经过 Verification Gate，否则整个 Fly 的可信性会崩。
+  </div>
+</div>
+
+<!-- Signal Lifecycle — 同学原文 -->
+<div class="card" style="margin-bottom:24px">
+  <div class="lb">Signal Lifecycle · 信号生命周期</div>
+  <div class="row" style="font-family:var(--mono);font-size:12px;color:var(--text3);line-height:2.2">
+    <span style="color:var(--text4)">Raw Event</span>
+    <span style="color:var(--text4)">→</span>
+    <span style="color:#D97706">Pending Signal</span>
+    <span style="color:var(--text4)">→</span>
+    <span style="color:var(--deep-green);font-weight:700">Verified Signal</span>
+    <span style="color:var(--text4)">→</span>
+    <span style="color:#2563EB">Attributed Signal</span>
+    <span style="color:var(--text4)">→</span>
+    <span style="color:var(--text4)">Archived Signal</span>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5">
+    Signal 没有生命周期 → 整个系统不可审计。
+  </div>
+</div>
+
+<!-- Flow 概念修正 — 同学原文 -->
+<div class="card" style="margin-bottom:24px">
+  <div class="lb">Flow 定义</div>
+  <div class="row">
+    <span style="color:#991B1B;text-decoration:line-through">Task Pipeline（工作流）</span>
+    <span style="color:var(--text4);margin:0 8px">→</span>
+    <span style="color:var(--deep-green);font-weight:700">State Evolution Flow（状态演进流）</span>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5">
+    Fly 的 Flow 不是 Workflow，不是 Zapier。Flow 是状态的演进，不是任务的传递。
+  </div>
+</div>
+
+<!-- 指标卡（保留原有） -->
+<div class="chart-row">
+  <div class="mini-chart"><div class="num">3,847/日</div><div class="lbl">验证请求</div></div>
+  <div class="mini-chart"><div class="num">96.8%</div><div class="lbl">通过率</div></div>
+  <div class="mini-chart"><div class="num">12ms</div><div class="lbl">平均延迟</div></div>
+  <div class="mini-chart"><div class="num">23件/日</div><div class="lbl">异常拦截</div></div>
+</div>
+
+<!-- Action ID — 保留作为技术实现 -->
+<div class="card" style="margin-bottom:12px">
+  <div class="lb">Action ID · 技术实现</div>
+  <div class="row">每个 Trusted Signal Commit 时自动生成唯一 Action ID，贯穿归因全链路</div>
+</div>
+<div class="card" style="margin-bottom:12px">
+  <div class="lb">哈希链签名</div>
+  <div class="row">SHA-256 哈希链串联所有 Signal Commit，确保不可篡改、可审计</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
