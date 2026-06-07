@@ -307,17 +307,40 @@ window.FlyChat={
     var ld=document.createElement('div');ld.className='fc-msg bot typing';
     ld.innerHTML='<div class="fc-ava">F</div><div class="fc-bub">思考中…</div>';
     b.appendChild(ld);b.scrollTop=b.scrollHeight;
+    var bub=ld.querySelector('.fc-bub');
+    var fullText='';
     fetch('https://api.fly-agent.xyz/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:msg,conversation_id:this.cid})
-    }).then(function(r){return r.json()}).then(function(d){
-      if(d.conversation_id)self.cid=d.conversation_id;
-      ld.querySelector('.fc-bub').textContent=d.reply||d.message||d.content||'暂无回复';
-      ld.classList.remove('typing');
-      b.scrollTop=b.scrollHeight;
+    }).then(function(r){
+      var reader=r.body.getReader();
+      var decoder=new TextDecoder();
+      var buffer='';
+      function read(){
+        reader.read().then(function(result){
+          if(result.done){
+            if(!fullText)bub.textContent='暂无回复';
+            ld.classList.remove('typing');
+            b.scrollTop=b.scrollHeight;
+            return;
+          }
+          buffer+=decoder.decode(result.value,{stream:true});
+          var lines=buffer.split('\n');
+          buffer=lines.pop();
+          for(var i=0;i<lines.length;i++){
+            var line=lines[i].trim();
+            if(line.indexOf('data:')!==0)continue;
+            var ds=line.substring(5).trim();
+            if(ds==='[DONE]')continue;
+            try{var d=JSON.parse(ds);if(d.conversation_id)self.cid=d.conversation_id;if(d.type==='answer'&&d.content){fullText+=d.content;bub.textContent=fullText;b.scrollTop=b.scrollHeight;}}catch(e){}
+          }
+          read();
+        });
+      }
+      read();
     }).catch(function(e){
-      ld.querySelector('.fc-bub').textContent='连接失败，请稍后再试';
+      bub.textContent='连接失败，请稍后再试';
       ld.classList.remove('typing');
       b.scrollTop=b.scrollHeight;
     });
