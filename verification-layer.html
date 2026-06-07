@@ -13,46 +13,54 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.hero-label{font-size:11px;color:var(--text4);letter-spacing:1px;margin-bottom:12px}
+.hero-title{font-size:28px;font-weight:800;line-height:1.3;color:var(--dark);margin-bottom:8px}
+.hero-sub{font-size:14px;color:var(--deep-green);font-weight:600;margin-bottom:24px}
+.hero-desc{font-size:14px;color:var(--text3);line-height:1.8;margin-bottom:12px}
+.hero-desc strong{color:var(--dark);font-weight:600}
+.hero-note{font-size:13px;color:var(--text4);line-height:1.7;margin-bottom:40px;font-style:italic}
+.divider{border:none;border-top:1px solid var(--border);margin:36px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.section-desc{font-size:14px;color:var(--text3);line-height:1.8;margin-bottom:20px}
+.section-desc strong{color:var(--dark);font-weight:600}
 .vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
+.vs-col{flex:1;border-radius:8px;padding:16px}
 .vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
 .vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
 .vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 .vs-col.wrong .vs-title{color:#DC2626}
 .vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.wrong .vs-item{color:#991B1B}
 .vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
 .flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
 .flow-step{display:flex;align-items:stretch;gap:0}
 .flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
 .flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
 .flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+.flow-step-body{flex:1;padding-bottom:16px;padding-left:12px}
+.flow-step-body h3{font-size:14px;font-weight:700;margin-bottom:2px}
+.flow-step-body p{font-size:13px;color:var(--text3);line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
+.verify-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.verify-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.verify-item .vi-title{font-size:12px;font-weight:700;color:var(--deep-green);margin-bottom:4px}
+.verify-item .vi-desc{font-size:12px;color:var(--text3);line-height:1.5}
+.sla-row{display:flex;gap:12px;margin-bottom:24px}
+.sla-item{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
+.sla-item .sla-num{font-size:20px;font-weight:800;color:var(--deep-green)}
+.sla-item .sla-lbl{font-size:10px;color:var(--text4);margin-top:4px;letter-spacing:.5px}
+.audit-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px}
+.audit-box .audit-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.audit-box .audit-text{font-size:14px;color:var(--text2);line-height:1.8}
+.audit-box .audit-text strong{color:var(--deep-green);font-weight:600}
+.audit-box .audit-list{margin-top:10px;font-size:13px;color:var(--text3);line-height:2}
+.bottom-cta{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:24px;text-align:center;margin-bottom:40px}
+.bottom-cta .cta-text{font-size:16px;font-weight:700;color:var(--deep-green);margin-bottom:4px}
+.bottom-cta .cta-sub{font-size:13px;color:#2D6A4F}
 </style>
 </head>
 <body>
@@ -60,23 +68,125 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="main">
 <div class="topbar"><h1>验证层</h1><span class="tag">Verification Layer</span></div>
 <div class="content">
-<div class="section">
-<h2>验证层 · Fly</h2>
-<p>Fly定位为AI时代的验证层（Verification Layer），不是营销工具、不是Agent工具，而是验证AI获客是否赚钱的基础设施。类似Stripe验证支付、Cloudflare验证访问。</p>
+
+<!-- 一、Hero：老师原文 -->
+<div class="hero-label">VERIFICATION LAYER FOR AI ACQUISITION</div>
+<div class="hero-title">验证AI带来的客户<br>是否真实产生了成交</div>
+<div class="hero-sub">Fly不是营销工具。不生成内容。不替代Agent。</div>
+<div class="hero-desc">Fly只验证一件事：<strong>AI推荐 → 用户咨询 → 最终成交</strong>之间是否存在真实、可信、可审计的关系。</div>
+<div class="hero-note">类似支付需要Stripe验证资金流。AI时代，也需要验证：这次AI获客，到底有没有真正赚钱。</div>
+
+<hr class="divider">
+
+<!-- 二、为什么需要验证层：老师原文 -->
+<div class="section-title">为什么需要验证层</div>
+<div class="section-desc">AI正在替代传统流量入口。但AI获客存在一个根本问题：<strong>没人知道：成交是否真的来自AI。</strong></div>
+<div class="section-desc">传统广告有点击归因。但AI时代：</div>
+
+<div class="vs-row">
+<div class="vs-col wrong">
+<div class="vs-title">AI时代归因困境</div>
+<div class="vs-item">多Agent协同</div>
+<div class="vs-item">多轮对话</div>
+<div class="vs-item">跨平台跳转</div>
+<div class="vs-item">长周期成交</div>
 </div>
-<div class="section">
-<h2>四步验证链路</h2>
-<p><strong>AI推荐 → 用户咨询 → 成交确认 → 佣金结算</strong></p>
-<p>每一条AI推荐都会生成唯一Action ID，追踪从推荐→咨询→成交→佣金的完整链路，确保归因可验证、不可篡改。</p>
+<div class="vs-col right">
+<div class="vs-title">导致的后果</div>
+<div class="vs-item">归因失真</div>
+<div class="vs-item">佣金作弊</div>
+<div class="vs-item">ROI失效</div>
 </div>
-<div class="card">
-<h3>核心数据</h3>
-<p>验证请求 3,847/日 · 通过率 96.8% · 平均延迟 12ms · 异常拦截 23件/日</p>
 </div>
-<div class="card">
-<h3>哈希链验证</h3>
-<p>SHA-256哈希链串联，确保链路不可篡改、可审计。</p>
+
+<div class="section-desc">Fly的目标不是生成流量。而是：<strong>验证AI与成交之间，是否存在可信关系。</strong></div>
+
+<hr class="divider">
+
+<!-- 三、四步验证链路：老师原文 -->
+<div class="section-title">四步验证链路</div>
+<div class="section-desc" style="margin-bottom:20px">Fly不是记录流程。Fly验证的是：<strong>每一次成交，是否真正来自该次AI推荐。</strong></div>
+
+<div class="flow-pipeline">
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#2563EB">1</div><div class="line" style="background:#2563EB"></div></div>
+<div class="flow-step-body"><h3>AI推荐</h3><p>生成唯一Action ID作为验证入口凭证</p></div>
 </div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#2563EB">2</div><div class="line" style="background:#2563EB"></div></div>
+<div class="flow-step-body"><h3>身份与来源校验</h3><p>验证咨询用户是否来自该次AI推荐</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#2563EB">3</div><div class="line" style="background:#2563EB"></div></div>
+<div class="flow-step-body"><h3>成交归因确认</h3><p>确认成交与推荐之间的因果链路完整且可信</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:var(--deep-green)">4</div><div class="line" style="background:transparent"></div></div>
+<div class="flow-step-body"><h3>佣金与结果验证</h3><p>归因成立，佣金结算才可执行。验证不通过，结算终止</p></div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- 四、Action ID与验证维度：老师原文 -->
+<div class="section-title">Action ID 与验证维度</div>
+
+<div class="def-box">
+<div class="def-label">Action ID 只是入口凭证</div>
+<div class="def-text">每一次AI推荐都会生成唯一Action ID。Fly通过来源一致性校验、会话关联验证、归因完整性验证、哈希链审计，验证：这次成交，是否真正来自该次AI推荐。Action ID只是入口。验证成立，依赖完整的可信校验链路。</div>
+</div>
+
+<div class="verify-grid">
+<div class="verify-item">
+<div class="vi-title">来源一致性校验</div>
+<div class="vi-desc">验证咨询用户与推荐来源的一致性</div>
+</div>
+<div class="verify-item">
+<div class="vi-title">会话关联验证</div>
+<div class="vi-desc">验证推荐事件与咨询事件的会话关联</div>
+</div>
+<div class="verify-item">
+<div class="vi-title">归因完整性验证</div>
+<div class="vi-desc">验证从推荐到成交的因果链路完整</div>
+</div>
+<div class="verify-item">
+<div class="vi-title">哈希链审计</div>
+<div class="vi-desc">所有验证记录不可静默篡改</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- 五、验证能力：老师原文 - 去运营化，只留SLA级指标 -->
+<div class="section-title">验证能力</div>
+
+<div class="sla-row">
+<div class="sla-item"><div class="sla-num">&lt; 20ms</div><div class="sla-lbl">P99验证延迟</div></div>
+<div class="sla-item"><div class="sla-num">4维</div><div class="sla-lbl">验证维度覆盖</div></div>
+<div class="sla-item"><div class="sla-num">100%</div><div class="sla-lbl">链路上链率</div></div>
+<div class="sla-item"><div class="sla-num">不可篡改</div><div class="sla-lbl">审计记录</div></div>
+</div>
+
+<div class="section-desc">支持毫秒级验证响应。所有AI推荐成交链路，默认进入验证流程。</div>
+
+<hr class="divider">
+
+<!-- 六、链路审计机制：老师原文 - 哈希链业务化 -->
+<div class="section-title">链路审计机制</div>
+
+<div class="audit-box">
+<div class="audit-label">SHA-256 哈希链</div>
+<div class="audit-text">Fly使用SHA-256哈希链记录：<strong>推荐事件、会话事件、成交事件、佣金事件</strong>，确保：<strong>归因链路可验证、验证结果可追溯、数据不可静默篡改</strong>。</div>
+</div>
+
+<hr class="divider">
+
+<!-- 七、底部收束 -->
+<div class="bottom-cta">
+<div class="cta-text">Fly验证的是：AI推荐与真实成交之间是否存在可信关系</div>
+<div class="cta-sub">Verification Infrastructure for AI Acquisition</div>
+</div>
+
 </div>
 </div>
 </body>
