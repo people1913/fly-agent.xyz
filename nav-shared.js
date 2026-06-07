@@ -1,6 +1,6 @@
 /**
- * Fly 官网共享侧边栏 v20
- * 在线Fly：隐藏右侧页面内容，聊天区居中显示，输入框参考扣子风格
+ * Fly 官网共享侧边栏 v21
+ * 页面隔离架构：DocsPanel / ChatPanel 完全分离，不共享DOM/state
  */
 (function(){
 var sections=[
@@ -34,109 +34,101 @@ links:[
 {href:'/channel-xiaohongshu.html',text:'小红书',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'},
 {href:'/channel-wechat.html',text:'微信',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'},
 {href:'/channel-meituan.html',text:'美团',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-3-5z"/><line x1="3" y1="7" x2="21" y2="7"/><path d="M16 11a4 4 0 0 1-8 0"/></svg>'},
-{href:'/channel-feishu.html',text:'飞书',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg>'},
-{href:'/channel-ai-search.html',text:'AI搜索推荐',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'},
-{href:'/channel-coze.html',text:'扣子',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>'},
-{href:'/channel-clawhub.html',text:'ClawHub',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'},
-{href:'/channel-other.html',text:'其他',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>'}
+{href:'/channel-feishu.html',text:'飞书',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>'}
 ]},
 {id:'industry',label:'行业',icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>',
 links:[
-{href:'/industry-beauty.html',text:'医美',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-5 9-5 9S7 9.76 7 7a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/></svg>'},
-{href:'/industry-local.html',text:'本地生活',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'},
-{href:'/industry-education.html',text:'教育',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'},
-{href:'/industry-highticket.html',text:'高客单',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><line x1="2" y1="9" x2="22" y2="9"/></svg>'}
+{href:'/case-jiuyun.html',text:'案例',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'}
 ]}
 ];
 
-var path=window.location.pathname;
+var cur=location.pathname.replace(/\/$/,'/index.html');
+var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
 
-function buildNav(){
-var h='<aside class="nav"><div class="nav-list">';
-h+='<div class="nav-logo">';
-h+='<a href="/" class="nav-logo-left" title="首页"><span class="nav-logo-mark">F</span><span class="nav-logo-text">Fly</span><span class="nav-logo-sub">归因验证</span></a>';
-h+='<div class="nav-toggle" onclick="FlyNav.toggle()" title="折叠/展开">';
-h+='<svg class="toggle-icon-expand" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="7" height="18" rx="1"/><line x1="11" y1="5" x2="19" y2="5"/><line x1="11" y1="9" x2="19" y2="9"/><line x1="11" y1="13" x2="17" y2="13"/></svg>';
-h+='<svg class="toggle-icon-collapse" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="3.5" height="18" rx="1"/><line x1="7.5" y1="5" x2="19" y2="5"/><line x1="7.5" y1="9" x2="19" y2="9"/><line x1="7.5" y1="13" x2="17" y2="13"/></svg>';
-h+='</div></div>';
+var h='<nav class="nav'+(collapsed?' collapsed':'')+'">';
+h+='<div class="nav-brand"><div class="nav-logo">F</div><span class="nav-logo-text">Fly 归因验证</span></div>';
+h+='<div class="nav-list'+(collapsed?' collapsed':'')+'">';
+h+='<button class="nav-toggle" onclick="FlyNav.toggle()">';
+h+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+h+='</button>';
 
-sections.forEach(function(s){
-var ha=s.links.some(function(l){return l.href===path});
-h+='<div class="nav-sec">';
-h+='<div class="nav-sec-hd'+(ha?' open':'')+'" onclick="FlyNav.toggleSec(this)">';
-h+='<span class="sec-ico">'+s.icon+'</span><span>'+s.label+'</span>';
-h+='<span class="arr"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></span></div>';
-h+='<div class="nav-sec-bd'+(ha?' open':'')+'">';
-s.links.forEach(function(l){
-var act=l.href===path;
-h+='<a href="'+l.href+'" class="nav-link'+(act?' active':'')+'"'+(l.onclick?' onclick="'+l.onclick+'"':'')+'>';
-if(l.icon.charAt(0)==='<'){h+=l.icon}else{h+='<span class="nav-emoji">'+l.icon+'</span>'}
-h+='<span>'+l.text+'</span></a>';
+sections.forEach(function(sec){
+  var ha=sec.links.some(function(l){return l.href===cur;});
+  h+='<div class="nav-sec">';
+  h+='<div class="nav-sec-hd'+(ha?' open':'')+'" onclick="FlyNav.toggleSec(this)">';
+  h+='<span class="sec-ico">'+sec.icon+'</span>';
+  h+='<span class="sec-lbl">'+sec.label+'</span>';
+  h+='<span class="arr"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>';
+  h+='</div>';
+  h+='<div class="nav-sec-bd'+(ha?' open':'')+'">';
+  sec.links.forEach(function(l){
+    var ac=l.href===cur;
+    if(l.onclick){
+      h+='<a class="nav-link'+(ac?' active':'')+'" href="javascript:void(0)" onclick="'+l.onclick+'" title="'+l.text+'">'+l.icon+'<span>'+l.text+'</span></a>';
+    }else{
+      h+='<a class="nav-link'+(ac?' active':'')+'" href="'+l.href+'" title="'+l.text+'">'+l.icon+'<span>'+l.text+'</span></a>';
+    }
+  });
+  h+='</div></div>';
 });
-h+='</div></div>';
-});
-h+='</div></aside>';
-return h;
-}
+h+='</div></nav>';
 
-// 注入侧边栏到[data-nav]或body开头
-var c=document.querySelector('[data-nav]');
-if(c){c.innerHTML=buildNav()}else{
-var d=document.createElement('div');d.innerHTML=buildNav();
+var d=document.createElement('div');
+d.innerHTML=h;
+
+// 注入侧边栏到body开头
 document.body.insertBefore(d.firstElementChild,document.body.firstChild);
-}
 
-// 恢复折叠状态
-(function(){try{if(localStorage.getItem('fly-nav-collapsed')==='1'){var n=document.querySelector('.nav-list');if(n){n.classList.add('collapsed');n.style.width='var(--nav-w-c)'}}}catch(e){}})();
+// ====== 页面隔离：把nav之后的所有内容包进 fly-docs-panel ======
+(function(){
+  var nav=document.querySelector('.nav');
+  if(!nav)return;
+  var wrapper=document.createElement('div');
+  wrapper.className='fly-docs-panel';
+  wrapper.id='flyDocsPanel';
+  var sib=nav.nextElementSibling;
+  while(sib){
+    var next=sib.nextElementSibling;
+    wrapper.appendChild(sib);
+    sib=next;
+  }
+  nav.parentNode.appendChild(wrapper);
+})();
 
-// 全局方法
+// 侧边栏交互
 window.FlyNav={
-toggle:function(){var n=document.querySelector('.nav-list');if(!n)return;n.classList.toggle('collapsed');var c=n.classList.contains('collapsed');n.style.width=c?'var(--nav-w-c)':'var(--nav-w)';try{localStorage.setItem('fly-nav-collapsed',c?'1':'0')}catch(e){}},
-toggleSec:function(el){el.classList.toggle('open');var b=el.nextElementSibling;if(b)b.classList.toggle('open')}
+  toggle:function(){
+    var n=document.querySelector('.nav');
+    var l=document.querySelector('.nav-list');
+    if(n)n.classList.toggle('collapsed');
+    if(l)l.classList.toggle('collapsed');
+    localStorage.setItem('fly_nav_collapsed',document.querySelector('.nav.collapsed')?'1':'0');
+  },
+  toggleSec:function(el){el.classList.toggle('open');var b=el.nextElementSibling;if(b)b.classList.toggle('open')}
 };
 
-// 注入导航CSS
+// ====== CSS ======
 var cs=document.createElement('style');
 cs.textContent='\
-.nav{display:flex;height:100vh;flex-shrink:0}\
-.nav-list{position:relative;width:var(--nav-w);display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);border-right:1px solid var(--border);transition:width .2s ease;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.08) transparent}\
-.nav-list::-webkit-scrollbar{width:4px}\
-.nav-list::-webkit-scrollbar-track{background:transparent}\
-.nav-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.08);border-radius:2px}\
-.nav-list::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.15)}\
-.nav-logo{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;font-size:13px;font-weight:700;color:var(--dark);border-bottom:1px solid var(--border);letter-spacing:-.3px;white-space:nowrap;overflow:visible;transition:padding .2s}\
-.nav-logo-mark{display:none;width:28px;height:28px;border-radius:6px;background:var(--deep-green);color:#fff;font-size:15px;font-weight:800;line-height:28px;text-align:center;flex-shrink:0}\
-.nav-logo-left{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--dark)}\
-.nav-logo-sub{font-size:10px;font-weight:400;color:var(--text4);letter-spacing:.5px}\
-.nav-list.collapsed .nav-logo-sub{display:none}\
-.nav-list.collapsed{width:var(--nav-w-c)}\
-.nav-list.collapsed .nav-logo{padding:10px 6px;justify-content:center;align-items:center;overflow:visible;transition:background .15s;gap:2px}\
-.nav-list.collapsed .nav-logo-mark{display:none}\
-.nav-list.collapsed .nav-logo-text{display:block;font-size:12px;font-weight:700;white-space:nowrap}\
-.nav-list.collapsed .nav-logo-left{justify-content:center;overflow:visible;gap:0;padding:0}\
-.nav-list.collapsed .nav-logo:hover{background:var(--bg3)}\
-.nav-bot-link{display:flex;align-items:center;gap:8px;padding:10px 16px;text-decoration:none;color:var(--text3);font-size:12.5px;font-weight:500;border-bottom:1px solid var(--border);transition:background .15s}\
-.nav-bot-link:hover{background:var(--bg3)}\
-.nav-bot-link.chat-active{color:var(--deep-green);background:var(--mint)}\
-.bot-ico{display:inline-flex;align-items:center;color:var(--text4)}\
-.nav-list.collapsed .nav-bot-link{justify-content:center;padding:10px 6px;gap:0}\
-.nav-list.collapsed .bot-text{display:none}\
-.nav-list.collapsed .nav-link span{display:none}\
-.nav-list.collapsed .nav-sec-hd{display:none}\
-.nav-list.collapsed .nav-sec-bd{display:block!important;max-height:none!important;overflow:visible}\
-.nav-list.collapsed .nav-sec-bd.open{max-height:none!important}\
-.nav-list.collapsed .nav-link{justify-content:center;padding:8px 0;margin-right:0;border-radius:6px;margin:0 4px;gap:0;height:36px;box-sizing:border-box}\
-.nav-list.collapsed .nav-sec-bd{padding-top:4px}.nav-list.collapsed .nav-sec{border-top:1px solid var(--border);margin-top:4px;padding-top:4px}\
-.nav-list.collapsed .nav-link.active::before{display:none}\
-.nav-list.collapsed .nav-link.active::after{content:"";position:absolute;left:2px;top:4px;bottom:4px;width:3px;background:var(--deep-green);border-radius:0 2px 2px 0}\
-.nav-toggle{display:flex;align-items:center;justify-content:center;padding:4px;border-radius:4px;cursor:pointer;color:var(--text4);transition:color .15s,background .15s;flex-shrink:0}\
-.nav-list.collapsed .nav-toggle{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:4px;cursor:pointer;flex-shrink:0}\
-.nav-toggle:hover{color:var(--dark);background:var(--bg3)}\
-.nav-toggle svg{transition:opacity .15s,width .15s,height .15s;width:18px;height:18px}\
+:root{--dark:#0F172A;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--bg3:#f1f5f9;--mint:#ecfdf5;--deep-green:#059669;--blue:#2563EB}\
+*{margin:0;padding:0;box-sizing:border-box}\
+body{display:flex;font-family:system-ui,-apple-system,sans-serif;min-height:100vh;background:#fff;color:var(--dark)}\
+a{color:inherit;text-decoration:none}\
+.nav{width:260px;min-width:260px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;transition:width .2s,min-width .2s;overflow:hidden;z-index:100}\
+.nav.collapsed{width:64px;min-width:64px}\
+.nav-brand{display:flex;align-items:center;gap:10px;padding:16px;flex-shrink:0}\
+.nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
+.nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
+.nav.collapsed .nav-logo-text{display:none}\
+.nav-list{flex:1;overflow-y:auto;padding:4px 0;transition:padding .2s}\
+.nav-list::-webkit-scrollbar{width:3px}\
+.nav-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.06);border-radius:2px}\
+.nav-list.collapsed .nav-sec-hd .sec-lbl,.nav-list.collapsed .nav-sec-hd .arr,.nav-list.collapsed .nav-link span,.nav-list.collapsed .nav-sec-bd{display:none!important}\
+.nav-list.collapsed .nav-link{justify-content:center;padding:10px 0;margin-right:0}\
+.nav-toggle{display:flex;align-items:center;justify-content:center;margin:4px 16px 8px;padding:6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;transition:background .15s}\
+.nav-toggle:hover{background:var(--bg3)}\
+.nav-toggle svg{transition:all .15s;width:18px;height:18px}\
 .nav-list.collapsed .nav-toggle svg{width:14px;height:14px}\
-.toggle-icon-collapse{display:none}\
-.nav-list.collapsed .toggle-icon-expand{display:block}\
-.nav-list.collapsed .toggle-icon-collapse{display:none}\
 .nav-link{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12.5px;font-weight:500;color:var(--text3);text-decoration:none;transition:.12s;position:relative;border-radius:0 6px 6px 0;margin-right:8px}\
 .nav-link:hover{color:var(--dark);background:var(--bg3)}\
 .nav-link.active{color:var(--deep-green);font-weight:600;background:var(--mint)}\
@@ -144,9 +136,7 @@ cs.textContent='\
 .nav-link svg{flex-shrink:0;opacity:.55;transition:opacity .15s;width:16px;height:16px}\
 .nav-link:hover svg{opacity:.9}\
 .nav-link.active svg{opacity:1;color:var(--deep-green)}\
-.nav-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
-.nav-link .nav-emoji{font-style:normal}\
-.nav-list.collapsed .nav-link .nav-emoji{display:inline-flex;align-items:center;justify-content:center;font-size:14px;width:16px;height:16px;line-height:1;text-align:center;flex-shrink:0}\
+.nav-link span{white-space:nowrap;overflow:hidden;overflow:hidden;text-overflow:ellipsis}\
 .nav-sec-hd{display:flex;align-items:center;gap:6px;padding:10px 16px 4px;font-size:10px;font-weight:600;color:var(--text4);letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;user-select:none}\
 .nav-sec-hd:hover{color:var(--text3)}\
 .nav-sec-hd .arr{margin-left:auto;transition:transform .2s;display:flex;align-items:center}\
@@ -157,15 +147,15 @@ cs.textContent='\
 .nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
 .nav-sec-bd{overflow:hidden;max-height:0;transition:max-height .25s ease}\
 .nav-sec-bd.open{max-height:400px}\
-.nav-link.sub{padding-left:32px;font-size:11.5px;font-weight:400;color:var(--text4)}\
-.nav-link.sub:hover{color:var(--dark)}\
-.nav-link.sub.active{color:var(--deep-green);font-weight:600}\
-.nav-link .sarr{margin-left:auto;transition:transform .2s;display:flex;align-items:center}\
-.nav-link .sarr.open{transform:rotate(90deg)}\
 @media(max-width:768px){.nav{display:none}}\
 \
-/* ====== 聊天区（侧边栏右侧，居中布局，参考扣子风格） ====== */\
-.fly-chat-main{flex:1;display:flex;flex-direction:column;height:100vh;background:#f7f8fa;min-width:0;align-items:center}\
+/* ====== 页面隔离：DocsPanel / ChatPanel 完全分离 ====== */\
+.fly-docs-panel{flex:1;min-width:0;overflow-y:auto}\
+.fly-docs-panel.hidden{display:none!important}\
+\
+/* ====== ChatPanel（独立，不共享DocsPanel的任何DOM/state） ====== */\
+.fly-chat-panel{flex:1;display:flex;flex-direction:column;height:100vh;background:#f7f8fa;min-width:0;align-items:center}\
+.fly-chat-panel.hidden{display:none!important}\
 .fly-chat-hd{display:flex;align-items:center;padding:14px 24px;border-bottom:1px solid #e2e8f0;flex-shrink:0;background:#fff;width:100%;max-width:760px;box-sizing:border-box}\
 .fly-chat-hd .fc-avatar{width:40px;height:40px;border-radius:50%;background:#2563EB;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;margin-right:14px;flex-shrink:0}\
 .fly-chat-hd .fc-info{display:flex;flex-direction:column}\
@@ -203,31 +193,28 @@ cs.textContent='\
 .fly-chat-input .fc-send{width:32px;height:32px;border-radius:50%;background:#2563EB;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}\
 .fly-chat-input .fc-send:hover{background:#1D4ED8}\
 .fly-chat-input .fc-send:disabled{background:#e2e8f0;cursor:default}\
-@media(max-width:768px){.fc-sidebar{display:none}.fc-msg{max-width:88%}.fly-chat-body{padding:14px 12px}.fly-chat-input{padding:10px 12px}.fc-quick-tags{padding:0 12px 12px}}\
+@media(max-width:768px){.fc-msg{max-width:88%}.fly-chat-body{padding:14px 12px}.fly-chat-input{padding:10px 12px}.fc-quick-tags{padding:0 12px 12px}}\
 ';
 document.head.appendChild(cs);
 
-// ========== 聊天逻辑：替换右侧主内容区为全屏聊天 ==========
+// ========== ChatPanel：独立组件，不共享DocsPanel的任何state ==========
 window.FlyChat={
   cid:'',
-  _saved:null,
-  _chatEl:null,
+  _chatPanel:null,
 
   open:function(){
-    if(document.getElementById('flyChatMain'))return;
-    var nav=document.querySelector('.nav');
-    if(!nav)return;
-    // 隐藏右侧所有主内容区（.main等所有兄弟元素）
-    var saved=[];
-    var sib=nav.nextElementSibling;
-    while(sib){saved.push(sib);sib.style.display='none';sib=sib.nextElementSibling;}
-    this._savedEls=saved;
+    // 防止重复打开
+    if(document.getElementById('flyChatPanel'))return;
 
-    // 在侧边栏右侧插入聊天区，不用fixed覆盖
-    var chatMain=document.createElement('div');
-    chatMain.id='flyChatMain';
-    chatMain.className='fly-chat-main';
-    chatMain.innerHTML='\
+    // 1. 隐藏DocsPanel（彻底隔离，不是display:none个别元素）
+    var docs=document.getElementById('flyDocsPanel');
+    if(docs)docs.classList.add('hidden');
+
+    // 2. 创建独立ChatPanel
+    var cp=document.createElement('div');
+    cp.id='flyChatPanel';
+    cp.className='fly-chat-panel';
+    cp.innerHTML='\
         <div class="fly-chat-hd">\
           <div class="fc-avatar">F</div>\
           <div class="fc-info">\
@@ -254,8 +241,8 @@ window.FlyChat={
             </button>\
           </div>\
         </div>';
-    nav.parentNode.insertBefore(chatMain,nav.nextSibling);
-    this._chatEl=chatMain;
+    document.body.appendChild(cp);
+    this._chatPanel=cp;
 
     this._addBot('👋 你好，我是Fly验证助手。我可以帮你了解Fly的归因验证能力，试试问我：');
 
@@ -267,10 +254,14 @@ window.FlyChat={
   },
 
   close:function(){
-    var cp=document.getElementById('flyChatMain');
+    // 1. 删除ChatPanel
+    var cp=document.getElementById('flyChatPanel');
     if(cp)cp.remove();
-    if(this._savedEls){this._savedEls.forEach(function(el){el.style.display='';});this._savedEls=null;}
-    this._chatEl=null;
+    this._chatPanel=null;
+
+    // 2. 恢复DocsPanel
+    var docs=document.getElementById('flyDocsPanel');
+    if(docs)docs.classList.remove('hidden');
   },
 
   ask:function(q){
