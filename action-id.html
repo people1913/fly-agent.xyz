@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action ID · Verification Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{padding:32px;overflow-y:auto;flex:1}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8}
+.card h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--dark)}
+.card p{color:var(--text3);font-size:12px;line-height:1.7}
+.card code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
+.section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.flow-step{display:flex;align-items:stretch;gap:0}
+.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.flow-step-num .line{flex:1;width:2px;margin-top:2px}
+.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
+.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
+.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
+.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Action ID</h1><span class="tag">Unique Attribution Identifier</span></div>
+<div class="content">
+
+<div class="def-box">
+  <div class="def-label">定义</div>
+  <div class="def-text">Action ID = 归因链路的唯一标识符</div>
+  <div class="def-sub">从推荐→咨询→成交→佣金，全链路共享同一个 Action ID，实现端到端追溯。每一条归因链路有且仅有一个 Action ID。</div>
+</div>
+
+<h2 class="section-title">Action ID 的生命周期</h2>
+
+<div class="flow-pipeline">
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#2563EB">1</div>
+      <div class="line" style="background:#2563EB"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>生成：推荐触发</h3>
+      <p>当用户通过推荐链接/二维码/渠道入口进入时，系统生成唯一的 Action ID，并记录来源渠道、推荐人、时间戳。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#059669">2</div>
+      <div class="line" style="background:#059669"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>传递：咨询跟进</h3>
+      <p>Action ID 随用户行为传递。咨询时系统验证 Action ID 的来源合法性，确认信号真实。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#7C3AED">3</div>
+      <div class="line" style="background:#7C3AED"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>锁定：成交确认</h3>
+      <p>交易完成时，Action ID 与订单绑定。验证链锁定归因结果，不可篡改。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#DC2626">4</div>
+    </div>
+    <div class="flow-step-body">
+      <h3>结算：佣金分配</h3>
+      <p>基于 Action ID 的验证链结果进行佣金结算。只有通过完整验证链的 Action ID 才能触发结算。</p>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">Action ID 的验证规则</h2>
+
+<div class="gate-card">
+  <div class="gate-badge">GATE 1</div>
+  <div class="gate-row">来源验证：Action ID 必须由系统签发，不能伪造</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">GATE 2</div>
+  <div class="gate-row">时间验证：Action ID 的各阶段时间必须递增，不能回跳</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">GATE 3</div>
+  <div class="gate-row">完整性验证：Action ID 必须走完全链路才能触发结算</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">GATE 4</div>
+  <div class="gate-row">唯一性验证：同一个 Action ID 不能重复使用</div>
+</div>
+
+<h2 class="section-title">API 接口</h2>
+
+<div class="card">
+  <h3>POST /v1/action</h3>
+  <p>创建新的 Action ID。请求体需包含 <code>source</code>（来源渠道）和 <code>referrer</code>（推荐人标识）。返回唯一 Action ID 及初始验证状态。</p>
+</div>
+
+<div class="card">
+  <h3>GET /v1/action/:id</h3>
+  <p>查询 Action ID 的完整生命周期。返回推荐→咨询→成交→佣金各阶段的验证状态和哈希值。</p>
+</div>
+
+</div>
+</div>
+</body>
+</html>
