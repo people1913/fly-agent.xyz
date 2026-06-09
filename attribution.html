@@ -36,11 +36,26 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .vs-col .vs-item{font-size:12px;line-height:2}
 .vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
 .vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.attr-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:12px}
+.attr-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
 .attr-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.5px;color:var(--text3)}
 .attr-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
 .attr-table tr:hover{background:var(--bg2)}
 .attr-table code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px}
+.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.flow-step{display:flex;align-items:stretch;gap:0}
+.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.flow-step-num .line{flex:1;width:2px;margin-top:2px}
+.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
+.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
+.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
+.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+.fail-card{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:14px;margin-bottom:16px}
+.fail-card h3{font-size:13px;font-weight:700;margin-bottom:6px;color:#DC2626}
+.fail-card p{color:#991B1B;font-size:12px;line-height:1.7}
+.fail-card code{font-family:var(--mono);background:#FEE2E2;padding:2px 6px;border-radius:4px;font-size:12px}
 </style>
 </head>
 <body>
@@ -76,39 +91,145 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   </div>
 </div>
 
-<h2 class="section-title">归因验证四阶段</h2>
+<h2 class="section-title">渠道归因</h2>
+
+<div class="card">
+  <h3>什么是渠道归因</h3>
+  <p>渠道归因确定"信号从哪个渠道来"。Fly 不是简单地标记来源，而是<strong>验证</strong>来源——确认信号确实由该渠道产生，而非伪造或劫持。</p>
+</div>
+
+<div class="card">
+  <h3>支持的归因渠道</h3>
+  <p>抖音 / 小红书 / 微信 / 美团 / 飞书——每个渠道有独立的信号适配层，将不同格式的渠道数据统一转换为 Fly 标准验证格式。</p>
+</div>
 
 <table class="attr-table">
   <thead>
-    <tr><th>阶段</th><th>验证内容</th><th>验证方式</th><th>失败处理</th></tr>
+    <tr><th>渠道</th><th>信号类型</th><th>适配方式</th><th>验证重点</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <td><strong>推荐</strong></td>
-      <td>推荐信号是否真实</td>
-      <td>验证来源渠道、推荐人身份</td>
-      <td>拒绝生成 Action ID</td>
-    </tr>
-    <tr>
-      <td><strong>咨询</strong></td>
-      <td>咨询是否由推荐触发</td>
-      <td>验证 Action ID 链路连续性</td>
-      <td>标记为异常信号</td>
-    </tr>
-    <tr>
-      <td><strong>成交</strong></td>
-      <td>交易是否归因正确</td>
-      <td>验证订单与 Action ID 绑定</td>
-      <td>拒绝绑定，人工审核</td>
-    </tr>
-    <tr>
-      <td><strong>佣金</strong></td>
-      <td>结算是否基于验证结果</td>
-      <td>验证全链路哈希链完整性</td>
-      <td>拒绝结算</td>
-    </tr>
+    <tr><td>抖音</td><td>短视频/直播推荐</td><td>Callback + 前端埋点</td><td>防刷单、防虚假互动</td></tr>
+    <tr><td>小红书</td><td>笔记/种草推荐</td><td>前端埋点 + 深链</td><td>防刷赞、防水军</td></tr>
+    <tr><td>微信</td><td>公众号/小程序/私域</td><td>深度链接 + Callback</td><td>防裂变作弊</td></tr>
+    <tr><td>美团</td><td>到店/团购</td><td>API对接</td><td>防虚假订单</td></tr>
+    <tr><td>飞书</td><td>企业推荐/社群</td><td>API + Webhook</td><td>防内部作弊</td></tr>
   </tbody>
 </table>
+
+<h2 class="section-title">事件归因</h2>
+
+<div class="card">
+  <h3>什么是事件归因</h3>
+  <p>事件归因确定"哪个具体行为触发了转化"。Fly 不是简单记录事件，而是验证事件链的<strong>因果关系</strong>——确认推荐事件确实导致了咨询，咨询确实导致了成交。</p>
+</div>
+
+<div class="flow-pipeline">
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#2563EB">R</div>
+      <div class="line" style="background:#2563EB"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>推荐事件（Referral）</h3>
+      <p>用户通过推荐入口进入。验证：入口是否合法、推荐人是否有效、是否为真实用户。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#059669">C</div>
+      <div class="line" style="background:#059669"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>咨询事件（Consultation）</h3>
+      <p>用户发起咨询/互动。验证：咨询是否由推荐触发、Action ID 链路是否连续。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#7C3AED">V</div>
+      <div class="line" style="background:#7C3AED"></div>
+    </div>
+    <div class="flow-step-body">
+      <h3>成交事件（Conversion）</h3>
+      <p>用户完成交易。验证：订单是否与 Action ID 绑定、金额是否合理。</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-step-num">
+      <div class="circle" style="background:#DC2626">S</div>
+    </div>
+    <div class="flow-step-body">
+      <h3>结算事件（Settlement）</h3>
+      <p>佣金分配。验证：全链路哈希链是否完整、Trust Score 是否达标。</p>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">信号传递</h2>
+
+<div class="card">
+  <h3>信号如何从推荐传递到结算</h3>
+  <p>信号传递的核心机制是 <strong>Action ID + 哈希链</strong>。每个事件发生时：</p>
+  <p>① 写入当前事件数据 + Action ID</p>
+  <p>② 计算当前事件的 SHA-256 哈希</p>
+  <p>③ 将前一个事件的哈希作为输入，计算新哈希</p>
+  <p>④ 追加到哈希链末尾</p>
+  <p>这保证了信号传递的<strong>连续性</strong>和<strong>不可篡改性</strong>——任何中间环节的数据修改都会导致后续哈希链断裂。</p>
+</div>
+
+<div class="card">
+  <h3>信号传递的约束</h3>
+  <p><strong>单调递增</strong>：事件时间戳必须严格递增，不能回跳</p>
+  <p><strong>阶段有序</strong>：推荐→咨询→成交→结算，不能跳过或逆序</p>
+  <p><strong>哈希连续</strong>：每个事件的哈希必须包含前一个事件的哈希</p>
+  <p><strong>签名验证</strong>：每个事件由产生该事件的 Agent 签名</p>
+</div>
+
+<h2 class="section-title">验证机制</h2>
+
+<div class="gate-card">
+  <div class="gate-badge">验证 1</div>
+  <div class="gate-row">来源验证：确认信号来自声称的渠道</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">验证 2</div>
+  <div class="gate-row">因果验证：确认事件之间的因果关系成立</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">验证 3</div>
+  <div class="gate-row">完整性验证：确认哈希链无断裂</div>
+</div>
+<div class="gate-card">
+  <div class="gate-badge">验证 4</div>
+  <div class="gate-row">时间验证：确认事件时序合理，无回跳或异常间隔</div>
+</div>
+
+<h2 class="section-title">失败场景</h2>
+
+<div class="fail-card">
+  <h3>场景1：伪造来源</h3>
+  <p>攻击者伪造渠道标识，试图将非推荐流量标记为推荐流量。<br>拦截：<code>来源验证</code>——系统校验渠道回调签名和推荐人 Agent 身份，伪造信号在 GATE 1 被拒绝。</p>
+</div>
+
+<div class="fail-card">
+  <h3>场景2：归因劫持</h3>
+  <p>攻击者在用户成交前替换 Action ID，试图将成交归因到自己的推荐。<br>拦截：<code>哈希链验证</code>——Action ID 从推荐到成交的哈希链必须连续，中间替换会导致链断裂。</p>
+</div>
+
+<div class="fail-card">
+  <h3>场景3：刷单作弊</h3>
+  <p>攻击者批量生成虚假咨询和成交，试图骗取佣金。<br>拦截：<code>因果验证 + 时间验证</code>——虚假事件的时序和因果关系通常不合理（如0秒内完成推荐→成交），系统自动标记 <code>ANOMALY</code>。</p>
+</div>
+
+<div class="fail-card">
+  <h3>场景4：数据篡改</h3>
+  <p>内部人员修改成交金额或推荐人信息。<br>拦截：<code>哈希链 + 签名</code>——每个事件由产生它的 Agent 签名，修改任何字段都会导致哈希不匹配和签名失效。</p>
+</div>
+
+<div class="fail-card">
+  <h3>场景5：重复结算</h3>
+  <p>同一个 Action ID 试图多次触发佣金结算。<br>拦截：<code>唯一性验证</code>——Action ID 一旦进入 <code>SETTLED</code> 终态，永久锁定，不可重复使用。</p>
+</div>
 
 <h2 class="section-title">归因数据模型</h2>
 
@@ -125,18 +246,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="card">
   <h3>Audit Event（审计事件）</h3>
   <p>链式审计记录。每个 Audit Event 包含前一个事件的哈希，形成不可篡改的审计链。</p>
-</div>
-
-<h2 class="section-title">归因验证 API</h2>
-
-<div class="card">
-  <h3>POST /v1/agents</h3>
-  <p>注册归因验证 Agent。Agent 是归因链路的参与方，每个 Agent 有独立的验证职责和权限。</p>
-</div>
-
-<div class="card">
-  <h3>POST /v1/audit/verify-chain</h3>
-  <p>验证归因链完整性。提交 Action ID，系统返回全链路验证结果和哈希链状态。</p>
 </div>
 
 </div>
