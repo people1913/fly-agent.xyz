@@ -27,14 +27,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .card code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
 .section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
 .sub-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--dark);margin-top:8px}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
 .gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
 .gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
 .gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
@@ -43,16 +35,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .api-block .api-hd .method{background:#2563EB;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
 .api-block pre{padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.7;overflow-x:auto;color:var(--text2)}
 .api-block .api-desc{padding:10px 14px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);line-height:1.6}
-.state-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
-.state-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.5px;color:var(--text3)}
-.state-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
-.state-table tr:hover{background:var(--bg2)}
-.state-table code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px}
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px}
 .badge-green{background:var(--mint);color:var(--deep-green)}
 .badge-blue{background:#EFF6FF;color:#2563EB}
 .badge-yellow{background:#FEF9C3;color:#92400E}
 .badge-red{background:#FEF2F2;color:#DC2626}
+.hint-text{font-size:11px;color:var(--text4);margin-bottom:24px;font-style:italic}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.stat-item{flex:1;min-width:80px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;position:relative;overflow:hidden}
+.stat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-item.s-created::before{background:#2563EB}
+.stat-item.s-referred::before{background:#059669}
+.stat-item.s-converted::before{background:#7C3AED}
+.stat-item.s-settled::before{background:#DC2626}
+.stat-item.s-expired::before{background:#64748B}
+.stat-item.s-anomaly::before{background:#D97706}
+.stat-item.s-disputed::before{background:#D97706}
+.stat-item.s-rejected::before{background:#991B1B}
+.stat-num{font-size:20px;font-weight:800;color:var(--dark);font-family:var(--mono);line-height:1.2}
+.stat-label{font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.5px;margin-top:4px;text-transform:uppercase}
+.stat-pct{font-size:9px;color:var(--text4);margin-top:2px}
 
 /* Interactive Lifecycle SVG */
 .lifecycle-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:8px;overflow-x:auto}
@@ -65,7 +69,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .lifecycle-wrap svg .sub-text{font-size:9px;fill:rgba(255,255,255,.7);text-anchor:middle;dominant-baseline:central}
 
 /* Node detail panel */
-.node-detail{background:#fff;border:2px solid var(--deep-green);border-radius:10px;padding:20px 24px;margin-bottom:24px;display:none;animation:fadeIn .25s ease}
+.node-detail{background:#fff;border:2px solid var(--deep-green);border-radius:10px;padding:20px 24px;margin-bottom:24px;display:none;position:relative;animation:fadeIn .25s ease}
 .node-detail.active{display:block}
 .node-detail .nd-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .node-detail .nd-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
@@ -77,9 +81,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .node-detail .nd-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text4);line-height:1}
 .node-detail .nd-close:hover{color:var(--dark)}
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+/* Cross-nav link */
+.cross-nav{display:flex;align-items:center;gap:8px;margin-bottom:24px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:13px}
+.cross-nav a{color:var(--deep-green);font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px}
+.cross-nav a:hover{text-decoration:underline}
+.cross-nav .arrow{color:var(--text4);font-size:16px}
 
-.hint-text{font-size:11px;color:var(--text4);margin-bottom:24px;font-style:italic}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -94,7 +102,60 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   <div class="def-sub">从推荐→咨询→成交→佣金，全链路共享同一个 Action ID，实现端到端追溯。每一条归因链路有且仅有一个 Action ID。</div>
 </div>
 
+<!-- Cross navigation: Attribution ↔ Action ID -->
+<div class="cross-nav">
+  <span style="color:var(--text3)">信号来源：</span>
+  <a href="/attribution.html">Attribution 信号流 ←</a>
+  <span class="arrow">→</span>
+  <span style="font-weight:700;color:var(--dark)">Action ID 状态机</span>
+</div>
+
 <h2 class="section-title">生命周期流程图</h2>
+
+<!-- Stats bar with demo data -->
+<div class="stats-bar">
+  <div class="stat-item s-created">
+    <div class="stat-num" id="statCreated">12,431</div>
+    <div class="stat-label">Created</div>
+    <div class="stat-pct">100%</div>
+  </div>
+  <div class="stat-item s-referred">
+    <div class="stat-num">8,902</div>
+    <div class="stat-label">Referred</div>
+    <div class="stat-pct">71.6%</div>
+  </div>
+  <div class="stat-item s-converted">
+    <div class="stat-num">2,118</div>
+    <div class="stat-label">Converted</div>
+    <div class="stat-pct">17.0%</div>
+  </div>
+  <div class="stat-item s-settled">
+    <div class="stat-num">1,967</div>
+    <div class="stat-label">Settled</div>
+    <div class="stat-pct">15.8%</div>
+  </div>
+  <div class="stat-item s-expired">
+    <div class="stat-num">3,529</div>
+    <div class="stat-label">Expired</div>
+    <div class="stat-pct">28.4%</div>
+  </div>
+  <div class="stat-item s-anomaly">
+    <div class="stat-num">47</div>
+    <div class="stat-label">Anomaly</div>
+    <div class="stat-pct">0.4%</div>
+  </div>
+  <div class="stat-item s-disputed">
+    <div class="stat-num">23</div>
+    <div class="stat-label">Disputed</div>
+    <div class="stat-pct">0.2%</div>
+  </div>
+  <div class="stat-item s-rejected">
+    <div class="stat-num">128</div>
+    <div class="stat-label">Rejected</div>
+    <div class="stat-pct">1.0%</div>
+  </div>
+</div>
+<p class="hint-text" style="margin-top:0">📊 Demo 数据 · 展示系统运行状态</p>
 
 <div class="lifecycle-wrap">
 <svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px">
@@ -137,11 +198,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   </g>
 
   <!-- === Branch arrows down === -->
-  <!-- CREATED → EXPIRED -->
   <line x1="80" y1="76" x2="80" y2="152" class="arrow-line" stroke="#94A3B8" stroke-dasharray="4,3" marker-end="url(#ah)"/>
-  <!-- REFERRED → ANOMALY -->
   <line x1="276" y1="76" x2="276" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
-  <!-- CONVERTED → DISPUTED -->
   <line x1="472" y1="76" x2="472" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
 
   <!-- === ROW 2: Exception States === -->
@@ -209,148 +267,100 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 
 <script>
 var nodeInfo={
-  created:{
-    color:'#2563EB',title:'CREATED · 推荐触发',sub:'归因链起点',
+  created:{color:'#2563EB',title:'CREATED · 推荐触发',sub:'归因链起点',
     rules:[
       {color:'#2563EB',text:'生成时机：用户通过推荐链接/二维码/渠道入口进入时，系统在第一时刻签发 Action ID'},
       {color:'#2563EB',text:'格式规则：act_{timestamp}_{random}，例如 act_1717920000_a3f8b2c1'},
       {color:'#2563EB',text:'前置验证：①来源渠道已验证 ②推荐人Agent注册有效 ③入口参数合法（防注入/防重放）'},
       {color:'#2563EB',text:'哈希初始化：生成第一个SHA-256哈希节点，验证链初始化'},
       {color:'#94A3B8',text:'超时机制：7天未转化自动进入 EXPIRED 终态'}
-    ]
-  },
-  referred:{
-    color:'#059669',title:'REFERRED · 咨询验证',sub:'信号传递确认',
+    ]},
+  referred:{color:'#059669',title:'REFERRED · 咨询验证',sub:'信号传递确认',
     rules:[
       {color:'#059669',text:'触发条件：用户发起咨询/互动，Action ID 随行为传递'},
       {color:'#059669',text:'GATE 1 来源验证：确认信号来自声称的渠道，校验渠道回调签名'},
       {color:'#059669',text:'GATE 2 因果验证：确认咨询确实由推荐触发，而非独立行为'},
       {color:'#059669',text:'哈希追加：当前事件数据 + 前一哈希 → 新哈希，链式追加'},
       {color:'#D97706',text:'异常出口：验证失败 → ANOMALY（需人工审核）'}
-    ]
-  },
-  converted:{
-    color:'#7C3AED',title:'CONVERTED · 成交确认',sub:'归因锁定',
+    ]},
+  converted:{color:'#7C3AED',title:'CONVERTED · 成交确认',sub:'归因锁定',
     rules:[
       {color:'#7C3AED',text:'触发条件：交易完成，Action ID 与订单绑定'},
       {color:'#7C3AED',text:'GATE 3 完整性验证：哈希链无断裂，从CREATED到CONVERTED连续'},
       {color:'#7C3AED',text:'金额验证：成交金额合理性校验，异常金额自动标记'},
       {color:'#7C3AED',text:'归因锁定：验证链锁定归因结果，此后不可篡改'},
       {color:'#D97706',text:'争议出口：对归因结果有异议 → DISPUTED'}
-    ]
-  },
-  settled:{
-    color:'#DC2626',title:'SETTLED · 结算锁定',sub:'终态 · 不可逆',
+    ]},
+  settled:{color:'#DC2626',title:'SETTLED · 结算锁定',sub:'终态 · 不可逆',
     rules:[
       {color:'#DC2626',text:'GATE 4 唯一性验证：同一 Action ID 不可重复触发结算'},
       {color:'#DC2626',text:'全链路验证：必须走完 CREATED→REFERRED→CONVERTED 完整链路'},
       {color:'#DC2626',text:'Trust Score 检查：信任评分达标才可结算（默认阈值 60）'},
       {color:'#DC2626',text:'佣金计算：基于验证结果分配佣金，非基于声明'},
       {color:'#DC2626',text:'🔒 终态锁定：结算后 Action ID 永久锁定，不可再触发任何流程'}
-    ]
-  },
-  expired:{
-    color:'#64748B',title:'EXPIRED · 超时过期',sub:'终态 · 不可逆',
+    ]},
+  expired:{color:'#64748B',title:'EXPIRED · 超时过期',sub:'终态 · 不可逆',
     rules:[
       {color:'#64748B',text:'触发条件：Action ID 生成后7天未进入 REFERRED 状态'},
       {color:'#64748B',text:'常见原因：用户点击推荐链接后未发起咨询'},
       {color:'#64748B',text:'数据保留：过期 Action ID 的验证记录仍可查询，用于统计漏斗'},
       {color:'#64748B',text:'🔒 终态：不可恢复，不可重新激活'}
-    ]
-  },
-  anomaly:{
-    color:'#D97706',title:'ANOMALY · 验证异常',sub:'需人工审核',
+    ]},
+  anomaly:{color:'#D97706',title:'ANOMALY · 验证异常',sub:'需人工审核',
     rules:[
       {color:'#D97706',text:'触发条件：验证链断裂、时序异常、哈希不匹配'},
       {color:'#D97706',text:'典型场景：0秒内完成推荐→成交（刷单特征）'},
       {color:'#D97706',text:'典型场景：渠道回调签名验证失败'},
       {color:'#059669',text:'恢复路径：人工审核通过 → CONVERTED'},
       {color:'#DC2626',text:'拒绝路径：审核确认作弊 → REJECTED'}
-    ]
-  },
-  disputed:{
-    color:'#D97706',title:'DISPUTED · 归因争议',sub:'多方争议中',
+    ]},
+  disputed:{color:'#D97706',title:'DISPUTED · 归因争议',sub:'多方争议中',
     rules:[
       {color:'#D97706',text:'触发条件：推荐人或渠道对归因结果提出异议'},
       {color:'#D97706',text:'典型场景：多个渠道声称同一转化'},
       {color:'#D97706',text:'处理方式：基于完整哈希链审计，确认真实归因'},
       {color:'#059669',text:'恢复路径：争议解决 → SETTLED'},
       {color:'#DC2626',text:'拒绝路径：争议确认无效 → REJECTED'}
-    ]
-  },
-  rejected:{
-    color:'#991B1B',title:'REJECTED · 验证失败',sub:'终态 · 不可逆',
+    ]},
+  rejected:{color:'#991B1B',title:'REJECTED · 验证失败',sub:'终态 · 不可逆',
     rules:[
       {color:'#991B1B',text:'触发来源：ANOMALY 审核确认作弊 / DISPUTED 争议确认无效'},
       {color:'#991B1B',text:'典型原因：伪造来源、归因劫持、刷单作弊、数据篡改'},
       {color:'#991B1B',text:'记录保留：拒绝记录写入审计日志，哈希链仍可追溯'},
       {color:'#991B1B',text:'🔒 终态：不可恢复，相关推荐人信用评分下调'}
-    ]
-  }
+    ]}
 };
 
 function showDetail(key){
-  var info=nodeInfo[key];
-  if(!info)return;
+  var info=nodeInfo[key];if(!info)return;
   var panel=document.getElementById('detailPanel');
   document.getElementById('ndDot').style.background=info.color;
   document.getElementById('ndTitle').textContent=info.title;
   document.getElementById('ndSub').textContent=info.sub;
-  var rulesEl=document.getElementById('ndRules');
-  rulesEl.innerHTML='';
+  var rulesEl=document.getElementById('ndRules');rulesEl.innerHTML='';
   info.rules.forEach(function(r,i){
-    var div=document.createElement('div');
-    div.className='nd-rule';
+    var div=document.createElement('div');div.className='nd-rule';
     div.innerHTML='<div class="nd-num" style="background:'+r.color+'">'+(i+1)+'</div><div>'+r.text+'</div>';
     rulesEl.appendChild(div);
   });
   panel.classList.add('active');
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
-function hideDetail(){
-  document.getElementById('detailPanel').classList.remove('active');
-}
+function hideDetail(){document.getElementById('detailPanel').classList.remove('active');}
 </script>
 
 <h2 class="section-title">生成规则</h2>
-
-<div class="card">
-  <h3>格式</h3>
-  <p>Action ID 采用 <code>act_{timestamp}_{random}</code> 格式，例如：<code>act_1717920000_a3f8b2c1</code></p>
-</div>
-
-<div class="card">
-  <h3>生成时机</h3>
-  <p>当用户通过推荐链接/二维码/渠道入口进入时，系统在<strong>第一时间</strong>生成 Action ID。不是咨询时才生成，不是成交后才补——是信号产生的第一刻。</p>
-</div>
-
-<div class="card">
-  <h3>唯一性保证</h3>
-  <p>时间戳 + 随机数 + 服务节点ID 三重保证，碰撞概率低于 10⁻¹⁸。同一 Action ID 只能走一次完整生命周期，SETTLED 后永久锁定。</p>
-</div>
+<div class="card"><h3>格式</h3><p>Action ID 采用 <code>act_{timestamp}_{random}</code> 格式，例如：<code>act_1717920000_a3f8b2c1</code></p></div>
+<div class="card"><h3>生成时机</h3><p>当用户通过推荐链接/二维码/渠道入口进入时，系统在<strong>第一时间</strong>生成 Action ID。不是咨询时才生成，不是成交后才补——是信号产生的第一刻。</p></div>
+<div class="card"><h3>唯一性保证</h3><p>时间戳 + 随机数 + 服务节点ID 三重保证，碰撞概率低于 10⁻¹⁸。同一 Action ID 只能走一次完整生命周期，SETTLED 后永久锁定。</p></div>
 
 <h2 class="section-title">验证规则</h2>
-
-<div class="gate-card">
-  <div class="gate-badge">GATE 1</div>
-  <div class="gate-row">来源验证：Action ID 必须由系统签发，不能伪造</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 2</div>
-  <div class="gate-row">因果验证：事件之间的因果关系必须成立</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 3</div>
-  <div class="gate-row">完整性验证：哈希链无断裂，全链路可追溯</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 4</div>
-  <div class="gate-row">唯一性验证：同一个 Action ID 不能重复使用</div>
-</div>
+<div class="gate-card"><div class="gate-badge">GATE 1</div><div class="gate-row">来源验证：Action ID 必须由系统签发，不能伪造</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 2</div><div class="gate-row">因果验证：事件之间的因果关系必须成立</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 3</div><div class="gate-row">完整性验证：哈希链无断裂，全链路可追溯</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 4</div><div class="gate-row">唯一性验证：同一个 Action ID 不能重复使用</div></div>
 
 <h2 class="section-title">API 示例</h2>
-
 <div class="api-block">
   <div class="api-hd"><span class="method">POST</span> /v1/action — 创建 Action ID</div>
   <pre>{
@@ -364,7 +374,6 @@ function hideDetail(){
 }</pre>
   <div class="api-desc">请求体必须包含 <code>source</code>（来源渠道）和 <code>referrer</code>（推荐人标识）。<code>metadata</code> 可选。</div>
 </div>
-
 <div class="api-block">
   <div class="api-hd">响应 201 Created</div>
   <pre>{
@@ -376,9 +385,7 @@ function hideDetail(){
   "created_at": "2026-06-09T12:00:00Z",
   "expires_at": "2026-06-16T12:00:00Z"
 }</pre>
-  <div class="api-desc">返回唯一 Action ID、初始验证状态、初始哈希值和过期时间。默认7天未转化自动过期。</div>
 </div>
-
 <div class="api-block">
   <div class="api-hd"><span class="method">GET</span> /v1/action/:id — 查询生命周期</div>
   <pre>{
@@ -392,7 +399,6 @@ function hideDetail(){
   "chain_valid": true,
   "trust_score": 87
 }</pre>
-  <div class="api-desc">返回 Action ID 的完整生命周期，包括每个阶段的时间、哈希值、链完整性判定和信任评分。</div>
 </div>
 
 </div>
