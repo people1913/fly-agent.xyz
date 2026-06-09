@@ -45,8 +45,8 @@ a:hover{opacity:.8}
 .sidebar-group{margin-bottom:8px}
 .sidebar-group-label{font-size:10px;font-weight:700;color:var(--tan-light);letter-spacing:1.5px;text-transform:uppercase;padding:8px 20px 4px;user-select:none}
 .sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:var(--text2);border-left:3px solid transparent;user-select:none}
-.sidebar-item:hover{background:var(--bg3);color:var(--deep-green)}
-.sidebar-item.active{background:var(--bg3);color:var(--deep-green);border-left-color:var(--deep-green);font-weight:600}
+.sidebar-item:hover{background:var(--bg3);color:var(--group-color,#6B7280)}
+.sidebar-item.active{background:var(--bg3);color:var(--group-color,#6B7280);font-weight:600}
 .sidebar-item svg{width:16px;height:16px;flex-shrink:0}
 .sidebar-item .si-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--deep-green);color:#E8F5EC}
 
@@ -161,7 +161,7 @@ a:hover{opacity:.8}
 
 /* === Collapsible sidebar groups === */
 .sidebar-group-label{cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;padding:8px 16px 4px 20px}
-.sidebar-group-label:hover{background:var(--bg3)}
+.sidebar-group-label:hover{background:var(--bg3);color:var(--group-color)}
 .sg-toggle{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tan-light);background:var(--bg3);border:1px solid var(--border);transition:all .2s;flex-shrink:0}
 .sidebar-group-label:hover .sg-toggle{color:var(--dark);border-color:var(--tan-light)}
 .sg-toggle.collapsed{transform:rotate(-90deg)}
@@ -173,7 +173,7 @@ a:hover{opacity:.8}
 .sidebar{transition:width .25s ease;width:var(--sidebar-w)}
 .sidebar.collapsed{--sidebar-w:60px;width:60px}
 .sidebar.collapsed .sg-toggle{display:none}
-.sidebar.collapsed .sidebar-group-label{padding:10px 0;justify-content:center;font-size:12px;cursor:pointer;border-bottom:1px solid var(--border)}
+.sidebar.collapsed .sidebar-group-label{padding:10px 0;justify-content:center;font-size:11px;cursor:pointer;border-bottom:1px solid var(--border);color:var(--group-color)}
 .sidebar.collapsed .sidebar-group-items.collapsed{max-height:0!important;overflow:hidden}
 .sidebar.collapsed .sidebar-group-items:not(.collapsed){max-height:none!important;overflow:visible}
 .sidebar.collapsed .sidebar-item{padding:12px 0;justify-content:center;gap:0}
@@ -196,10 +196,10 @@ a:hover{opacity:.8}
 .sidebar.collapsed .sidebar-brand{justify-content:center;padding:0 8px;position:relative}
 .sidebar.collapsed .sb-fly{font-size:13px}
 
-.sg-icon{display:flex;align-items:center;margin-right:6px;flex-shrink:0;width:16px;height:16px;color:var(--text4)}.sg-icon svg{width:16px;height:16px}
-.sg-text{flex:1}
+.sg-icon{display:flex;align-items:center;margin-right:6px;flex-shrink:0;width:16px;height:16px;color:var(--group-color)}.sg-icon svg{width:16px;height:16px}
+.sg-text{flex:1;color:var(--group-color);font-weight:600}
 .sidebar.collapsed .sg-text{display:none}
-.sidebar.collapsed .sg-icon{margin-right:0;width:18px;height:18px}.sidebar.collapsed .sg-icon svg{width:18px;height:18px}
+.sidebar.collapsed .sg-icon{margin-right:0;width:18px;height:18px;color:var(--group-color)}.sidebar.collapsed .sg-icon svg{width:18px;height:18px}
 .sidebar.collapsed .sg-toggle{display:none}
 
 
@@ -232,102 +232,193 @@ a:hover{opacity:.8}
     </button>
   </div>
 
-  <!-- 核心概念 -->
-  <div class="sidebar-group" data-group="核心概念">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)"><span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></span><span class="sg-text">核心概念</span><span class="sg-toggle">▾</span></div>
+  <!-- 1 核心概念 #2196F3 -->
+  <div class="sidebar-group" data-group="core" style="--group-color:#2196F3">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></span>
+      <span class="sg-text">核心概念</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
     <div class="sidebar-group-items">
-      <div class="sidebar-item active" data-section="fly-concept" title="Fly 概念" onclick="switchSection('fly-concept')">
+      <div class="sidebar-item active" data-section="fly-concept" title="Fly概念" onclick="switchSection('fly-concept')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span class="si-label">Fly 概念</span>
+        <span class="si-label">Fly概念</span>
       </div>
-      <div class="sidebar-item" data-section="signal-flow" title="信号流" onclick="switchSection('signal-flow')">
+      <div class="sidebar-item" data-section="signal-flow" title="Signal Flow" onclick="switchSection('signal-flow')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span class="si-label">信号流</span>
+        <span class="si-label">Signal Flow</span>
       </div>
-      <div class="sidebar-item" data-section="action-id" title="Action ID" onclick="switchSection('action-id')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        <span class="si-label">Action ID</span>
-        <span class="si-badge">状态机</span>
-      </div>
-      <div class="sidebar-item" data-section="attribution" title="归因" onclick="switchSection('attribution')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-        <span class="si-label">归因</span>
+      <div class="sidebar-item" data-section="faq" title="FAQ" onclick="switchSection('faq')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span class="si-label">FAQ</span>
       </div>
     </div>
   </div>
 
-  <!-- 验证体系 -->
-  <div class="sidebar-group" data-group="验证体系">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)"><span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="sg-text">验证体系</span><span class="sg-toggle">▾</span></div>
+  <!-- 2 验证体系 #4CAF50 -->
+  <div class="sidebar-group" data-group="verify" style="--group-color:#4CAF50">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+      <span class="sg-text">验证体系</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
+    <div class="sidebar-group-items">
+      <div class="sidebar-item" data-section="action-id" title="Action ID" onclick="switchSection('action-id')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="si-label">Action ID</span>
+        <span class="si-badge" style="background:#4CAF50;color:#fff">状态机</span>
+      </div>
+      <div class="sidebar-item" data-section="attribution" title="Attribution" onclick="switchSection('attribution')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        <span class="si-label">Attribution</span>
+      </div>
+      <div class="sidebar-item" data-section="verification" title="Verification" onclick="switchSection('verification')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span class="si-label">Verification</span>
+      </div>
+      <div class="sidebar-item" data-section="audit" title="Audit Chain" onclick="switchSection('audit')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span class="si-label">Audit Chain</span>
+      </div>
+      <div class="sidebar-item" data-section="trust" title="Trust Layer" onclick="switchSection('trust')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="si-label">Trust Layer</span>
+      </div>
+      <div class="sidebar-item" data-section="security" title="Security Model" onclick="switchSection('security')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="si-label">Security Model</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 AI Native #7C3AED -->
+  <div class="sidebar-group" data-group="ainative" style="--group-color:#7C3AED">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      <span class="sg-text">AI Native</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
     <div class="sidebar-group-items">
       <div class="sidebar-item" data-section="behavior-id" title="Behavior ID" onclick="switchSection('behavior-id')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         <span class="si-label">Behavior ID</span>
         <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
       </div>
-      <div class="sidebar-item" data-section="verification" title="验证层" onclick="switchSection('verification')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <span class="si-label">验证层</span>
+      <div class="sidebar-item" data-section="bot" title="BOT" onclick="switchSection('bot')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><line x1="12" y1="2" x2="12" y2="4"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M9 16v2"/><path d="M15 16v2"/></svg>
+        <span class="si-label">BOT</span>
+        <span class="si-badge" style="background:#6C63FF;color:#fff">NEW</span>
       </div>
-      <div class="sidebar-item" data-section="audit" title="审计链" onclick="switchSection('audit')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span class="si-label">审计链</span>
-      </div>
-      <div class="sidebar-item" data-section="trust" title="信任层" onclick="switchSection('trust')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span class="si-label">信任层</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 企业 -->
-  <div class="sidebar-group" data-group="企业">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)"><span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span><span class="sg-text">企业</span><span class="sg-toggle">▾</span></div>
-    <div class="sidebar-group-items">
-      <div class="sidebar-item" data-section="security" title="安全模型" onclick="switchSection('security')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span class="si-label">安全模型</span>
-      </div>
-      <div class="sidebar-item" data-section="enterprise" title="企业架构" onclick="switchSection('enterprise')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        <span class="si-label">企业架构</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 生态与开发者 -->
-  <div class="sidebar-group" data-group="生态与开发者">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)"><span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sg-text">生态与开发者</span><span class="sg-toggle">▾</span></div>
-    <div class="sidebar-group-items">
-      <div class="sidebar-item" data-section="sdk" title="SDK" onclick="switchSection('sdk')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        <span class="si-label">SDK</span>
-        <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
-      </div>
-      <div class="sidebar-item" data-section="api-playground" title="API 交互" onclick="switchSection('api-playground')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-        <span class="si-label">API 交互</span>
-      </div>
-      <div class="sidebar-item" data-section="ai-skills" title="AI 技能" onclick="switchSection('ai-skills')">
+      <div class="sidebar-item" data-section="ai-skills" title="AI Skills" onclick="switchSection('ai-skills')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span class="si-label">AI 技能</span>
-        <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
-      </div>
-      <div class="sidebar-item" data-section="ecosystem" title="生态" onclick="switchSection('ecosystem')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><line x1="7.5" y1="7.5" x2="10.5" y2="10.5"/><line x1="13.5" y1="10.5" x2="16.5" y2="7.5"/><line x1="7.5" y1="16.5" x2="10.5" y2="13.5"/><line x1="13.5" y1="13.5" x2="16.5" y2="16.5"/></svg>
-        <span class="si-label">生态</span>
+        <span class="si-label">AI Skills</span>
         <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
       </div>
     </div>
   </div>
 
-  <!-- 帮助 -->
-  <div class="sidebar-group" data-group="帮助">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)"><span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="sg-text">帮助</span><span class="sg-toggle">▾</span></div>
+  <!-- 4 开发者 #FF9800 -->
+  <div class="sidebar-group" data-group="dev" style="--group-color:#FF9800">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+      <span class="sg-text">开发者</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
     <div class="sidebar-group-items">
-      <div class="sidebar-item" data-section="faq" title="常见问题" onclick="switchSection('faq')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span class="si-label">常见问题</span>
+      <div class="sidebar-item" data-section="api-playground" title="API Playground" onclick="switchSection('api-playground')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span class="si-label">API Playground</span>
+      </div>
+      <div class="sidebar-item" data-section="api-reference" title="API Reference" onclick="switchSection('api-reference')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="si-label">API Reference</span>
+        <span class="si-badge" style="background:#FF9800;color:#fff">NEW</span>
+      </div>
+      <div class="sidebar-item" data-section="sdk" title="SDK" onclick="switchSection('sdk')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span class="si-label">SDK</span>
+      </div>
+      <div class="sidebar-item" data-section="ecosystem" title="Ecosystem" onclick="switchSection('ecosystem')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><line x1="7.5" y1="7.5" x2="10.5" y2="10.5"/><line x1="13.5" y1="10.5" x2="16.5" y2="7.5"/><line x1="7.5" y1="16.5" x2="10.5" y2="13.5"/><line x1="13.5" y1="13.5" x2="16.5" y2="16.5"/></svg>
+        <span class="si-label">Ecosystem</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 企业 #00BCD4 -->
+  <div class="sidebar-group" data-group="enterprise" style="--group-color:#00BCD4">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+      <span class="sg-text">企业</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
+    <div class="sidebar-group-items">
+      <div class="sidebar-item" data-section="enterprise" title="Enterprise" onclick="switchSection('enterprise')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span class="si-label">Enterprise</span>
+      </div>
+      <div class="sidebar-item" data-section="cases" title="Cases" onclick="switchSection('cases')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="si-label">Cases</span>
+        <span class="si-badge" style="background:#00BCD4;color:#fff">NEW</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 合规 #607D8B -->
+  <div class="sidebar-group" data-group="compliance" style="--group-color:#607D8B">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <span class="sg-text">合规</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
+    <div class="sidebar-group-items">
+      <div class="sidebar-item" data-section="compliance" title="Compliance" onclick="switchSection('compliance')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <span class="si-label">Compliance</span>
+      </div>
+      <div class="sidebar-item" data-section="privacy" title="Privacy" onclick="switchSection('privacy')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="si-label">Privacy</span>
+      </div>
+      <div class="sidebar-item" data-section="refund" title="Refund" onclick="switchSection('refund')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        <span class="si-label">Refund</span>
+      </div>
+      <div class="sidebar-item" data-section="terms" title="Terms" onclick="switchSection('terms')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="si-label">Terms</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 渠道 #FFC107 -->
+  <div class="sidebar-group" data-group="channels" style="--group-color:#FFC107">
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">
+      <span class="sg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+      <span class="sg-text">渠道</span>
+      <span class="sg-toggle">&#9662;</span>
+    </div>
+    <div class="sidebar-group-items">
+      <div class="sidebar-item" data-section="douyin" title="抖音" onclick="switchSection('douyin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        <span class="si-label">抖音</span>
+      </div>
+      <div class="sidebar-item" data-section="red" title="小红书 (RED)" onclick="switchSection('red')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span class="si-label">小红书 (RED)</span>
+      </div>
+      <div class="sidebar-item" data-section="wechat" title="微信" onclick="switchSection('wechat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="si-label">微信</span>
+      </div>
+      <div class="sidebar-item" data-section="meituan" title="美团" onclick="switchSection('meituan')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span class="si-label">美团</span>
+      </div>
+      <div class="sidebar-item" data-section="feishu" title="飞书" onclick="switchSection('feishu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="si-label">飞书</span>
       </div>
     </div>
   </div>
@@ -1271,6 +1362,202 @@ a:hover{opacity:.8}
 
   <div class="detail-panel" id="behavior-detail-panel"></div>
   <div class="detail-panel" id="eco-detail-panel" style="border-color:#0891B2"></div>
+
+<!-- BOT ==================== -->
+<div class="section" id="sec-bot">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:var(--group-color,#7C3AED)">
+      <h2>BOT <span class="sh-badge" style="background:#7C3AED;color:#fff">AI Native</span></h2>
+      <p>验证入口，不是聊天机器人 — 让用户通过对话使用 Fly 基础设施</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div class="cb-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px">
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">🔍 查询验证</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">查询Action ID/交易/URL/行为的验证状态</p><code style="font-size:12px;color:#9CA3AF">例: 这个链接可信吗？</code></div>
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">🔗 生成Action ID</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">帮用户或应用生成Action ID</p><code style="font-size:12px;color:#9CA3AF">例: 生成一个Action ID</code></div>
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">📊 数据洞察</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">提供验证数据、趋势、转化与信任洞察</p><code style="font-size:12px;color:#9CA3AF">例: 今天的验证数据如何？</code></div>
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">🛡 风险检测</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">检测异常、欺诈、可疑行为并给出风险提示</p><code style="font-size:12px;color:#9CA3AF">例: 这笔交易有风险吗？</code></div>
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">💻 开发者助手</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">提供API、SDK、集成指引、调试与技术支持</p><code style="font-size:12px;color:#9CA3AF">例: 如何集成Fly SDK？</code></div>
+      <div class="cb-card" style="border:1px solid #e5e7eb;border-radius:8px;padding:16px"><h3 style="color:#7C3AED;font-size:14px">🌐 生态连接器</h3><p style="font-size:13px;color:#6B7280;margin-top:8px">连接Skills、应用、企业系统与外部平台</p><code style="font-size:12px;color:#9CA3AF">例: 连接我的系统</code></div>
+    </div>
+    <div style="margin-top:24px;padding:16px;background:#f5f3ff;border-radius:8px;border-left:4px solid #7C3AED">
+      <h3 style="font-size:14px;color:#7C3AED">Fly Bot = Verification Copilot</h3>
+      <p style="font-size:13px;color:#6B7280;margin-top:8px">它不是聊天机器人，而是Fly验证体系的入口、执行器和助手。连接所有场景与用户，降低使用门槛，提高采用率，形成Fly Network效应的起点。</p>
+    </div>
+    <div style="margin-top:16px;padding:16px;background:#fafafa;border-radius:8px;border-left:4px solid #7C3AED">
+      <h3 style="font-size:14px">优先级</h3>
+      <p style="font-size:13px;color:#6B7280;margin-top:8px"><strong>P1</strong> Verification Bot — 查询/验证/审计<br><strong>P2</strong> Action ID Copilot — 生成/查询/解释<br><strong>P3</strong> Behavior ID Bot — AI Native Attribution<br><strong>P4</strong> SDK Assistant — 接入/集成/验证</p>
+    </div>
+  </div>
+</div>
+
+<!-- API Reference ==================== -->
+<div class="section" id="sec-api-reference">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FF9800">
+      <h2>API Reference <span class="sh-badge" style="background:#FF9800;color:#fff">开发者</span></h2>
+      <p>完整的 Fly API 文档与接口规范</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">API Reference 文档建设中</p>
+      <p style="font-size:13px;margin-top:8px">将包含完整的 API 端点、请求/响应示例、错误码和集成指南</p>
+    </div>
+  </div>
+</div>
+
+<!-- Cases ==================== -->
+<div class="section" id="sec-cases">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#00BCD4">
+      <h2>Cases <span class="sh-badge" style="background:#00BCD4;color:#fff">企业</span></h2>
+      <p>行业案例与最佳实践</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">行业案例收集中</p>
+      <p style="font-size:13px;margin-top:8px">将展示电商、内容平台、企业等场景的验证归因实践</p>
+    </div>
+  </div>
+</div>
+
+<!-- Compliance ==================== -->
+<div class="section" id="sec-compliance">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#607D8B">
+      <h2>Compliance <span class="sh-badge" style="background:#607D8B;color:#fff">合规</span></h2>
+      <p>Fly 合规中心 — 合规政策与标准</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">合规中心建设中</p>
+      <p style="font-size:13px;margin-top:8px">将包含合规认证、数据保护标准和监管合规信息</p>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy ==================== -->
+<div class="section" id="sec-privacy">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#607D8B">
+      <h2>Privacy <span class="sh-badge" style="background:#607D8B;color:#fff">合规</span></h2>
+      <p>隐私政策</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">隐私政策文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- Refund ==================== -->
+<div class="section" id="sec-refund">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#607D8B">
+      <h2>Refund <span class="sh-badge" style="background:#607D8B;color:#fff">合规</span></h2>
+      <p>退款政策</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">退款政策文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- Terms ==================== -->
+<div class="section" id="sec-terms">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#607D8B">
+      <h2>Terms <span class="sh-badge" style="background:#607D8B;color:#fff">合规</span></h2>
+      <p>服务条款</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">服务条款文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- Douyin ==================== -->
+<div class="section" id="sec-douyin">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FFC107">
+      <h2>抖音 <span class="sh-badge" style="background:#FFC107;color:#333">渠道</span></h2>
+      <p>抖音平台验证归因接入</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">抖音渠道接入文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- RED ==================== -->
+<div class="section" id="sec-red">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FFC107">
+      <h2>小红书 (RED) <span class="sh-badge" style="background:#FFC107;color:#333">渠道</span></h2>
+      <p>小红书平台验证归因接入</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">小红书渠道接入文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- WeChat ==================== -->
+<div class="section" id="sec-wechat">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FFC107">
+      <h2>微信 <span class="sh-badge" style="background:#FFC107;color:#333">渠道</span></h2>
+      <p>微信平台验证归因接入</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">微信渠道接入文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- Meituan ==================== -->
+<div class="section" id="sec-meituan">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FFC107">
+      <h2>美团 <span class="sh-badge" style="background:#FFC107;color:#333">渠道</span></h2>
+      <p>美团平台验证归因接入</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">美团渠道接入文档建设中</p>
+    </div>
+  </div>
+</div>
+
+<!-- Feishu ==================== -->
+<div class="section" id="sec-feishu">
+  <div class="section-header">
+    <div class="sh-left" style="border-left-color:#FFC107">
+      <h2>飞书 <span class="sh-badge" style="background:#FFC107;color:#333">渠道</span></h2>
+      <p>飞书平台验证归因接入</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <div style="padding:40px;text-align:center;color:#9CA3AF">
+      <p style="font-size:16px">飞书渠道接入文档建设中</p>
+    </div>
+  </div>
+</div>
 </main>
 </div>
 
@@ -1278,11 +1565,15 @@ a:hover{opacity:.8}
 /* === Section switching === */
 function switchSection(id){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
-  document.querySelectorAll('.sidebar-item').forEach(function(i){i.classList.remove('active')});
+  document.querySelectorAll('.sidebar-item').forEach(function(i){i.classList.remove('active');i.style.color=''});
   var sec=document.getElementById('sec-'+id);
   if(sec) sec.classList.add('active');
   var si=document.querySelector('.sidebar-item[data-section="'+id+'"]');
-  if(si) si.classList.add('active');
+  if(si){
+    si.classList.add('active');
+    var group=si.closest('.sidebar-group');
+    if(group) si.style.color=group.style.getPropertyValue('--group-color');
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1618,31 +1909,18 @@ function toggleSidebar(){
 
 // Collapsible sidebar groups
 function toggleGroup(label){
-  const toggle=label.querySelector('.sg-toggle');
-  const items=label.nextElementSibling;
-  const sidebar=document.getElementById('sidebar');
-  const isSidebarCollapsed=sidebar.classList.contains('collapsed');
-  
+  var toggle=label.querySelector('.sg-toggle');
+  var items=label.nextElementSibling;
+  var sidebar=document.getElementById('sidebar');
+  var isSidebarCollapsed=sidebar.classList.contains('collapsed');
   if(isSidebarCollapsed){
-    // 折叠态：手风琴模式，点击展开当前组，关闭其他组
-    const isThisOpen=!items.classList.contains('collapsed');
-    // 关闭所有组
-    document.querySelectorAll('.sidebar-group-items').forEach(function(el){
-      el.classList.add('collapsed');
-    });
-    if(!isThisOpen){
-      items.classList.remove('collapsed');
-    }
+    var isThisOpen=!items.classList.contains('collapsed');
+    document.querySelectorAll('.sidebar-group-items').forEach(function(el){el.classList.add('collapsed')});
+    if(!isThisOpen) items.classList.remove('collapsed');
   }else{
-    // 展开态：正常切换
-    const isCollapsed=items.classList.contains('collapsed');
-    if(isCollapsed){
-      items.classList.remove('collapsed');
-      if(toggle)toggle.classList.remove('collapsed');
-    }else{
-      items.classList.add('collapsed');
-      if(toggle)toggle.classList.add('collapsed');
-    }
+    var isCollapsed=items.classList.contains('collapsed');
+    if(isCollapsed){items.classList.remove('collapsed');if(toggle)toggle.classList.remove('collapsed')}
+    else{items.classList.add('collapsed');if(toggle)toggle.classList.add('collapsed')}
   }
 }
 // Auto-expand the group containing the active item, collapse others
