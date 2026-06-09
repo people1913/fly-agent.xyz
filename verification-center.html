@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verification Center · Fly 归因验证</title>
-<meta name="description" content="Fly Verification Center — AI Agent 信任与归因基础设施的核心验证体系。Signal Flow, Action ID 生命周期, Attribution 信号流, 4-Gate Verification。">
+<title>Verification Center · Fly AI Attribution Infrastructure</title>
+<meta name="description" content="Fly Verification Center — Fly — AI Attribution Verification Infrastructure. Action ID, Behavior ID, Attribution, Verification Chain, Trust Layer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -188,54 +188,73 @@ a:hover{opacity:.8}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Signal Flow
     </div>
-  </div>
-  <div class="sidebar-group">
-    <div class="sidebar-group-label">产品知识图谱</div>
     <div class="sidebar-item" data-section="action-id" onclick="switchSection('action-id')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Action ID
       <span class="si-badge">状态机</span>
     </div>
+    <div class="sidebar-item" data-section="behavior-id" onclick="switchSection('behavior-id')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Behavior ID
+      <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
+    </div>
     <div class="sidebar-item" data-section="attribution" onclick="switchSection('attribution')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
       Attribution
-      <span class="si-badge">信号流</span>
     </div>
-  </div>
-  <div class="sidebar-group">
-    <div class="sidebar-group-label">验证体系</div>
     <div class="sidebar-item" data-section="verification" onclick="switchSection('verification')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Verification
     </div>
     <div class="sidebar-item" data-section="audit" onclick="switchSection('audit')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Audit Chain
     </div>
     <div class="sidebar-item" data-section="trust" onclick="switchSection('trust')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       Trust Layer
     </div>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">架构</div>
     <div class="sidebar-item" data-section="security" onclick="switchSection('security')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="11" rx="2"/><path d="M7 10V7a5 5 0 0110 0v3"/><circle cx="12" cy="16" r="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Security Model
     </div>
-  </div>
-  <div class="sidebar-group">
-    <div class="sidebar-group-label">企业</div>
     <div class="sidebar-item" data-section="enterprise" onclick="switchSection('enterprise')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
       Enterprise
     </div>
   </div>
+
   <div class="sidebar-group">
-    <div class="sidebar-group-label">交互</div>
-    <div class="sidebar-item" data-section="api-playground" onclick="switchSection('api-playground')">
+    <div class="sidebar-group-label">开发者</div>
+    <div class="sidebar-item" data-section="sdk" onclick="switchSection('sdk')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      SDK
+      <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
+    </div>
+    <div class="sidebar-item" data-section="api-playground" onclick="switchSection('api-playground')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
       API Playground
-      <span class="si-badge">Demo</span>
     </div>
   </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">生态</div>
+    <div class="sidebar-item" data-section="ai-skills" onclick="switchSection('ai-skills')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      AI Skills
+      <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
+    </div>
+    <div class="sidebar-item" data-section="ecosystem" onclick="switchSection('ecosystem')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><line x1="7.5" y1="7.5" x2="10.5" y2="10.5"/><line x1="13.5" y1="10.5" x2="16.5" y2="7.5"/><line x1="7.5" y1="16.5" x2="10.5" y2="13.5"/><line x1="13.5" y1="13.5" x2="16.5" y2="16.5"/></svg>
+      Ecosystem
+      <span class="si-badge" style="background:#7C3AED;color:#DDD6FE">NEW</span>
+    </div>
+  </div>
+
   <div class="sidebar-group">
     <div class="sidebar-group-label">帮助</div>
     <div class="sidebar-item" data-section="faq" onclick="switchSection('faq')">
@@ -685,6 +704,479 @@ a:hover{opacity:.8}
 </div>
 
 <!-- ==================== FAQ ==================== -->
+
+<div class="section" id="sec-behavior-id">
+  <div class="section-header">
+    <div class="section-tag">AI Native Attribution</div>
+    <div class="section-title">Behavior ID</div>
+    <div class="section-desc">追踪 AI 替用户做了什么——Fly 与传统归因平台的分界线</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>核心认知升级：</strong>Action ID 追踪"用户发生了什么"，Behavior ID 追踪"AI 替用户做了什么"。在 AI Native 场景下，用户可能根本不点击链接——AI Skill / AI Agent / AI Workflow 直接替用户完成决策和转化，但归因依然存在。
+  </div>
+
+  <div class="content-block">
+    <h2>为什么需要 Behavior ID</h2>
+    <p>传统归因模型基于 Link Attribution：</p>
+    <div style="background:var(--bg3);border-radius:8px;padding:14px 18px;margin:10px 0;font-family:var(--mono);font-size:13px;color:var(--text2);line-height:1.8">
+      渠道来源 → 点击 → 生成 Action ID → 验证 → 结算
+    </div>
+    <p>AI Native 场景下，归因路径变成了：</p>
+    <div style="background:var(--bg3);border-radius:8px;padding:14px 18px;margin:10px 0;font-family:var(--mono);font-size:13px;color:var(--text2);line-height:1.8">
+      AI 回答 → AI Skill → AI Agent → AI Workflow → 成交
+    </div>
+    <p>没有跳转。没有链接。没有二维码。但归因依然存在——这就是 Behavior ID 要解决的问题。</p>
+  </div>
+
+  <div class="content-block">
+    <h2>Behavior ID 生命周期</h2>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 840 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:840px">
+        <!-- Main flow -->
+        <g class="node-group" onclick="showBehaviorDetail('created')">
+          <rect class="node-rect" x="10" y="60" width="130" height="60" fill="#2563EB" stroke="#1D4ED8"/>
+          <text class="label-text" x="75" y="85">CREATED</text>
+          <text class="sub-text" x="75" y="102">AI 行为触发</text>
+        </g>
+        <path class="arrow-line" d="M140 90 L170 90" stroke="#2563EB" marker-end="url(#bArrow)"/>
+        <g class="node-group" onclick="showBehaviorDetail('observed')">
+          <rect class="node-rect" x="170" y="60" width="130" height="60" fill="#059669" stroke="#047857"/>
+          <text class="label-text" x="235" y="85">OBSERVED</text>
+          <text class="sub-text" x="235" y="102">信号捕获</text>
+        </g>
+        <path class="arrow-line" d="M300 90 L330 90" stroke="#059669" marker-end="url(#bArrow)"/>
+        <g class="node-group" onclick="showBehaviorDetail('executed')">
+          <rect class="node-rect" x="330" y="60" width="130" height="60" fill="#7C3AED" stroke="#6D28D9"/>
+          <text class="label-text" x="395" y="85">EXECUTED</text>
+          <text class="sub-text" x="395" y="102">行为执行</text>
+        </g>
+        <path class="arrow-line" d="M460 90 L490 90" stroke="#7C3AED" marker-end="url(#bArrow)"/>
+        <g class="node-group" onclick="showBehaviorDetail('verified')">
+          <rect class="node-rect" x="490" y="60" width="130" height="60" fill="#0891B2" stroke="#0E7490"/>
+          <text class="label-text" x="555" y="85">VERIFIED</text>
+          <text class="sub-text" x="555" y="102">行为验证</text>
+        </g>
+        <path class="arrow-line" d="M620 90 L650 90" stroke="#0891B2" marker-end="url(#bArrow)"/>
+        <g class="node-group" onclick="showBehaviorDetail('settled')">
+          <rect class="node-rect" x="650" y="60" width="130" height="60" fill="#DC2626" stroke="#B91C1C"/>
+          <text class="label-text" x="715" y="85">SETTLED</text>
+          <text class="sub-text" x="715" y="102">结算确认</text>
+        </g>
+        <!-- Exception branches -->
+        <g class="node-group" onclick="showBehaviorDetail('expired')">
+          <rect class="node-rect" x="120" y="155" width="100" height="40" fill="#64748B" stroke="#475569" rx="6"/>
+          <text class="label-text" x="170" y="178" style="font-size:10px">EXPIRED</text>
+        </g>
+        <path class="arrow-line" d="M75 120 L75 140 L120 175" stroke="#64748B" stroke-dasharray="4 3"/>
+        <g class="node-group" onclick="showBehaviorDetail('anomaly')">
+          <rect class="node-rect" x="280" y="155" width="100" height="40" fill="#D97706" stroke="#B45309" rx="6"/>
+          <text class="label-text" x="330" y="178" style="font-size:10px">ANOMALY</text>
+        </g>
+        <path class="arrow-line" d="M395 120 L395 140 L380 155" stroke="#D97706" stroke-dasharray="4 3"/>
+        <g class="node-group" onclick="showBehaviorDetail('disputed')">
+          <rect class="node-rect" x="440" y="155" width="100" height="40" fill="#D97706" stroke="#B45309" rx="6"/>
+          <text class="label-text" x="490" y="178" style="font-size:10px">DISPUTED</text>
+        </g>
+        <path class="arrow-line" d="M555 120 L555 140 L540 155" stroke="#D97706" stroke-dasharray="4 3"/>
+        <g class="node-group" onclick="showBehaviorDetail('rejected')">
+          <rect class="node-rect" x="600" y="155" width="100" height="40" fill="#991B1B" stroke="#7F1D1D" rx="6"/>
+          <text class="label-text" x="650" y="178" style="font-size:10px">REJECTED</text>
+        </g>
+        <path class="arrow-line" d="M715 120 L715 140 L700 155" stroke="#991B1B" stroke-dasharray="4 3"/>
+        <defs>
+          <marker id="bArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94A3B8"/></marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>与 Action ID 的关系</h2>
+    <p>Behavior ID 不替代 Action ID，而是叠加层。一次 AI 推荐（1个 Action ID）可能产生多个 AI 行为：</p>
+    <div style="background:var(--bg3);border-radius:8px;padding:16px 20px;margin:10px 0;font-family:var(--mono);font-size:13px;color:var(--text2);line-height:2">
+      Action ID <span style="color:#2563EB;font-weight:700">act_1717920000_a3f8b2c1</span><br>
+      ├── Behavior ID <span style="color:#7C3AED;font-weight:700">beh_1717920001_x7k2m9p0</span>  ← AI生成方案<br>
+      ├── Behavior ID <span style="color:#7C3AED;font-weight:700">beh_1717920005_q3w8n1r4</span>  ← AI推荐选择<br>
+      ├── Behavior ID <span style="color:#7C3AED;font-weight:700">beh_1717920012_t5v6j8h2</span>  ← AI自动留资<br>
+      └── Behavior ID <span style="color:#7C3AED;font-weight:700">beh_1717920020_b9y4l6f1</span>  ← AI促成成交
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>ID 格式规格</h2>
+    <p>Behavior ID 遵循与 Action ID 对称的设计原则：</p>
+    <ul>
+      <li><code>beh_{timestamp}_{random}</code> — 前缀 <code>beh_</code> 区分于 Action ID 的 <code>act_</code></li>
+      <li>示例：<code>beh_1717920001_x7k2m9p0</code></li>
+      <li>关联字段：<code>action_id</code> 指向父级 Action ID</li>
+      <li>类型字段：<code>behavior_type</code> 标识行为类型（skill_invoke / agent_decision / workflow_step / auto_convert）</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h2>小红书 RED Skill 示例</h2>
+    <p>以小红书 AI Skill 场景为例，展示 Behavior ID 如何在无链接环境下完成归因：</p>
+    <div style="background:var(--bg3);border-radius:8px;padding:16px 20px;margin:10px 0;font-family:var(--mono);font-size:12px;color:var(--text2);line-height:2">
+      用户浏览笔记<br>
+      ↓<br>
+      RED Skill 触发 → <span style="color:#7C3AED;font-weight:700">Behavior ID (CREATED)</span><br>
+      ↓<br>
+      AI 生成方案 → <span style="color:#059669;font-weight:700">Behavior ID (OBSERVED)</span><br>
+      ↓<br>
+      AI 推荐留资 → <span style="color:#7C3AED;font-weight:700">Behavior ID (EXECUTED)</span><br>
+      ↓<br>
+      Fly SDK 自动验证 → <span style="color:#0891B2;font-weight:700">Behavior ID (VERIFIED)</span><br>
+      ↓<br>
+      成交结算 → <span style="color:#DC2626;font-weight:700">Behavior ID (SETTLED)</span><br>
+      <br>
+      <span style="color:var(--tan-light);font-style:italic">没有跳转。没有链接。没有二维码。但归因完整。</span>
+    </div>
+  </div>
+
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('action-id')">→ Action ID 状态机</a>
+    <a href="javascript:void(0)" onclick="switchSection('attribution')">→ Attribution 信号流</a>
+    <a href="javascript:void(0)" onclick="switchSection('sdk')">→ SDK 接入</a>
+  </div>
+</div>
+
+<div class="section" id="sec-sdk">
+  <div class="section-header">
+    <div class="section-tag">Developer</div>
+    <div class="section-title">SDK</div>
+    <div class="section-desc">Fly 不是应用，是嵌入层——类似 Stripe / Cloudflare / Twillery 的基础设施模式</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Invisible Infrastructure：</strong>Fly SDK 嵌入在你的产品中，用户感知不到。在后台完成生成、验证、归因、结算。类似 Stripe 处理支付——用户看到的是商品，不是支付网关。
+  </div>
+
+  <div class="content-block">
+    <h2>SDK 全家桶</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#2563EB"></div>
+        <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:6px">Web SDK</div>
+        <div style="font-size:12px;color:var(--tan);line-height:1.6">浏览器端归因追踪。自动采集 Action ID、页面行为、渠道来源参数。支持 SPA / SSR。</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;background:var(--bg3);padding:8px;border-radius:4px;color:var(--blue)">npm install @fly/sdk-web</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#059669"></div>
+        <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:6px">Node SDK</div>
+        <div style="font-size:12px;color:var(--tan);line-height:1.6">服务端归因验证。签名生成、哈希链维护、Verification Chain 构建。</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;background:var(--bg3);padding:8px;border-radius:4px;color:var(--blue)">npm install @fly/sdk-node</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#7C3AED"></div>
+        <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:6px">Python SDK</div>
+        <div style="font-size:12px;color:var(--tan);line-height:1.6">数据科学 & 后端集成。Pandas 友好，支持批量归因查询和验证。</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;background:var(--bg3);padding:8px;border-radius:4px;color:var(--blue)">pip install fly-sdk</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#0891B2"></div>
+        <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:6px">Cloudflare SDK</div>
+        <div style="font-size:12px;color:var(--tan);line-height:1.6">Edge Runtime 优先。在 Worker 中直接归因验证，零冷启动延迟。</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;background:var(--bg3);padding:8px;border-radius:4px;color:var(--blue)">npm install @fly/sdk-cf</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden;grid-column:1/-1">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#DC2626"></div>
+        <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:6px">Agent SDK <span class="badge badge-green" style="margin-left:8px">核心</span></div>
+        <div style="font-size:12px;color:var(--tan);line-height:1.6">AI Agent 专用。在 Skill / Agent / Workflow 中嵌入，自动生成 Behavior ID 并完成归因链。这是 Fly 从 Link Attribution 走向 AI Native Attribution 的关键接入层。</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;background:var(--bg3);padding:8px;border-radius:4px;color:var(--blue)">npm install @fly/sdk-agent</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>接入示例：小红书 RED Skill</h2>
+    <p>SDK 嵌入 AI Skill，用户无感知，后台完成归因：</p>
+    <div style="background:#0F172A;border-radius:8px;padding:16px 20px;margin:10px 0;font-family:var(--mono);font-size:12px;color:#E2E8F0;line-height:1.8;overflow-x:auto">
+      <span style="color:#7C3AED">import</span> { FlyAgent } <span style="color:#7C3AED">from</span> <span style="color:#4ADE80">'@fly/sdk-agent'</span>;<br><br>
+      <span style="color:#7C3AED">const</span> fly = <span style="color:#7C3AED">new</span> FlyAgent({<br>
+      &nbsp;&nbsp;apiKey: <span style="color:#4ADE80">'fly_live_***'</span>,<br>
+      &nbsp;&nbsp;channel: <span style="color:#4ADE80">'xiaohongshu_skill'</span><br>
+      });<br><br>
+      <span style="color:#64748B">// Skill 触发时自动创建 Behavior ID</span><br>
+      <span style="color:#7C3AED">const</span> bId = <span style="color:#7C3AED">await</span> fly.behavior.create({<br>
+      &nbsp;&nbsp;actionId: <span style="color:#4ADE80">'act_1717920000_a3f8b2c1'</span>,<br>
+      &nbsp;&nbsp;type: <span style="color:#4ADE80">'skill_invoke'</span>,<br>
+      &nbsp;&nbsp;metadata: { skill: <span style="color:#4ADE80">'product_recommend'</span> }<br>
+      });<br><br>
+      <span style="color:#64748B">// AI 完成决策后自动推进状态</span><br>
+      <span style="color:#7C3AED">await</span> fly.behavior.execute(bId.id, {<br>
+      &nbsp;&nbsp;decision: <span style="color:#4ADE80">'recommend_plan_b'</span>,<br>
+      &nbsp;&nbsp;confidence: <span style="color:#FBBF24">0.92</span><br>
+      });<br><br>
+      <span style="color:#64748B">// 归因自动完成，用户完全无感知</span>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>基础设施类比</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:12px 0">
+      <div style="text-align:center;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-size:20px;font-weight:800;color:#635BFF;font-family:var(--sans)">Stripe</div>
+        <div style="font-size:11px;color:var(--tan);margin-top:4px">支付基础设施</div>
+        <div style="font-size:10px;color:var(--tan-light);margin-top:2px">用户感知不到</div>
+      </div>
+      <div style="text-align:center;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-size:20px;font-weight:800;color:#F6821F;font-family:var(--sans)">CF</div>
+        <div style="font-size:11px;color:var(--tan);margin-top:4px">网络基础设施</div>
+        <div style="font-size:10px;color:var(--tan-light);margin-top:2px">用户感知不到</div>
+      </div>
+      <div style="text-align:center;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-size:20px;font-weight:800;color:#F22F46;font-family:var(--sans)">Twilio</div>
+        <div style="font-size:11px;color:var(--tan);margin-top:4px">通信基础设施</div>
+        <div style="font-size:10px;color:var(--tan-light);margin-top:2px">用户感知不到</div>
+      </div>
+      <div style="text-align:center;padding:14px;background:var(--bg2);border-radius:8px;border:2px solid var(--blue)">
+        <div style="font-size:20px;font-weight:800;color:var(--blue);font-family:var(--sans)">Fly</div>
+        <div style="font-size:11px;color:var(--blue);margin-top:4px;font-weight:600">归因验证基础设施</div>
+        <div style="font-size:10px;color:var(--blue);margin-top:2px">用户感知不到</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('behavior-id')">→ Behavior ID</a>
+    <a href="javascript:void(0)" onclick="switchSection('ai-skills')">→ AI Skills</a>
+    <a href="javascript:void(0)" onclick="switchSection('api-playground')">→ API Playground</a>
+  </div>
+</div>
+
+<div class="section" id="sec-ai-skills">
+  <div class="section-header">
+    <div class="section-tag">Ecosystem</div>
+    <div class="section-title">AI Skills</div>
+    <div class="section-desc">从链接入口变成 AI 行为入口——Fly 验证每一个 AI 触发的归因</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>范式切换：</strong>传统归因验证的是"用户点击了什么链接"。AI 时代，用户不再点击链接——AI Skill 直接在笔记/对话/工作流中完成推荐、决策和转化。Fly 的角色从"验证链接"变成"验证 AI 行为"。
+  </div>
+
+  <div class="content-block">
+    <h2>支持的 AI Skill 平台</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#10A37F;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px">G</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">ChatGPT Skill</div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">GPTs 生态内嵌 Fly Agent SDK，每次 AI 推荐自动生成 Behavior ID</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#D97706;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px">C</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">Claude Skill</div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">Anthropic MCP 协议集成，工具调用即归因触发</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#FE2C55;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px">RED</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">RED Skill <span class="badge badge-green" style="margin-left:6px">已上线</span></div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">小红书 AI Skill，创作者嵌入笔记，用户无需跳转即可体验和留资</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#4285F4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px">G</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">Gemini Extension</div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">Google AI 生态扩展，搜索推荐归因追踪</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#2563EB;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px">Dify</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">Dify Plugin</div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">LLM 应用开发平台集成，Workflow 节点即归因节点</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start">
+        <div style="min-width:40px;height:40px;border-radius:8px;background:#0F172A;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px">Coze</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--dark)">Coze / 扣子 Plugin</div>
+          <div style="font-size:12px;color:var(--tan);margin-top:4px;line-height:1.5">扣子 Bot 生态，Agent 工作流归因追踪</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>对接方式：SDK 嵌入，不是跳转</h2>
+    <p>很多人想错了——不是引导用户跳网页，而是在 Skill 内部完成归因：</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0">
+      <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px">
+        <div style="font-size:12px;font-weight:700;color:#991B1B;margin-bottom:8px">❌ 错误方式</div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:1.8">
+          小红书 → 跳网页 → Fly<br>
+          <span style="color:#991B1B">用户流失，归因断裂</span>
+        </div>
+      </div>
+      <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 18px">
+        <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:8px">✅ Fly 方式</div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:1.8">
+          小红书 Skill → Fly SDK → Action ID → Verification<br>
+          <span style="color:#166534">用户无感知，归因完整</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>信号入口，不是产品</h2>
+    <p>所有 AI Skill 平台都只是 Fly 的"信号入口"。Fly 的核心资产始终是：</p>
+    <div style="background:var(--bg3);border-radius:8px;padding:16px 20px;margin:10px 0;text-align:center">
+      <div style="font-family:var(--mono);font-size:16px;font-weight:800;color:var(--blue);letter-spacing:1px">
+        Action ID + Behavior ID + Verification Chain + Trust Layer
+      </div>
+      <div style="font-size:12px;color:var(--tan);margin-top:6px">这四层组合才是 Fly 与所有平台的真正差距</div>
+    </div>
+  </div>
+
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('sdk')">→ SDK 接入</a>
+    <a href="javascript:void(0)" onclick="switchSection('ecosystem')">→ Ecosystem</a>
+    <a href="javascript:void(0)" onclick="switchSection('behavior-id')">→ Behavior ID</a>
+  </div>
+</div>
+
+<div class="section" id="sec-ecosystem">
+  <div class="section-header">
+    <div class="section-tag">Ecosystem</div>
+    <div class="section-title">Ecosystem</div>
+    <div class="section-desc">Fly 不属于任何一个平台，Fly 在所有平台之间</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>跨平台归因基础设施：</strong>无论用户通过抖音、小红书、ChatGPT 还是 Claude 触发行为，Fly 都能在后台完成归因验证。平台是入口，Fly 是管道。
+  </div>
+
+  <div class="content-block">
+    <h2>信号源全景</h2>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 800 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px">
+        <!-- Center: Fly -->
+        <circle cx="400" cy="220" r="60" fill="#2563EB" stroke="#1D4ED8" stroke-width="3"/>
+        <text x="400" y="215" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="800" font-family="Inter,sans-serif">Fly</text>
+        <text x="400" y="238" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.7)" font-size="9" font-family="Inter,sans-serif">Attribution Infra</text>
+
+        <!-- AI Layer (top) -->
+        <text x="400" y="30" text-anchor="middle" fill="#7C3AED" font-size="10" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.5">AI</text>
+        <g onclick="showEcoDetail('chatgpt')">
+          <rect x="160" y="42" width="100" height="38" rx="8" fill="#10A37F" stroke="#0D8C6D" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="210" y="65" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">ChatGPT</text>
+        </g>
+        <line x1="210" y1="80" x2="380" y2="168" stroke="#10A37F" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('claude')">
+          <rect x="350" y="42" width="100" height="38" rx="8" fill="#D97706" stroke="#B45309" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="400" y="65" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">Claude</text>
+        </g>
+        <line x1="400" y1="80" x2="400" y2="160" stroke="#D97706" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('gemini')">
+          <rect x="540" y="42" width="100" height="38" rx="8" fill="#4285F4" stroke="#3367D6" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="590" y="65" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">Gemini</text>
+        </g>
+        <line x1="590" y1="80" x2="420" y2="168" stroke="#4285F4" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Agent Layer (right) -->
+        <text x="760" y="155" text-anchor="middle" fill="#0891B2" font-size="10" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.5">AGENT</text>
+        <g onclick="showEcoDetail('dify')">
+          <rect x="680" y="168" width="100" height="38" rx="8" fill="#2563EB" stroke="#1D4ED8" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="730" y="191" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">Dify</text>
+        </g>
+        <line x1="680" y1="187" x2="460" y2="218" stroke="#2563EB" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('coze')">
+          <rect x="680" y="218" width="100" height="38" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="730" y="241" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">Coze</text>
+        </g>
+        <line x1="680" y1="237" x2="460" y2="228" stroke="#0F172A" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('langgraph')">
+          <rect x="680" y="268" width="100" height="38" rx="8" fill="#059669" stroke="#047857" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="730" y="291" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="11" font-weight="600" font-family="Inter,sans-serif">LangGraph</text>
+        </g>
+        <line x1="680" y1="287" x2="460" y2="238" stroke="#059669" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Channel Layer (bottom) -->
+        <text x="400" y="370" text-anchor="middle" fill="#DC2626" font-size="10" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.5">CHANNEL</text>
+        <g onclick="showEcoDetail('douyin')">
+          <rect x="80" y="330" width="80" height="34" rx="8" fill="#000" stroke="#333" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="120" y="351" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="600" font-family="Inter,sans-serif">抖音</text>
+        </g>
+        <line x1="120" y1="330" x2="360" y2="272" stroke="#333" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('xiaohongshu')">
+          <rect x="180" y="330" width="80" height="34" rx="8" fill="#FE2C55" stroke="#D4234A" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="220" y="351" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="600" font-family="Inter,sans-serif">小红书</text>
+        </g>
+        <line x1="220" y1="330" x2="380" y2="272" stroke="#FE2C55" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('wechat')">
+          <rect x="280" y="330" width="80" height="34" rx="8" fill="#07C160" stroke="#06AD56" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="320" y="351" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="600" font-family="Inter,sans-serif">微信</text>
+        </g>
+        <line x1="320" y1="330" x2="395" y2="272" stroke="#07C160" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('meituan')">
+          <rect x="440" y="330" width="80" height="34" rx="8" fill="#FFD100" stroke="#E6BC00" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="480" y="351" text-anchor="middle" dominant-baseline="central" fill="#333" font-size="10" font-weight="600" font-family="Inter,sans-serif">美团</text>
+        </g>
+        <line x1="480" y1="330" x2="410" y2="272" stroke="#FFD100" stroke-width="1" stroke-dasharray="4 3"/>
+        <g onclick="showEcoDetail('feishu')">
+          <rect x="540" y="330" width="80" height="34" rx="8" fill="#3370FF" stroke="#2960E6" stroke-width="1.5" style="cursor:pointer"/>
+          <text x="580" y="351" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="600" font-family="Inter,sans-serif">飞书</text>
+        </g>
+        <line x1="580" y1="330" x2="430" y2="272" stroke="#3370FF" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Layer labels with arrows -->
+        <text x="400" y="395" text-anchor="middle" fill="#94A3B8" font-size="9" font-style="italic" font-family="Inter,sans-serif">所有信号源 → Fly 归因验证基础设施 → Action ID + Behavior ID + Verification + Trust</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>三层信号源</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid #7C3AED">
+        <div style="font-weight:700;font-size:14px;color:#7C3AED;margin-bottom:6px">AI 模型</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          ChatGPT · Claude · Gemini<br>
+          <span style="color:var(--tan)">对话式推荐归因</span>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid #0891B2">
+        <div style="font-weight:700;font-size:14px;color:#0891B2;margin-bottom:6px">AI Agent</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          Dify · Coze · LangGraph<br>
+          <span style="color:var(--tan)">工作流行为归因</span>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid #DC2626">
+        <div style="font-weight:700;font-size:14px;color:#DC2626;margin-bottom:6px">渠道</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          抖音 · 小红书 · 微信 · 飞书 · 美团<br>
+          <span style="color:var(--tan)">传统点击归因</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h2>Fly 的位置</h2>
+    <p>Fly 不属于任何一个平台，Fly 在所有平台之间：</p>
+    <ul>
+      <li><strong>不是渠道</strong>——Fly 验证渠道，但不产生流量</li>
+      <li><strong>不是 Agent 平台</strong>——Fly 验证 Agent 行为，但不构建 Agent</li>
+      <li><strong>不是 SaaS</strong>——Fly 是嵌入层，不是独立应用</li>
+      <li><strong>是基础设施</strong>——类似 Stripe 处理支付、Cloudflare 处理网络、Twilio 处理通信，Fly 处理归因验证</li>
+    </ul>
+  </div>
+
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('ai-skills')">→ AI Skills</a>
+    <a href="javascript:void(0)" onclick="switchSection('sdk')">→ SDK</a>
+    <a href="javascript:void(0)" onclick="switchSection('attribution')">→ Attribution</a>
+  </div>
+</div>
 <div class="section" id="sec-faq">
   <div class="section-header">
     <div class="section-tag">Help</div>
@@ -707,6 +1199,9 @@ a:hover{opacity:.8}
   </div>
 </div>
 
+
+  <div class="detail-panel" id="behavior-detail-panel"></div>
+  <div class="detail-panel" id="eco-detail-panel" style="border-color:#0891B2"></div>
 </main>
 </div>
 
@@ -947,6 +1442,95 @@ function syntaxHighlight(json){
   var h=location.hash.replace('#','');
   if(h&&document.getElementById('sec-'+h)){switchSection(h);}
 })();
+
+/* === Behavior ID detail panel === */
+function showBehaviorDetail(state){
+  var info={
+    created:{color:'#2563EB',title:'CREATED · AI行为触发',sub:'归因链AI起点',
+      rules:[
+        {color:'#2563EB',text:'触发时机：AI Skill/Agent/Workflow 执行时签发 Behavior ID'},
+        {color:'#2563EB',text:'格式规则：beh_{timestamp}_{random}，例如 beh_1717920001_x7k2m9p0'},
+        {color:'#2563EB',text:'关联字段：必须绑定父级 Action ID（action_id 字段）'},
+        {color:'#2563EB',text:'类型字段：behavior_type 标识行为类型（skill_invoke / agent_decision / workflow_step / auto_convert）'},
+        {color:'#94A3B8',text:'超时机制：5分钟未推进自动进入 EXPIRED 终态'}
+      ]},
+    observed:{color:'#059669',title:'OBSERVED · 信号捕获',sub:'AI行为信号确认',
+      rules:[
+        {color:'#059669',text:'触发条件：AI 行为信号被 Fly SDK 捕获确认'},
+        {color:'#059669',text:'信号校验：验证行为来源（哪个 Skill/Agent 触发）'},
+        {color:'#059669',text:'上下文绑定：记录 AI 决策上下文（prompt摘要、模型版本、confidence）'},
+        {color:'#059669',text:'哈希追加：行为数据 + 前一哈希 → 新哈希节点'}
+      ]},
+    executed:{color:'#7C3AED',title:'EXECUTED · 行为执行',sub:'AI行为完成',
+      rules:[
+        {color:'#7C3AED',text:'触发条件：AI 行为实际执行完成（如生成方案、自动留资、推荐选择）'},
+        {color:'#7C3AED',text:'因果验证：确认执行由 AI 决策触发，非人为伪造'},
+        {color:'#7C3AED',text:'结果记录：记录 AI 执行结果和输出内容摘要'},
+        {color:'#7C3AED',text:'时间窗口：执行必须在创建后5分钟内完成'}
+      ]},
+    verified:{color:'#0891B2',title:'VERIFIED · 行为验证',sub:'归因链验证通过',
+      rules:[
+        {color:'#0891B2',text:'4-Gate 验证：来源 → 因果 → 完整性 → 时间，与 Action ID 同标准'},
+        {color:'#0891B2',text:'AI 特有校验：模型输出一致性检查、行为合理性评估'},
+        {color:'#0891B2',text:'反欺诈检测：AI 行为是否被人为注入或篡改'},
+        {color:'#0891B2',text:'验证链追加：Verification Proof 写入哈希链'}
+      ]},
+    settled:{color:'#DC2626',title:'SETTLED · 结算确认',sub:'归因结算完成',
+      rules:[
+        {color:'#DC2626',text:'结算条件：VERIFIED 状态 + 业务确认（成交/转化/注册）'},
+        {color:'#DC2626',text:'信任证明：生成 Trust Proof，包含完整行为链摘要'},
+        {color:'#DC2626',text:'结算锁定：状态不可逆，哈希链终态锁定'},
+        {color:'#DC2626',text:'时效：结算必须在验证后24小时内完成'}
+      ]},
+    expired:{color:'#64748B',title:'EXPIRED · 超时',sub:'行为未在时间窗口内推进',
+      rules:[{color:'#64748B',text:'5分钟未从 CREATED 推进到 OBSERVED → 自动过期'},{color:'#64748B',text:'终态不可逆'}]},
+    anomaly:{color:'#D97706',title:'ANOMALY · 异常',sub:'AI行为异常检测',
+      rules:[{color:'#D97706',text:'检测条件：行为频率异常、模式异常、与历史偏差过大'},{color:'#D97706',text:'人工复核：ANOMALY 状态需人工确认后才能继续流转'}]},
+    disputed:{color:'#D97706',title:'DISPUTED · 争议',sub:'归因结果被质疑',
+      rules:[{color:'#D97706',text:'触发：合作方对归因结果提出异议'},{color:'#D97706',text:'仲裁流程：提交 Verification Chain 完整证据进行仲裁'}]},
+    rejected:{color:'#991B1B',title:'REJECTED · 拒绝',sub:'验证不通过',
+      rules:[{color:'#991B1B',text:'原因：4-Gate 任一验证失败'},{color:'#991B1B',text:'终态不可逆，该 Behavior ID 作废'}]}
+  };
+  var d=info[state];if(!d)return;
+  var el=document.getElementById('behavior-detail-panel');
+  el.innerHTML='<button class="detail-close" onclick="closeBehaviorDetail()">✕</button>'+
+    '<span class="detail-dot" style="background:'+d.color+'"></span>'+
+    '<span class="detail-title" style="color:'+d.color+'">'+d.title+'</span>'+
+    '<div class="detail-sub">'+d.sub+'</div>'+
+    '<div class="detail-rules">'+d.rules.map(function(r,i){
+      return '<div class="detail-rule"><span class="detail-num" style="background:'+r.color+'">'+(i+1)+'</span><span class="detail-text">'+r.text+'</span></div>';
+    }).join('')+'</div>';
+  el.classList.add('active');
+}
+function closeBehaviorDetail(){document.getElementById('behavior-detail-panel').classList.remove('active')}
+
+/* === Ecosystem detail === */
+var ecoInfo={
+  chatgpt:{name:'ChatGPT',type:'AI',desc:'OpenAI 的 AI 助手生态。通过 GPTs 和 Custom Instructions 嵌入 Fly Agent SDK，每次 AI 推荐自动生成 Behavior ID。'},
+  claude:{name:'Claude',type:'AI',desc:'Anthropic 的 AI 助手。通过 MCP (Model Context Protocol) 协议集成，工具调用即归因触发。'},
+  gemini:{name:'Gemini',type:'AI',desc:'Google 的多模态 AI。Extension 生态支持搜索推荐归因追踪。'},
+  dify:{name:'Dify',type:'Agent',desc:'LLM 应用开发平台。Workflow 节点即归因节点，每步操作自动记录 Behavior ID。'},
+  coze:{name:'Coze / 扣子',type:'Agent',desc:'AI Bot 构建平台。Plugin 生态内嵌 Fly SDK，Bot 工作流归因追踪。'},
+  langgraph:{name:'LangGraph',type:'Agent',desc:'LangChain 的有状态 Agent 框架。Graph 节点执行自动触发归因记录。'},
+  douyin:{name:'抖音',type:'Channel',desc:'短视频渠道。传统 Link Attribution 模式，用户点击链接/扫描二维码触发 Action ID。'},
+  xiaohongshu:{name:'小红书',type:'Channel',desc:'生活方式平台。已上线 RED Skill，支持 AI Skill 嵌入笔记，从 Link Attribution 向 AI Native Attribution 过渡。'},
+  wechat:{name:'微信',type:'Channel',desc:'社交渠道。公众号/小程序/企业微信多入口归因追踪。'},
+  meituan:{name:'美团',type:'Channel',desc:'本地生活渠道。到店/到家场景归因验证。'},
+  feishu:{name:'飞书',type:'Channel',desc:'企业协作渠道。Bot/小程序/审批流程归因追踪。'}
+};
+function showEcoDetail(key){
+  var d=ecoInfo[key];if(!d)return;
+  var typeColors={AI:'#7C3AED',Agent:'#0891B2',Channel:'#DC2626'};
+  var c=typeColors[d.type]||'#2563EB';
+  var el=document.getElementById('eco-detail-panel');
+  el.innerHTML='<button class="detail-close" onclick="closeEcoDetail()">✕</button>'+
+    '<span class="detail-dot" style="background:'+c+'"></span>'+
+    '<span class="detail-title" style="color:'+c+'">'+d.name+'</span>'+
+    ' <span class="badge" style="background:'+c+';color:#fff;font-size:9px">'+d.type+'</span>'+
+    '<div class="detail-sub" style="margin-top:8px">'+d.desc+'</div>';
+  el.classList.add('active');
+}
+function closeEcoDetail(){document.getElementById('eco-detail-panel').classList.remove('active')}
 </script>
 </body>
 </html>
