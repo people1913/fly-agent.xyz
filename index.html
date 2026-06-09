@@ -214,78 +214,84 @@ nav{gap:12px}nav a{font-size:12px}
 </header>
 
 <!-- ===== SECTION 1: HERO ===== -->
-<section class="hero" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center">
+<section class="hero" style="min-height:100vh;display:flex;align-items:center;justify-content:center">
 <div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0">
-<div style="font-family:var(--sans);font-size:16px;color:#94A3B8;letter-spacing:0;font-weight:400;margin-bottom:18px">Fly 是 AI 时代的归因验证基础设施</div>
-<div class="hero-pain" style="margin-bottom:16px">让每一次 AI 推荐<br>都变成可追踪、可验证、可结算的商业价值</div>
-<div style="font-size:28px;font-weight:600;color:#1A3D2E;letter-spacing:-0.5px;line-height:1.5;font-family:var(--sans);margin-bottom:16px">AI Platform → Behavior ID → Action ID → Verification → Trust → Business Value<br>从信号采集到商业价值的完整验证链路</div>
-<div style="display:flex;flex-direction:column;align-items:center;gap:1.5px">
-<div style="font-size:16px;color:#CBD5E1">互联网时代——Google Analytics 证明流量价值</div>
-<div style="font-size:19px;color:#0F172A;font-weight:700">AI时代——Fly 验证 AI 是否真正带来收入</div>
+
+<!-- 第一层：痛点 -->
+<div style="margin-bottom:48px">
+<div style="font-size:44px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.25;margin-bottom:20px">AI 正在推荐产品</div>
+<div style="font-size:20px;color:#64748B;line-height:1.8;font-weight:400">但没人知道：<br><span style="color:#0F172A;font-weight:600">是谁推荐的</span> · <span style="color:#0F172A;font-weight:600">谁点击的</span> · <span style="color:#0F172A;font-weight:600">谁成交的</span> · <span style="color:#0F172A;font-weight:600">谁应该获得佣金</span></div>
 </div>
-<div style="margin-top:32px;display:flex;align-items:center;justify-content:center">
-<svg width="500" height="210" viewBox="0 0 500 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<!-- 第二层：方案 -->
+<div style="margin-bottom:48px">
+<div style="font-size:28px;font-weight:700;color:#2563EB;letter-spacing:-0.5px;line-height:1.4">Fly 把每一次 AI 推荐<br>变成<span style="color:#0F172A">可追踪</span>、<span style="color:#0F172A">可验证</span>、<span style="color:#0F172A">可结算</span>的商业价值</div>
+</div>
+
+<!-- 第三层：链路图 -->
+<div style="width:100%;max-width:720px">
+<div style="font-size:11px;color:#94A3B8;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">VERIFICATION PIPELINE</div>
+<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:32px">
+<svg width="600" height="210" viewBox="0 0 600 210" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker>
 <marker id="arrow-fly" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6366F1"/></marker>
 </defs>
 <!-- Row 1: AI Platform → Behavior ID → Action ID -->
-<circle cx="70" cy="55" r="30" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
-<text x="70" y="51" text-anchor="middle" font-size="10" fill="#6366F1" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI Platform</text>
-<text x="70" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信号源</text>
-<circle cx="250" cy="55" r="30" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
-<text x="250" y="51" text-anchor="middle" font-size="10" fill="#7C3AED" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Behavior ID</text>
-<text x="250" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">行为来源</text>
-<circle cx="430" cy="55" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="430" y="51" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
-<text x="430" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">用户动作</text>
+<circle cx="90" cy="55" r="34" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
+<text x="90" y="49" text-anchor="middle" font-size="10" fill="#6366F1" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI Platform</text>
+<text x="90" y="63" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信号源</text>
+<circle cx="300" cy="55" r="34" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
+<text x="300" y="49" text-anchor="middle" font-size="10" fill="#7C3AED" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Behavior ID</text>
+<text x="300" y="63" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">行为来源</text>
+<circle cx="510" cy="55" r="34" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="510" y="49" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
+<text x="510" y="63" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">用户动作</text>
 <!-- Row 1 arrows -->
-<path d="M102 50 L218 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M282 50 L398 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M126 50 L264 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M336 50 L474 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
 <!-- Vertical: Action ID ↓ Verification -->
-<path d="M430 87 L430 123" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M510 91 L510 123" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
 <!-- Row 2: Verification → Trust → Business Value (right to left) -->
-<circle cx="430" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="430" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
-<text x="430" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">收入验证</text>
-<circle cx="250" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="250" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
-<text x="250" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">可信评分</text>
-<circle cx="70" cy="155" r="30" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
-<text x="70" y="151" text-anchor="middle" font-size="10" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Business</text>
-<text x="70" y="163" text-anchor="middle" font-size="9" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Value</text>
-<text x="70" y="175" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">商业价值</text>
+<circle cx="510" cy="155" r="34" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="510" y="149" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
+<text x="510" y="163" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">收入验证</text>
+<circle cx="300" cy="155" r="34" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="300" y="149" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
+<text x="300" y="163" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">可信评分</text>
+<circle cx="90" cy="155" r="34" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+<text x="90" y="149" text-anchor="middle" font-size="10" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Business</text>
+<text x="90" y="161" text-anchor="middle" font-size="9" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Value</text>
+<text x="90" y="173" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">商业价值</text>
 <!-- Row 2 arrows (right to left) -->
-<path d="M398 150 L282 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M218 150 L102 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M474 150 L336 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M264 150 L126 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
 <!-- Flywheel: Business Value ↺ AI Platform -->
-<path d="M40 155 Q12 155 12 105 Q12 55 40 55" stroke="#6366F1" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow-fly)" fill="none"/>
-<text x="5" y="110" text-anchor="middle" font-size="6.5" fill="#6366F1" font-family="Inter,Noto Sans SC,sans-serif" writing-mode="tb">更多AI接入</text>
+<path d="M56 155 Q18 155 18 105 Q18 55 56 55" stroke="#6366F1" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow-fly)" fill="none"/>
+<text x="10" y="110" text-anchor="middle" font-size="7" fill="#6366F1" font-family="Inter,Noto Sans SC,sans-serif" writing-mode="tb">更多AI接入</text>
 </svg>
 </div>
 
-<!-- 为什么需要 Fly -->
-<div style="margin-top:40px;width:100%;max-width:720px">
-<div style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:20px">为什么需要 Fly</div>
+<!-- 对比：没有Fly vs 有Fly -->
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;text-align:left">
-<div style="padding:24px;border:1px solid #E2E8F0;border-radius:10px;background:#FAFBFC">
-<div style="font-size:13px;font-weight:600;color:#DC2626;margin-bottom:14px;letter-spacing:0.5px">没有 Fly</div>
-<div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#64748B">
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#DC2626;font-size:12px">✕</span> AI 带来客户</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#DC2626;font-size:12px">↓</span> 不知道来自哪里</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#DC2626;font-size:12px">↓</span> 不知道是否成交</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#DC2626;font-size:12px">↓</span> 无法分佣</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#DC2626;font-size:12px">↓</span> 无法规模化</div>
+<div style="padding:28px;border:1px solid #E2E8F0;border-radius:10px;background:#FAFBFC">
+<div style="font-size:13px;font-weight:600;color:#DC2626;margin-bottom:16px;letter-spacing:0.5px">没有 Fly</div>
+<div style="display:flex;flex-direction:column;gap:12px;font-size:15px;color:#64748B">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#DC2626;font-size:12px">✕</span> AI 带来客户</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#DC2626;font-size:12px">↓</span> 不知道来自哪里</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#DC2626;font-size:12px">↓</span> 不知道是否成交</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#DC2626;font-size:12px">↓</span> 无法分佣</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#DC2626;font-size:12px">↓</span> 无法规模化</div>
 </div>
 </div>
-<div style="padding:24px;border:2px solid #2563EB;border-radius:10px;background:#F8FAFF">
-<div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:14px;letter-spacing:0.5px">有 Fly</div>
-<div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#1E293B">
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#2563EB;font-size:12px">✓</span> AI 带来客户</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#2563EB;font-size:12px">↓</span> 自动归因</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#2563EB;font-size:12px">↓</span> 自动验证</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#2563EB;font-size:12px">↓</span> 自动结算</div>
-<div style="display:flex;align-items:center;gap:8px"><span style="color:#2563EB;font-size:12px;font-weight:700">↓</span> <span style="font-weight:700;color:#0F172A">可信增长</span></div>
+<div style="padding:28px;border:2px solid #2563EB;border-radius:10px;background:#F8FAFF">
+<div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:16px;letter-spacing:0.5px">有 Fly</div>
+<div style="display:flex;flex-direction:column;gap:12px;font-size:15px;color:#1E293B">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#2563EB;font-size:12px">✓</span> AI 带来客户</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#2563EB;font-size:12px">↓</span> 自动归因</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#2563EB;font-size:12px">↓</span> 自动验证</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#2563EB;font-size:12px">↓</span> 自动结算</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#2563EB;font-size:12px;font-weight:700">↓</span> <span style="font-weight:700;color:#0F172A">可信增长</span></div>
 </div>
 </div>
 </div>
