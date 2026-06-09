@@ -14,7 +14,7 @@
 --blue:#2563EB;--blue-light:#60A5FA;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--tan:#64748B;--tan-light:#94A3B8;
 --dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
 --mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
---border:#E2E8F0;--sidebar-w:260px;
+--border:#E2E8F0;--sidebar-w:240px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -23,14 +23,14 @@ a{color:var(--blue);text-decoration:none;transition:opacity .2s}
 a:hover{opacity:.8}
 
 /* === Top bar === */
-.topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;padding:0 20px;gap:12px}
-.topbar-logo{text-decoration:none;display:flex;align-items:center;gap:6px}
-.topbar-sep{color:var(--border);font-size:20px}
-.topbar-title{font-size:13px;color:var(--tan);font-weight:600;letter-spacing:.5px}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px}
-.topbar-home{font-size:12px;color:var(--tan);font-weight:500;transition:color .15s}
+
+
+
+
+
+
 .topbar-home:hover{color:var(--dark)}
-.topbar-collapse{margin-left:auto;background:none;border:1px solid var(--border);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--tan-light)}
+
 .topbar-collapse:hover{background:var(--bg3);color:var(--dark);border-color:var(--tan-light)}
 .topbar-collapse svg{width:16px;height:16px;transition:transform .25s}
 
@@ -171,7 +171,7 @@ a:hover{opacity:.8}
 
 /* === Sidebar collapse/expand (结构级) === */
 .sidebar{transition:width .25s ease;width:var(--sidebar-w)}
-.sidebar.collapsed{--sidebar-w:56px;width:56px}
+.sidebar.collapsed{--sidebar-w:60px;width:60px}
 .sidebar.collapsed .sidebar-group-label,
 .sidebar.collapsed .sg-toggle{display:none}
 .sidebar.collapsed .sidebar-group-items{max-height:none!important;overflow:visible}
@@ -183,7 +183,10 @@ a:hover{opacity:.8}
 .sidebar.collapsed .sidebar-group{margin-bottom:2px}
 
 .main{transition:margin-left .25s ease}
-.sidebar.collapsed~.main{margin-left:56px}
+.sidebar.collapsed~.main{margin-left:60px}
+.sidebar-brand{height:48px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-brand-link{text-decoration:none;display:flex;align-items:center;gap:6px}
+.sb-logo{font-size:18px;font-weight:800;color:var(--dark);font-family:var(--sans);letter-spacing:-1px}
 
 /* Responsive */
 @media(max-width:900px){
@@ -197,15 +200,7 @@ a:hover{opacity:.8}
 <body>
 
 <!-- Top bar -->
-<div class="topbar">
-  <a href="/" class="topbar-logo" style="text-decoration:none;display:flex;align-items:center;gap:6px">
-    <span style="font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span>
-    <span class="topbar-title" style="margin:0">验证归因</span>
-  </a>
-  <button class="topbar-collapse" onclick="toggleSidebar()" title="折叠/展开侧边栏">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-</div>
+
 
 <div class="layout">
 <!-- Sidebar -->
