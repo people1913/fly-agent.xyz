@@ -74,6 +74,15 @@ links:[
 {href:'/channel-wechat.html',text:'微信',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'},
 {href:'/channel-meituan.html',text:'美团',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-3-5z"/><line x1="3" y1="7" x2="21" y2="7"/><path d="M16 11a4 4 0 0 1-8 0"/></svg>'},
 {href:'/channel-feishu.html',text:'飞书',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>'}
+]},
+// ── 9. Web3（青灰 #475569） ──
+{id:'web3',label:'Web3',color:'#475569',defaultOpen:false,icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+links:[
+{href:'/web3/wallet.html',text:'Wallet ID',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M16 12h.01"/><path d="M2 10h20"/></svg>'},
+{href:'/web3/ethereum.html',text:'Ethereum',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 12 12 22 22 12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>'},
+{href:'/web3/solana.html',text:'Solana',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>'},
+{href:'/web3/base.html',text:'Base',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>'},
+{href:'/web3/tx-verification.html',text:'Tx Verification',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'}
 ]}
 ];
 
@@ -176,6 +185,7 @@ a{color:inherit;text-decoration:none}\
 .nav-link[data-group=enterprise]:hover{color:#0891B2;background:rgba(8,145,178,.06)}\
 .nav-link[data-group=compliance]:hover{color:#64748B;background:rgba(100,116,139,.06)}\
 .nav-link[data-group=channel]:hover{color:#D97706;background:rgba(217,119,6,.06)}\
+.nav-link[data-group=web3]:hover{color:#475569;background:rgba(71,85,105,.06)}\
 .nav-link.active{font-weight:600}\
 .nav-link.active::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:0 2px 2px 0}\
 .nav-link svg{flex-shrink:0;opacity:.55;transition:opacity .15s;width:16px;height:16px}\
@@ -194,6 +204,7 @@ a{color:inherit;text-decoration:none}\
 .nav-link.active[data-group=enterprise]{color:#0891B2}.nav-link.active[data-group=enterprise]::before{background:#0891B2}.nav-link.active[data-group=enterprise] svg{color:#0891B2}\
 .nav-link.active[data-group=compliance]{color:#64748B}.nav-link.active[data-group=compliance]::before{background:#64748B}.nav-link.active[data-group=compliance] svg{color:#64748B}\
 .nav-link.active[data-group=channel]{color:#D97706}.nav-link.active[data-group=channel]::before{background:#D97706}.nav-link.active[data-group=channel] svg{color:#D97706}\
+.nav-link.active[data-group=web3]{color:#475569}.nav-link.active[data-group=web3]::before{background:#475569}.nav-link.active[data-group=web3] svg{color:#475569}\
 @media(max-width:768px){.nav{display:none}}\
 .fly-docs-panel{flex:1;min-width:0;overflow-y:auto}\
 .fly-docs-panel.hidden{display:none!important}\
