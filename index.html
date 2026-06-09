@@ -208,7 +208,7 @@ nav{gap:12px}nav a{font-size:12px}
 <div class="container">
 <div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · 信任与归因基础设施</span></div>
 <nav>
-<a href="/verification-center.html" class="nav-cta" style="text-decoration:none;background:var(--deep-green);color:#E8F5EC">溯源 Fly</a>
+<a href="/signal-flow.html" class="nav-cta" style="text-decoration:none;background:var(--deep-green);color:#E8F5EC">溯源 Fly</a>
 </nav>
 </div>
 </header>
@@ -216,31 +216,51 @@ nav{gap:12px}nav a{font-size:12px}
 <!-- ===== SECTION 1: HERO ===== -->
 <section class="hero" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center">
 <div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0">
-<div style="font-family:var(--sans);font-size:16px;color:#94A3B8;letter-spacing:0;font-weight:400;margin-bottom:18px">AI时代的归因与验证基础设施</div>
+<div style="font-family:var(--sans);font-size:16px;color:#94A3B8;letter-spacing:0;font-weight:400;margin-bottom:18px">AI时代的归因验证基础设施</div>
 <div class="hero-pain" style="white-space:nowrap;margin-bottom:16px">每一次 AI 推荐，都应该产生可验证收入</div>
-<div style="font-size:28px;font-weight:600;color:#1A3D2E;letter-spacing:-0.5px;line-height:1.5;font-family:var(--sans);margin-bottom:16px">Fly 为每一次 AI 推荐生成唯一 Action ID<br>让推荐、咨询、成交与佣金形成完整验证链路</div>
+<div style="font-size:28px;font-weight:600;color:#1A3D2E;letter-spacing:-0.5px;line-height:1.5;font-family:var(--sans);margin-bottom:16px">AI Platform → Behavior ID → Action ID → Verification → Trust → Business Value<br>从信号采集到商业价值的完整验证链路</div>
 <div style="display:flex;flex-direction:column;align-items:center;gap:1.5px">
 <div style="font-size:16px;color:#CBD5E1">互联网时代——Google Analytics 证明流量价值</div>
 <div style="font-size:19px;color:#0F172A;font-weight:700">AI时代——Fly 验证 AI 是否真正带来收入</div>
 </div>
 <div style="margin-top:32px;display:flex;align-items:center;justify-content:center">
-<svg width="320" height="120" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker></defs>
-<circle cx="60" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="60" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI推荐</text>
-<text x="60" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Recommend</text>
-<circle cx="160" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="160" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">验证</text>
-<text x="160" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Verify</text>
-<circle cx="260" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="260" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">信任</text>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
-<path d="M90 55 L130 55" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<text x="110" y="48" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
-<path d="M190 55 L230 55" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<text x="210" y="48" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">归因</text>
-<path d="M260 90 Q160 115 60 90" stroke="#1A3D2E" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)" fill="none"/>
-<text x="160" y="112" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">更多推荐 → 增长飞轮</text>
+<svg width="500" height="210" viewBox="0 0 500 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker>
+<marker id="arrow-fly" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6366F1"/></marker>
+</defs>
+<!-- Row 1: AI Platform → Behavior ID → Action ID -->
+<circle cx="70" cy="55" r="30" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
+<text x="70" y="51" text-anchor="middle" font-size="10" fill="#6366F1" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI Platform</text>
+<text x="70" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信号源</text>
+<circle cx="250" cy="55" r="30" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
+<text x="250" y="51" text-anchor="middle" font-size="10" fill="#7C3AED" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Behavior ID</text>
+<text x="250" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">行为标识</text>
+<circle cx="430" cy="55" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="430" y="51" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
+<text x="430" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">归因标识</text>
+<!-- Row 1 arrows -->
+<path d="M102 50 L218 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M282 50 L398 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Vertical: Action ID ↓ Verification -->
+<path d="M430 87 L430 123" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Row 2: Verification → Trust → Business Value (right to left) -->
+<circle cx="430" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="430" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
+<text x="430" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">验证</text>
+<circle cx="250" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+<text x="250" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
+<text x="250" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信任层</text>
+<circle cx="70" cy="155" r="30" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+<text x="70" y="151" text-anchor="middle" font-size="10" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Business</text>
+<text x="70" y="163" text-anchor="middle" font-size="9" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Value</text>
+<text x="70" y="175" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">商业价值</text>
+<!-- Row 2 arrows (right to left) -->
+<path d="M398 150 L282 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M218 150 L102 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Flywheel: Business Value ↺ AI Platform -->
+<path d="M40 155 Q12 155 12 105 Q12 55 40 55" stroke="#6366F1" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow-fly)" fill="none"/>
+<text x="5" y="110" text-anchor="middle" font-size="6.5" fill="#6366F1" font-family="Inter,Noto Sans SC,sans-serif" writing-mode="tb">更多AI接入</text>
 </svg>
 </div>
 </div>
