@@ -3,338 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Registry · Fly · AI Agent信任与归因基础设施</title>
-    <meta name="description" content="Agent Registry——Fly AI Agent信任与归因基础设施的Agent身份注册与验证索引。16字段6组可验证身份体系，从注册到生产准入全链路。">
-    <meta property="og:title" content="Agent Registry · Fly · AI Agent信任与归因基础设施">
-    <meta property="og:description" content="Fly Agent Registry——可验证Agent身份索引，16字段身份注册与验证。">
+<title>Agent Registry · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
-</style>
+.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
+.feature-row{display:flex;gap:12px;margin-bottom:24px}
+.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
+<div class="topbar"><h1>Agent Registry</h1><span class="tag">AI Native</span></div>
+<div class="content">
 
-<!-- NAV -->
-
-<!-- HERO -->
-<section class="hero">
-<div class="container">
-<div class="hero-label">Layer 2 · Agent Identity</div>
-<h1>Agent <em>Registry</em></h1>
-<div class="hero-desc">不是展示列表，是<strong>可验证索引</strong>。每个字段必须可校验、可审计、可治理、可追踪。未注册Agent无法通过Gateway进入生产环境。</div>
-</div>
-</section>
-
-<!-- SCHEMA -->
-<section class="schema-section">
-<div class="container">
-<div class="sec-label">Schema</div>
-<div class="sec-title">可验证Registry字段定义</div>
-<div class="sec-desc">从"概念字段"修正为"基础设施字段"：每个字段必须有机器可验证语义。</div><div style="margin-top:12px;padding:12px 16px;background:#EFF6FF;border-radius:6px;font-size:12px;color:#1E40AF">以下字段对应 API 端点 POST /v1/agent/register 与 GET /v1/agent/:id，详见 <a href="https://docs.fly-agent.xyz" style="color:#2563EB">API 文档</a>。注册 <strong>POST /v1/agent/register</strong> · 查询 <strong>GET /v1/agent/:id</strong></div>
-<div style="margin-top:12px;padding:12px 16px;background:#F8FAFC;border:1px solid var(--border);border-radius:6px;font-size:12px;color:#64748B">
-<b style="color:#0F172A">字段分组与5层架构映射：</b> Identity / Runtime / Capability / Owner → Layer 1 Identity + Layer 5 Governance · Trust → Layer 2 Trust · Verification → Layer 3 Verification · Attribution 由 action_id + audit_log + attribution 字段共同实现，属于 Layer 4。
+<div class="page-hero">
+<div class="page-label">AI NATIVE</div>
+<div class="page-title">Agent Registry</div>
+<div class="page-sub">AI Agent身份注册与验证索引</div>
+<div class="page-oneliner">每个AI Agent都有可验证的身份</div>
 </div>
 
-<!-- Group 1: Identity -->
-<div class="field-group">
-<div class="field-group-title">Identity · 身份</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">agent_id<span class="field-required">required</span></div>
-<div class="field-type">string · unique · immutable</div>
-<div class="field-desc">全局唯一标识符，注册时生成，不可修改、不可伪造</div>
-<div class="field-example">fly-agent-7a3f2c1d</div>
-</div>
-<div class="field-card">
-<div class="field-name">agent_fingerprint<span class="field-required">required</span></div>
-<div class="field-type">string · sha256 · verifiable</div>
-<div class="field-desc">Runtime Hash指纹，用于验证Agent运行环境未被替换。Identity ≠ Name，必须可验证</div>
-<div class="field-example">sha256:e3b0c44298fc1c149afb...</div>
-<div class="field-problem">修正：原Agent ID不可验证 → 补fingerprint</div>
-</div>
-</div>
+<hr class="divider">
+
+<div class="section-title">为什么需要Agent Registry</div>
+<div class="section-body">
+AI Agent越来越多——ChatGPT助手、Claude工具、Coze Bot、自建Agent。但<strong>谁能证明这个Agent是可信的？它的身份是真实的？</strong>Agent Registry为每个AI Agent建立可验证的身份索引。
 </div>
 
-<!-- Group 2: Runtime -->
-<div class="field-group">
-<div class="field-group-title">Runtime · 运行环境</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">runtime_provider<span class="field-required">required</span></div>
-<div class="field-type">enum · Coze / Dify / Claude / MCP</div>
-<div class="field-desc">运行平台提供商，不是Runtime实例。Coze US和Coze CN是不同环境</div>
-<div class="field-example">Coze</div>
+<hr class="divider">
+
+<div class="section-title">Agent Registry提供什么</div>
+<div class="highlight-box">
+<div class="hl-label">核心能力</div>
+<div class="hl-text">每个Agent注册时记录平台、类型、能力、创建者等16个字段，形成完整身份档案</div>
 </div>
-<div class="field-card">
-<div class="field-name">runtime_env<span class="field-required">required</span></div>
-<div class="field-type">enum · production / sandbox / staging</div>
-<div class="field-desc">运行环境标识。区分生产/沙盒/预发布，防止环境污染和Attribution错位</div>
-<div class="field-example">production</div>
+
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">16字段身份注册</div>
+<div class="feat-desc">每个Agent注册时记录平台、类型、能力、创建者等16个字段，形成完整身份档案</div>
 </div>
-<div class="field-card">
-<div class="field-name">runtime_version</div>
-<div class="field-type">string · semver</div>
-<div class="field-desc">Runtime版本号，用于审计和兼容性追踪</div>
-<div class="field-example">v1.2.0</div>
-<div class="field-problem">修正：原Runtime=Coze语义错误 → 拆provider/env/version</div>
+<div class="feature-card">
+<div class="feat-title">6组可验证信息</div>
+<div class="feat-desc">身份分为6组：基础信息、能力声明、信任评级、行为统计、合规状态、关联索引</div>
 </div>
+</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">生产准入验证</div>
+<div class="feat-desc">Agent必须通过Registry验证才能进入Fly归因链，确保只有可信Agent参与</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">跨平台身份统一</div>
+<div class="feat-desc">同一Agent在不同平台有统一身份标识，归因数据不重复不遗漏</div>
 </div>
 </div>
 
-<!-- Group 3: Capability -->
-<div class="field-group">
-<div class="field-group-title">Capability · 能力</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">capability_scope<span class="field-required">required</span></div>
-<div class="field-type">string · scoped</div>
-<div class="field-desc">能力作用域，替代自然语言标签。声明+可验证</div>
-<div class="field-example">consult · lead_gen · data_analysis</div>
-</div>
-<div class="field-card">
-<div class="field-name">tool_access<span class="field-required">required</span></div>
-<div class="field-type">array · permission</div>
-<div class="field-desc">工具访问权限白名单。声明的能力必须对应可执行的工具权限</div>
-<div class="field-example">["crm.read", "calendar.write"]</div>
-</div>
-<div class="field-card">
-<div class="field-name">execution_mode<span class="field-required">required</span></div>
-<div class="field-type">enum · autonomous / supervised / human-only</div>
-<div class="field-desc">执行模式，限制Agent行为边界。不可治理的Capability = 没有Capability</div>
-<div class="field-example">supervised</div>
-<div class="field-problem">修正：原Capability=sales_agent不可治理 → 拆scope/tool_access/mode</div>
-</div>
-</div>
-</div>
+<hr class="divider">
 
-<!-- Group 4: Owner -->
-<div class="field-group">
-<div class="field-group-title">Owner · 归属</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">owner_org<span class="field-required">required</span></div>
-<div class="field-type">string · org_id</div>
-<div class="field-desc">归属组织标识，用于多租户隔离和权限控制</div>
-<div class="field-example">org_jiuyun_001</div>
-</div>
-<div class="field-card">
-<div class="field-name">operator_id<span class="field-required">required</span></div>
-<div class="field-type">string · operator_ref</div>
-<div class="field-desc">运营者ID，谁创建、谁维护、谁负责。不可审计的Owner = 没有Owner</div>
-<div class="field-example">op_zhangsan_001</div>
-<div class="field-problem">修正：原Owner=fly不可审计 → 拆org/operator</div>
-</div>
-</div>
-</div>
-
-<!-- Group 5: Trust -->
-<div class="field-group">
-<div class="field-group-title">Trust · 信任</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">trust_score<span class="field-required">required</span></div>
-<div class="field-type">float · 0.0 — 10.0</div>
-<div class="field-desc">综合信任评分，基于行为验证、审计记录等6维指标动态计算</div>
-<div class="field-example">8.5（示例值，实际由API计算）</div>
-</div>
-<div class="field-card">
-<div class="field-name">trust_version</div>
-<div class="field-type">string · semver</div>
-<div class="field-desc">评分算法版本，不可解释的Trust = 没有Trust</div>
-<div class="field-example">v1</div>
-</div>
-<div class="field-card">
-<div class="field-name">trust_updated_at<span class="field-required">required</span></div>
-<div class="field-type">ISO8601 timestamp</div>
-<div class="field-desc">评分最后更新时间。没有时间戳的评分不可审计</div>
-<div class="field-example">2026-06-04T16:30:00Z</div>
-<div class="field-problem">修正：原Trust Score无来源 → 补trust_version + trust_updated_at，评分可审计</div>
-</div>
-</div>
-</div>
-
-<!-- Group 6: Verification -->
-<div class="field-group">
-<div class="field-group-title">Verification · 验证</div>
-<div class="field-grid">
-<div class="field-card">
-<div class="field-name">verification_status<span class="field-required">required</span></div>
-<div class="field-type">enum · pending / partial / verified / failed / expired / revoked</div>
-<div class="field-desc">验证是多值过程，不是二值标签。partial表示部分通过，expired需要重新验证</div>
-<div class="field-example">partial</div>
-</div>
-<div class="field-card">
-<div class="field-name">verification_level</div>
-<div class="field-type">enum · L1 / L2 / L3 / L4 / L5</div>
-<div class="field-desc">验证等级。L1=基础注册，L2=行为验证（6项行为检查通过），L3=生产准入（Trust Score≥7.0），L4=深度审计（全链路可追溯+安全合规通过），L5=最高信任（L4+持续运行30天无异常）</div>
-<div class="field-example">L2</div>
-</div>
-<div class="field-card">
-<div class="field-name">verification_updated_at<span class="field-required">required</span></div>
-<div class="field-type">ISO8601 timestamp</div>
-<div class="field-desc">验证状态最后更新时间</div>
-<div class="field-example">2026-06-04T16:30:00Z</div>
-<div class="field-problem">修正：原Verification=Verified二值错误 → 多值状态+等级+时间</div>
-</div>
-</div>
+<div class="cta-box">
+<div class="cta-text">Agent有了可验证身份，接下来需要确保Agent的行为可信赖</div>
+<a href="/ai-skills.html" class="cta-link">Agent Trust →</a>
 </div>
 
 </div>
-</section>
-
-<!-- RECORD EXAMPLE -->
-<section class="record-section">
-<div class="container">
-<div class="sec-label">Example</div>
-<div class="sec-title">完整Registry记录</div>
-<div class="record-block"><div style="font-size:11px;color:#F59E0B;margin-bottom:8px;font-family:var(--mono)">⚠ 此为示例数据，非生产环境真实记录。Trust Score初始值=0.0，随验证行为动态计算。</div>
-<pre>{
-  <span class="comment">// Identity</span>
-  <span class="key">"agent_id"</span>: <span class="string">"fly-agent-7a3f2c1d"</span>,
-  <span class="key">"agent_fingerprint"</span>: <span class="string">"sha256:e3b0c44298fc1c149afbf4c8996fb924..."</span>,
-
-  <span class="comment">// Runtime</span>
-  <span class="key">"runtime_provider"</span>: <span class="string">"Coze"</span>,
-  <span class="key">"runtime_env"</span>: <span class="string">"production"</span>,
-  <span class="key">"runtime_version"</span>: <span class="string">"v1.2.0"</span>,
-
-  <span class="comment">// Capability</span>
-  <span class="key">"capability_scope"</span>: <span class="string">"consult"</span>,
-  <span class="key">"tool_access"</span>: [<span class="string">"crm.read"</span>, <span class="string">"calendar.write"</span>],
-  <span class="key">"execution_mode"</span>: <span class="string">"supervised"</span>,
-
-  <span class="comment">// Owner</span>
-  <span class="key">"owner_org"</span>: <span class="string">"org_jiuyun_001"</span>,
-  <span class="key">"operator_id"</span>: <span class="string">"op_zhangsan_001"</span>,
-
-  <span class="comment">// Trust</span>
-  <span class="key">"trust_score"</span>: <span class="number">8.5</span>,
-  <span class="key">"trust_version"</span>: <span class="string">"v1"</span>,
-  <span class="key">"trust_updated_at"</span>: <span class="string">"2026-06-04T16:30:00Z"</span>,
-
-  <span class="comment">// Verification</span>
-  <span class="key">"verification_status"</span>: <span class="string">"partial"</span>,
-  <span class="key">"verification_level"</span>: <span class="string">"L2"</span>,
-  <span class="key">"verification_updated_at"</span>: <span class="string">"2026-06-04T16:30:00Z"</span>,
-
-  <span class="comment">// Meta</span>
-  <span class="key">"registered_at"</span>: <span class="string">"2026-06-04T15:00:00Z"</span>
-}</pre>
 </div>
-</div>
-</section>
-
-<!-- FLOW -->
-<section class="flow-section">
-<div class="container">
-<div class="sec-label">Flow</div>
-<div class="sec-title">验证流程：从pending到verified</div>
-<div class="flow-steps">
-<div class="flow-step">
-<div class="flow-num">1</div>
-<div class="flow-content">
-<h3>注册 → status: pending, level: L1</h3>
-<p>提交agent_fingerprint + runtime三字段 + capability三字段 + owner双字段。系统生成agent_id，Trust Score=0.0</p>
-</div>
-</div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step">
-<div class="flow-num">2</div>
-<div class="flow-content">
-<h3>行为验证 → status: partial, level: L2</h3>
-<p>沙盒运行，收集行为数据。验证fingerprint未变、tool_access未越权、execution_mode合规。Trust Score开始计算</p>
-</div>
-</div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step">
-<div class="flow-num">3</div>
-<div class="flow-content">
-<h3>生产准入 → status: verified, level: L3（L4=全链路可追溯+安全合规通过，L5=L4+持续30天无异常）</h3>
-<p>Trust Score达标（≥7.0，由6维指标动态计算），所有字段可验证、可审计。允许进入生产环境</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-<div class="container">
-<h2>每个Agent，先验证再运行</h2>
-<p>不可验证的Registry = 没有Registry</p>
-<a href="/gateway.html" class="cta-btn">查看Fly Gateway →</a>
-</div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-<div class="container">
-<div class="footer-grid">
-<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e186948e8c808f8c808fa18b8e98948f9b89888d888f86cf828f">[email&#160;protected]</a></span></div>
-<div class="footer-links">
-<a href="/">首页</a>
-<a href="/security.html">安全中心</a>
-<a href="/trust.html">信任中心</a>
-<a href="/enterprise.html">企业版</a>
-<a href="/privacy.html">隐私政策</a>
-<a href="/terms.html#refund">退款政策</a>
-<a href="/terms.html">服务条款</a>
-</div>
-</div>
-<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="/cdn-cgi/l/email-protection#365143595b57585b5758765c594f43584c5e5f5a5f5851185558" style="color:var(--text3);text-decoration:underline"><span class="__cf_email__" data-cfemail="6a0d1f05070b04070b042a0005131f041002030603040d440904">[email&#160;protected]</span></a></div>
-</div>
-</footer>
-
-</div><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</body>
 </html>
