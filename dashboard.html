@@ -3,91 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>运行时 · Fly</title>
+<title>Gate 4 部署验证 · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.gate-hero{text-align:center;padding:40px 24px 32px}
+.gate-hero .gate-num{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.gate-hero .gate-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.gate-hero .gate-zh{font-size:16px;color:var(--text3);margin-bottom:16px}
+.gate-hero .gate-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;margin-bottom:8px}
+.def-box .def-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
 .vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+.vs-col{flex:1;border-radius:8px;padding:16px}
+.vs-col.before{background:var(--bg3);border:1px solid var(--border)}
+.vs-col.after{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.vs-col.before .vs-title{color:var(--text4)}
+.vs-col.after .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.before .vs-item{color:var(--text3)}
+.vs-col.after .vs-item{color:var(--deep-green);font-weight:600}
+.step-row{display:flex;gap:12px;margin-bottom:24px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.next-box .next-label{font-size:10px;font-weight:700;color:var(--text4);letter-spacing:2px;margin-bottom:8px}
+.next-box .next-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
 </style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>运行时</h1><span class="tag">实时监控</span></div>
-<div style="padding:32px;overflow-y:auto">
-<p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">实时监控归因验证系统的运行状态、交易流水和佣金结算进度，保障系统稳定运行。</p>
-<div class="chart-row" style="margin-bottom:24px">
-<div class="mini-chart"><div class="num">3,847</div><div class="lbl">验证请求</div><div class="ch up" style="font-size:10px;font-weight:600;color:#16A34A">↑ 12.3%</div></div>
-<div class="mini-chart"><div class="num">96.8%</div><div class="lbl">通过率</div><div class="ch up" style="font-size:10px;font-weight:600;color:#16A34A">↑ 0.7%</div></div>
-<div class="mini-chart"><div class="num">¥28.4万</div><div class="lbl">成交额</div><div class="ch up" style="font-size:10px;font-weight:600;color:#16A34A">↑ 8.1%</div></div>
-<div class="mini-chart"><div class="num">¥1.42万</div><div class="lbl">佣金结算</div><div class="ch" style="font-size:10px;font-weight:600;color:var(--text4)">↓ 3.2%</div></div>
+<div class="topbar"><h1>Gate 4 · 部署验证</h1><span class="tag">验证体系</span></div>
+<div class="content">
+
+<div class="gate-hero">
+<div class="gate-num">GATE 4 / 6</div>
+<div class="gate-title">部署验证</div>
+<div class="gate-zh">Deployment Verification</div>
+<div class="gate-oneliner">Fly是否正确部署在你的系统中？数据通路是否畅通？</div>
 </div>
-<div class="card" style="margin-bottom:24px"><div class="lb">系统状态</div>
-<div class="row"><span class="ok">✓</span> 验证引擎 — <span class="val" style="color:#16A34A">运行中</span> · 延迟 12ms</div>
-<div class="row"><span class="ok">✓</span> 哈希链同步 — <span class="val" style="color:#16A34A">正常</span> · 区块高度 #4,287,331</div>
-<div class="row"><span class="ok">✓</span> 异常检测 — <span class="val" style="color:#16A34A">在线</span> · 今日拦截 23 件</div></div>
-<div class="card" style="margin-bottom:12px"><div class="lb">佣金结算进度（6月）</div>
-<div class="row">应结佣金 — <span class="val">¥186,420</span></div>
-<div class="row">已结佣金 — <span class="val" style="color:#16A34A">¥142,180 (76.3%)</span></div>
-<div class="row">冻结佣金 — <span class="val" style="color:var(--amber-t)">¥12,847 (6.9%)</span></div>
-<div class="row">待确认 — <span class="val" style="color:var(--text3)">¥31,393 (16.8%)</span></div></div>
-<div class="card" style="margin-bottom:12px"><div class="lb">运行时监控</div>
-<div class="row">实时监控验证引擎、哈希链同步、异常检测等核心模块</div></div>
-<div class="card" style="margin-bottom:12px"><div class="lb">交易流水</div>
-<div class="row">成交额、佣金结算、退款处理等交易数据实时追踪</div></div>
+
+<hr class="divider">
+
+<div class="section-title">为什么需要部署验证</div>
+<div class="section-body">
+归因链的逻辑再完美，如果SDK没有正确接入、数据通路没有打通、事件回传没有配置，<strong>一切都不会工作。</strong>部署验证确保Fly在你的业务系统中「真正跑起来」。
+</div>
+
+<div class="vs-row">
+<div class="vs-col before">
+<div class="vs-title">没有部署验证</div>
+<div class="vs-item">SDK接入状态不明</div>
+<div class="vs-item">数据通路可能中断</div>
+<div class="vs-item">事件回传配置缺失</div>
+<div class="vs-item">问题发现时已损失大量数据</div>
+</div>
+<div class="vs-col after">
+<div class="vs-title">经过部署验证</div>
+<div class="vs-item">SDK接入状态实时监控</div>
+<div class="vs-item">数据通路端到端验证</div>
+<div class="vs-item">事件回传覆盖率检测</div>
+<div class="vs-item">问题实时告警，数据零丢失</div>
 </div>
 </div>
-<script>
-let cv=null;
-function sp(t){}
-</script>
+
+<hr class="divider">
+
+<div class="section-title">部署验证做了什么</div>
+<div class="def-box">
+<div class="def-label">核心动作</div>
+<div class="def-text">Fly提供部署验证工具，从SDK接入、数据通路到事件回传，逐项验证每个环节是否正确配置和运行，确保归因系统在你的业务中真正生效。</div>
+</div>
+
+<div class="step-row">
+<div class="step-card">
+<div class="step-num">STEP 1</div>
+<div class="step-title">SDK接入验证</div>
+<div class="step-desc">验证SDK是否正确加载，初始化参数是否完整</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 2</div>
+<div class="step-title">数据通路验证</div>
+<div class="step-desc">端到端测试数据从采集到存储的完整通路</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 3</div>
+<div class="step-title">事件回传验证</div>
+<div class="step-desc">确认关键事件（点击、咨询、下单）全部正确回传</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="next-box">
+<div class="next-label">下一关</div>
+<div class="next-text">部署验证确保了「系统正确运行」，接下来需要验证「验证流程本身是否按规范构建」</div>
+<a href="/gateway.html" class="next-link">Gate 5 构建验证 →</a>
+</div>
+
+</div>
+</div>
 </body>
 </html>
