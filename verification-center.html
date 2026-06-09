@@ -157,9 +157,11 @@ a:hover{opacity:.8}
 
 
 /* === Collapsible sidebar groups === */
-.sidebar-group-label{cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
-.sidebar-group-label::after{content:'▾';font-size:12px;color:var(--tan-light);transition:transform .2s}
-.sidebar-group-label.collapsed::after{transform:rotate(-90deg)}
+.sidebar-group-label{cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;padding:8px 16px 4px 20px}
+.sidebar-group-label:hover{background:var(--bg3)}
+.sg-toggle{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tan-light);background:var(--bg3);border:1px solid var(--border);transition:all .2s;flex-shrink:0}
+.sidebar-group-label:hover .sg-toggle{color:var(--dark);border-color:var(--tan-light)}
+.sg-toggle.collapsed{transform:rotate(-90deg)}
 .sidebar-group-items{overflow:hidden;transition:max-height .25s ease}
 .sidebar-group-items.collapsed{max-height:0!important}
 
@@ -177,7 +179,7 @@ a:hover{opacity:.8}
 <div class="topbar">
   <div class="topbar-logo"><b>F</b>ly</div>
   <span class="topbar-sep">|</span>
-  <div class="topbar-title">验证中心</div>
+  <div class="topbar-title">验证归因</div>
   <div class="topbar-right">
     <a href="/" class="topbar-home">← 返回首页</a>
   </div>
@@ -188,7 +190,7 @@ a:hover{opacity:.8}
 <nav class="sidebar">
   <!-- 核心概念 -->
   <div class="sidebar-group" data-group="核心概念">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)">核心概念</div>
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">核心概念<span class="sg-toggle">▾</span></div>
     <div class="sidebar-group-items">
       <div class="sidebar-item active" data-section="fly-concept" onclick="switchSection('fly-concept')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -212,7 +214,7 @@ a:hover{opacity:.8}
 
   <!-- 验证体系 -->
   <div class="sidebar-group" data-group="验证体系">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)">验证体系</div>
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">验证体系<span class="sg-toggle">▾</span></div>
     <div class="sidebar-group-items">
       <div class="sidebar-item" data-section="behavior-id" onclick="switchSection('behavior-id')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
@@ -236,7 +238,7 @@ a:hover{opacity:.8}
 
   <!-- 企业 -->
   <div class="sidebar-group" data-group="企业">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)">企业</div>
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">企业<span class="sg-toggle">▾</span></div>
     <div class="sidebar-group-items">
       <div class="sidebar-item" data-section="security" onclick="switchSection('security')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -251,7 +253,7 @@ a:hover{opacity:.8}
 
   <!-- 生态与开发者 -->
   <div class="sidebar-group" data-group="生态与开发者">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)">生态与开发者</div>
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">生态与开发者<span class="sg-toggle">▾</span></div>
     <div class="sidebar-group-items">
       <div class="sidebar-item" data-section="sdk" onclick="switchSection('sdk')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -277,7 +279,7 @@ a:hover{opacity:.8}
 
   <!-- 帮助 -->
   <div class="sidebar-group" data-group="帮助">
-    <div class="sidebar-group-label" onclick="toggleGroup(this)">帮助</div>
+    <div class="sidebar-group-label" onclick="toggleGroup(this)">帮助<span class="sg-toggle">▾</span></div>
     <div class="sidebar-group-items">
       <div class="sidebar-item" data-section="faq" onclick="switchSection('faq')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -1557,22 +1559,29 @@ function closeEcoDetail(){document.getElementById('eco-detail-panel').classList.
 
 // Collapsible sidebar groups
 function toggleGroup(label){
-  label.classList.toggle('collapsed');
+  const toggle=label.querySelector('.sg-toggle');
   const items=label.nextElementSibling;
-  items.classList.toggle('collapsed');
+  const isCollapsed=items.classList.contains('collapsed');
+  if(isCollapsed){
+    items.classList.remove('collapsed');
+    toggle.classList.remove('collapsed');
+  }else{
+    items.classList.add('collapsed');
+    toggle.classList.add('collapsed');
+  }
 }
 // Auto-expand the group containing the active item, collapse others
 function autoExpandActive(){
   document.querySelectorAll('.sidebar-group').forEach(g=>{
     const items=g.querySelector('.sidebar-group-items');
-    const label=g.querySelector('.sidebar-group-label');
+    const toggle=g.querySelector('.sg-toggle');
     const hasActive=g.querySelector('.sidebar-item.active');
     if(hasActive){
-      label.classList.remove('collapsed');
       items.classList.remove('collapsed');
+      if(toggle)toggle.classList.remove('collapsed');
     }else{
-      label.classList.add('collapsed');
       items.classList.add('collapsed');
+      if(toggle)toggle.classList.add('collapsed');
     }
   });
 }
