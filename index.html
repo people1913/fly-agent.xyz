@@ -2,82 +2,248 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="msvalidate.01" content="0BA1715603F725EDEA2F49423B9D78B0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fly · 沙盒验证</title>
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
-.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
+<meta name="description" content="Fly——AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计的基础设施层。从身份注册到行为审计全链路可追溯，数据可验证、归因可审计、运行可治理。">
+<title>Fly · AI Agent信任与归因基础设施</title>
+<meta property="og:title" content="Fly · AI Agent信任与归因基础设施">
+<meta property="og:description" content="Fly·AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计。从身份注册到行为审计全链路可追溯，数据可验证、归因可审计。">
+<meta property="og:url" content="https://fly-agent.xyz">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://fly-agent.xyz/">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fly-agent.xyz/fly_logo.jpg">
 
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"FlyAgent","url":"https://fly-agent.xyz","description":"AI Agent 信任与归因基础设施，验证AI行为是否可信","slogan":"验证每一次AI行为是否可信"},{"@type":"SoftwareApplication","name":"FlyAgent","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"AI Agent信任与归因基础设施——可信归因·行为验证·安全审计"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Fly是什么","acceptedAnswer":{"@type":"Answer","text":"Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。"}},{"@type":"Question","name":"什么是action_id","acceptedAnswer":{"@type":"Answer","text":"action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。"}}]}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;--bg4:#E8ECF0;
+--blue:#2563EB;--blue-light:#60A5FA;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--tan:#64748B;--tan-light:#94A3B8;
+--dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
+--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+--border:#E2E8F0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;font-size:16px}
+a{color:var(--blue);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+
+/* NAV */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+header .container{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:6px;letter-spacing:-0.5px}
+.logo b{color:#0F172A;font-size:35px;font-weight:700;font-family:var(--sans)}.logo-sub{color:#0F172A;font-size:18px;font-weight:700;margin-left:4px;letter-spacing:-0.5px}
+nav{display:flex;align-items:center;gap:20px}
+nav a{font-size:13px;color:var(--text2);transition:color .15s;letter-spacing:.3px;font-weight:500}
+nav a:hover{color:var(--dark)}
+.nav-cta{padding:8px 18px;background:var(--deep-green);color:#E8F5EC;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.nav-cta:hover{opacity:.85}
+
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.sec-label{font-family:var(--mono);font-size:11px;color:var(--tan);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.sec-title{font-size:28px;font-weight:700;line-height:1.3;margin-bottom:6px;letter-spacing:-.5px;color:var(--dark)}
+.sec-desc{font-size:14px;color:var(--text2);margin-bottom:28px;max-width:560px}
+
+/* HERO */
+.hero{padding:100px 0 80px;border-bottom:1px solid var(--border)}
+.hero .container{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:720px;margin:0 auto}
+.hero h1{font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-1.5px;color:var(--dark);margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero-tagline{font-size:20px;font-family:var(--sans);font-weight:800;color:var(--blue);margin:0 0 12px 0;letter-spacing:-1px;line-height:1.2}
+.hero-label{font-size:24px;font-family:var(--sans);color:#94A3B8;font-weight:400;letter-spacing:-1px;margin:0 0 12px 0;line-height:1.2}
+.hero-pain{font-size:44px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.2;margin:0 0 12px 0;font-family:var(--sans)}
+.hero-trust{margin:0 0 12px 0;font-size:15px;color:#94A3B8;font-weight:500}
+.hero-trust .dot{color:#CBD5E1;margin:0 1px}
+.hero-btns{display:flex;gap:32px;margin:0;flex-wrap:wrap;justify-content:center}
+.btn-p{padding:8px 18px;background:var(--deep-green);color:#E8F5EC;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.btn-p:hover{opacity:.85}
+.btn-s{padding:8px 18px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.btn-s:hover{border-color:var(--text3);color:var(--dark)}
+
+/* PROBLEM */
+.problem-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;font-size:14px;color:var(--text2)}
+.problem-flow .node{padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:500}
+.problem-flow .arrow{color:var(--blue);font-weight:600}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.problem-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:24px}
+.problem-card .num{font-family:var(--mono);font-size:11px;color:var(--blue);margin-bottom:10px}
+.problem-card h3{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--dark)}
+.problem-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ARCHITECTURE SIMPLIFIED */
+.arch-layers{max-width:720px}
+.arch-layer{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:4px}
+.arch-ico{font-size:18px;min-width:24px;text-align:center}
+.arch-lname{font-size:14px;font-weight:600;color:var(--dark)}
+.arch-value{font-size:12px;color:var(--text2)}
+.arch-arrow{padding:2px 0 2px 30px;display:flex;align-items:center;gap:8px;color:var(--blue);font-size:11px;font-family:var(--mono)}
+
+/* PROTOCOL */
+.proto-steps{max-width:720px}
+.proto-step{display:flex;gap:16px;margin-bottom:20px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.proto-num{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);min-width:32px}
+.proto-content h3{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.proto-content p{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* SIGNAL FLOW */
+.attribution-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.attribution-flow .step{text-align:center;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;min-width:80px}
+.attribution-flow .step .label{font-size:13px;font-weight:600;color:var(--dark)}
+.attribution-flow .step .detail{font-size:11px;color:var(--text2);margin-top:4px}
+.attribution-flow .arrow{color:var(--blue);font-weight:700;font-size:16px}
+
+/* GEO COMPARE */
+.geo-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+.geo-card{padding:24px;border-radius:10px;background:var(--bg)}
+.geo-card.fly{border:2px solid var(--blue)}
+.geo-card.trad{border:1px solid var(--border)}
+.geo-card h3{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:12px}
+.geo-card .line{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:6px}
+.geo-card .bad{color:#DC2626;font-weight:600}
+.geo-card .good{color:var(--blue);font-weight:600}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}
+.price-card{padding:28px 24px;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+.price-card.featured{border:2px solid var(--blue);position:relative}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:2px 12px;background:var(--blue);color:#fff;font-size:11px;border-radius:20px;font-weight:600}
+.price-tier{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:8px}
+.price-amount{font-size:32px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.price-amount span{font-size:14px;font-weight:400;color:var(--text2)}
+.price-extra{font-size:12px;color:var(--text2);margin-bottom:16px}
+.price-features{list-style:none;font-size:13px;color:var(--text2);line-height:2;margin-bottom:20px;padding:0}
+.price-btn{width:100%;padding:12px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.price-btn:hover{opacity:.85}
+.price-btn.blue{background:var(--blue)}
+
+/* COMPLIANCE MINI */
+.compliance-mini{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.compliance-box{padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.compliance-box h4{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:8px}
+.compliance-box .item{font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.8}
+.compliance-bad{color:#DC2626;font-weight:600}
+
+/* FAQ COMPACT */
+.faq-list{max-width:720px;margin-top:24px}
+.faq-item{border-bottom:1px solid var(--border);padding:0}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:16px 0;cursor:pointer;font-size:14px;font-weight:500;color:var(--dark)}
+.faq-q:hover{color:var(--blue)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s;font-size:13px;color:var(--text2);line-height:1.8}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:16px}
+.faq-item .pm{font-size:18px;color:var(--text2);transition:transform .2s}
+.faq-item.open .pm{transform:rotate(45deg)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px 0 24px;background:var(--bg2)}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:24px}
+.footer-brand{font-size:14px;color:var(--dark);font-weight:600;max-width:400px}
+.footer-brand span{font-weight:400;font-size:11px;color:var(--text2)}
+.footer-links{display:flex;flex-wrap:wrap;gap:16px}
+.footer-links a{font-size:13px;color:var(--text2)}
+.footer-links a:hover{color:var(--dark)}
+.footer-copy{font-size:11px;color:var(--text2);border-top:1px solid var(--border);padding-top:16px}
+
+/* VERIFY MODAL */
+.verify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.verify-overlay.show{display:flex}
+.verify-card{background:#fff;border-radius:16px;padding:32px;max-width:460px;width:90%;max-height:85vh;overflow-y:auto;position:relative}
+.verify-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;color:var(--text2);cursor:pointer}
+.verify-close:hover{color:var(--dark)}
+.verify-field{margin-bottom:14px}
+.verify-field label{display:block;font-size:12px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.verify-field input,.verify-field select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--sans);outline:none;transition:border .15s}
+.verify-field input:focus,.verify-field select:focus{border-color:var(--blue)}
+.verify-submit{width:100%;padding:10px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);margin-top:8px}
+.verify-submit:hover{opacity:.85}
+
+/* OVERLAY */
+.legal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.legal-overlay.show{display:flex}
+.legal-card{background:#fff;border-radius:16px;padding:40px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto}
+.legal-card h2{font-size:20px;font-weight:700;color:var(--dark);margin-bottom:16px}
+.legal-card h3{font-size:14px;font-weight:600;color:var(--dark);margin:16px 0 8px}
+.legal-card p{font-size:13px;color:var(--text2);line-height:1.8}
+.legal-close{margin-top:24px;padding:10px 24px;background:var(--dark);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--sans)}
+
+/* SANDBOX TAG */
+.sandbox-tag{font-size:10px;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:8px;border:1px solid var(--border)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.hero-label{font-size:16px}.hero-pain{font-size:36px}.hero-tagline{font-size:16px}
+.problem-grid{grid-template-columns:1fr}
+.price-grid{grid-template-columns:1fr}
+.compliance-mini{grid-template-columns:1fr}
+.geo-compare{grid-template-columns:1fr}
+nav{gap:12px}nav a{font-size:12px}
+}
+
+/* ========== Fly自建聊天面板 ========== */
+.fly-chat-panel{position:fixed;top:0;right:0;width:420px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:99999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;pointer-events:auto}
+.fly-chat-panel.open{transform:translateX(0)}
+.fly-chat-header{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #E2E8F0;flex-shrink:0}
+.fly-chat-close{margin-left:auto;background:none;border:none;font-size:18px;color:#94A3B8;cursor:pointer;padding:4px 8px;border-radius:6px}
+.fly-chat-close:hover{background:#F1F5F9;color:#0F172A}
+.fly-chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.fly-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.7;word-break:break-word}
+.fly-msg-user{align-self:flex-end;background:#2563EB;color:#fff;border-bottom-right-radius:4px}
+.fly-msg-bot{align-self:flex-start;background:#F1F5F9;color:#0F172A;border-bottom-left-radius:4px}
+.fly-chat-input-bar{display:flex;padding:12px 16px;border-top:1px solid #E2E8F0;gap:8px;flex-shrink:0}
+.fly-chat-input-bar input{flex:1;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;font-size:14px;outline:none;transition:border-color .2s}
+.fly-chat-input-bar input:focus{border-color:#2563EB}
+.fly-chat-input-bar button{background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;font-size:16px;transition:background .2s}
+.fly-chat-input-bar button:hover{background:#1D4ED8}
+@media(max-width:768px){.fly-chat-panel{width:100%}}
+
 </style>
+
 </head>
 <body>
-<script src="/nav-shared.js"></script>
-<div class="main">
-<div class="topbar"><h1>验证层</h1><span class="tag">Verification Layer</span></div>
-<div class="content">
-<div class="section">
-<h2>验证层 · Fly</h2>
-<p>Fly定位为AI时代的验证层（Verification Layer），不是营销工具、不是Agent工具，而是验证AI获客是否赚钱的基础设施。类似Stripe验证支付、Cloudflare验证访问。</p>
+<!-- NAV -->
+<header>
+<div class="container">
+<div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · 信任与归因基础设施</span></div>
+<nav>
+<a href="/signal-flow.html" class="nav-cta" style="text-decoration:none;background:var(--deep-green);color:#E8F5EC">溯源 Fly</a>
+</nav>
 </div>
-<div class="section">
-<h2>四步验证链路</h2>
-<p><strong>AI推荐 → 用户咨询 → 成交确认 → 佣金结算</strong></p>
-<p>每一条AI推荐都会生成唯一Action ID，追踪从推荐→咨询→成交→佣金的完整链路，确保归因可验证、不可篡改。</p>
+</header>
+
+<!-- ===== SECTION 1: HERO ===== -->
+<section class="hero" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center">
+<div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0">
+<div style="font-family:var(--sans);font-size:16px;color:#94A3B8;letter-spacing:0;font-weight:400;margin-bottom:18px">AI时代的归因与验证基础设施</div>
+<div class="hero-pain" style="white-space:nowrap;margin-bottom:16px">每一次 AI 推荐，都应该产生可验证收入</div>
+<div style="font-size:28px;font-weight:600;color:#1A3D2E;letter-spacing:-0.5px;line-height:1.5;font-family:var(--sans);margin-bottom:16px">Fly 为每一次 AI 推荐生成唯一 Action ID<br>让推荐、咨询、成交与佣金形成完整验证链路</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:1.5px">
+<div style="font-size:16px;color:#CBD5E1">互联网时代——Google Analytics 证明流量价值</div>
+<div style="font-size:19px;color:#0F172A;font-weight:700">AI时代——Fly 验证 AI 是否真正带来收入</div>
 </div>
-<div class="card">
-<h3>核心数据</h3>
-<p>验证请求 3,847/日 · 通过率 96.8% · 平均延迟 12ms · 异常拦截 23件/日</p>
+<div style="margin-top:32px;display:flex;align-items:center;justify-content:center">
+<svg width="320" height="120" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker></defs>
+<circle cx="60" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="60" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI推荐</text>
+<text x="60" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Recommend</text>
+<circle cx="160" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="160" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">验证</text>
+<text x="160" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Verify</text>
+<circle cx="260" cy="60" r="28" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="260" y="56" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">信任</text>
+<text x="260" y="70" text-anchor="middle" font-size="8" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
+<path d="M90 55 L130 55" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="110" y="48" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
+<path d="M190 55 L230 55" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="210" y="48" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">归因</text>
+<path d="M260 90 Q160 115 60 90" stroke="#1A3D2E" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)" fill="none"/>
+<text x="160" y="112" text-anchor="middle" font-size="7" fill="#94A3B8" font-family="Inter,Noto Sans SC,sans-serif">更多推荐 → 增长飞轮</text>
+</svg>
 </div>
-<div class="card">
-<h3>哈希链验证</h3>
-<p>SHA-256哈希链串联，确保链路不可篡改、可审计。</p>
 </div>
-</div>
-</div>
-</body>
-</html>
+</section>
+
+>
