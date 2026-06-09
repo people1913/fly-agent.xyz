@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信任中心 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+/* 折叠侧边栏 */
+
+.chart-row{display:flex;gap:12px;margin-bottom:24px}
+.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
+.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
+.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
+.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
+.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
+.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
+/* Signal Flow Page */
+.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:14px}
+.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
+.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.vs-col.wrong .vs-title{color:#DC2626}
+.vs-col.right .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:12px;line-height:2}
+.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
+.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
+.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.flow-step{display:flex;align-items:stretch;gap:0}
+.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.flow-step-num .line{flex:1;width:2px;margin-top:2px}
+.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
+.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
+.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
+.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
+.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>信任中心</h1><span class="tag">安全与合规</span></div>
+<div class="content">
+<div class="section" id="encryption">
+<h2>数据加密</h2>
+<p>Fly 对所有数据采用端到端加密策略，确保归因数据从生成到存储到结算全程受到保护。</p>
+<div class="card"><h3>传输加密</h3><p>所有 API 调用与数据传输使用 TLS 1.3 加密，拒绝降级攻击。证书由权威 CA 签发，支持证书固定（Certificate Pinning）。</p></div>
+<div class="card"><h3>存储加密</h3><p>静态数据采用 AES-256-GCM 加密，密钥由独立 KMS 管理，每 90 天自动轮换。密钥与数据物理隔离存储。</p></div>
+</div>
+<div class="section" id="hashchain">
+<h2>哈希链验证</h2>
+<p>每条 Action ID 的验证链路通过 SHA-256 哈希链连接，任何单点篡改都会导致整条链断裂，确保数据不可篡改。</p>
+<div class="card"><h3>链式结构</h3><p>每个验证步骤的输出哈希作为下一步的输入，形成：推荐→咨询→成交→佣金的完整哈希链。任何中间节点的数据变更都会导致后续所有哈希失效。</p></div>
+<div class="card"><h3>链上锚点</h3><p>每日将哈希链根哈希同步至公开账本，提供独立第三方验证能力。任何人都可以验证特定日期的数据完整性。</p></div>
+</div>
+<div class="section" id="access">
+<h2>访问控制</h2>
+<p>基于角色的细粒度权限控制，确保每个用户只能访问其权限范围内的数据。</p>
+<div class="card"><h3>RBAC 权限模型</h3><p>预设管理员、审计员、运营、只读四个角色，支持自定义角色与细粒度权限配置。所有权限变更留有审计日志。</p></div>
+<div class="card"><h3>API 安全</h3><p>API 调用需携带有效 Token，Token 有效期 2 小时且支持即时吊销。所有 API 调用记录留存 180 天，支持回溯审查。</p></div>
+</div>
+<div class="section" id="compliance">
+<h2>合规认证</h2>
+<p>Fly 遵循国内外数据安全与隐私保护法规，持续更新合规能力。</p>
+<div class="card"><h3>数据隐私</h3><p>符合 GDPR 和《个人信息保护法》要求。用户数据最小化采集，支持数据导出与删除请求，数据处理协议可按需签署。</p></div>
+<div class="card"><h3>等保合规</h3><p>系统架构满足等保二级要求，关键模块达到等保三级标准。数据存储于境内节点，不进行跨境数据传输。</p></div>
+</div>
+<div class="section" id="audit">
+<h2>安全审计</h2>
+<p>持续的安全审计与漏洞管理，保障系统长期安全运行。</p>
+<div class="card"><h3>第三方审计</h3><p>每年进行两次第三方安全审计，覆盖应用安全、基础设施安全与合规性检查。审计报告可联系 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0370666076716a777a43656f7a2e6264666d772d7b7a79">[email&#160;protected]</a> 申请获取。</p></div>
+<div class="card"><h3>漏洞赏金</h3><p>持续运行漏洞赏金计划，欢迎安全研究员提交漏洞报告。严重漏洞最高奖励 ¥50,000。提交地址：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f08395938582998489b0969c89dd9197959e84de88898a">[email&#160;protected]</a></p></div>
+</div>
+</div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>

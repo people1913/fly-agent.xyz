@@ -1,0 +1,22 @@
+{
+  "name": "fly-api-worker",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create fly-db",
+    "db:migrate:v1": "wrangler d1 execute fly-db --file=migrations/0001_core_v1.sql",
+    "db:migrate:v2": "wrangler d1 execute fly-db --file=migrations/0002_security_v2.sql",
+    "db:migrate": "wrangler d1 execute fly-db --file=migrations/0001_core_v1.sql && wrangler d1 execute fly-db --file=migrations/0002_security_v2.sql",
+    "db:query": "wrangler d1 execute fly-db --command"
+  },
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.98.0"
+  }
+}

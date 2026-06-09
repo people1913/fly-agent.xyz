@@ -1,0 +1,18 @@
+# secrets
+.env
+.env.*
+.dev.vars
+
+# cloudflare config (contains real keys)
+wrangler.toml
+wrangler.toml.bak
+wrangler_noKV.toml
+
+# local configs
+*.local
+
+# cloudflare dev
+.wrangler/
+
+# dependencies
+node_modules/
