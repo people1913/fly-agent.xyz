@@ -26,6 +26,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .card p{color:var(--text3);font-size:12px;line-height:1.7}
 .card code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
 .section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.sub-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--dark);margin-top:8px}
 .flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
 .flow-step{display:flex;align-items:stretch;gap:0}
 .flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
@@ -37,6 +38,21 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
 .gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
 .gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+.api-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;overflow:hidden}
+.api-block .api-hd{background:var(--deep-green);color:#fff;padding:8px 14px;font-family:var(--mono);font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.api-block .api-hd .method{background:#2563EB;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.api-block pre{padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.7;overflow-x:auto;color:var(--text2)}
+.api-block .api-desc{padding:10px 14px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);line-height:1.6}
+.state-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.state-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.5px;color:var(--text3)}
+.state-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.state-table tr:hover{background:var(--bg2)}
+.state-table code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.badge-green{background:var(--mint);color:var(--deep-green)}
+.badge-blue{background:#EFF6FF;color:#2563EB}
+.badge-yellow{background:#FEF9C3;color:#92400E}
+.badge-red{background:#FEF2F2;color:#DC2626}
 </style>
 </head>
 <body>
@@ -51,7 +67,56 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   <div class="def-sub">从推荐→咨询→成交→佣金，全链路共享同一个 Action ID，实现端到端追溯。每一条归因链路有且仅有一个 Action ID。</div>
 </div>
 
-<h2 class="section-title">Action ID 的生命周期</h2>
+<h2 class="section-title">Action ID 是什么</h2>
+
+<div class="card">
+  <h3>一句话解释</h3>
+  <p>Action ID 是 Fly 归因验证体系的核心原子单位。它就像一个"验证身份证"，从信号产生的第一刻起就被签发，伴随信号走过推荐→咨询→成交→佣金的全链路，每一步都记录验证结果和哈希值。</p>
+</div>
+
+<div class="card">
+  <h3>为什么需要 Action ID</h3>
+  <p>传统归因的痛点：<strong>各环节各说各话</strong>。推荐平台说"我带来了100个客户"，咨询系统说"只有20个有效咨询"，成交系统说"只成交了3单"——数据对不上，谁也说不清问题在哪。Action ID 让每个环节用同一个ID说话，数据对齐一目了然。</p>
+</div>
+
+<h2 class="section-title">生成规则</h2>
+
+<div class="card">
+  <h3>格式</h3>
+  <p>Action ID 采用 <code>act_{timestamp}_{random}</code> 格式，例如：<code>act_1717920000_a3f8b2c1</code></p>
+</div>
+
+<div class="card">
+  <h3>生成时机</h3>
+  <p>当用户通过推荐链接/二维码/渠道入口进入时，系统在<strong>第一时间</strong>生成 Action ID。不是咨询时才生成，不是成交后才补——是信号产生的第一刻。</p>
+</div>
+
+<div class="card">
+  <h3>生成条件</h3>
+  <p>必须满足以下条件才能生成：</p>
+  <p>① 来源渠道已验证（非伪造）</p>
+  <p>② 推荐人身份已确认（Agent注册有效）</p>
+  <p>③ 入口参数合法（防注入/防重放）</p>
+</div>
+
+<h2 class="section-title">唯一性保证</h2>
+
+<div class="card">
+  <h3>全局唯一</h3>
+  <p>每个 Action ID 在全系统中唯一，不会重复。基于时间戳 + 随机数 + 服务节点ID 三重保证。</p>
+</div>
+
+<div class="card">
+  <h3>不可复用</h3>
+  <p>同一个 Action ID 只能走一次完整生命周期。一旦进入结算阶段，该 Action ID 永久锁定，不能再次触发任何归因流程。</p>
+</div>
+
+<div class="card">
+  <h3>防碰撞</h3>
+  <p>即使在高并发场景下（1000 QPS），Action ID 的碰撞概率低于 10⁻¹⁸。设计上保证了跨节点、跨时间窗口的全局唯一性。</p>
+</div>
+
+<h2 class="section-title">生命周期</h2>
 
 <div class="flow-pipeline">
   <div class="flow-step">
@@ -60,8 +125,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
       <div class="line" style="background:#2563EB"></div>
     </div>
     <div class="flow-step-body">
-      <h3>生成：推荐触发</h3>
-      <p>当用户通过推荐链接/二维码/渠道入口进入时，系统生成唯一的 Action ID，并记录来源渠道、推荐人、时间戳。</p>
+      <h3>生成：推荐触发 <span class="badge badge-blue">CREATED</span></h3>
+      <p>用户通过推荐链接/二维码/渠道入口进入时，系统生成唯一的 Action ID，并记录来源渠道、推荐人、时间戳。此时验证链初始化，第一个哈希节点生成。</p>
     </div>
   </div>
   <div class="flow-step">
@@ -70,8 +135,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
       <div class="line" style="background:#059669"></div>
     </div>
     <div class="flow-step-body">
-      <h3>传递：咨询跟进</h3>
-      <p>Action ID 随用户行为传递。咨询时系统验证 Action ID 的来源合法性，确认信号真实。</p>
+      <h3>传递：咨询跟进 <span class="badge badge-green">REFERRED</span></h3>
+      <p>Action ID 随用户行为传递。咨询时系统验证 Action ID 的来源合法性，确认信号真实。验证通过则进入下一阶段，失败则标记异常。</p>
     </div>
   </div>
   <div class="flow-step">
@@ -80,8 +145,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
       <div class="line" style="background:#7C3AED"></div>
     </div>
     <div class="flow-step-body">
-      <h3>锁定：成交确认</h3>
-      <p>交易完成时，Action ID 与订单绑定。验证链锁定归因结果，不可篡改。</p>
+      <h3>锁定：成交确认 <span class="badge badge-yellow">CONVERTED</span></h3>
+      <p>交易完成时，Action ID 与订单绑定。验证链锁定归因结果，哈希链追加确认节点。此后归因结果不可篡改。</p>
     </div>
   </div>
   <div class="flow-step">
@@ -89,13 +154,71 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
       <div class="circle" style="background:#DC2626">4</div>
     </div>
     <div class="flow-step-body">
-      <h3>结算：佣金分配</h3>
-      <p>基于 Action ID 的验证链结果进行佣金结算。只有通过完整验证链的 Action ID 才能触发结算。</p>
+      <h3>结算：佣金分配 <span class="badge badge-red">SETTLED</span></h3>
+      <p>基于 Action ID 的验证链结果进行佣金结算。只有通过完整验证链的 Action ID 才能触发结算。结算后 Action ID 永久锁定。</p>
     </div>
   </div>
 </div>
 
-<h2 class="section-title">Action ID 的验证规则</h2>
+<h2 class="section-title">状态流转</h2>
+
+<table class="state-table">
+  <thead>
+    <tr><th>状态</th><th>含义</th><th>可转入</th><th>可转出</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>CREATED</code></td>
+      <td>已生成，等待推荐信号验证</td>
+      <td>—</td>
+      <td>REFERRED / EXPIRED</td>
+    </tr>
+    <tr>
+      <td><code>REFERRED</code></td>
+      <td>推荐信号已验证，等待咨询</td>
+      <td>CREATED</td>
+      <td>CONVERTED / ANOMALY</td>
+    </tr>
+    <tr>
+      <td><code>CONVERTED</code></td>
+      <td>成交已确认，等待结算</td>
+      <td>REFERRED</td>
+      <td>SETTLED / DISPUTED</td>
+    </tr>
+    <tr>
+      <td><code>SETTLED</code></td>
+      <td>已结算，永久锁定</td>
+      <td>CONVERTED</td>
+      <td>—（终态）</td>
+    </tr>
+    <tr>
+      <td><code>EXPIRED</code></td>
+      <td>超时未转化，已过期</td>
+      <td>CREATED</td>
+      <td>—（终态）</td>
+    </tr>
+    <tr>
+      <td><code>ANOMALY</code></td>
+      <td>验证链异常，需人工审核</td>
+      <td>REFERRED</td>
+      <td>CONVERTED / REJECTED</td>
+    </tr>
+    <tr>
+      <td><code>DISPUTED</code></td>
+      <td>归因争议中</td>
+      <td>CONVERTED</td>
+      <td>SETTLED / REJECTED</td>
+    </tr>
+    <tr>
+      <td><code>REJECTED</code></td>
+      <td>验证失败，已拒绝</td>
+      <td>ANOMALY / DISPUTED</td>
+      <td>—（终态）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-title">验证规则</h2>
 
 <div class="gate-card">
   <div class="gate-badge">GATE 1</div>
@@ -114,16 +237,50 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   <div class="gate-row">唯一性验证：同一个 Action ID 不能重复使用</div>
 </div>
 
-<h2 class="section-title">API 接口</h2>
+<h2 class="section-title">API 示例</h2>
 
-<div class="card">
-  <h3>POST /v1/action</h3>
-  <p>创建新的 Action ID。请求体需包含 <code>source</code>（来源渠道）和 <code>referrer</code>（推荐人标识）。返回唯一 Action ID 及初始验证状态。</p>
+<div class="api-block">
+  <div class="api-hd"><span class="method">POST</span> /v1/action — 创建 Action ID</div>
+  <pre>{
+  "source": "douyin",
+  "referrer": "agent_008",
+  "entry_point": "qrcode",
+  "metadata": {
+    "campaign_id": "camp_2024_summer",
+    "content_id": "video_12345"
+  }
+}</pre>
+  <div class="api-desc">请求体必须包含 <code>source</code>（来源渠道）和 <code>referrer</code>（推荐人标识）。<code>metadata</code> 可选，用于记录活动ID、内容ID等附加信息。</div>
 </div>
 
-<div class="card">
-  <h3>GET /v1/action/:id</h3>
-  <p>查询 Action ID 的完整生命周期。返回推荐→咨询→成交→佣金各阶段的验证状态和哈希值。</p>
+<div class="api-block">
+  <div class="api-hd">响应 201 Created</div>
+  <pre>{
+  "action_id": "act_1717920000_a3f8b2c1",
+  "status": "CREATED",
+  "source": "douyin",
+  "referrer": "agent_008",
+  "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb924...",
+  "created_at": "2026-06-09T12:00:00Z",
+  "expires_at": "2026-06-16T12:00:00Z"
+}</pre>
+  <div class="api-desc">返回唯一 Action ID、初始验证状态、初始哈希值和过期时间。默认7天未转化自动过期。</div>
+</div>
+
+<div class="api-block">
+  <div class="api-hd"><span class="method">GET</span> /v1/action/:id — 查询生命周期</div>
+  <pre>{
+  "action_id": "act_1717920000_a3f8b2c1",
+  "status": "CONVERTED",
+  "lifecycle": [
+    {"stage": "CREATED",    "at": "2026-06-09T12:00:00Z", "hash": "sha256:e3b0c4..."},
+    {"stage": "REFERRED",   "at": "2026-06-09T14:30:00Z", "hash": "sha256:7a8b9c..."},
+    {"stage": "CONVERTED",  "at": "2026-06-10T09:15:00Z", "hash": "sha256:1d2e3f..."}
+  ],
+  "chain_valid": true,
+  "trust_score": 87
+}</pre>
+  <div class="api-desc">返回 Action ID 的完整生命周期，包括每个阶段的时间、哈希值、链完整性判定和信任评分。</div>
 </div>
 
 </div>
