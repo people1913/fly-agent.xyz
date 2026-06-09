@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dify 归因 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--indigo:#EEF2FF;--indigo-border:#C7D2FE;--deep-indigo:#3730A3;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-indigo);background:var(--indigo);padding:2px 10px;border-radius:10px}
+.chart-row{display:flex;gap:12px;margin-bottom:24px}
+.mini-chart{flex:1;background:var(--bg);border:1px solid var(--indigo-border);border-radius:8px;padding:16px;text-align:center}
+.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-indigo)}
+.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
+.card{background:var(--bg);border:1px solid var(--indigo-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
+.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
+.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Dify</h1><span class="tag">AI Platform</span></div>
+<div style="padding:32px;overflow-y:auto">
+<p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">Dify AI 工作流归因验证方案。追踪从Dify工作流输出→用户触发→行为转化→佣金结算的全链路，验证AI工作流归因准确性。</p>
+<div class="chart-row" style="margin-bottom:24px"><div class="mini-chart"><div class="num">892/日</div><div class="lbl">验证请求</div></div><div class="mini-chart"><div class="num">94.3%</div><div class="lbl">通过率</div></div><div class="mini-chart"><div class="num">16ms</div><div class="lbl">平均延迟</div></div><div class="mini-chart"><div class="num">45件/日</div><div class="lbl">防刷拦截</div></div></div>
+<div class="card" style="margin-bottom:24px"><div class="lb">归因链路</div><div class="row" style="font-family:var(--mono);font-size:13px;color:var(--deep-indigo);letter-spacing:0.5px">AI工作流 → LLM输出 → 用户触发 → 行为转化 → 佣金结算</div></div>
+<div class="card"><div class="lb">工作流归因</div><div class="row">追踪Dify工作流输出→用户触发→行为转化→佣金的全链路</div></div>
+<div class="card"><div class="lb">LLM归因</div><div class="row">识别AI工作流中的真实输出vs随机生成，保障归因准确</div></div>
+<div class="card"><div class="lb">防刷验证</div><div class="row">识别虚假工作流输出、模拟触发行为，保障归因数据真实性</div></div>
+
+</div>
+</div>
+</body>
+</html>
