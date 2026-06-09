@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attribution · Verification Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{padding:32px;overflow-y:auto;flex:1}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8}
+.card h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--dark)}
+.card p{color:var(--text3);font-size:12px;line-height:1.7}
+.card code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
+.section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:14px}
+.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
+.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.vs-col.wrong .vs-title{color:#DC2626}
+.vs-col.right .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:12px;line-height:2}
+.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
+.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
+.attr-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:12px}
+.attr-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.5px;color:var(--text3)}
+.attr-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.attr-table tr:hover{background:var(--bg2)}
+.attr-table code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Attribution</h1><span class="tag">Verifiable Attribution Model</span></div>
+<div class="content">
+
+<div class="def-box">
+  <div class="def-label">核心定义</div>
+  <div class="def-text">Attribution = 可验证的归因</div>
+  <div class="def-sub">Fly 的归因不是"猜测谁贡献了转化"，而是"验证这个转化是否真实发生、来源是否可信、链路是否完整"。</div>
+</div>
+
+<h2 class="section-title">传统归因 vs Fly 归因</h2>
+
+<div class="vs-row">
+  <div class="vs-col wrong">
+    <div class="vs-title">传统归因模型</div>
+    <div class="vs-item">最后点击归因</div>
+    <div class="vs-item">算法黑箱，无法验证</div>
+    <div class="vs-item">各渠道数据不一致</div>
+    <div class="vs-item">依赖信任结算佣金</div>
+    <div class="vs-item">无法识别虚假归因</div>
+  </div>
+  <div class="vs-col right">
+    <div class="vs-title">Fly 归因验证</div>
+    <div class="vs-item">全链路验证归因</div>
+    <div class="vs-item">哈希链可审计</div>
+    <div class="vs-item">单一数据源对齐</div>
+    <div class="vs-item">基于验证结果结算</div>
+    <div class="vs-item">虚假信号自动拦截</div>
+  </div>
+</div>
+
+<h2 class="section-title">归因验证四阶段</h2>
+
+<table class="attr-table">
+  <thead>
+    <tr><th>阶段</th><th>验证内容</th><th>验证方式</th><th>失败处理</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>推荐</strong></td>
+      <td>推荐信号是否真实</td>
+      <td>验证来源渠道、推荐人身份</td>
+      <td>拒绝生成 Action ID</td>
+    </tr>
+    <tr>
+      <td><strong>咨询</strong></td>
+      <td>咨询是否由推荐触发</td>
+      <td>验证 Action ID 链路连续性</td>
+      <td>标记为异常信号</td>
+    </tr>
+    <tr>
+      <td><strong>成交</strong></td>
+      <td>交易是否归因正确</td>
+      <td>验证订单与 Action ID 绑定</td>
+      <td>拒绝绑定，人工审核</td>
+    </tr>
+    <tr>
+      <td><strong>佣金</strong></td>
+      <td>结算是否基于验证结果</td>
+      <td>验证全链路哈希链完整性</td>
+      <td>拒绝结算</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-title">归因数据模型</h2>
+
+<div class="card">
+  <h3>Action（动作）</h3>
+  <p>归因的基本单元。每个 Action 包含 <code>actionId</code>、<code>source</code>（渠道）、<code>referrer</code>（推荐人）、<code>status</code>（验证状态）、<code>hash</code>（哈希值）。</p>
+</div>
+
+<div class="card">
+  <h3>Verification（验证记录）</h3>
+  <p>对 Action 每个阶段的独立验证。每个 Verification 包含 <code>actionId</code>、<code>stage</code>（阶段）、<code>result</code>（结果）、<code>timestamp</code>（时间戳）。</p>
+</div>
+
+<div class="card">
+  <h3>Audit Event（审计事件）</h3>
+  <p>链式审计记录。每个 Audit Event 包含前一个事件的哈希，形成不可篡改的审计链。</p>
+</div>
+
+<h2 class="section-title">归因验证 API</h2>
+
+<div class="card">
+  <h3>POST /v1/agents</h3>
+  <p>注册归因验证 Agent。Agent 是归因链路的参与方，每个 Agent 有独立的验证职责和权限。</p>
+</div>
+
+<div class="card">
+  <h3>POST /v1/audit/verify-chain</h3>
+  <p>验证归因链完整性。提交 Action ID，系统返回全链路验证结果和哈希链状态。</p>
+</div>
+
+</div>
+</div>
+</body>
+</html>
