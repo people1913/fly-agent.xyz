@@ -3,527 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Fly Agent Gateway——统一AI Agent接入层。一次接入，自动获得身份验证、归因追踪、Prompt过滤、行为审计。支持Coze、Dify、Claude、OpenAI、MCP。">
-<title>运行时 · Fly</title>
-<meta property="og:title" content="运行时 · Fly">
-<meta property="og:description" content="Fly Agent Gateway——统一AI Agent接入层。身份、归因、验证、审计，一次接入全拥有。">
-<meta property="og:url" content="https://fly-agent.xyz/gateway.html">
-<meta property="og:type" content="website">
-<link rel="canonical" href="https://fly-agent.xyz/gateway.html">
+<title>Gate 5 构建验证 · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.gate-hero{text-align:center;padding:40px 24px 32px}
+.gate-hero .gate-num{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.gate-hero .gate-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.gate-hero .gate-zh{font-size:16px;color:var(--text3);margin-bottom:16px}
+.gate-hero .gate-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;margin-bottom:8px}
+.def-box .def-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
 .vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+.vs-col{flex:1;border-radius:8px;padding:16px}
+.vs-col.before{background:var(--bg3);border:1px solid var(--border)}
+.vs-col.after{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.vs-col.before .vs-title{color:var(--text4)}
+.vs-col.after .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.before .vs-item{color:var(--text3)}
+.vs-col.after .vs-item{color:var(--deep-green);font-weight:600}
+.step-row{display:flex;gap:12px;margin-bottom:24px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.next-box .next-label{font-size:10px;font-weight:700;color:var(--text4);letter-spacing:2px;margin-bottom:8px}
+.next-box .next-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
 </style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
+<div class="topbar"><h1>Gate 5 · 构建验证</h1><span class="tag">验证体系</span></div>
+<div class="content">
 
-<!-- NAV -->
-
-<!-- HERO -->
-<div class="hero-sec">
-<div class="container">
-<div class="sec-label" style="color:var(--sec-blue)">Agent Gateway</div>
-<h1>统一AI Agent<em>接入层</em></h1>
-<div class="hero-sub">
-你的AI Agent用Coze、Dify还是Claude？不重要。<br>
-接入Fly Gateway，身份、归因、验证、审计自动拥有。<br>
-不绑定平台，只绑定信任。
-</div>
-<div class="hero-tags">
-<span class="hero-tag">一次接入</span>
-<span class="hero-tag">多Agent支持</span>
-<span class="hero-tag">自动归因</span>
-<span class="hero-tag">行为审计</span>
-<span class="hero-tag">Prompt过滤</span>
-</div>
-</div>
+<div class="gate-hero">
+<div class="gate-num">GATE 5 / 6</div>
+<div class="gate-title">构建验证</div>
+<div class="gate-zh">Build Verification</div>
+<div class="gate-oneliner">你的验证流程是否按正确规则构建？每一步是否合规？</div>
 </div>
 
-<!-- 01 接入层 -->
-<div class="section" id="integration">
-<div class="container">
-<div class="sec-label">01 / Integration</div>
-<div class="sec-title">一行代码，接入信任</div>
-<div class="sec-desc">不需要改你的Agent逻辑。只需把请求发到Fly Gateway，剩下的自动完成。</div>
-<div class="code-block">
-<pre><span class="code-comment">// 接入Fly Agent Gateway</span>
-<span class="code-key">POST</span> <span class="code-str">https://api.fly-agent.xyz/v1/agent/execute</span>
+<hr class="divider">
 
-{
-  <span class="code-key">"agent_id"</span>: <span class="code-str">"FLY-healthcare-TW-consult"</span>,
-  <span class="code-key">"message"</span>: <span class="code-str">"用户的消息内容"</span>,
-  <span class="code-key">"conversation_id"</span>: <span class="code-str">"可选，多轮对话ID"</span>
-}</pre>
+<div class="section-title">为什么需要构建验证</div>
+<div class="section-body">
+系统部署了，但<strong>验证流程是否按规范执行？Prompt过滤是否生效？合规检测是否到位？如果验证规则本身有问题，再好的数据也会产出错误结果。</strong>
 </div>
+
+<div class="vs-row">
+<div class="vs-col before">
+<div class="vs-title">没有构建验证</div>
+<div class="vs-item">验证规则可能遗漏关键步骤</div>
+<div class="vs-item">Prompt内容未过滤可能违规</div>
+<div class="vs-item">合规检测配置不完整</div>
+<div class="vs-item">验证流程缺乏工程保障</div>
+</div>
+<div class="vs-col after">
+<div class="vs-title">经过构建验证</div>
+<div class="vs-item">验证流程按P1-P5原则构建</div>
+<div class="vs-item">Prompt过滤自动拦截违规内容</div>
+<div class="vs-item">合规检测覆盖全部必要项</div>
+<div class="vs-item">工程冻结原则确保稳定运行</div>
 </div>
 </div>
 
-<!-- 02 Fly自动完成 -->
-<div class="section-dark" id="auto-features">
-<div class="container">
-<div class="sec-label" style="color:var(--sec-blue)">02 / Auto Features</div>
-<div class="sec-title" style="color:#FFFFFF">接入即拥有，不用额外开发</div>
-<div class="sec-desc" style="color:#94A3B8">一次接入Fly Gateway，以下能力自动获得。不需要你写一行代码。</div>
-<div class="auto-grid">
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">action_id 自动注入</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">GEO 地域标记</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">Prompt 注入检测</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">Prompt 泄露检测</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">合规风险识别</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">归因链路追踪</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">行为真伪验证</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">信任评分计算</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">不可篡改审计</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">限流 Rate Limit</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">异常熔断</span></div>
-<div class="auto-item" style="background:rgba(255,255,255,.04);border-color:var(--sec-border)"><span class="check" style="color:var(--sec-blue)">✓</span><span style="color:#94A3B8">响应脱敏过滤</span></div>
+<hr class="divider">
+
+<div class="section-title">构建验证做了什么</div>
+<div class="def-box">
+<div class="def-label">核心动作</div>
+<div class="def-text">Fly的Gateway按照P1-P5工程冻结原则构建验证流程，从身份注入、归因追踪、Prompt过滤、合规检测到行为验证，每一步都有明确的规则和边界，确保验证流程本身的可靠性和合规性。</div>
 </div>
+
+<div class="step-row">
+<div class="step-card">
+<div class="step-num">STEP 1</div>
+<div class="step-title">身份注入 + 归因追踪</div>
+<div class="step-desc">每个请求自动注入身份标识，归因信息全程追踪</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 2</div>
+<div class="step-title">Prompt过滤 + 合规检测</div>
+<div class="step-desc">自动过滤违规Prompt内容，检测是否符合平台合规要求</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 3</div>
+<div class="step-title">行为验证 + 审计记录</div>
+<div class="step-desc">验证行为真实性，所有操作留痕可审计</div>
 </div>
 </div>
 
-<!-- 03 接入指南：6个关键问题 -->
-<div class="section" id="how-it-works">
-<div class="container">
-<div class="sec-label">03 / Integration Guide</div>
-<div class="sec-title">接入前，6个关键问题</div>
-<div class="sec-desc">企业最关心的不是功能，是安全、隔离、归因。这里逐项说清。</div>
+<hr class="divider">
 
-<div class="card-grid" style="margin-bottom:20px">
-<!-- 怎么接 -->
-<div class="card">
-<div class="card-label">01 · 怎么接</div>
-<h3>3步完成接入</h3>
-<p>不改你的Agent逻辑，不换你的模型平台。只改请求地址。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">①</span><span><strong>注册获取agent_id</strong>：在Fly后台创建Agent配置，分配唯一agent_id（如FLY-healthcare-TW-consult）</span></div>
-<div class="feat-item"><span class="check">②</span><span><strong>改请求地址</strong>：将前端直连模型的URL改为 <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:3px">https://api.fly-agent.xyz/v1/agent/execute</code></span></div>
-<div class="feat-item"><span class="check">③</span><span><strong>收到归因数据</strong>：每次响应自动包含action_id、GEO、信任评分、审计ID</span></div>
-</div>
-<div style="margin-top:12px;padding:12px 16px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--text2)">
-<strong style="color:var(--dark)">请求示例：</strong><br>
-<code style="font-family:var(--mono);font-size:11px">POST /v1/agent/execute<br>
-Authorization: Bearer {jwt_token}<br>
-Body: {"agent_id":"FLY-healthcare-TW-consult","message":"用户消息"}</code>
-</div>
-</div>
-
-<!-- 如何安全 -->
-<div class="card">
-<div class="card-label">02 · 如何安全</div>
-<h3>4层安全防护</h3>
-<p>前端永远不直连AI模型。所有流量经Fly Gateway，4层拦截。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">✓</span><span><strong>JWT身份验证</strong>：每个请求携带OAuth2签发的JWT，Worker验证后才放行</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>TLS 1.3传输加密</strong>：全链路HTTPS，Cloudflare自动终止TLS</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>Prompt防火墙</strong>：5类攻击自动拦截——注入/泄露/越权/DAN/工具覆盖</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>响应脱敏</strong>：模型返回内容经合规过滤后再交付前端，敏感信息不外泄</span></div>
-</div>
-<div style="margin-top:12px;padding:12px 16px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--text2)">
-<strong style="color:var(--dark)">拦截实测：</strong><br>
-"ignore all previous instructions" → 403 blocked<br>
-"reveal your system prompt" → 403 blocked<br>
-"包治百病" → 403 医疗违规
-</div>
-</div>
-</div>
-
-<div class="card-grid" style="margin-bottom:20px">
-<!-- 如何隔离 -->
-<div class="card">
-<div class="card-label">03 · 如何隔离</div>
-<h3>Agent间数据零交叉</h3>
-<p>每个Agent独立身份、独立KV空间、独立限流配额。你的数据不会混入别人家。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">✓</span><span><strong>agent_id隔离</strong>：每个Agent分配唯一ID，KV存储按agent_id分key，物理隔离</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>会话隔离</strong>：conversation_id绑定agent_id，跨Agent无法访问</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>限流独立</strong>：每个agent_id独立Rate Limit，一个Agent超限不影响其他</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>运行时隔离</strong>：Agent Runtime（Coze/Dify/Claude）各自独立进程，不共享内存</span></div>
-</div>
-</div>
-
-<!-- 如何归因 -->
-<div class="card">
-<div class="card-label">04 · 如何归因</div>
-<h3>从点击到成交，全链路可追溯</h3>
-<p>每次对话自动生成action_id，贯穿整个归因链路。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">✓</span><span><strong>action_id生成规则</strong>：FLY-{行业}-{地域}-{时间戳}-{哈希}，全局唯一、不可伪造</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>GEO标记</strong>：自动从请求IP识别地域（如CN/Beijing），写入归因记录</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>归因链路</strong>：点击 → 对话（action_id）→ 验证（真/假）→ 到店 → 成交，每一步可追溯</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>不可篡改</strong>：归因记录写入KV时带SHA256哈希，任何修改都会导致哈希校验失败</span></div>
-</div>
-<div style="margin-top:12px;padding:12px 16px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--text2)">
-<strong style="color:var(--dark)">归因示例：</strong><br>
-action_id: FLY-CN-BEIJING-mpz935g1-kcsr<br>
-geo: CN/Beijing | verification: pending_review<br>
-audit_id: audit_xxxx 写入KV，哈希校验完整
-</div>
-</div>
-</div>
-
-<div class="card-grid">
-<!-- 如何风控 -->
-<div class="card">
-<div class="card-label">05 · 如何风控</div>
-<h3>5道风控防线</h3>
-<p>不是事后查日志，是请求发出瞬间就拦截。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">✓</span><span><strong>限流Rate Limit</strong>：单agent_id每分钟N次请求上限，超限返回429</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>Prompt注入检测</strong>：5类攻击模式实时匹配，命中即403</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>合规实时扫描</strong>：医疗违规/广告法/敏感词，输出前拦截</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>异常熔断</strong>：同一agent_id短时间触发N次违规，自动熔断该Agent</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>审计全记录</strong>：prompt/response/tool call/latency/ROI，一条不落</span></div>
-</div>
-</div>
-
-<!-- 如何验证 -->
-<div class="card">
-<div class="card-label">06 · 如何验证</div>
-<h3>验证是Fly的核心，不是附加功能</h3>
-<p>不是"接了个AI"，是"接了个可验证的AI"。</p>
-<div class="feat-list">
-<div class="feat-item"><span class="check">✓</span><span><strong>真咨询 vs 刷量</strong>：分析对话深度、交互模式、响应逻辑，区分真实咨询与机器刷量</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>信任评分</strong>：6维度动态计算——对话深度/响应相关性/交互频率/GEO一致性/行为模式/历史信誉</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>验证状态</strong>：每次对话产出verification状态——pending_review / verified / rejected</span></div>
-<div class="feat-item"><span class="check">✓</span><span><strong>提分建议</strong>：信任评分低时，自动给出可操作的改进建议</span></div>
-</div>
-</div>
+<div class="next-box">
+<div class="next-label">下一关</div>
+<div class="next-text">构建验证确保了「验证流程可靠」，接下来需要持续监控「系统运行是否健康」</div>
+<a href="/security.html" class="next-link">Gate 6 健康验证 →</a>
 </div>
 
 </div>
 </div>
-
-<!-- 03 多Agent支持 -->
-<div class="section" id="platforms">
-<div class="container">
-<div class="sec-label">04 / Multi-Agent Support</div>
-<div class="sec-title">不绑定平台，只绑定信任</div>
-<div class="sec-desc">你的Agent跑在哪个平台不重要。Fly Gateway是统一的信任层，接入一次，全平台通用。</div>
-<div class="card-grid-5">
-<div class="card" style="text-align:center">
-<div style="font-size:24px">⚡</div>
-<div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:8px">Coze</div>
-<div style="font-size:11px;color:var(--text2);margin-top:4px">扣子 3.0 已跑通</div>
-</div>
-<div class="card" style="text-align:center">
-<div style="font-size:24px">🔧</div>
-<div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:8px">Dify</div>
-<div style="font-size:11px;color:var(--text2);margin-top:4px">工作流接入</div>
-</div>
-<div class="card" style="text-align:center">
-<div style="font-size:24px">🤖</div>
-<div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:8px">Claude</div>
-<div style="font-size:11px;color:var(--text2);margin-top:4px">Anthropic SDK</div>
-</div>
-<div class="card" style="text-align:center">
-<div style="font-size:24px">🧠</div>
-<div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:8px">OpenAI</div>
-<div style="font-size:11px;color:var(--text2);margin-top:4px">GPT SDK</div>
-</div>
-<div class="card" style="text-align:center">
-<div style="font-size:24px">🔌</div>
-<div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:8px">MCP</div>
-<div style="font-size:11px;color:var(--text2);margin-top:4px">Model Context Protocol</div>
-</div>
-</div>
-<div style="margin-top:20px;text-align:center;font-size:13px;color:var(--text2)">
-<p>支持 LangChain / AutoGen / 自研Agent · 自定义Agent均可对接</p>
-</div>
-</div>
-</div>
-
-<!-- 04 对比：直连 vs Gateway -->
-
-<div class="section" id="api-reference">
-  <h2>API Reference</h2>
-  <p style="text-align:center;color:#64748B;max-width:680px;margin:0 auto 40px">43个KV Prefix · 53+个API端点 · 11层Stack完整覆盖</p>
-
-  <div style="max-width:960px;margin:0 auto">
-    <!-- Identity层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Identity 身份层</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/agent/register</td><td style="padding:8px;color:#334155">Agent注册（16字段Registry）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/agents</td><td style="padding:8px;color:#334155">Agent列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/agent/:id</td><td style="padding:8px;color:#334155">Agent查询</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/identity/users</td><td style="padding:8px;color:#334155">用户列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/identity/channels</td><td style="padding:8px;color:#334155">渠道列表</td></tr>
-      </table>
-    </div>
-
-    <!-- Trust层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Trust 信任层</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/audit</td><td style="padding:8px;color:#334155">审计日志列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/audit/:action_id</td><td style="padding:8px;color:#334155">审计查询（含SHA-256哈希链）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/trace</td><td style="padding:8px;color:#334155">Trace列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/trace/:id</td><td style="padding:8px;color:#334155">Trace查询</td></tr>
-        <tr><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/span/:id</td><td style="padding:8px;color:#334155">Span查询</td></tr>
-      </table>
-    </div>
-
-    <!-- Verification层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Verification 验证层</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/verify</td><td style="padding:8px;color:#334155">验证列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/verify/:action_id</td><td style="padding:8px;color:#334155">验证查询（rule engine + fraud scoring）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/verify/conversions</td><td style="padding:8px;color:#334155">转化验证列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/verify/fraud</td><td style="padding:8px;color:#334155">欺诈检测列表</td></tr>
-      </table>
-    </div>
-
-    <!-- Attribution层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Attribution 归因层</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/attribution</td><td style="padding:8px;color:#334155">归因列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/attribution/:action_id</td><td style="padding:8px;color:#334155">归因查询</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/attribution/weights</td><td style="padding:8px;color:#334155">权重列表</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/attribution/models</td><td style="padding:8px;color:#334155">模型列表</td></tr>
-      </table>
-    </div>
-
-    <!-- Governance层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Governance 治理层</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/agent/execute</td><td style="padding:8px;color:#334155">执行入口（5层全链路写入）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/governance/kill-switch</td><td style="padding:8px;color:#334155">Kill Switch 激活/解除</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/governance/permission/:id</td><td style="padding:8px;color:#334155">权限+Tool白名单+Secret隔离</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/governance/approval</td><td style="padding:8px;color:#334155">审批提交</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">PUT</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/governance/approval/:id</td><td style="padding:8px;color:#334155">审批操作（approve/reject）</td></tr>
-        <tr><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/governance/session/:id</td><td style="padding:8px;color:#334155">Session隔离状态</td></tr>
-      </table>
-    </div>
-
-    <!-- Event Bus + Stats -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-    <!-- Business Twin层 -->
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px;margin-bottom:16px">
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Business Twin Layer · 9引擎（老师V5.0）</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/state/:agentId</td><td style="padding:8px;color:#334155">Runtime State Engine 实时状态镜像</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/simulate</td><td style="padding:8px;color:#334155">Economic Simulation Engine 商业运行模拟器</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/user/:userId</td><td style="padding:8px;color:#334155">User Behavior Model 虚拟用户系统</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/strategy/simulate</td><td style="padding:8px;color:#334155">Agent Strategy Simulator 策略模拟</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">POST</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/scenario/fork</td><td style="padding:8px;color:#334155">Multi-Scenario Engine 未来分叉系统</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/causal/:actionId</td><td style="padding:8px;color:#334155">Causal Prediction Engine 因果推演</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/risk/:agentId</td><td style="padding:8px;color:#334155">Risk Forecast Engine 6类风险预测</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/confidence/:agentId</td><td style="padding:8px;color:#334155">Confidence Engine 可信度输出</td></tr>
-        <tr><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/twin/decision/:agentId</td><td style="padding:8px;color:#334155">Decision Recommendation Engine 决策建议</td></tr>
-      </table>
-    </div>
-      <h3 style="color:#0F172A;font-size:18px;margin-bottom:12px">Event Bus · Stats · ROI</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:8px;color:#64748B">Method</th><th style="text-align:left;padding:8px;color:#64748B">Endpoint</th><th style="text-align:left;padding:8px;color:#64748B">说明</th></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/events</td><td style="padding:8px;color:#334155">事件列表（5层写入链）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/event/:action_id</td><td style="padding:8px;color:#334155">事件详情（每层KV写入记录）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/stats</td><td style="padding:8px;color:#334155">10层聚合统计（含Business Twin 9引擎）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/status</td><td style="padding:8px;color:#334155">健康检查（10项子系统状态）</td></tr>
-        <tr style="border-bottom:1px solid #F1F5F9"><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/roi</td><td style="padding:8px;color:#334155">ROI列表（纯算术：revenue/cost）</td></tr>
-        <tr><td style="padding:8px"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px">GET</span></td><td style="padding:8px;font-family:monospace;color:#2563EB">/v1/roi/:action_id</td><td style="padding:8px;color:#334155">ROI查询</td></tr>
-      </table>
-    </div>
-
-    <!-- P1-P5原则 -->
-    <div style="background:#0F172A;border-radius:12px;padding:24px;margin-top:24px">
-      <h3 style="color:#60A5FA;font-size:16px;margin-bottom:12px">工程冻结5原则（运行时强制）</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
-        <div style="color:#E2E8F0"><span style="color:#60A5FA">P1</span> Action ID is the only truth carrier</div>
-        <div style="color:#E2E8F0"><span style="color:#60A5FA">P2</span> Layers are strictly unidirectional</div>
-        <div style="color:#E2E8F0"><span style="color:#60A5FA">P3</span> Verification never computes attribution</div>
-        <div style="color:#E2E8F0"><span style="color:#60A5FA">P4</span> Attribution never modifies truth</div>
-        <div style="color:#E2E8F0"><span style="color:#60A5FA">P5</span> ROI is pure arithmetic</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section-dark" id="comparison">
-<div class="container">
-<div class="sec-label" style="color:var(--sec-blue)">05 / Why Gateway</div>
-<div class="sec-title" style="color:#FFFFFF">直连模型 vs 经Fly Gateway</div>
-<div class="sec-desc" style="color:#94A3B8">不是多一步，而是多一层信任。直连模型=裸奔，经Gateway=可验证。</div>
-<div class="card-grid">
-<div class="card-dark" style="border-color:#7F1D1D">
-<div class="card-label" style="color:#F87171">直连模型</div>
-<h3>前端 → AI模型</h3>
-<p>无身份验证、无归因追踪、无Prompt过滤、无审计记录。谁都能调、调了什么不知道、出了事查不到。</p>
-<div class="feat-list">
-<div class="feat-item" style="color:#F87171"><span class="check" style="color:#F87171">✗</span><span>无agent_id，不知道是谁在请求</span></div>
-<div class="feat-item" style="color:#F87171"><span class="check" style="color:#F87171">✗</span><span>无action_id，归因链路断了</span></div>
-<div class="feat-item" style="color:#F87171"><span class="check" style="color:#F87171">✗</span><span>Prompt注入无法拦截</span></div>
-<div class="feat-item" style="color:#F87171"><span class="check" style="color:#F87171">✗</span><span>商业逻辑可能被套出来</span></div>
-<div class="feat-item" style="color:#F87171"><span class="check" style="color:#F87171">✗</span><span>出了事，无日志可查</span></div>
-</div>
-</div>
-<div class="card-dark" style="border-color:var(--sec-blue);background:rgba(96,165,250,.06)">
-<div class="card-label" style="color:var(--sec-blue)">经Fly Gateway</div>
-<h3>前端 → Fly Gateway → AI模型</h3>
-<p>身份验证、归因注入、Prompt过滤、合规检测、行为验证、审计记录——全自动化，你不用写代码。</p>
-<div class="feat-list">
-<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--sec-blue)">✓</span><span>agent_id自动注入，谁在请求一目了然</span></div>
-<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--sec-blue)">✓</span><span>action_id追踪，从点击到成交全链路</span></div>
-<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--sec-blue)">✓</span><span>Prompt注入自动拦截</span></div>
-<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--sec-blue)">✓</span><span>商业逻辑泄露实时检测</span></div>
-<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--sec-blue)">✓</span><span>不可篡改审计，出了事秒定位</span></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- 05 Gateway架构图 -->
-<div class="section" id="architecture">
-<div class="container">
-<div class="sec-label">06 / Architecture</div>
-<div class="sec-title">Fly Gateway请求链路</div>
-<div class="sec-desc">每一个请求经过Fly Gateway，自动完成6步验证，才放行到模型。</div>
-<div class="arch-diagram">
-<div class="arch-row arch-row-light">
-<div class="arch-ico">👤</div>
-<div class="arch-name">用户请求</div>
-<div class="arch-detail">用户在页面发起对话</div>
-</div>
-<div class="arch-flow">↓</div>
-<div class="arch-row arch-row-light" style="justify-content:center;border:2px solid var(--blue);background:#EFF6FF">
-<div class="arch-name" style="color:var(--blue);font-size:16px;font-weight:700">Fly Agent Gateway</div>
-</div>
-<div class="arch-flow">↓ 自动执行 ↓</div>
-<div class="card-grid" style="margin-bottom:4px">
-<div class="arch-row arch-row-light">
-<div class="arch-ico">🪪</div>
-<div class="arch-name">身份注入</div>
-<div class="arch-detail">agent_id + 签名验证</div>
-</div>
-<div class="arch-row arch-row-light">
-<div class="arch-ico">🔗</div>
-<div class="arch-name">归因追踪</div>
-<div class="arch-detail">action_id + GEO标记</div>
-</div>
-<div class="arch-row arch-row-light">
-<div class="arch-ico">🛡️</div>
-<div class="arch-name">Prompt过滤</div>
-<div class="arch-detail">注入检测 + 泄露检测</div>
-</div>
-<div class="arch-row arch-row-light">
-<div class="arch-ico">⚖️</div>
-<div class="arch-name">合规检测</div>
-<div class="arch-detail">医疗违规 + 广告法 + 敏感词</div>
-</div>
-<div class="arch-row arch-row-light">
-<div class="arch-ico">🔍</div>
-<div class="arch-name">行为验证</div>
-<div class="arch-detail">真咨询 vs 刷量判断</div>
-</div>
-<div class="arch-row arch-row-light">
-<div class="arch-ico">📝</div>
-<div class="arch-name">审计记录</div>
-<div class="arch-detail">prompt/response/tool call全记录</div>
-</div>
-</div>
-<div class="arch-flow">↓ 验证通过才放行 ↓</div>
-<div class="arch-row arch-row-light" style="justify-content:center;background:var(--bg3)">
-<div class="arch-name" style="color:var(--dark);font-size:14px">Agent Runtime（Coze / Dify / Claude / OpenAI / MCP）</div>
-</div>
-<div class="arch-flow">↓ 响应返回 ↓</div>
-<div class="arch-row arch-row-light" style="justify-content:center;border:2px solid var(--blue);background:#EFF6FF">
-<div class="arch-name" style="color:var(--blue);font-size:14px">Fly Verification Layer → 归因结果 + 信任评分</div>
-</div>
-</div>
-<div style="margin-top:32px;text-align:center;font-size:13px;color:var(--text2)">
-<p><strong>核心原则：</strong>前端永远不直连AI模型。Fly不是Agent的壳子，是Agent的可信执行层。</p>
-</div>
-</div>
-</div>
-
-<!-- CTA -->
-<div class="cta-section">
-<div class="container">
-<div class="sec-label">Ready to Connect</div>
-<h2>接入Fly Gateway，让Agent值得信任</h2>
-<p>一次接入，身份、归因、验证、审计全拥有。不绑定平台，只绑定信任。</p>
-<a href="/" class="btn-p" style="padding:12px 32px;font-size:14px">立即接入</a>
-</div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-<div class="container">
-<div class="footer-grid">
-<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9deccd6d4d8d7d4d8d7f9d3d6c0ccd7c3d1d0d5d0d7de97dad7">[email&#160;protected]</a></span></div>
-<div class="footer-links">
-<a href="/">首页</a>
-<a href="/gateway.html">Agent Gateway</a>
-<a href="/trust.html">信任中心</a>
-<a href="/security.html">安全中心</a>
-<a href="/privacy.html">隐私政策</a>
-<a href="/terms.html#refund">退款政策</a>
-<a href="/terms.html">服务条款</a>
-</div>
-</div>
-<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="/cdn-cgi/l/email-protection#690e1c06040807040807290306101c071301000500070e470a07" style="color:var(--text3);text-decoration:underline"><span class="__cf_email__" data-cfemail="6007150f0d010e0d010e200a0f19150e1a08090c090e074e030e">[email&#160;protected]</span></a></div>
-</div>
-</footer>
-
-</div><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</body>
 </html>
