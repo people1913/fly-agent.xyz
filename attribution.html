@@ -41,14 +41,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .attr-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
 .attr-table tr:hover{background:var(--bg2)}
 .attr-table code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
 .gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
 .gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
 .gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
@@ -70,6 +62,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .signal-flow-wrap svg .sf-gate{font-size:9px;font-weight:600;text-anchor:middle;dominant-baseline:central}
 .signal-flow-wrap svg .sf-hash{font-family:'JetBrains Mono',monospace;font-size:8px;fill:#94A3B8;text-anchor:middle}
 
+/* Channel badge style */
+.channel-icon{font-size:11px;font-weight:800;fill:#fff;text-anchor:middle;dominant-baseline:central}
+
 /* Signal detail panel */
 .signal-detail{background:#fff;border:2px solid var(--deep-green);border-radius:10px;padding:20px 24px;margin-bottom:24px;display:none;position:relative;animation:fadeIn .25s ease}
 .signal-detail.active{display:block}
@@ -82,6 +77,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .signal-detail .sd-rule .sd-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
 .signal-detail .sd-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text4);line-height:1}
 .signal-detail .sd-close:hover{color:var(--dark)}
+
+/* Cross-nav link */
+.cross-nav{display:flex;align-items:center;gap:8px;margin-bottom:24px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:13px}
+.cross-nav a{color:var(--deep-green);font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px}
+.cross-nav a:hover{text-decoration:underline}
+.cross-nav .arrow{color:var(--text4);font-size:16px}
+
+/* Key insight box */
+.insight-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.insight-box .insight-icon{font-size:24px;flex-shrink:0}
+.insight-box .insight-text{font-size:13px;line-height:1.7;color:#1E40AF}
+.insight-box .insight-text strong{color:#1D4ED8}
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 </style>
@@ -98,10 +105,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
   <div class="def-sub">Fly 的归因不是"猜测谁贡献了转化"，而是"验证这个转化是否真实发生、来源是否可信、链路是否完整"。</div>
 </div>
 
+<div class="insight-box">
+  <div class="insight-icon">🔑</div>
+  <div class="insight-text"><strong>Fly 不是渠道，Fly 验证渠道。</strong>抖音、小红书、微信、美团、飞书是信号来源，Fly 是对这些信号进行验证、归因、审计的基础设施。Fly 不产生信号，Fly 让信号可信。</div>
+</div>
+
+<!-- Cross navigation: Attribution ↔ Action ID -->
+<div class="cross-nav">
+  <span style="font-weight:700;color:var(--dark)">Attribution 信号流</span>
+  <span class="arrow">→</span>
+  <a href="/action-id.html">→ Action ID 状态机</a>
+</div>
+
 <h2 class="section-title">信号流全图</h2>
 
 <div class="signal-flow-wrap">
-<svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px">
+<svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px">
   <defs>
     <marker id="af" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#94A3B8"/></marker>
     <marker id="afg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#059669"/></marker>
@@ -110,139 +129,139 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 
   <!-- Layer labels (left side) -->
   <text x="10" y="48" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">概念层</text>
-  <text x="10" y="148" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信号层</text>
-  <text x="10" y="248" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">归因层</text>
-  <text x="10" y="348" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">验证层</text>
-  <text x="10" y="448" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信任层</text>
+  <text x="10" y="158" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信号层</text>
+  <text x="10" y="268" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">归因层</text>
+  <text x="10" y="378" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">验证层</text>
+  <text x="10" y="488" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信任层</text>
 
   <!-- Layer separators -->
-  <line x1="60" y1="85" x2="740" y2="85" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-  <line x1="60" y1="185" x2="740" y2="185" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-  <line x1="60" y1="285" x2="740" y2="285" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-  <line x1="60" y1="385" x2="740" y2="385" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="95" x2="740" y2="95" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="205" x2="740" y2="205" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="315" x2="740" y2="315" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="425" x2="740" y2="425" stroke="#E2E8F0" stroke-dasharray="3,3"/>
 
-  <!-- Channel nodes (Row 1: 概念层) -->
+  <!-- ====== Channel nodes with REAL names (Row 1) ====== -->
+  <!-- 抖音 -->
   <g class="sf-node" onclick="showSignal('channel')">
-    <rect x="90" y="24" width="110" height="48" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
-    <text x="145" y="42" class="sf-title">Channel</text>
-    <text x="145" y="56" class="sf-sub">渠道信号源</text>
+    <rect x="75" y="22" width="116" height="56" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
+    <text x="133" y="43" class="sf-title" font-size="14">抖音</text>
+    <text x="133" y="60" class="sf-sub">短视频/直播</text>
   </g>
+  <!-- 小红书 -->
   <g class="sf-node" onclick="showSignal('channel')">
-    <rect x="220" y="24" width="110" height="48" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
-    <text x="275" y="42" class="sf-title">Channel</text>
-    <text x="275" y="56" class="sf-sub">渠道信号源</text>
+    <rect x="203" y="22" width="116" height="56" class="sf-rect" fill="#DC2626" stroke="#B91C1C"/>
+    <text x="261" y="43" class="sf-title" font-size="14">小红书</text>
+    <text x="261" y="60" class="sf-sub">笔记/种草</text>
   </g>
+  <!-- 微信 -->
   <g class="sf-node" onclick="showSignal('channel')">
-    <rect x="350" y="24" width="110" height="48" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
-    <text x="405" y="42" class="sf-title">Channel</text>
-    <text x="405" y="56" class="sf-sub">渠道信号源</text>
+    <rect x="331" y="22" width="116" height="56" class="sf-rect" fill="#059669" stroke="#047857"/>
+    <text x="389" y="43" class="sf-title" font-size="14">微信</text>
+    <text x="389" y="60" class="sf-sub">公众号/私域</text>
   </g>
+  <!-- 美团 -->
   <g class="sf-node" onclick="showSignal('channel')">
-    <rect x="480" y="24" width="110" height="48" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
-    <text x="535" y="42" class="sf-title">Channel</text>
-    <text x="535" y="56" class="sf-sub">渠道信号源</text>
+    <rect x="459" y="22" width="116" height="56" class="sf-rect" fill="#D97706" stroke="#B45309"/>
+    <text x="517" y="43" class="sf-title" font-size="14">美团</text>
+    <text x="517" y="60" class="sf-sub">到店/团购</text>
   </g>
+  <!-- 飞书 -->
   <g class="sf-node" onclick="showSignal('channel')">
-    <rect x="610" y="24" width="110" height="48" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/>
-    <text x="665" y="42" class="sf-title">Channel</text>
-    <text x="665" y="56" class="sf-sub">渠道信号源</text>
+    <rect x="587" y="22" width="116" height="56" class="sf-rect" fill="#2563EB" stroke="#1D4ED8"/>
+    <text x="645" y="43" class="sf-title" font-size="14">飞书</text>
+    <text x="645" y="60" class="sf-sub">企业/社群</text>
   </g>
 
-  <!-- Channel labels -->
-  <text x="145" y="82" text-anchor="middle" font-size="9" fill="#64748B">抖音</text>
-  <text x="275" y="82" text-anchor="middle" font-size="9" fill="#64748B">小红书</text>
-  <text x="405" y="82" text-anchor="middle" font-size="9" fill="#64748B">微信</text>
-  <text x="535" y="82" text-anchor="middle" font-size="9" fill="#64748B">美团</text>
-  <text x="665" y="82" text-anchor="middle" font-size="9" fill="#64748B">飞书</text>
+  <!-- "Fly验证渠道" badge -->
+  <rect x="275" y="82" width="210" height="22" rx="11" fill="#1A3D2E"/>
+  <text x="380" y="96" text-anchor="middle" font-size="10" font-weight="700" fill="#4ADE80">Fly 不是渠道 · Fly 验证渠道</text>
 
   <!-- Channels → Action ID (converge) -->
-  <line x1="145" y1="72" x2="345" y2="120" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
-  <line x1="275" y1="72" x2="365" y2="120" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
-  <line x1="405" y1="72" x2="395" y2="120" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
-  <line x1="535" y1="72" x2="415" y2="120" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
-  <line x1="665" y1="72" x2="435" y2="120" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
+  <line x1="133" y1="78" x2="345" y2="130" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
+  <line x1="261" y1="78" x2="365" y2="130" class="sf-arrow" stroke="#DC2626" marker-end="url(#af)"/>
+  <line x1="389" y1="78" x2="395" y2="130" class="sf-arrow" stroke="#059669" marker-end="url(#af)"/>
+  <line x1="517" y1="78" x2="415" y2="130" class="sf-arrow" stroke="#D97706" marker-end="url(#af)"/>
+  <line x1="645" y1="78" x2="435" y2="130" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
 
-  <!-- Action ID (Row 2: 信号层) -->
+  <!-- ====== Action ID (Row 2: 信号层) ====== -->
   <g class="sf-node" onclick="showSignal('actionid')">
-    <rect x="300" y="124" width="180" height="52" class="sf-rect" fill="#059669" stroke="#047857"/>
-    <text x="390" y="144" class="sf-title">Action ID</text>
-    <text x="390" y="160" class="sf-sub">唯一归因标识符</text>
+    <rect x="300" y="134" width="180" height="52" class="sf-rect" fill="#059669" stroke="#047857"/>
+    <text x="390" y="154" class="sf-title">Action ID</text>
+    <text x="390" y="170" class="sf-sub">唯一归因标识符</text>
   </g>
-
-  <!-- Gate 1 badge -->
-  <rect x="310" y="108" width="50" height="16" rx="4" fill="#DC2626"/>
-  <text x="335" y="118" class="sf-gate" fill="#fff">GATE 1</text>
+  <!-- GATE 1 -->
+  <rect x="310" y="118" width="50" height="16" rx="4" fill="#DC2626"/>
+  <text x="335" y="128" class="sf-gate" fill="#fff">GATE 1</text>
 
   <!-- Action ID → Attribution -->
-  <line x1="390" y1="176" x2="390" y2="216" class="sf-arrow" stroke="#7C3AED" stroke-width="2" marker-end="url(#af)"/>
-  <text x="400" y="200" class="sf-hash">hash₁ → hash₂</text>
+  <line x1="390" y1="186" x2="390" y2="236" class="sf-arrow" stroke="#7C3AED" stroke-width="2" marker-end="url(#af)"/>
+  <text x="402" y="216" class="sf-hash">hash₁ → hash₂</text>
 
-  <!-- Attribution (Row 3: 归因层) -->
+  <!-- ====== Attribution (Row 3: 归因层) ====== -->
   <g class="sf-node" onclick="showSignal('attribution')">
-    <rect x="300" y="220" width="180" height="52" class="sf-rect" fill="#7C3AED" stroke="#6D28D9"/>
-    <text x="390" y="240" class="sf-title">Attribution</text>
-    <text x="390" y="256" class="sf-sub">可验证归因</text>
+    <rect x="300" y="240" width="180" height="52" class="sf-rect" fill="#7C3AED" stroke="#6D28D9"/>
+    <text x="390" y="260" class="sf-title">Attribution</text>
+    <text x="390" y="276" class="sf-sub">可验证归因</text>
   </g>
-
-  <!-- Gate 2 badge -->
-  <rect x="310" y="204" width="50" height="16" rx="4" fill="#DC2626"/>
-  <text x="335" y="214" class="sf-gate" fill="#fff">GATE 2</text>
+  <!-- GATE 2 -->
+  <rect x="310" y="224" width="50" height="16" rx="4" fill="#DC2626"/>
+  <text x="335" y="234" class="sf-gate" fill="#fff">GATE 2</text>
 
   <!-- Attribution → Verification -->
-  <line x1="390" y1="272" x2="390" y2="316" class="sf-arrow" stroke="#D97706" stroke-width="2" marker-end="url(#af)"/>
-  <text x="400" y="298" class="sf-hash">hash₂ → hash₃</text>
+  <line x1="390" y1="292" x2="390" y2="346" class="sf-arrow" stroke="#D97706" stroke-width="2" marker-end="url(#af)"/>
+  <text x="402" y="324" class="sf-hash">hash₂ → hash₃</text>
 
-  <!-- Verification (Row 4: 验证层) -->
+  <!-- ====== Verification (Row 4: 验证层) ====== -->
   <g class="sf-node" onclick="showSignal('verification')">
-    <rect x="300" y="320" width="180" height="52" class="sf-rect" fill="#D97706" stroke="#B45309"/>
-    <text x="390" y="340" class="sf-title">Verification</text>
-    <text x="390" y="356" class="sf-sub">4-Gate 验证</text>
+    <rect x="300" y="350" width="180" height="52" class="sf-rect" fill="#D97706" stroke="#B45309"/>
+    <text x="390" y="370" class="sf-title">Verification</text>
+    <text x="390" y="386" class="sf-sub">4-Gate 验证</text>
   </g>
-
-  <!-- Gate 3 badge -->
-  <rect x="310" y="304" width="50" height="16" rx="4" fill="#DC2626"/>
-  <text x="335" y="314" class="sf-gate" fill="#fff">GATE 3</text>
+  <!-- GATE 3 -->
+  <rect x="310" y="334" width="50" height="16" rx="4" fill="#DC2626"/>
+  <text x="335" y="344" class="sf-gate" fill="#fff">GATE 3</text>
 
   <!-- Verification → Trust -->
-  <line x1="390" y1="372" x2="390" y2="416" class="sf-arrow" stroke="#059669" stroke-width="2" marker-end="url(#afg)"/>
-  <text x="400" y="398" class="sf-hash">hash₃ → hash₄</text>
+  <line x1="390" y1="402" x2="390" y2="456" class="sf-arrow" stroke="#059669" stroke-width="2" marker-end="url(#afg)"/>
+  <text x="402" y="434" class="sf-hash">hash₃ → hash₄</text>
 
-  <!-- Gate 4 badge -->
-  <rect x="310" y="398" width="50" height="16" rx="4" fill="#DC2626"/>
-  <text x="335" y="408" class="sf-gate" fill="#fff">GATE 4</text>
+  <!-- GATE 4 -->
+  <rect x="310" y="428" width="50" height="16" rx="4" fill="#DC2626"/>
+  <text x="335" y="438" class="sf-gate" fill="#fff">GATE 4</text>
 
-  <!-- Trust (Row 5: 信任层) -->
+  <!-- ====== Trust (Row 5: 信任层) ====== -->
   <g class="sf-node" onclick="showSignal('trust')">
-    <rect x="300" y="420" width="180" height="52" class="sf-rect" fill="#1A3D2E" stroke="#0F2A1F"/>
-    <text x="390" y="440" class="sf-title">Trust</text>
-    <text x="390" y="456" class="sf-sub">信任评级 · 结算</text>
+    <rect x="300" y="460" width="180" height="52" class="sf-rect" fill="#1A3D2E" stroke="#0F2A1F"/>
+    <text x="390" y="480" class="sf-title">Trust</text>
+    <text x="390" y="496" class="sf-sub">信任评级 · 结算</text>
   </g>
 
-  <!-- Rejection path (Verification → Rejected) -->
-  <line x1="480" y1="346" x2="580" y2="346" class="sf-arrow" stroke="#DC2626" stroke-width="1.5" marker-end="url(#afr)"/>
-  <rect x="588" y="322" width="130" height="48" class="sf-rect" fill="#991B1B" stroke="#7F1D1D" rx="8" ry="8" stroke-width="2"/>
-  <text x="653" y="340" style="font-size:12px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">REJECTED</text>
-  <text x="653" y="356" style="font-size:9px;fill:rgba(255,255,255,.6);text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">验证失败 🔒</text>
-  <text x="530" y="338" style="font-size:9px;fill:#DC2626;text-anchor:middle;font-weight:600;font-family:Inter,Noto Sans SC,sans-serif">验证未通过</text>
+  <!-- ====== Rejection path ====== -->
+  <line x1="480" y1="376" x2="580" y2="376" class="sf-arrow" stroke="#DC2626" stroke-width="1.5" marker-end="url(#afr)"/>
+  <rect x="588" y="354" width="130" height="44" class="sf-rect" fill="#991B1B" stroke="#7F1D1D" rx="8" ry="8" stroke-width="2"/>
+  <text x="653" y="372" style="font-size:12px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">REJECTED</text>
+  <text x="653" y="386" style="font-size:9px;fill:rgba(255,255,255,.6);text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">验证失败 🔒</text>
+  <text x="530" y="368" style="font-size:9px;fill:#DC2626;text-anchor:middle;font-weight:600;font-family:Inter,Noto Sans SC,sans-serif">验证未通过</text>
 
-  <!-- Hash chain visual (right side) -->
-  <rect x="540" y="140" width="190" height="240" rx="8" fill="none" stroke="#E2E8F0" stroke-dasharray="4,3"/>
-  <text x="635" y="160" text-anchor="middle" font-size="10" fill="#94A3B8" font-weight="600">哈希链（Hash Chain）</text>
+  <!-- ====== Hash chain panel (right side) ====== -->
+  <rect x="540" y="134" width="200" height="270" rx="8" fill="none" stroke="#E2E8F0" stroke-dasharray="4,3"/>
+  <text x="640" y="156" text-anchor="middle" font-size="10" fill="#94A3B8" font-weight="600">哈希链（Hash Chain）</text>
 
-  <text x="560" y="190" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₁ = SHA256(事件₁)</text>
-  <text x="560" y="214" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₂ = SHA256(事件₂+hash₁)</text>
+  <text x="560" y="186" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₁ = SHA256(事件₁)</text>
+  <text x="560" y="212" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₂ = SHA256(事件₂+hash₁)</text>
   <text x="560" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₃ = SHA256(事件₃+hash₂)</text>
-  <text x="560" y="262" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₄ = SHA256(事件₄+hash₃)</text>
+  <text x="560" y="264" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₄ = SHA256(事件₄+hash₃)</text>
 
-  <line x1="560" y1="280" x2="710" y2="280" stroke="#E2E8F0"/>
-  <text x="560" y="300" font-size="10" fill="#059669" font-weight="600">✓ 任意篡改 = 链断裂</text>
-  <text x="560" y="318" font-size="10" fill="#059669" font-weight="600">✓ 全链可审计追溯</text>
-  <text x="560" y="336" font-size="10" fill="#059669" font-weight="600">✓ 不可伪造不可抵赖</text>
-  <text x="560" y="360" font-size="9" fill="#94A3B8">每个事件由产生它的 Agent 签名</text>
+  <line x1="560" y1="282" x2="720" y2="282" stroke="#E2E8F0"/>
+  <text x="560" y="302" font-size="10" fill="#059669" font-weight="600">✓ 任意篡改 = 链断裂</text>
+  <text x="560" y="322" font-size="10" fill="#059669" font-weight="600">✓ 全链可审计追溯</text>
+  <text x="560" y="342" font-size="10" fill="#059669" font-weight="600">✓ 不可伪造不可抵赖</text>
+  <text x="560" y="370" font-size="9" fill="#94A3B8">每个事件由产生它的 Agent 签名</text>
+  <text x="560" y="390" font-size="9" fill="#94A3B8">Ed25519 数字签名算法</text>
 
 </svg>
 </div>
-<p class="hint-text">💡 点击任意节点查看详细说明</p>
+<p class="hint-text">💡 点击任意节点查看详细说明 · 点击 Action ID 节点可跳转至 <a href="/action-id.html" style="color:var(--deep-green);font-weight:700">Action ID 状态机</a></p>
 
 <!-- Signal Detail Panel -->
 <div class="signal-detail" id="signalPanel" style="position:relative">
@@ -257,84 +276,69 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 
 <script>
 var signalInfo={
-  channel:{
-    color:'#1D4ED8',title:'Channel · 渠道信号源',sub:'概念层 — 信号的入口',
+  channel:{color:'#1D4ED8',title:'Channel · 渠道信号源',sub:'概念层 — Fly 不是渠道，Fly 验证渠道',
     rules:[
       {color:'#1D4ED8',text:'5大渠道：抖音/小红书/微信/美团/飞书，每个渠道有独立信号适配层'},
-      {color:'#1D4ED8',text:'信号类型：短视频推荐、直播推荐、笔记种草、公众号/私域、团购、企业推荐'},
-      {color:'#1D4ED8',text:'适配方式：Callback + 前端埋点 + 深链 + API，统一转换为 Fly 标准验证格式'},
-      {color:'#1D4ED8',text:'验证重点：防刷单（抖音）、防刷赞（小红书）、防裂变作弊（微信）、防虚假订单（美团）'},
-      {color:'#DC2626',text:'GATE 1 来源验证：校验渠道回调签名和推荐人 Agent 身份，伪造信号在此被拦截'}
-    ]
-  },
-  actionid:{
-    color:'#059669',title:'Action ID · 唯一归因标识符',sub:'信号层 — 归因链的原子单位',
+      {color:'#1D4ED8',text:'抖音：短视频/直播推荐 → Callback + 前端埋点 → 防刷单、防虚假互动'},
+      {color:'#1D4ED8',text:'小红书：笔记/种草推荐 → 前端埋点 + 深链 → 防刷赞、防水军'},
+      {color:'#1D4ED8',text:'微信：公众号/小程序/私域 → 深度链接 + Callback → 防裂变作弊'},
+      {color:'#1D4ED8',text:'美团/飞书：API对接 → 防虚假订单/防内部作弊'},
+      {color:'#DC2626',text:'关键认知：Fly 不产生信号，Fly 让来自这些渠道的信号可信'}
+    ]},
+  actionid:{color:'#059669',title:'Action ID · 唯一归因标识符',sub:'信号层 — 归因链的原子单位',
     rules:[
       {color:'#059669',text:'生成时机：信号产生的第一刻签发，不是咨询时才生成，不是成交后才补'},
       {color:'#059669',text:'格式：act_{timestamp}_{random}，全局唯一，碰撞概率 < 10⁻¹⁸'},
       {color:'#059669',text:'全链路绑定：推荐→咨询→成交→佣金，共享同一个 Action ID'},
       {color:'#059669',text:'哈希链初始化：生成时写入第一个 SHA-256 哈希节点'},
-      {color:'#059669',text:'生命周期：CREATED → REFERRED → CONVERTED → SETTLED，不可逆'}
-    ]
-  },
-  attribution:{
-    color:'#7C3AED',title:'Attribution · 可验证归因',sub:'归因层 — 从"猜测"到"验证"',
+      {color:'#059669',text:'生命周期：CREATED → REFERRED → CONVERTED → SETTLED → 🔒 不可逆'},
+      {color:'#059669',text:'→ 查看完整状态机：进入 Action ID 页面'}
+    ]},
+  attribution:{color:'#7C3AED',title:'Attribution · 可验证归因',sub:'归因层 — 从"猜测"到"验证"',
     rules:[
       {color:'#7C3AED',text:'渠道归因：确定信号从哪个渠道来，并验证来源真实性（非伪造/劫持）'},
       {color:'#7C3AED',text:'事件归因：确定哪个具体行为触发了转化，验证事件间因果关系'},
       {color:'#7C3AED',text:'信号传递：Action ID + 哈希链，每个事件追加哈希保证连续性和不可篡改性'},
-      {color:'#7C3AED',text:'约束：单调递增（时间戳）、阶段有序（推荐→咨询→成交→结算）、哈希连续、签名验证'},
-      {color:'#DC2626',text:'GATE 2 因果验证：确认推荐事件确实导致了咨询，咨询确实导致了成交'}
-    ]
-  },
-  verification:{
-    color:'#D97706',title:'Verification · 4-Gate 验证',sub:'验证层 — 归因结果的可信保证',
+      {color:'#7C3AED',text:'约束：单调递增（时间戳）、阶段有序、哈希连续、签名验证'},
+      {color:'#DC2626',text:'GATE 2 因果验证：确认推荐确实导致了咨询，咨询确实导致了成交'}
+    ]},
+  verification:{color:'#D97706',title:'Verification · 4-Gate 验证',sub:'验证层 — 归因结果的可信保证',
     rules:[
       {color:'#D97706',text:'GATE 1 来源验证：确认信号来自声称的渠道'},
       {color:'#D97706',text:'GATE 2 因果验证：确认事件之间的因果关系成立'},
       {color:'#D97706',text:'GATE 3 完整性验证：确认哈希链无断裂'},
       {color:'#D97706',text:'GATE 4 时间验证：确认事件时序合理，无回跳或异常间隔'},
       {color:'#DC2626',text:'任一 Gate 未通过 → REJECTED，验证失败终态不可逆'}
-    ]
-  },
-  trust:{
-    color:'#1A3D2E',title:'Trust · 信任评级',sub:'信任层 — 验证链的最终输出',
+    ]},
+  trust:{color:'#1A3D2E',title:'Trust · 信任评级',sub:'信任层 — 验证链的最终输出',
     rules:[
       {color:'#1A3D2E',text:'Trust Score：基于完整验证链计算的信任评分（0-100），默认结算阈值 60'},
       {color:'#1A3D2E',text:'Trust = 全链路行为追踪 + 不可篡改审计日志 → 信任评级'},
       {color:'#1A3D2E',text:'结算条件：4-Gate 全通过 + Trust Score ≥ 阈值 + 哈希链完整'},
       {color:'#1A3D2E',text:'不可抵赖：每个事件由 Agent 签名，修改任何字段 → 哈希不匹配 + 签名失效'},
       {color:'#1A3D2E',text:'审计追溯：Trust Score 计算过程可审计，每笔结算有完整证据链'}
-    ]
-  }
+    ]}
 };
 
 function showSignal(key){
-  var info=signalInfo[key];
-  if(!info)return;
+  var info=signalInfo[key];if(!info)return;
   var panel=document.getElementById('signalPanel');
   document.getElementById('sdDot').style.background=info.color;
   document.getElementById('sdTitle').textContent=info.title;
   document.getElementById('sdSub').textContent=info.sub;
-  var rulesEl=document.getElementById('sdRules');
-  rulesEl.innerHTML='';
+  var rulesEl=document.getElementById('sdRules');rulesEl.innerHTML='';
   info.rules.forEach(function(r,i){
-    var div=document.createElement('div');
-    div.className='sd-rule';
+    var div=document.createElement('div');div.className='sd-rule';
     div.innerHTML='<div class="sd-num" style="background:'+r.color+'">'+(i+1)+'</div><div>'+r.text+'</div>';
     rulesEl.appendChild(div);
   });
   panel.classList.add('active');
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
-function hideSignal(){
-  document.getElementById('signalPanel').classList.remove('active');
-}
+function hideSignal(){document.getElementById('signalPanel').classList.remove('active');}
 </script>
 
 <h2 class="section-title">传统归因 vs Fly 归因</h2>
-
 <div class="vs-row">
   <div class="vs-col wrong">
     <div class="vs-title">传统归因模型</div>
@@ -355,11 +359,8 @@ function hideSignal(){
 </div>
 
 <h2 class="section-title">渠道归因</h2>
-
 <table class="attr-table">
-  <thead>
-    <tr><th>渠道</th><th>信号类型</th><th>适配方式</th><th>验证重点</th></tr>
-  </thead>
+  <thead><tr><th>渠道</th><th>信号类型</th><th>适配方式</th><th>验证重点</th></tr></thead>
   <tbody>
     <tr><td>抖音</td><td>短视频/直播推荐</td><td>Callback + 前端埋点</td><td>防刷单、防虚假互动</td></tr>
     <tr><td>小红书</td><td>笔记/种草推荐</td><td>前端埋点 + 深链</td><td>防刷赞、防水军</td></tr>
@@ -370,65 +371,21 @@ function hideSignal(){
 </table>
 
 <h2 class="section-title">信号传递机制</h2>
-
-<div class="card">
-  <h3>Action ID + 哈希链</h3>
-  <p>每个事件发生时：①写入当前事件数据 + Action ID → ②计算当前事件 SHA-256 哈希 → ③将前一个事件的哈希作为输入计算新哈希 → ④追加到哈希链末尾。任何中间环节的数据修改都会导致后续哈希链断裂。</p>
-</div>
-
-<div class="card">
-  <h3>四大约束</h3>
-  <p><strong>单调递增</strong>：事件时间戳必须严格递增</p>
-  <p><strong>阶段有序</strong>：推荐→咨询→成交→结算，不能跳过或逆序</p>
-  <p><strong>哈希连续</strong>：每个事件的哈希必须包含前一个事件的哈希</p>
-  <p><strong>签名验证</strong>：每个事件由产生该事件的 Agent 签名</p>
-</div>
+<div class="card"><h3>Action ID + 哈希链</h3><p>每个事件发生时：①写入当前事件数据 + Action ID → ②计算当前事件 SHA-256 哈希 → ③将前一个事件的哈希作为输入计算新哈希 → ④追加到哈希链末尾。任何中间环节的数据修改都会导致后续哈希链断裂。</p></div>
+<div class="card"><h3>四大约束</h3><p><strong>单调递增</strong>：事件时间戳必须严格递增</p><p><strong>阶段有序</strong>：推荐→咨询→成交→结算，不能跳过或逆序</p><p><strong>哈希连续</strong>：每个事件的哈希必须包含前一个事件的哈希</p><p><strong>签名验证</strong>：每个事件由产生该事件的 Agent 签名</p></div>
 
 <h2 class="section-title">验证机制</h2>
-
-<div class="gate-card">
-  <div class="gate-badge">GATE 1</div>
-  <div class="gate-row">来源验证：确认信号来自声称的渠道</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 2</div>
-  <div class="gate-row">因果验证：确认事件之间的因果关系成立</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 3</div>
-  <div class="gate-row">完整性验证：确认哈希链无断裂</div>
-</div>
-<div class="gate-card">
-  <div class="gate-badge">GATE 4</div>
-  <div class="gate-row">时间验证：确认事件时序合理，无回跳或异常间隔</div>
-</div>
+<div class="gate-card"><div class="gate-badge">GATE 1</div><div class="gate-row">来源验证：确认信号来自声称的渠道</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 2</div><div class="gate-row">因果验证：确认事件之间的因果关系成立</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 3</div><div class="gate-row">完整性验证：确认哈希链无断裂</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 4</div><div class="gate-row">时间验证：确认事件时序合理，无回跳或异常间隔</div></div>
 
 <h2 class="section-title">失败场景</h2>
-
-<div class="fail-card">
-  <h3>场景1：伪造来源</h3>
-  <p>攻击者伪造渠道标识，试图将非推荐流量标记为推荐流量。<br>拦截：<code>来源验证</code>——校验渠道回调签名和推荐人身份，GATE 1 拦截。</p>
-</div>
-
-<div class="fail-card">
-  <h3>场景2：归因劫持</h3>
-  <p>攻击者在用户成交前替换 Action ID。<br>拦截：<code>哈希链验证</code>——中间替换导致链断裂。</p>
-</div>
-
-<div class="fail-card">
-  <h3>场景3：刷单作弊</h3>
-  <p>攻击者批量生成虚假咨询和成交。<br>拦截：<code>因果验证 + 时间验证</code>——0秒内完成推荐→成交，自动标记 ANOMALY。</p>
-</div>
-
-<div class="fail-card">
-  <h3>场景4：数据篡改</h3>
-  <p>内部人员修改成交金额或推荐人信息。<br>拦截：<code>哈希链 + 签名</code>——修改任何字段导致哈希不匹配和签名失效。</p>
-</div>
-
-<div class="fail-card">
-  <h3>场景5：重复结算</h3>
-  <p>同一个 Action ID 试图多次触发佣金结算。<br>拦截：<code>唯一性验证</code>——SETTLED 终态，永久锁定。</p>
-</div>
+<div class="fail-card"><h3>场景1：伪造来源</h3><p>攻击者伪造渠道标识。<br>拦截：<code>来源验证</code>——校验渠道回调签名和推荐人身份，GATE 1 拦截。</p></div>
+<div class="fail-card"><h3>场景2：归因劫持</h3><p>攻击者在用户成交前替换 Action ID。<br>拦截：<code>哈希链验证</code>——中间替换导致链断裂。</p></div>
+<div class="fail-card"><h3>场景3：刷单作弊</h3><p>攻击者批量生成虚假咨询和成交。<br>拦截：<code>因果验证 + 时间验证</code>——自动标记 ANOMALY。</p></div>
+<div class="fail-card"><h3>场景4：数据篡改</h3><p>内部人员修改成交金额或推荐人信息。<br>拦截：<code>哈希链 + 签名</code>——修改导致哈希不匹配和签名失效。</p></div>
+<div class="fail-card"><h3>场景5：重复结算</h3><p>同一个 Action ID 试图多次触发佣金结算。<br>拦截：<code>唯一性验证</code>——SETTLED 终态，永久锁定。</p></div>
 
 </div>
 </div>
