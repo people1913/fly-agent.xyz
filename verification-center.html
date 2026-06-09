@@ -39,7 +39,7 @@ a:hover{opacity:.8}
 .layout{display:flex;margin-top:0;min-height:100vh}
 
 /* === Sidebar === */
-.sidebar{width:var(--sidebar-w);position:fixed;top:48px;left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:16px 0}
+.sidebar{width:var(--sidebar-w);position:fixed;top:0;left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:16px 0}
 .sidebar::-webkit-scrollbar{width:3px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 .sidebar-group{margin-bottom:8px}
@@ -51,7 +51,7 @@ a:hover{opacity:.8}
 .sidebar-item .si-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--deep-green);color:#E8F5EC}
 
 /* === Main content === */
-.main{margin-left:var(--sidebar-w);flex:1;padding:32px 40px 60px 28px;max-width:900px}
+.main{margin-left:var(--sidebar-w);flex:1;padding:32px 40px 60px 48px;max-width:900px}
 .section{display:none;animation:fadeIn .3s ease}
 .section.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
