@@ -174,7 +174,8 @@ a:hover{opacity:.8}
 .sidebar.collapsed{--sidebar-w:60px;width:60px}
 .sidebar.collapsed .sg-toggle{display:none}
 .sidebar.collapsed .sidebar-group-label{padding:10px 0;justify-content:center;font-size:11px;cursor:pointer;border-bottom:1px solid var(--border)}
-.sidebar.collapsed .sidebar-group-items{max-height:0!important;overflow:hidden}
+.sidebar.collapsed .sidebar-group-items.collapsed{max-height:0!important;overflow:hidden}
+.sidebar.collapsed .sidebar-group-items:not(.collapsed){max-height:none!important;overflow:visible}
 .sidebar.collapsed .sidebar-group-items.collapsed{max-height:none!important;overflow:visible}
 .sidebar.collapsed .sidebar-item{padding:12px 0;justify-content:center;gap:0}
 .sidebar.collapsed .sidebar-item svg{width:20px;height:20px;flex-shrink:0}
@@ -1611,13 +1612,29 @@ function toggleSidebar(){
 function toggleGroup(label){
   const toggle=label.querySelector('.sg-toggle');
   const items=label.nextElementSibling;
-  const isCollapsed=items.classList.contains('collapsed');
-  if(isCollapsed){
-    items.classList.remove('collapsed');
-    toggle.classList.remove('collapsed');
+  const sidebar=document.getElementById('sidebar');
+  const isSidebarCollapsed=sidebar.classList.contains('collapsed');
+  
+  if(isSidebarCollapsed){
+    // 折叠态：手风琴模式，点击展开当前组，关闭其他组
+    const isThisOpen=!items.classList.contains('collapsed');
+    // 关闭所有组
+    document.querySelectorAll('.sidebar-group-items').forEach(function(el){
+      el.classList.add('collapsed');
+    });
+    if(!isThisOpen){
+      items.classList.remove('collapsed');
+    }
   }else{
-    items.classList.add('collapsed');
-    toggle.classList.add('collapsed');
+    // 展开态：正常切换
+    const isCollapsed=items.classList.contains('collapsed');
+    if(isCollapsed){
+      items.classList.remove('collapsed');
+      if(toggle)toggle.classList.remove('collapsed');
+    }else{
+      items.classList.add('collapsed');
+      if(toggle)toggle.classList.add('collapsed');
+    }
   }
 }
 // Auto-expand the group containing the active item, collapse others
