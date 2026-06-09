@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verification Center · Fly 归因验证</title>
+<meta name="description" content="Fly Verification Center — AI Agent 信任与归因基础设施的核心验证体系。Signal Flow, Action ID 生命周期, Attribution 信号流, 4-Gate Verification。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;--bg4:#E8ECF0;
+--blue:#2563EB;--blue-light:#60A5FA;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--tan:#64748B;--tan-light:#94A3B8;
+--dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
+--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+--border:#E2E8F0;--sidebar-w:240px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;font-size:15px}
+a{color:var(--blue);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+
+/* === Top bar === */
+.topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;padding:0 20px;gap:12px}
+.topbar-logo{font-weight:800;font-size:18px;color:var(--dark);letter-spacing:-.5px}
+.topbar-logo b{font-size:28px}
+.topbar-sep{color:var(--border);font-size:20px}
+.topbar-title{font-size:13px;color:var(--tan);font-weight:600;letter-spacing:.5px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.topbar-home{font-size:12px;color:var(--tan);font-weight:500;transition:color .15s}
+.topbar-home:hover{color:var(--dark)}
+
+/* === Layout === */
+.layout{display:flex;margin-top:48px;min-height:calc(100vh - 48px)}
+
+/* === Sidebar === */
+.sidebar{width:var(--sidebar-w);position:fixed;top:48px;left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:16px 0}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+.sidebar-group{margin-bottom:8px}
+.sidebar-group-label{font-size:10px;font-weight:700;color:var(--tan-light);letter-spacing:1.5px;text-transform:uppercase;padding:8px 20px 4px;user-select:none}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:var(--text2);border-left:3px solid transparent;user-select:none}
+.sidebar-item:hover{background:var(--bg3);color:var(--dark)}
+.sidebar-item.active{background:var(--bg3);color:var(--blue);border-left-color:var(--blue);font-weight:600}
+.sidebar-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-item .si-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--deep-green);color:#E8F5EC}
+
+/* === Main content === */
+.main{margin-left:var(--sidebar-w);flex:1;padding:32px 40px 60px;max-width:900px}
+.section{display:none;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.section-header{margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.section-tag{font-family:var(--mono);font-size:11px;color:var(--tan);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.section-title{font-size:26px;font-weight:800;color:var(--dark);letter-spacing:-.5px;line-height:1.2}
+.section-desc{font-size:14px;color:var(--tan);margin-top:6px;line-height:1.7}
+
+/* Content blocks */
+.content-block{margin-bottom:28px}
+.content-block h2{font-size:17px;font-weight:700;color:var(--dark);margin-bottom:10px;padding-left:12px;border-left:3px solid var(--blue)}
+.content-block h3{font-size:14px;font-weight:600;color:var(--text2);margin:12px 0 6px}
+.content-block p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:8px}
+.content-block ul{padding-left:20px;margin-bottom:8px}
+.content-block li{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:4px}
+.content-block code{font-family:var(--mono);font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--blue)}
+
+/* Insight box */
+.insight-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:16px 20px;margin:16px 0;font-size:13px;color:var(--text2);line-height:1.7}
+.insight-box strong{color:var(--blue)}
+
+/* Badge */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+.badge-green{background:var(--deep-green);color:#4ADE80}
+.badge-blue{background:#1E40AF;color:#93C5FD}
+
+/* === SVG shared styles === */
+.svg-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin:20px 0;overflow-x:auto}
+.svg-wrap svg text{font-family:'Inter','Noto Sans SC',sans-serif}
+.svg-wrap svg .node-group,.svg-wrap svg .sf-node{cursor:pointer}
+.svg-wrap svg .node-group:hover .node-rect,.svg-wrap svg .sf-node:hover .sf-rect{filter:brightness(1.15)}
+.svg-wrap svg .node-rect,.svg-wrap svg .sf-rect{rx:8;ry:8;stroke-width:2;transition:all .2s}
+.svg-wrap svg .arrow-line,.svg-wrap svg .sf-arrow{fill:none;stroke-width:1.5}
+.svg-wrap svg .label-text,.svg-wrap svg .sf-title{font-size:12px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.svg-wrap svg .sub-text,.svg-wrap svg .sf-sub{font-size:9px;fill:rgba(255,255,255,.7);text-anchor:middle;dominant-baseline:central}
+.svg-wrap svg .sf-gate{font-size:7px;font-weight:700;text-anchor:middle;dominant-baseline:central;font-family:'JetBrains Mono',monospace}
+.svg-wrap svg .sf-hash{font-size:9px;fill:#94A3B8;font-family:'JetBrains Mono',monospace;font-style:italic}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+.stat-item{flex:1;min-width:80px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;position:relative;overflow:hidden}
+.stat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-item.s-created::before{background:#2563EB}
+.stat-item.s-referred::before{background:#059669}
+.stat-item.s-converted::before{background:#7C3AED}
+.stat-item.s-settled::before{background:#DC2626}
+.stat-item.s-expired::before{background:#64748B}
+.stat-item.s-anomaly::before{background:#D97706}
+.stat-item.s-disputed::before{background:#D97706}
+.stat-item.s-rejected::before{background:#991B1B}
+.stat-num{font-size:20px;font-weight:800;color:var(--dark);font-family:var(--mono);line-height:1.2}
+.stat-label{font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.5px;margin-top:4px;text-transform:uppercase}
+.stat-pct{font-size:9px;color:var(--tan-light);margin-top:2px}
+.stats-hint{font-size:11px;color:var(--tan-light);font-style:italic;margin-bottom:4px}
+
+/* Detail panel */
+.detail-panel{background:#fff;border:2px solid var(--deep-green);border-radius:10px;padding:20px 24px;margin:16px 0;display:none;position:relative}
+.detail-panel.active{display:block;animation:fadeIn .25s ease}
+.detail-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:18px;color:var(--tan-light);cursor:pointer;padding:4px 8px;border-radius:6px}
+.detail-close:hover{background:var(--bg3);color:var(--dark)}
+.detail-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle}
+.detail-title{font-size:16px;font-weight:700;color:var(--dark);display:inline}
+.detail-sub{font-size:12px;color:var(--tan);margin-top:2px}
+.detail-rules{margin-top:14px}
+.detail-rule{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.detail-num{min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.detail-text{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* Cross-nav */
+.cross-nav{display:flex;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.cross-nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);transition:all .15s}
+.cross-nav a:hover{border-color:var(--blue);color:var(--blue)}
+
+/* === API Playground === */
+.api-playground{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
+.api-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg3)}
+.api-tab{padding:10px 20px;font-size:12px;font-weight:600;color:var(--tan);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.api-tab:hover{color:var(--dark)}
+.api-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:#fff}
+.api-body{padding:20px}
+.api-method{font-family:var(--mono);font-size:12px;font-weight:700;color:#059669;margin-bottom:4px}
+.api-endpoint{font-family:var(--mono);font-size:13px;color:var(--dark);font-weight:600;margin-bottom:12px}
+.api-label{font-size:11px;font-weight:600;color:var(--tan);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.api-input{width:100%;padding:8px 12px;font-family:var(--mono);font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;margin-bottom:12px;outline:none;transition:border .15s}
+.api-input:focus{border-color:var(--blue)}
+.api-send{padding:8px 20px;background:var(--deep-green);color:#E8F5EC;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:opacity .15s}
+.api-send:hover{opacity:.85}
+.api-response{margin-top:16px;padding:14px 16px;background:var(--dark);border-radius:8px;font-family:var(--mono);font-size:12px;color:#E2E8F0;white-space:pre-wrap;line-height:1.6;max-height:260px;overflow-y:auto}
+.api-response .key{color:#60A5FA}
+.api-response .str{color:#4ADE80}
+.api-response .num{color:#FBBF24}
+
+/* Signal detail panel (attribution) */
+.signal-panel{background:#fff;border:2px solid #7C3AED;border-radius:10px;padding:20px 24px;margin:16px 0;display:none;position:relative}
+.signal-panel.active{display:block;animation:fadeIn .25s ease}
+.signal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:18px;color:var(--tan-light);cursor:pointer;padding:4px 8px;border-radius:6px}
+.signal-close:hover{background:var(--bg3);color:var(--dark)}
+.signal-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle}
+.signal-title{font-size:16px;font-weight:700;color:var(--dark);display:inline}
+.signal-sub{font-size:12px;color:var(--tan);margin-top:2px}
+.signal-rules{margin-top:14px}
+.signal-rule{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.signal-num{min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.signal-text{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* Responsive */
+@media(max-width:900px){
+  :root{--sidebar-w:0px}
+  .sidebar{display:none}
+  .main{margin-left:0;padding:24px 16px 40px}
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-logo"><b>F</b>ly</div>
+  <span class="topbar-sep">|</span>
+  <div class="topbar-title">VERIFICATION CENTER</div>
+  <div class="topbar-right">
+    <a href="/" class="topbar-home">← 返回首页</a>
+  </div>
+</div>
+
+<div class="layout">
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">核心概念</div>
+    <div class="sidebar-item active" data-section="fly-concept" onclick="switchSection('fly-concept')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      Fly 概念
+    </div>
+    <div class="sidebar-item" data-section="signal-flow" onclick="switchSection('signal-flow')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Signal Flow
+    </div>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">产品知识图谱</div>
+    <div class="sidebar-item" data-section="action-id" onclick="switchSection('action-id')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Action ID
+      <span class="si-badge">状态机</span>
+    </div>
+    <div class="sidebar-item" data-section="attribution" onclick="switchSection('attribution')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      Attribution
+      <span class="si-badge">信号流</span>
+    </div>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">验证体系</div>
+    <div class="sidebar-item" data-section="verification" onclick="switchSection('verification')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Verification
+    </div>
+    <div class="sidebar-item" data-section="audit" onclick="switchSection('audit')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>
+      Audit Chain
+    </div>
+    <div class="sidebar-item" data-section="trust" onclick="switchSection('trust')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      Trust Layer
+    </div>
+    <div class="sidebar-item" data-section="security" onclick="switchSection('security')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="11" rx="2"/><path d="M7 10V7a5 5 0 0110 0v3"/><circle cx="12" cy="16" r="1.5"/></svg>
+      Security Model
+    </div>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">企业</div>
+    <div class="sidebar-item" data-section="enterprise" onclick="switchSection('enterprise')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
+      Enterprise
+    </div>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">交互</div>
+    <div class="sidebar-item" data-section="api-playground" onclick="switchSection('api-playground')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      API Playground
+      <span class="si-badge">Demo</span>
+    </div>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">帮助</div>
+    <div class="sidebar-item" data-section="faq" onclick="switchSection('faq')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      FAQ
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+
+<!-- ==================== Fly 概念 ==================== -->
+<div class="section active" id="sec-fly-concept">
+  <div class="section-header">
+    <div class="section-tag">Foundation</div>
+    <div class="section-title">Fly 概念</div>
+    <div class="section-desc">AI Agent 信任与归因基础设施——不是工具，是验证层</div>
+  </div>
+  <div class="content-block">
+    <h2>为什么需要 Fly</h2>
+    <p>AI Agent 正在替代人类执行推荐、营销、销售等商业行为。但没人验证这些行为是否可信、归因是否真实。</p>
+    <p>类似 Stripe 验证支付、Cloudflare 验证安全，<strong>Fly 验证 AI Agent</strong>。</p>
+  </div>
+  <div class="content-block">
+    <h2>核心概念</h2>
+    <h3>Signal（信号）</h3>
+    <p>原始行为数据。用户点击、咨询、成交——每个行为产生一个 Signal，携带渠道、时间、上下文信息。</p>
+    <h3>Action ID（动作标识）</h3>
+    <p>每条 AI 推荐生成唯一标识符，从点击→咨询→核销全链路可追溯。<a href="javascript:void(0)" onclick="switchSection('action-id')">查看生命周期 →</a></p>
+    <h3>Attribution（归因）</h3>
+    <p>建立 Signal 之间的因果关系，验证归因是否成立而非仅声明成立。<a href="javascript:void(0)" onclick="switchSection('attribution')">查看信号流 →</a></p>
+    <h3>Verification（验证）</h3>
+    <p>4-Gate 验证体系，来源验证→因果验证→完整性验证→时间验证，每一步都校验。</p>
+    <h3>Audit Chain（审计链）</h3>
+    <p>SHA-256 哈希链式结构，每个事件追加哈希，任意篡改 = 链断裂。</p>
+    <h3>Trust Layer（信任层）</h3>
+    <p>验证链的最终输出。Trust Score = 全链路行为追踪 + 不可篡改审计日志 → 信任评级。</p>
+  </div>
+  <div class="insight-box">
+    <strong>核心链路：</strong>Signal → Action ID → Attribution → Verification → Audit Chain → Trust<br>
+    每个环节都有 Gate 校验，任一 Gate 失败 = 整条归因链失效。
+  </div>
+</div>
+
+<!-- ==================== Signal Flow ==================== -->
+<div class="section" id="sec-signal-flow">
+  <div class="section-header">
+    <div class="section-tag">Pipeline</div>
+    <div class="section-title">Signal Flow</div>
+    <div class="section-desc">原始行为如何从采集到可信——六步流水线</div>
+  </div>
+  <div class="content-block">
+    <h2>Capture · 采集原始行为</h2>
+    <p>用户通过推荐链接/二维码/渠道入口触发行为。系统在第一时刻捕获原始信号，包含渠道标识、时间戳、设备指纹。</p>
+    <h2>Normalize · 标准化上下文</h2>
+    <p>不同渠道的信号格式不同（抖音/小红书/微信/美团/飞书），Normalize 层统一为标准 Signal 格式。</p>
+    <h2>Verify · 验证行为真实性</h2>
+    <p>4-Gate 验证体系启动：来源验证 → 因果验证 → 完整性验证 → 时间验证。</p>
+    <h2>Commit Signal · 生成可信 Signal</h2>
+    <p>验证通过的 Signal 写入哈希链，追加 SHA-256 哈希节点，保证不可篡改。</p>
+    <h2>Attribution · 建立归因关系</h2>
+    <p>确认 Signal 之间的因果关系：哪个推荐触发了哪个转化。验证归因成立而非声明成立。</p>
+    <h2>Optimize · 反馈优化策略</h2>
+    <p>基于验证结果和 Trust Score，反馈给 Agent 优化推荐策略。</p>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('attribution')">→ Attribution 信号流全图</a>
+    <a href="javascript:void(0)" onclick="switchSection('action-id')">→ Action ID 生命周期</a>
+  </div>
+</div>
+
+<!-- ==================== Action ID ==================== -->
+<div class="section" id="sec-action-id">
+  <div class="section-header">
+    <div class="section-tag">State Machine</div>
+    <div class="section-title">Action ID 生命周期</div>
+    <div class="section-desc">一个 Action ID 从诞生到结算经历了什么——8个状态 + 4个Gate + 3个终态</div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-hint">📊 Demo 数据 — 模拟系统运行状态</div>
+  <div class="stats-bar">
+    <div class="stat-item s-created"><div class="stat-num">12,431</div><div class="stat-label">Created</div><div class="stat-pct">100%</div></div>
+    <div class="stat-item s-referred"><div class="stat-num">8,902</div><div class="stat-label">Referred</div><div class="stat-pct">71.6%</div></div>
+    <div class="stat-item s-converted"><div class="stat-num">2,118</div><div class="stat-label">Converted</div><div class="stat-pct">17.0%</div></div>
+    <div class="stat-item s-settled"><div class="stat-num">1,967</div><div class="stat-label">Settled</div><div class="stat-pct">15.8%</div></div>
+    <div class="stat-item s-expired"><div class="stat-num">3,529</div><div class="stat-label">Expired</div><div class="stat-pct">28.4%</div></div>
+    <div class="stat-item s-anomaly"><div class="stat-num">247</div><div class="stat-label">Anomaly</div><div class="stat-pct">2.0%</div></div>
+    <div class="stat-item s-disputed"><div class="stat-num">89</div><div class="stat-label">Disputed</div><div class="stat-pct">0.7%</div></div>
+    <div class="stat-item s-rejected"><div class="stat-num">128</div><div class="stat-label">Rejected</div><div class="stat-pct">1.0%</div></div>
+  </div>
+
+  <!-- SVG Lifecycle -->
+  <div class="svg-wrap">
+<svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#94A3B8"/></marker>
+    <marker id="ahg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#059669"/></marker>
+    <marker id="ahr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#DC2626"/></marker>
+    <marker id="ahy" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#D97706"/></marker>
+  </defs>
+  <g class="node-group" onclick="showDetail('created')"><rect x="10" y="24" width="140" height="52" class="node-rect" fill="#2563EB" stroke="#1D4ED8"/><text x="80" y="44" class="label-text" font-size="13">CREATED</text><text x="80" y="60" class="sub-text">推荐触发</text></g>
+  <line x1="150" y1="50" x2="198" y2="50" class="arrow-line" stroke="#059669" marker-end="url(#ahg)"/>
+  <g class="node-group" onclick="showDetail('referred')"><rect x="206" y="24" width="140" height="52" class="node-rect" fill="#059669" stroke="#047857"/><text x="276" y="44" class="label-text" font-size="13">REFERRED</text><text x="276" y="60" class="sub-text">咨询验证</text></g>
+  <line x1="346" y1="50" x2="394" y2="50" class="arrow-line" stroke="#7C3AED" marker-end="url(#ah)"/>
+  <g class="node-group" onclick="showDetail('converted')"><rect x="402" y="24" width="140" height="52" class="node-rect" fill="#7C3AED" stroke="#6D28D9"/><text x="472" y="44" class="label-text" font-size="13">CONVERTED</text><text x="472" y="60" class="sub-text">成交确认</text></g>
+  <line x1="542" y1="50" x2="590" y2="50" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+  <g class="node-group" onclick="showDetail('settled')"><rect x="598" y="24" width="130" height="52" class="node-rect" fill="#DC2626" stroke="#B91C1C"/><text x="663" y="44" class="label-text" font-size="13">SETTLED</text><text x="663" y="60" class="sub-text">结算锁定 🔒</text></g>
+  <line x1="80" y1="76" x2="80" y2="152" class="arrow-line" stroke="#94A3B8" stroke-dasharray="4,3" marker-end="url(#ah)"/>
+  <line x1="276" y1="76" x2="276" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
+  <line x1="472" y1="76" x2="472" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
+  <g class="node-group" onclick="showDetail('expired')"><rect x="10" y="160" width="140" height="52" class="node-rect" fill="#64748B" stroke="#475569"/><text x="80" y="180" class="label-text" font-size="13">EXPIRED</text><text x="80" y="196" class="sub-text">超时过期 🔒</text></g>
+  <g class="node-group" onclick="showDetail('anomaly')"><rect x="206" y="160" width="140" height="52" class="node-rect" fill="#D97706" stroke="#B45309"/><text x="276" y="180" class="label-text" font-size="13">ANOMALY</text><text x="276" y="196" class="sub-text">验证异常</text></g>
+  <g class="node-group" onclick="showDetail('disputed')"><rect x="402" y="160" width="140" height="52" class="node-rect" fill="#D97706" stroke="#B45309"/><text x="472" y="180" class="label-text" font-size="13">DISPUTED</text><text x="472" y="196" class="sub-text">归因争议</text></g>
+  <path d="M346 186 Q380 186 394 90" class="arrow-line" stroke="#059669" stroke-dasharray="3,3" marker-end="url(#ahg)"/>
+  <text x="385" y="140" font-size="9" fill="#059669" text-anchor="middle">人工审核通过</text>
+  <path d="M542 186 Q576 186 590 90" class="arrow-line" stroke="#059669" stroke-dasharray="3,3" marker-end="url(#ahg)"/>
+  <text x="578" y="140" font-size="9" fill="#059669" text-anchor="middle">争议解决</text>
+  <line x1="276" y1="212" x2="340" y2="280" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+  <line x1="472" y1="212" x2="410" y2="280" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+  <g class="node-group" onclick="showDetail('rejected')"><rect x="298" y="288" width="140" height="52" class="node-rect" fill="#991B1B" stroke="#7F1D1D"/><text x="368" y="308" class="label-text" font-size="13">REJECTED</text><text x="368" y="324" class="sub-text">验证失败 🔒</text></g>
+  <rect x="598" y="160" width="130" height="76" rx="6" fill="#fff" stroke="#E2E8F0"/>
+  <line x1="612" y1="178" x2="636" y2="178" stroke="#059669" stroke-width="2"/><text x="642" y="182" font-size="9" fill="#64748B">正常流转</text>
+  <line x1="612" y1="196" x2="636" y2="196" stroke="#D97706" stroke-width="2" stroke-dasharray="4,3"/><text x="642" y="200" font-size="9" fill="#64748B">异常/争议</text>
+  <line x1="612" y1="214" x2="636" y2="214" stroke="#DC2626" stroke-width="2"/><text x="642" y="218" font-size="9" fill="#64748B">拒绝/终态</text>
+  <text x="663" y="232" font-size="8" fill="#94A3B8" text-anchor="middle">🔒 = 不可逆终态</text>
+</svg>
+  </div>
+  <p style="font-size:12px;color:var(--tan-light);text-align:center;margin-top:-12px">👆 点击状态节点查看详细规则</p>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" onclick="hideDetail()">✕</button>
+    <div><span class="detail-dot" id="ndDot"></span><span class="detail-title" id="ndTitle"></span></div>
+    <div class="detail-sub" id="ndSub"></div>
+    <div class="detail-rules" id="ndRules"></div>
+  </div>
+
+  <div class="content-block" style="margin-top:16px">
+    <h2>主路径 vs 异常路径</h2>
+    <p><strong>主路径（Happy Path）：</strong>CREATED → REFERRED → CONVERTED → SETTLED — 归因验证全链路通过，最终结算锁定。</p>
+    <p><strong>异常路径：</strong>EXPIRED（超时过期）、ANOMALY（验证异常，可人工审核恢复）、DISPUTED（归因争议，可解决恢复）、REJECTED（验证失败终态）。</p>
+    <p>🔒 标记的状态为不可逆终态，一旦进入不可恢复。</p>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('attribution')">→ Attribution 信号流全图</a>
+    <a href="javascript:void(0)" onclick="switchSection('api-playground')">→ API Playground</a>
+  </div>
+</div>
+
+<!-- ==================== Attribution ==================== -->
+<div class="section" id="sec-attribution">
+  <div class="section-header">
+    <div class="section-tag">Architecture</div>
+    <div class="section-title">Attribution 信号流</div>
+    <div class="section-desc">Fly 为什么能证明归因成立——5层架构 + 4-Gate验证 + 哈希链</div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <span class="badge badge-green">Fly 不是渠道 · Fly 验证渠道</span>
+    <span class="badge badge-blue">5层 · 4Gate · 1链</span>
+  </div>
+
+  <!-- SVG Signal Flow -->
+  <div class="svg-wrap">
+<svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px">
+  <defs>
+    <marker id="af" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#94A3B8"/></marker>
+    <marker id="afg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#059669"/></marker>
+    <marker id="afr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#DC2626"/></marker>
+  </defs>
+  <text x="10" y="48" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">概念层</text>
+  <text x="10" y="158" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信号层</text>
+  <text x="10" y="268" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">归因层</text>
+  <text x="10" y="378" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">验证层</text>
+  <text x="10" y="488" font-size="9" fill="#94A3B8" font-weight="600" letter-spacing="1">信任层</text>
+  <line x1="60" y1="95" x2="740" y2="95" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="205" x2="740" y2="205" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="315" x2="740" y2="315" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <line x1="60" y1="425" x2="740" y2="425" stroke="#E2E8F0" stroke-dasharray="3,3"/>
+  <g class="sf-node" onclick="showSignal('channel')"><rect x="75" y="22" width="116" height="56" class="sf-rect" fill="#1D4ED8" stroke="#1E40AF"/><text x="133" y="43" class="sf-title" font-size="14">抖音</text><text x="133" y="60" class="sf-sub">短视频/直播</text></g>
+  <g class="sf-node" onclick="showSignal('channel')"><rect x="203" y="22" width="116" height="56" class="sf-rect" fill="#DC2626" stroke="#B91C1C"/><text x="261" y="43" class="sf-title" font-size="14">小红书</text><text x="261" y="60" class="sf-sub">笔记/种草</text></g>
+  <g class="sf-node" onclick="showSignal('channel')"><rect x="331" y="22" width="116" height="56" class="sf-rect" fill="#059669" stroke="#047857"/><text x="389" y="43" class="sf-title" font-size="14">微信</text><text x="389" y="60" class="sf-sub">公众号/私域</text></g>
+  <g class="sf-node" onclick="showSignal('channel')"><rect x="459" y="22" width="116" height="56" class="sf-rect" fill="#D97706" stroke="#B45309"/><text x="517" y="43" class="sf-title" font-size="14">美团</text><text x="517" y="60" class="sf-sub">到店/团购</text></g>
+  <g class="sf-node" onclick="showSignal('channel')"><rect x="587" y="22" width="116" height="56" class="sf-rect" fill="#2563EB" stroke="#1D4ED8"/><text x="645" y="43" class="sf-title" font-size="14">飞书</text><text x="645" y="60" class="sf-sub">企业/社群</text></g>
+  <rect x="275" y="82" width="210" height="22" rx="11" fill="#1A3D2E"/>
+  <text x="380" y="96" text-anchor="middle" font-size="10" font-weight="700" fill="#4ADE80">Fly 不是渠道 · Fly 验证渠道</text>
+  <line x1="133" y1="78" x2="345" y2="130" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
+  <line x1="261" y1="78" x2="365" y2="130" class="sf-arrow" stroke="#DC2626" marker-end="url(#af)"/>
+  <line x1="389" y1="78" x2="395" y2="130" class="sf-arrow" stroke="#059669" marker-end="url(#af)"/>
+  <line x1="517" y1="78" x2="415" y2="130" class="sf-arrow" stroke="#D97706" marker-end="url(#af)"/>
+  <line x1="645" y1="78" x2="435" y2="130" class="sf-arrow" stroke="#2563EB" marker-end="url(#af)"/>
+  <g class="sf-node" onclick="showSignal('actionid')"><rect x="300" y="134" width="180" height="52" class="sf-rect" fill="#059669" stroke="#047857"/><text x="390" y="154" class="sf-title">Action ID</text><text x="390" y="170" class="sf-sub">唯一归因标识符</text></g>
+  <rect x="310" y="118" width="50" height="16" rx="4" fill="#DC2626"/><text x="335" y="128" class="sf-gate" fill="#fff">GATE 1</text>
+  <line x1="390" y1="186" x2="390" y2="236" class="sf-arrow" stroke="#7C3AED" stroke-width="2" marker-end="url(#af)"/>
+  <text x="402" y="216" class="sf-hash">hash₁ → hash₂</text>
+  <g class="sf-node" onclick="showSignal('attribution')"><rect x="300" y="240" width="180" height="52" class="sf-rect" fill="#7C3AED" stroke="#6D28D9"/><text x="390" y="260" class="sf-title">Attribution</text><text x="390" y="276" class="sf-sub">可验证归因</text></g>
+  <rect x="310" y="224" width="50" height="16" rx="4" fill="#DC2626"/><text x="335" y="234" class="sf-gate" fill="#fff">GATE 2</text>
+  <line x1="390" y1="292" x2="390" y2="346" class="sf-arrow" stroke="#D97706" stroke-width="2" marker-end="url(#af)"/>
+  <text x="402" y="324" class="sf-hash">hash₂ → hash₃</text>
+  <g class="sf-node" onclick="showSignal('verification')"><rect x="300" y="350" width="180" height="52" class="sf-rect" fill="#D97706" stroke="#B45309"/><text x="390" y="370" class="sf-title">Verification</text><text x="390" y="386" class="sf-sub">4-Gate 验证</text></g>
+  <rect x="310" y="334" width="50" height="16" rx="4" fill="#DC2626"/><text x="335" y="344" class="sf-gate" fill="#fff">GATE 3</text>
+  <line x1="390" y1="402" x2="390" y2="456" class="sf-arrow" stroke="#059669" stroke-width="2" marker-end="url(#afg)"/>
+  <text x="402" y="434" class="sf-hash">hash₃ → hash₄</text>
+  <rect x="310" y="428" width="50" height="16" rx="4" fill="#DC2626"/><text x="335" y="438" class="sf-gate" fill="#fff">GATE 4</text>
+  <g class="sf-node" onclick="showSignal('trust')"><rect x="300" y="460" width="180" height="52" class="sf-rect" fill="#1A3D2E" stroke="#0F2A1F"/><text x="390" y="480" class="sf-title">Trust</text><text x="390" y="496" class="sf-sub">信任评级 · 结算</text></g>
+  <line x1="480" y1="376" x2="580" y2="376" class="sf-arrow" stroke="#DC2626" stroke-width="1.5" marker-end="url(#afr)"/>
+  <rect x="588" y="354" width="130" height="44" class="sf-rect" fill="#991B1B" stroke="#7F1D1D" rx="8" ry="8" stroke-width="2"/>
+  <text x="653" y="372" style="font-size:12px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">REJECTED</text>
+  <text x="653" y="386" style="font-size:9px;fill:rgba(255,255,255,.6);text-anchor:middle;dominant-baseline:central;font-family:Inter,Noto Sans SC,sans-serif">验证失败 🔒</text>
+  <text x="530" y="368" style="font-size:9px;fill:#DC2626;text-anchor:middle;font-weight:600;font-family:Inter,Noto Sans SC,sans-serif">验证未通过</text>
+  <rect x="540" y="134" width="200" height="270" rx="8" fill="none" stroke="#E2E8F0" stroke-dasharray="4,3"/>
+  <text x="640" y="156" text-anchor="middle" font-size="10" fill="#94A3B8" font-weight="600">哈希链（Hash Chain）</text>
+  <text x="560" y="186" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₁ = SHA256(事件₁)</text>
+  <text x="560" y="212" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₂ = SHA256(事件₂+hash₁)</text>
+  <text x="560" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₃ = SHA256(事件₃+hash₂)</text>
+  <text x="560" y="264" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748B">hash₄ = SHA256(事件₄+hash₃)</text>
+  <line x1="560" y1="282" x2="720" y2="282" stroke="#E2E8F0"/>
+  <text x="560" y="302" font-size="10" fill="#059669" font-weight="600">✓ 任意篡改 = 链断裂</text>
+  <text x="560" y="322" font-size="10" fill="#059669" font-weight="600">✓ 全链可审计追溯</text>
+  <text x="560" y="342" font-size="10" fill="#059669" font-weight="600">✓ 不可伪造不可抵赖</text>
+  <text x="560" y="370" font-size="9" fill="#94A3B8">每个事件由产生它的 Agent 签名</text>
+  <text x="560" y="390" font-size="9" fill="#94A3B8">Ed25519 数字签名算法</text>
+</svg>
+  </div>
+  <p style="font-size:12px;color:var(--tan-light);text-align:center;margin-top:-12px">👆 点击节点查看详细规则</p>
+
+  <!-- Signal detail panel -->
+  <div class="signal-panel" id="signalPanel">
+    <button class="signal-close" onclick="hideSignal()">✕</button>
+    <div><span class="signal-dot" id="sdDot"></span><span class="signal-title" id="sdTitle"></span></div>
+    <div class="signal-sub" id="sdSub"></div>
+    <div class="signal-rules" id="sdRules"></div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Fly 不是渠道，Fly 验证渠道。</strong>抖音、小红书、微信、美团、飞书是流量渠道，Fly 是验证这些渠道归因是否真实的基础设施。渠道产生信号，Fly 验证信号。
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('action-id')">→ Action ID 状态机</a>
+    <a href="javascript:void(0)" onclick="switchSection('api-playground')">→ API Playground</a>
+  </div>
+</div>
+
+<!-- ==================== Verification ==================== -->
+<div class="section" id="sec-verification">
+  <div class="section-header">
+    <div class="section-tag">4-Gate</div>
+    <div class="section-title">Verification 验证体系</div>
+    <div class="section-desc">四道验证门——每一步都校验，任一失败 = 归因链失效</div>
+  </div>
+  <div class="content-block">
+    <h2>GATE 1 · 来源验证</h2>
+    <p>确认信号来自声称的渠道。校验渠道回调签名、Agent 注册有效性、入口参数合法性（防注入/防重放）。</p>
+    <h2>GATE 2 · 因果验证</h2>
+    <p>确认推荐确实导致了咨询，咨询确实导致了成交。验证事件之间的因果关系成立，排除独立行为。</p>
+    <h2>GATE 3 · 完整性验证</h2>
+    <p>哈希链无断裂，从 CREATED 到当前状态连续。每个事件的哈希 = SHA256(事件数据 + 前一哈希)。</p>
+    <h2>GATE 4 · 时间验证</h2>
+    <p>事件时序合理，无回跳或异常间隔。0秒内完成推荐→成交 = 刷单特征，自动标记。</p>
+  </div>
+  <div class="insight-box">
+    <strong>验证逻辑：</strong>4-Gate 串行执行，全部通过 → Trust Score 计算 → 结算。任一 Gate 未通过 → REJECTED 终态，不可逆。
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('audit')">→ Audit Chain 审计链</a>
+    <a href="javascript:void(0)" onclick="switchSection('trust')">→ Trust Layer 信任层</a>
+  </div>
+</div>
+
+<!-- ==================== Audit Chain ==================== -->
+<div class="section" id="sec-audit">
+  <div class="section-header">
+    <div class="section-tag">Immutability</div>
+    <div class="section-title">Audit Chain 审计链</div>
+    <div class="section-desc">SHA-256 哈希链式结构——任意篡改 = 链断裂</div>
+  </div>
+  <div class="content-block">
+    <h2>链式结构</h2>
+    <p>每个事件生成一个哈希节点：<code>hashₙ = SHA256(事件数据 + hashₙ₋₁)</code>。每个新哈希包含前一哈希，形成链式结构。</p>
+    <h2>不可篡改</h2>
+    <p>修改任何一个历史事件 → 该事件哈希变化 → 后续所有哈希全部失效 → 链断裂。无需检查全部数据，只需验证最后一个哈希。</p>
+    <h2>不可伪造</h2>
+    <p>每个事件由产生它的 Agent 使用 Ed25519 签名。修改任何字段 → 签名验证失败。无法伪造他人签名的事件。</p>
+    <h2>不可抵赖</h2>
+    <p>签名者无法否认自己签过的事件（Ed25519 的不可抵赖性）。结合哈希链，任何人都可以独立验证整条审计链。</p>
+    <h2>审计追溯</h2>
+    <p>从最终结算的 SETTLED 状态，可以逆向追溯完整路径：结算 → 成交 → 咨询 → 推荐 → 渠道来源。每一步都有哈希验证和数字签名。</p>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('verification')">→ Verification 验证体系</a>
+    <a href="javascript:void(0)" onclick="switchSection('trust')">→ Trust Layer 信任层</a>
+  </div>
+</div>
+
+<!-- ==================== Trust Layer ==================== -->
+<div class="section" id="sec-trust">
+  <div class="section-header">
+    <div class="section-tag">Output</div>
+    <div class="section-title">Trust Layer 信任层</div>
+    <div class="section-desc">验证链的最终输出——Trust Score + 结算条件</div>
+  </div>
+  <div class="content-block">
+    <h2>Trust Score</h2>
+    <p>基于完整验证链计算的信任评分（0-100）。默认结算阈值 60 分。Trust Score = 全链路行为追踪 + 不可篡改审计日志 → 信任评级。</p>
+    <h2>结算条件</h2>
+    <ul>
+      <li>4-Gate 全部通过</li>
+      <li>Trust Score ≥ 阈值（默认 60）</li>
+      <li>哈希链完整无断裂</li>
+      <li>数字签名全部验证通过</li>
+    </ul>
+    <h2>数据安全</h2>
+    <p>传输加密（TLS 1.3）、存储加密（AES-256）、哈希链验证（SHA-256）、Ed25519 签名。</p>
+    <h2>访问控制</h2>
+    <p>RBAC 权限模型、API 安全（速率限制 + Token 验证 + 白名单）、合规认证（等保合规 + 数据隐私）。</p>
+    <h2>第三方审计</h2>
+    <p>安全审计日志、漏洞赏金计划、第三方审计报告。</p>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('audit')">→ Audit Chain 审计链</a>
+    <a href="javascript:void(0)" onclick="switchSection('security')">→ Security Model</a>
+  </div>
+</div>
+
+<!-- ==================== Security Model ==================== -->
+<div class="section" id="sec-security">
+  <div class="section-header">
+    <div class="section-tag">Protection</div>
+    <div class="section-title">Security Model 安全模型</div>
+    <div class="section-desc">8层6协议安全架构——从网络层到应用层的全栈防护</div>
+  </div>
+  <div class="content-block">
+    <h2>8层安全架构</h2>
+    <ul>
+      <li><strong>Layer 1 网络层</strong>：TLS 1.3 加密传输、DDoS 防护</li>
+      <li><strong>Layer 2 身份层</strong>：Ed25519 数字签名、Agent 注册验证</li>
+      <li><strong>Layer 3 数据层</strong>：AES-256 存储加密、字段级脱敏</li>
+      <li><strong>Layer 4 验证层</strong>：4-Gate 验证体系</li>
+      <li><strong>Layer 5 审计层</strong>：SHA-256 哈希链、不可篡改日志</li>
+      <li><strong>Layer 6 信任层</strong>：Trust Score 计算、结算条件校验</li>
+      <li><strong>Layer 7 应用层</strong>：API 安全、速率限制、输入验证</li>
+      <li><strong>Layer 8 治理层</strong>：合规审计、权限管理、策略执行</li>
+    </ul>
+    <h2>6协议</h2>
+    <ul>
+      <li>TLS 1.3（传输）</li>
+      <li>Ed25519（签名）</li>
+      <li>SHA-256（哈希链）</li>
+      <li>AES-256（加密存储）</li>
+      <li>OAuth 2.0（认证）</li>
+      <li>RBAC（授权）</li>
+    </ul>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('trust')">→ Trust Layer</a>
+    <a href="javascript:void(0)" onclick="switchSection('enterprise')">→ Enterprise</a>
+  </div>
+</div>
+
+<!-- ==================== Enterprise ==================== -->
+<div class="section" id="sec-enterprise">
+  <div class="section-header">
+    <div class="section-tag">Scale</div>
+    <div class="section-title">Enterprise Architecture 企业架构</div>
+    <div class="section-desc">从单店验证到企业级数字孪生——Business Twin Layer</div>
+  </div>
+  <div class="content-block">
+    <h2>Business Twin Layer</h2>
+    <p>企业级数字孪生系统。将线下商业实体的规则、流程、策略映射为可验证的数字模型，实现归因验证与企业业务逻辑的深度融合。</p>
+    <h2>多租户架构</h2>
+    <p>企业级数据隔离，每个租户独立的验证链、信任评分、审计日志。支持跨租户的渠道归因验证。</p>
+    <h2>自定义验证规则</h2>
+    <p>企业可自定义 Gate 验证条件（如最低成交金额、特定渠道权重、自定义时序规则），满足不同业务场景。</p>
+    <h2>API 集成</h2>
+    <ul>
+      <li><code>POST /v1/action</code> — 创建 Action ID</li>
+      <li><code>GET /v1/action/{id}</code> — 查询 Action 状态</li>
+      <li><code>POST /v1/verify</code> — 触发验证链</li>
+      <li><code>GET /v1/audit/{id}</code> — 获取审计记录</li>
+    </ul>
+    <h2>SLA 保障</h2>
+    <p>99.9% 可用性、端到端验证延迟 &lt; 200ms、7×24 技术支持。</p>
+  </div>
+  <div class="cross-nav">
+    <a href="javascript:void(0)" onclick="switchSection('security')">→ Security Model</a>
+    <a href="javascript:void(0)" onclick="switchSection('api-playground')">→ API Playground</a>
+  </div>
+</div>
+
+<!-- ==================== API Playground ==================== -->
+<div class="section" id="sec-api-playground">
+  <div class="section-header">
+    <div class="section-tag">Interactive</div>
+    <div class="section-title">API Playground</div>
+    <div class="section-desc">直接体验 Fly 的核心 API——Sandbox Demo，不调用生产环境</div>
+  </div>
+
+  <div class="api-playground">
+    <div class="api-tabs">
+      <div class="api-tab active" onclick="switchApiTab('create')">Create Action</div>
+      <div class="api-tab" onclick="switchApiTab('query')">Query Status</div>
+      <div class="api-tab" onclick="switchApiTab('verify')">Verify Chain</div>
+    </div>
+
+    <!-- Create Action -->
+    <div class="api-body" id="api-create">
+      <div class="api-method">POST</div>
+      <div class="api-endpoint">/v1/action</div>
+      <div class="api-label">Agent ID</div>
+      <input class="api-input" id="inp-agent" placeholder="agent_01HXYZ..." value="agent_01H8K9M2P">
+      <div class="api-label">Channel</div>
+      <input class="api-input" id="inp-channel" placeholder="douyin | xiaohongshu | wechat | meituan | feishu" value="douyin">
+      <div class="api-label">Metadata (JSON, optional)</div>
+      <input class="api-input" id="inp-meta" placeholder='{"ref_id":"ref_001"}' value='{"ref_id":"ref_001"}'>
+      <button class="api-send" onclick="mockCreate()">▶ Send</button>
+      <div class="api-response" id="resp-create" style="display:none"></div>
+    </div>
+
+    <!-- Query Status -->
+    <div class="api-body" id="api-query" style="display:none">
+      <div class="api-method">GET</div>
+      <div class="api-endpoint">/v1/action/{action_id}</div>
+      <div class="api-label">Action ID</div>
+      <input class="api-input" id="inp-actionid" placeholder="act_1717920000_a3f8b2c1" value="">
+      <button class="api-send" onclick="mockQuery()">▶ Send</button>
+      <div class="api-response" id="resp-query" style="display:none"></div>
+    </div>
+
+    <!-- Verify Chain -->
+    <div class="api-body" id="api-verify" style="display:none">
+      <div class="api-method">POST</div>
+      <div class="api-endpoint">/v1/verify</div>
+      <div class="api-label">Action ID</div>
+      <input class="api-input" id="inp-verify-id" placeholder="act_1717920000_a3f8b2c1" value="">
+      <div class="api-label">Gate Level (1-4)</div>
+      <input class="api-input" id="inp-gate" placeholder="4" value="4">
+      <button class="api-send" onclick="mockVerify()">▶ Send</button>
+      <div class="api-response" id="resp-verify" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Sandbox 模式：</strong>所有请求均在本地模拟，不调用生产 API。返回数据为 Demo 数据，用于理解 Fly 的工作方式。
+  </div>
+</div>
+
+<!-- ==================== FAQ ==================== -->
+<div class="section" id="sec-faq">
+  <div class="section-header">
+    <div class="section-tag">Help</div>
+    <div class="section-title">FAQ</div>
+    <div class="section-desc">关于 Fly 的常见问题</div>
+  </div>
+  <div class="content-block">
+    <h2>Fly 是什么？</h2>
+    <p>AI Agent 信任与归因基础设施。不是 AI 生成工具，不是自动化工具，而是验证 AI 行为是否可信、归因是否真实的基础设施层。</p>
+    <h2>什么是 Action ID？</h2>
+    <p>每条 AI 推荐生成的唯一归因协议标识。从点击→咨询→核销全链路可追溯。查看 <a href="javascript:void(0)" onclick="switchSection('action-id')">Action ID 生命周期 →</a></p>
+    <h2>Fly 如何验证归因？</h2>
+    <p>4-Gate 验证体系：来源验证 → 因果验证 → 完整性验证 → 时间验证。每一步都校验，任一失败 = 归因链失效。</p>
+    <h2>Fly 是渠道吗？</h2>
+    <p>不是。Fly 验证渠道，但不产生流量。抖音、小红书、微信、美团、飞书是流量渠道，Fly 验证这些渠道的归因是否真实。</p>
+    <h2>数据安全吗？</h2>
+    <p>8层6协议安全架构：TLS 1.3 传输加密、AES-256 存储加密、SHA-256 哈希链、Ed25519 数字签名。前端不收集商业敏感数据。</p>
+    <h2>如何接入？</h2>
+    <p>通过 RESTful API 接入。<code>POST /v1/action</code> 创建 Action ID，<code>GET /v1/action/{id}</code> 查询状态，<code>POST /v1/verify</code> 触发验证。查看 <a href="javascript:void(0)" onclick="switchSection('api-playground')">API Playground →</a></p>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+/* === Section switching === */
+function switchSection(id){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.sidebar-item').forEach(function(i){i.classList.remove('active')});
+  var sec=document.getElementById('sec-'+id);
+  if(sec) sec.classList.add('active');
+  var si=document.querySelector('.sidebar-item[data-section="'+id+'"]');
+  if(si) si.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* === Action ID detail panel === */
+var nodeInfo={
+  created:{color:'#2563EB',title:'CREATED · 推荐触发',sub:'归因链起点',
+    rules:[
+      {color:'#2563EB',text:'生成时机：用户通过推荐链接/二维码/渠道入口进入时签发 Action ID'},
+      {color:'#2563EB',text:'格式规则：act_{timestamp}_{random}，例如 act_1717920000_a3f8b2c1'},
+      {color:'#2563EB',text:'前置验证：①来源渠道已验证 ②推荐人Agent注册有效 ③入口参数合法'},
+      {color:'#2563EB',text:'哈希初始化：生成第一个SHA-256哈希节点，验证链初始化'},
+      {color:'#94A3B8',text:'超时机制：7天未转化自动进入 EXPIRED 终态'}
+    ]},
+  referred:{color:'#059669',title:'REFERRED · 咨询验证',sub:'信号传递确认',
+    rules:[
+      {color:'#059669',text:'触发条件：用户发起咨询/互动，Action ID 随行为传递'},
+      {color:'#059669',text:'GATE 1 来源验证：确认信号来自声称的渠道，校验渠道回调签名'},
+      {color:'#059669',text:'GATE 2 因果验证：确认咨询确实由推荐触发'},
+      {color:'#059669',text:'哈希追加：当前事件数据 + 前一哈希 → 新哈希'},
+      {color:'#D97706',text:'异常出口：验证失败 → ANOMALY'}
+    ]},
+  converted:{color:'#7C3AED',title:'CONVERTED · 成交确认',sub:'归因锁定',
+    rules:[
+      {color:'#7C3AED',text:'触发条件：交易完成，Action ID 与订单绑定'},
+      {color:'#7C3AED',text:'GATE 3 完整性验证：哈希链无断裂'},
+      {color:'#7C3AED',text:'金额验证：成交金额合理性校验'},
+      {color:'#7C3AED',text:'归因锁定：验证链锁定归因结果，不可篡改'},
+      {color:'#D97706',text:'争议出口：对归因结果有异议 → DISPUTED'}
+    ]},
+  settled:{color:'#DC2626',title:'SETTLED · 结算锁定',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#DC2626',text:'GATE 4 唯一性验证：同一 Action ID 不可重复结算'},
+      {color:'#DC2626',text:'全链路验证：CREATED→REFERRED→CONVERTED 完整链路'},
+      {color:'#DC2626',text:'Trust Score ≥ 阈值（默认60）才可结算'},
+      {color:'#DC2626',text:'佣金计算：基于验证结果分配，非基于声明'},
+      {color:'#DC2626',text:'🔒 终态锁定：永久锁定，不可再触发'}
+    ]},
+  expired:{color:'#64748B',title:'EXPIRED · 超时过期',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#64748B',text:'触发条件：7天未进入 REFERRED 状态'},
+      {color:'#64748B',text:'常见原因：用户点击推荐链接后未发起咨询'},
+      {color:'#64748B',text:'数据保留：验证记录仍可查询，用于统计漏斗'},
+      {color:'#64748B',text:'🔒 终态：不可恢复'}
+    ]},
+  anomaly:{color:'#D97706',title:'ANOMALY · 验证异常',sub:'需人工审核',
+    rules:[
+      {color:'#D97706',text:'触发条件：验证链断裂、时序异常、哈希不匹配'},
+      {color:'#D97706',text:'典型场景：0秒内完成推荐→成交（刷单特征）'},
+      {color:'#059669',text:'恢复路径：人工审核通过 → CONVERTED'},
+      {color:'#DC2626',text:'拒绝路径：确认作弊 → REJECTED'}
+    ]},
+  disputed:{color:'#D97706',title:'DISPUTED · 归因争议',sub:'多方争议中',
+    rules:[
+      {color:'#D97706',text:'触发条件：推荐人或渠道对归因结果提出异议'},
+      {color:'#D97706',text:'典型场景：多个渠道声称同一转化'},
+      {color:'#059669',text:'恢复路径：争议解决 → SETTLED'},
+      {color:'#DC2626',text:'拒绝路径：争议确认无效 → REJECTED'}
+    ]},
+  rejected:{color:'#991B1B',title:'REJECTED · 验证失败',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#991B1B',text:'触发来源：ANOMALY 审核确认作弊 / DISPUTED 争议确认无效'},
+      {color:'#991B1B',text:'典型原因：伪造来源、归因劫持、刷单作弊'},
+      {color:'#991B1B',text:'记录保留：拒绝记录写入审计日志'},
+      {color:'#991B1B',text:'🔒 终态：不可恢复，信用评分下调'}
+    ]}
+};
+function showDetail(key){
+  var info=nodeInfo[key];if(!info)return;
+  var panel=document.getElementById('detailPanel');
+  document.getElementById('ndDot').style.background=info.color;
+  document.getElementById('ndTitle').textContent=info.title;
+  document.getElementById('ndSub').textContent=info.sub;
+  var rulesEl=document.getElementById('ndRules');rulesEl.innerHTML='';
+  info.rules.forEach(function(r,i){
+    var div=document.createElement('div');div.className='detail-rule';
+    div.innerHTML='<div class="detail-num" style="background:'+r.color+'">'+(i+1)+'</div><div class="detail-text">'+r.text+'</div>';
+    rulesEl.appendChild(div);
+  });
+  panel.classList.add('active');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function hideDetail(){document.getElementById('detailPanel').classList.remove('active');}
+
+/* === Attribution signal panel === */
+var signalInfo={
+  channel:{color:'#2563EB',title:'Channel · 渠道层',sub:'概念层 — 信号的来源',
+    rules:[
+      {color:'#1D4ED8',text:'抖音：短视频/直播，品牌曝光 + 达人种草'},
+      {color:'#DC2626',text:'小红书：笔记/种草，真实用户评测'},
+      {color:'#059669',text:'微信：公众号/私域，深度内容 + 社交裂变'},
+      {color:'#D97706',text:'美团：到店/团购，本地生活场景'},
+      {color:'#2563EB',text:'飞书：企业/社群，B2B 场景'}
+    ]},
+  actionid:{color:'#059669',title:'Action ID · 信号层',sub:'信号层 — 行为的唯一标识',
+    rules:[
+      {color:'#059669',text:'每个 AI 推荐生成唯一标识符，全链路可追溯'},
+      {color:'#059669',text:'格式：act_{timestamp}_{random}，不可预测不可碰撞'},
+      {color:'#059669',text:'携带渠道来源、推荐人 Agent、时间戳、上下文'},
+      {color:'#DC2626',text:'GATE 1：确认信号来自声称的渠道'}
+    ]},
+  attribution:{color:'#7C3AED',title:'Attribution · 归因层',sub:'归因层 — 可验证归因',
+    rules:[
+      {color:'#7C3AED',text:'渠道归因：确定信号从哪个渠道来，验证来源真实性'},
+      {color:'#7C3AED',text:'事件归因：确定哪个行为触发了转化，验证因果关系'},
+      {color:'#7C3AED',text:'信号传递：Action ID + 哈希链，每个事件追加哈希'},
+      {color:'#DC2626',text:'GATE 2 因果验证：确认推荐导致了咨询'}
+    ]},
+  verification:{color:'#D97706',title:'Verification · 验证层',sub:'验证层 — 归因结果的可信保证',
+    rules:[
+      {color:'#D97706',text:'GATE 1 来源验证：确认信号来自声称的渠道'},
+      {color:'#D97706',text:'GATE 2 因果验证：确认事件因果关系成立'},
+      {color:'#D97706',text:'GATE 3 完整性验证：确认哈希链无断裂'},
+      {color:'#D97706',text:'GATE 4 时间验证：确认事件时序合理'},
+      {color:'#DC2626',text:'任一 Gate 未通过 → REJECTED'}
+    ]},
+  trust:{color:'#1A3D2E',title:'Trust · 信任评级',sub:'信任层 — 验证链的最终输出',
+    rules:[
+      {color:'#1A3D2E',text:'Trust Score：基于完整验证链计算（0-100），默认阈值60'},
+      {color:'#1A3D2E',text:'Trust = 全链路行为追踪 + 不可篡改审计日志 → 信任评级'},
+      {color:'#1A3D2E',text:'结算条件：4-Gate 全通过 + Score ≥ 阈值 + 哈希链完整'},
+      {color:'#1A3D2E',text:'不可抵赖：Ed25519签名，修改任何字段 → 签名失效'},
+      {color:'#1A3D2E',text:'审计追溯：Trust Score 计算过程可审计'}
+    ]}
+};
+function showSignal(key){
+  var info=signalInfo[key];if(!info)return;
+  var panel=document.getElementById('signalPanel');
+  document.getElementById('sdDot').style.background=info.color;
+  document.getElementById('sdTitle').textContent=info.title;
+  document.getElementById('sdSub').textContent=info.sub;
+  var rulesEl=document.getElementById('sdRules');rulesEl.innerHTML='';
+  info.rules.forEach(function(r,i){
+    var div=document.createElement('div');div.className='signal-rule';
+    div.innerHTML='<div class="signal-num" style="background:'+r.color+'">'+(i+1)+'</div><div class="signal-text">'+r.text+'</div>';
+    rulesEl.appendChild(div);
+  });
+  panel.classList.add('active');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function hideSignal(){document.getElementById('signalPanel').classList.remove('active');}
+
+/* === API Playground Mock === */
+var lastActionId='';
+function switchApiTab(tab){
+  document.querySelectorAll('.api-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.api-body').forEach(function(b){b.style.display='none'});
+  document.querySelector('.api-tab:nth-child('+(tab==='create'?1:tab==='query'?2:3)+')').classList.add('active');
+  document.getElementById('api-'+tab).style.display='block';
+}
+function mockCreate(){
+  var agent=document.getElementById('inp-agent').value||'agent_01H8K9M2P';
+  var channel=document.getElementById('inp-channel').value||'douyin';
+  var ts=Math.floor(Date.now()/1000);
+  var rand='a'+Math.random().toString(36).substr(2,7);
+  lastActionId='act_'+ts+'_'+rand;
+  var hash='h_'+Math.random().toString(36).substr(2,12);
+  var resp={
+    action_id:lastActionId,
+    status:'CREATED',
+    agent_id:agent,
+    channel:channel,
+    created_at:new Date().toISOString(),
+    hash_chain:{head:hash,depth:1},
+    next_state:'REFERRED'
+  };
+  var el=document.getElementById('resp-create');
+  el.style.display='block';
+  el.innerHTML=syntaxHighlight(JSON.stringify(resp,null,2));
+  // Auto-fill query/verify fields
+  document.getElementById('inp-actionid').value=lastActionId;
+  document.getElementById('inp-verify-id').value=lastActionId;
+}
+function mockQuery(){
+  var aid=document.getElementById('inp-actionid').value||lastActionId||'act_1717920000_a3f8b2c1';
+  var states=['CREATED','REFERRED','ATTRIBUTED','VERIFIED','CONVERTED','SETTLED'];
+  var si=Math.floor(Math.random()*4)+1;
+  var resp={
+    action_id:aid,
+    status:states[si],
+    hash_chain:{depth:si+1,head:'h_'+Math.random().toString(36).substr(2,12),verified:si>=3},
+    gates_passed:si>=1?['GATE1']:si>=2?['GATE1','GATE2']:si>=3?['GATE1','GATE2','GATE3']:si>=4?['GATE1','GATE2','GATE3','GATE4']:[],
+    trust_score:si>=4?Math.floor(Math.random()*30)+70:si>=3?Math.floor(Math.random()*20)+50:null,
+    updated_at:new Date().toISOString()
+  };
+  var el=document.getElementById('resp-query');
+  el.style.display='block';
+  el.innerHTML=syntaxHighlight(JSON.stringify(resp,null,2));
+}
+function mockVerify(){
+  var aid=document.getElementById('inp-verify-id').value||lastActionId||'act_1717920000_a3f8b2c1';
+  var gates=parseInt(document.getElementById('inp-gate').value)||4;
+  var pass=Math.random()>0.15;
+  var resp={
+    action_id:aid,
+    verification:{
+      gate_1_source:pass,
+      gate_2_causality:pass,
+      gate_3_integrity:pass,
+      gate_4_timing:gates>=4?pass:true
+    },
+    result:pass?'VERIFIED':'REJECTED',
+    trust_score:pass?Math.floor(Math.random()*25)+75:null,
+    hash_chain_valid:pass,
+    timestamp:new Date().toISOString()
+  };
+  if(!pass){
+    resp.rejection_reason=gates>=4?'GATE 4 时间验证失败：事件时序异常':'GATE '+(Math.floor(Math.random()*gates)+1)+' 验证失败';
+  }
+  var el=document.getElementById('resp-verify');
+  el.style.display='block';
+  el.innerHTML=syntaxHighlight(JSON.stringify(resp,null,2));
+}
+function syntaxHighlight(json){
+  json=json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,function(match){
+    var cls='num';
+    if(/^"/.test(match)){if(/:$/.test(match)){cls='key';}else{cls='str';}}
+    else if(/true|false/.test(match)){cls='num';}
+    else if(/null/.test(match)){cls='num';}
+    return '<span class="'+cls+'">'+match+'</span>';
+  });
+}
+
+/* === Init: read hash for deep link === */
+(function(){
+  var h=location.hash.replace('#','');
+  if(h&&document.getElementById('sec-'+h)){switchSection(h);}
+})();
+</script>
+</body>
+</html>
