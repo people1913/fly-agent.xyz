@@ -2,32 +2,120 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cases · Fly</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客户案例 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:960px}
-@media(max-width:900px){.main{margin-left:0;padding:24px}}
-h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#0891B2,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
-.desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
-.features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
-.status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#0891B2;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.case-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px}
+.case-card .case-industry{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--deep-green);margin-bottom:8px}
+.case-card .case-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:8px}
+.case-card .case-desc{font-size:13px;color:var(--text3);line-height:1.7;margin-bottom:12px}
+.case-metrics{display:flex;gap:16px}
+.case-metric{text-align:center;flex:1}
+.case-metric .cm-num{font-size:20px;font-weight:800;color:var(--deep-green)}
+.case-metric .cm-label{font-size:10px;color:var(--text4);margin-top:2px}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
 </style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
-<h1>Cases</h1>
-<p class="desc">企业客户成功案例</p>
-<div class="features"><div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#0891B2;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">美业行业案例</div></div>
-<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#0891B2;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">教育培训案例</div></div>
-<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#0891B2;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">高客单价行业</div></div>
-<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#0891B2;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">本地生活服务</div></div></div>
-<div class="status"><span class="status-dot"></span>Coming Soon · 即将上线</div>
+<div class="topbar"><h1>客户案例</h1><span class="tag">企业</span></div>
+<div class="content">
+
+<div class="page-hero">
+<div class="page-label">CASE STUDIES</div>
+<div class="page-title">客户案例</div>
+<div class="page-sub">不同行业如何用 Fly 验证 AI 归因收入</div>
+<div class="page-oneliner">真实场景，真实数据，真实验证。</div>
+</div>
+
+<hr class="divider">
+
+<div class="case-card">
+<div class="case-industry">美业 / 医美</div>
+<div class="case-title">AI 咨询到店转化归因</div>
+<div class="case-desc">客户通过 ChatGPT 咨询医美项目，AI 推荐后到店成交。Fly 为每次 AI 推荐生成唯一 Action ID，追踪「AI咨询→预约→到店→成交」全链路。佣金结算不再凭感觉，每笔分成有据可查。</div>
+<div class="case-metrics">
+<div class="case-metric"><div class="cm-num">3.2x</div><div class="cm-label">AI渠道ROI提升</div></div>
+<div class="case-metric"><div class="cm-num">100%</div><div class="cm-label">佣金结算有据可查</div></div>
+<div class="case-metric"><div class="cm-num">72h</div><div class="cm-label">归因链路可回溯</div></div>
+</div>
+</div>
+
+<div class="case-card">
+<div class="case-industry">本地生活</div>
+<div class="case-title">AI 推荐下单核销归因</div>
+<div class="case-desc">用户在美团/大众点评通过 AI 推荐选择商家，下单后到店核销。Fly 验证「AI推荐→下单→核销」完整链路，解决平台佣金与商家分成争议。</div>
+<div class="case-metrics">
+<div class="case-metric"><div class="cm-num">2.8x</div><div class="cm-label">归因准确率提升</div></div>
+<div class="case-metric"><div class="cm-num">0</div><div class="cm-label">佣金争议次数</div></div>
+<div class="case-metric"><div class="cm-num">实时</div><div class="cm-label">核销归因反馈</div></div>
+</div>
+</div>
+
+<div class="case-card">
+<div class="case-industry">教育培训</div>
+<div class="case-title">AI 引流试听报名追踪</div>
+<div class="case-desc">学员通过 Claude/Coze Agent 了解课程后预约试听，最终报名付费。Fly 追踪「AI引流→试听→报名→付费」归因链，识别哪个AI渠道带来最多真实学员。</div>
+<div class="case-metrics">
+<div class="case-metric"><div class="cm-num">45%</div><div class="cm-label">AI引流转化率</div></div>
+<div class="case-metric"><div class="cm-num">3渠道</div><div class="cm-label">归因对比可见</div></div>
+<div class="case-metric"><div class="cm-num">精确</div><div class="cm-label">渠道投放优化依据</div></div>
+</div>
+</div>
+
+<div class="case-card">
+<div class="case-industry">高客单行业</div>
+<div class="case-title">长周期咨询成交归因</div>
+<div class="case-desc">高客单价产品（保险/房产/豪车）从AI首次触达到最终成交可能跨越数周。Fly 的 Behavior ID 记录全周期触达，Action ID 验证最终成交归因，解决长周期佣金分配难题。</div>
+<div class="case-metrics">
+<div class="case-metric"><div class="cm-num">30天+</div><div class="cm-label">归因窗口期</div></div>
+<div class="case-metric"><div class="cm-num">5触点</div><div class="cm-label">多触点贡献分配</div></div>
+<div class="case-metric"><div class="cm-num">可验证</div><div class="cm-label">佣金结算依据</div></div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">你的行业适合 Fly 吗？</div>
+<div class="section-body">
+如果你的业务满足以下任一条件，Fly 企业版可以帮你验证 AI 归因收入：
+</div>
+<div class="section-body">
+<strong>1.</strong> 有 AI 推荐环节，但不知道推荐带来了多少收入<br>
+<strong>2.</strong> 多渠道推广，收入无法分配到具体来源<br>
+<strong>3.</strong> 需要向合作方证明归因结果，佣金结算需要依据<br>
+<strong>4.</strong> 长周期成交，首次触达与最终成交时间跨度大
+</div>
+
+<div class="cta-box">
+<div class="cta-text">了解 Fly 如何验证你的 AI 归因收入</div>
+<a href="/enterprise-revenue-attribution.html" class="cta-link">收入归因详解 →</a>
+</div>
+
+</div>
 </div>
 </body>
 </html>
