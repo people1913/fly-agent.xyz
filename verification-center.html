@@ -1576,6 +1576,8 @@ function closeEcoDetail(){document.getElementById('eco-detail-panel').classList.
 
 
 // Sidebar collapse/expand
+
+document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='b'){e.preventDefault();toggleSidebar()}});
 function toggleSidebar(){
   const sb=document.getElementById('sidebar');
   const btn=document.querySelector('.topbar-collapse');
