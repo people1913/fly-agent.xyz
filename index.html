@@ -233,51 +233,41 @@ nav{gap:12px}nav a{font-size:12px}
 <!-- 链路图 -->
 <div style="width:100%;max-width:720px;margin:0 auto">
 
-<svg width="100%" viewBox="0 0 620 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 640 260" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker>
 </defs>
-<!-- L1: Identity -->
-<circle cx="80" cy="40" r="30" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="80" y="36" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">L1</text>
-<text x="80" y="50" text-anchor="middle" font-size="9" fill="#1A3D2E" font-weight="500" font-family="Inter,Noto Sans SC,sans-serif">Identity</text>
-<text x="130" y="37" font-size="14" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Identity</text>
-<text x="230" y="37" font-size="12" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">身份层 —— Agent注册 + 身份验证</text>
-<!-- Arrow L1→L2 -->
-<path d="M80 72 L80 90" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- L2: Proof -->
-<circle cx="80" cy="120" r="30" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="80" y="116" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">L2</text>
-<text x="80" y="130" text-anchor="middle" font-size="9" fill="#1A3D2E" font-weight="500" font-family="Inter,Noto Sans SC,sans-serif">Proof</text>
-<text x="130" y="117" font-size="14" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Proof</text>
-<text x="220" y="117" font-size="12" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">证据层 —— 行为凭证采集</text>
-<!-- Arrow L2→L3 -->
-<path d="M80 152 L80 170" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- L3: Verification -->
-<circle cx="80" cy="200" r="30" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="80" y="193" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">L3</text>
-<text x="80" y="210" text-anchor="middle" font-size="8" fill="#1A3D2E" font-weight="500" font-family="Inter,Noto Sans SC,sans-serif">Verify</text>
-<text x="130" y="197" font-size="14" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
-<text x="250" y="197" font-size="12" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">验证层 —— 多方交叉验证</text>
-<!-- Arrow L3→L4 -->
-<path d="M80 232 L80 250" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- L4: Trust Ledger -->
-<circle cx="80" cy="280" r="30" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="80" y="273" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">L4</text>
-<text x="80" y="290" text-anchor="middle" font-size="8" fill="#1A3D2E" font-weight="500" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
-<text x="130" y="277" font-size="14" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Trust Ledger</text>
-<text x="265" y="277" font-size="12" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信任账本层 —— 不可篡改审计链</text>
-<!-- Arrow L4→L5 -->
-<path d="M80 312 L80 330" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- L5: Attribution Settlement -->
-<circle cx="80" cy="360" r="30" fill="#1A3D2E" stroke="#1A3D2E" stroke-width="1.5"/>
-<text x="80" y="353" text-anchor="middle" font-size="11" fill="#E8F5EC" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">L5</text>
-<text x="80" y="370" text-anchor="middle" font-size="8" fill="#E8F5EC" font-weight="500" font-family="Inter,Noto Sans SC,sans-serif">Attr.</text>
-<text x="130" y="357" font-size="14" fill="#1A3D2E" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Attribution Settlement</text>
-<text x="350" y="357" font-size="12" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">归因结算层 —— 只出依据</text>
-<!-- Hard boundary line -->
-<line x1="30" y1="400" x2="590" y2="400" stroke="#64748B" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="310" y="416" text-anchor="middle" font-size="11" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">🚫 Payment / Clearing —— Fly不进入</text>
+<!-- Row 1: L1 → L2 → L3 -->
+<circle cx="120" cy="60" r="44" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="120" y="52" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">L1</text>
+<text x="120" y="66" text-anchor="middle" font-size="13" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Identity</text>
+<text x="120" y="82" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">身份层</text>
+<path d="M168 60 L236 60" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<circle cx="290" cy="60" r="44" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="290" y="52" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">L2</text>
+<text x="290" y="66" text-anchor="middle" font-size="13" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Proof</text>
+<text x="290" y="82" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">证据层</text>
+<path d="M338 60 L406 60" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<circle cx="460" cy="60" r="44" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="460" y="52" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">L3</text>
+<text x="460" y="66" text-anchor="middle" font-size="12" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
+<text x="460" y="82" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">验证层</text>
+<!-- Arrow L3 ↓ L4 -->
+<path d="M460 108 L460 146" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Row 2: L4 ← L5 (right to left) -->
+<circle cx="460" cy="200" r="44" fill="#E8F5EC" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="460" y="192" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">L4</text>
+<text x="460" y="206" text-anchor="middle" font-size="11" fill="#1A3D2E" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Trust Ledger</text>
+<text x="460" y="222" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信任账本层</text>
+<path d="M412 200 L344 200" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<circle cx="290" cy="200" r="44" fill="#1A3D2E" stroke="#1A3D2E" stroke-width="1.5"/>
+<text x="290" y="190" text-anchor="middle" font-size="9" fill="#E8F5EC" font-family="Inter,Noto Sans SC,sans-serif">L5</text>
+<text x="290" y="203" text-anchor="middle" font-size="10" fill="#E8F5EC" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Attribution</text>
+<text x="290" y="216" text-anchor="middle" font-size="10" fill="#E8F5EC" font-weight="700" font-family="Inter,Noto Sans SC,sans-serif">Settlement</text>
+<text x="290" y="234" text-anchor="middle" font-size="9" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">只出依据</text>
+<!-- Hard boundary -->
+<line x1="90" y1="250" x2="490" y2="250" stroke="#64748B" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="290" y="260" text-anchor="middle" font-size="10" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">🚫 Payment / Clearing —— Fly不进入</text>
 </svg>
 </div>
 
