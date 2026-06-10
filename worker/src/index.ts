@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.8.1 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.9.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 5层能力架构：L1 Identity · L2 Proof · L3 Verification · L4 Trust Ledger · L5 Attribution Settlement + 硬边界
@@ -24,6 +24,7 @@
  *   POST /v1/admin/alert/test                 — v2.7.0: 告警测试
  *   POST /v1/admin/backup                     — v2.7.0: 触发备份
  *   GET  /v1/admin/backup                     — v2.7.0: 备份历史
+ *   PUT  /v1/admin/kv                         — v2.9.0: KV写入（仅capacity:前缀）
  * 
  * v2.8.0 新增：
  *   - 自动错误率告警（5xx>3% P1 / 5xx>10% P0，基于KV滚动窗口）
@@ -32,6 +33,10 @@
  *   - 告警去重（KV TTL 5分钟）
  *   - 邮件告警通道（Resend API）
  *   - 统一告警入口 alertTrigger()
+ * v2.9.0 新增：
+ *   - 每日指标持久化到D1（daily_metrics表）
+ *   - D1容量检查（>80%限额告警P1）
+ *   - KV容量检查（通过CF Analytics API查询读写量，>80%限额告警P1）
  */
 
 // ============================================================
@@ -303,7 +308,7 @@ async function sendTelegramAlert(env: Env, level: string, message: string, detai
     detailLines ? `\n${detailLines}` : '',
     ``,
     `⏰ ${timestamp}`,
-    `📦 v2.8.1`,
+    `📦 v2.9.0`,
   ].join('\n');
 
   try {
@@ -340,7 +345,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ``,
     `告警级别: ${level}`,
     `时间: ${timestamp}`,
-    `Worker版本: v2.8.1`,
+    `Worker版本: v2.9.0`,
     ``,
     `告警内容:`,
     message,
@@ -349,7 +354,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ...Object.entries(details).map(([k, v]) => `  ${k}: ${v}`),
     ``,
     `---`,
-    `此邮件由 Fly Attribution Worker v2.8.1 自动发送`,
+    `此邮件由 Fly Attribution Worker v2.9.0 自动发送`,
     `请勿直接回复`,
   ].join('\n');
 
@@ -526,7 +531,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.8.1', layers: 5, boundary: 'Payment/Clearing — Fly不进入', db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.9.0', layers: 5, boundary: 'Payment/Clearing — Fly不进入', db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -772,7 +777,7 @@ export default {
         if (path === '/v1/admin/alert/test' && method === 'POST') {
           const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
           if (!auth.ok) return json({ error: auth.error }, 401);
-          await alertTrigger(env, 'TEST', '告警测试 - 这是一个测试告警', { trigger: 'manual', version: 'v2.8.1' });
+          await alertTrigger(env, 'TEST', '告警测试 - 这是一个测试告警', { trigger: 'manual', version: 'v2.9.0' });
           return json({ success: true, message: 'Test alert sent to all configured channels', channels: { telegram: !!(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID), email: !!(env.RESEND_API_KEY && env.ALERT_EMAIL_TO) } });
         }
 
@@ -817,6 +822,23 @@ export default {
           return json({ success: true, backups });
         }
 
+        // === v2.9.0: KV写入端点（供GA写入容量数据） ===
+        if (path === '/v1/admin/kv' && method === 'PUT') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          try {
+            const body: any = await request.json();
+            const { key, value } = body;
+            if (!key || !value) return json({ error: 'key and value required' }, 400);
+            // 只允许写capacity:前缀的key（安全限制）
+            if (!key.startsWith('capacity:')) return json({ error: 'only capacity: keys allowed' }, 403);
+            await env.FLY_KV.put(key, typeof value === 'string' ? value : JSON.stringify(value), { expirationTtl: 86400 });
+            return json({ success: true, key });
+          } catch (e: any) {
+            return json({ error: e.message }, 400);
+          }
+        }
+
         return json({ error: "not found", hint: "try /v1/health" }, 404);
       } catch (err: any) {
         // v2.8.0新增：D1/KV操作失败独立告警
@@ -847,7 +869,7 @@ export default {
   },
 
   // ============================================================
-  // v2.8.1: Scheduled Handler — cron定时健康探针
+  // v2.9.0: Scheduled Handler — cron定时健康探针 + 指标持久化
   // ============================================================
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     ctx.waitUntil((async () => {
@@ -885,6 +907,95 @@ export default {
             });
           }
         }
+
+        // 4. 每日指标持久化（每天0点附近执行一次）
+        try {
+          const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+          const dailyDoneKey = `daily_metrics:done:${today}`;
+          const alreadyDone = await env.FLY_KV.get(dailyDoneKey);
+          if (!alreadyDone) {
+            // 确保daily_metrics表存在
+            await env.FLY_D1.prepare(`
+              CREATE TABLE IF NOT EXISTS daily_metrics (
+                date TEXT PRIMARY KEY,
+                total_requests INTEGER,
+                total_5xx INTEGER,
+                avg_latency_ms INTEGER,
+                p95_latency_ms INTEGER,
+                created_at TEXT DEFAULT (datetime('now'))
+              )
+            `).run();
+
+            // 聚合最近5分钟指标作为当日的采样（首次运行时写入）
+            const m = await getAggregatedMetrics(env, 5);
+            if (m && m.total > 0) {
+              await env.FLY_D1.prepare(
+                `INSERT OR REPLACE INTO daily_metrics (date, total_requests, total_5xx, avg_latency_ms, p95_latency_ms) VALUES (?, ?, ?, ?, ?)`
+              ).bind(today, m.total, m.s5xx, Math.round(m.avg_ms), Math.round(m.p95_ms)).run();
+            }
+            // 标记今日已完成（TTL 25小时，确保跨天重置）
+            await env.FLY_KV.put(dailyDoneKey, '1', { expirationTtl: 90000 });
+          }
+        } catch (e: any) {
+          // 持久化失败不影响探针
+        }
+
+        // 5. D1容量检查（CF D1免费版5GB限额，>80%告警）
+        try {
+          // 通过PRAGMA查询D1页面数估算大小（D1不直接暴露file_size给Worker）
+          // 使用KV缓存的容量数据（由GA trend-check写入）
+          const capacityRaw = await env.FLY_KV.get('capacity:d1');
+          if (capacityRaw) {
+            const cap = JSON.parse(capacityRaw);
+            // CF D1免费版限额5GB = 5368709120字节
+            const limitBytes = 5368709120;
+            const usagePercent = (cap.file_size / limitBytes) * 100;
+            if (usagePercent > 80) {
+              if (!(await isAlertDeduped(env, 'd1_capacity'))) {
+                await markAlertSent(env, 'd1_capacity');
+                await alertTrigger(env, 'P1', `D1容量接近限额: ${usagePercent.toFixed(1)}%`, {
+                  file_size_mb: `${(cap.file_size / 1048576).toFixed(1)}MB`,
+                  limit_gb: '5GB',
+                  usage_percent: `${usagePercent.toFixed(1)}%`,
+                  threshold: '>80%'
+                });
+              }
+            }
+          }
+        } catch (e: any) {
+          // 容量检查失败不影响探针
+        }
+
+        // 6. KV容量检查（CF KV免费版：100k reads/day, 1k writes/day）
+        try {
+          const kvCapRaw = await env.FLY_KV.get('capacity:kv');
+          if (kvCapRaw) {
+            const kvCap = JSON.parse(kvCapRaw);
+            // 读写量 > 80%限额告警
+            const readLimit = 100000;
+            const writeLimit = 1000;
+            const readPercent = (kvCap.reads / readLimit) * 100;
+            const writePercent = (kvCap.writes / writeLimit) * 100;
+            if (readPercent > 80 || writePercent > 80) {
+              if (!(await isAlertDeduped(env, 'kv_capacity'))) {
+                await markAlertSent(env, 'kv_capacity');
+                const reasons: string[] = [];
+                if (readPercent > 80) reasons.push(`读${kvCap.reads}/${readLimit}(${readPercent.toFixed(1)}%)`);
+                if (writePercent > 80) reasons.push(`写${kvCap.writes}/${writeLimit}(${writePercent.toFixed(1)}%)`);
+                await alertTrigger(env, 'P1', `KV容量接近限额: ${reasons.join(', ')}`, {
+                  reads: kvCap.reads,
+                  writes: kvCap.writes,
+                  read_limit: readLimit,
+                  write_limit: writeLimit,
+                  threshold: '>80%'
+                });
+              }
+            }
+          }
+        } catch (e: any) {
+          // 容量检查失败不影响探针
+        }
+
       } catch (e) {
         // scheduled失败静默
       }
