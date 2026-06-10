@@ -303,7 +303,7 @@ async function sendTelegramAlert(env: Env, level: string, message: string, detai
     detailLines ? `\n${detailLines}` : '',
     ``,
     `⏰ ${timestamp}`,
-    `📦 v2.8.0`,
+    `📦 v2.8.1`,
   ].join('\n');
 
   try {
@@ -340,7 +340,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ``,
     `告警级别: ${level}`,
     `时间: ${timestamp}`,
-    `Worker版本: v2.8.0`,
+    `Worker版本: v2.8.1`,
     ``,
     `告警内容:`,
     message,
@@ -349,7 +349,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ...Object.entries(details).map(([k, v]) => `  ${k}: ${v}`),
     ``,
     `---`,
-    `此邮件由 Fly Attribution Worker v2.8.0 自动发送`,
+    `此邮件由 Fly Attribution Worker v2.8.1 自动发送`,
     `请勿直接回复`,
   ].join('\n');
 
