@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业版 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.cap-grid{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:32px}
+.cap-card{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.cap-card .cap-icon{font-size:20px;margin-bottom:8px}
+.cap-card .cap-name{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.cap-card .cap-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.cap-card .cap-link{display:inline-block;margin-top:8px;font-size:12px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
+.highlight-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:16px}
+.vs-col.before{background:var(--bg3);border:1px solid var(--border)}
+.vs-col.after{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.vs-col.before .vs-title{color:var(--text4)}
+.vs-col.after .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.before .vs-item{color:var(--text3)}
+.vs-col.after .vs-item{color:var(--deep-green);font-weight:600}
+.metric-row{display:flex;gap:12px;margin-bottom:24px}
+.metric-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.metric-card .metric-num{font-size:24px;font-weight:800;color:var(--deep-green)}
+.metric-card .metric-label{font-size:11px;color:var(--text4);margin-top:4px}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>企业版</h1><span class="tag">企业</span></div>
+<div class="content">
+
+<div class="page-hero">
+<div class="page-label">ENTERPRISE</div>
+<div class="page-title">Fly 企业版</div>
+<div class="page-sub">为商业规模设计的归因验证方案</div>
+<div class="page-oneliner">AI推荐带来的每一分收入，都可验证、可追溯、可结算。</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">企业为什么选择 Fly</div>
+<div class="section-body">
+当AI渠道成为新的收入来源，企业面临一个核心问题：<strong>哪笔收入是哪个AI带来的？</strong>没有答案，AI推广预算就是盲投，佣金结算就是拍脑袋。Fly 企业版让每一笔AI归因收入都有据可查。
+</div>
+
+<div class="vs-row">
+<div class="vs-col before">
+<div class="vs-title">没有 Fly 企业版</div>
+<div class="vs-item">AI推广预算花出去，不知效果</div>
+<div class="vs-item">多渠道推荐，收入无法分配</div>
+<div class="vs-item">佣金结算凭感觉，不是凭证据</div>
+<div class="vs-item">数据散落在各平台，无法统一审计</div>
+</div>
+<div class="vs-col after">
+<div class="vs-title">有了 Fly 企业版</div>
+<div class="vs-item">每笔收入追溯到具体AI推荐</div>
+<div class="vs-item">多触点归因按贡献分配权重</div>
+<div class="vs-item">佣金结算有完整证据链支撑</div>
+<div class="vs-item">全渠道归因数据统一审计可查</div>
+</div>
+</div>
+
+<div class="highlight-box">
+<div class="hl-label">核心价值</div>
+<div class="hl-text">Fly 企业版不是监控工具，而是收入验证基础设施。<br>它回答的是企业最关心的问题：AI投入赚回了多少钱？</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">企业核心能力</div>
+
+<div class="cap-grid">
+<div class="cap-card">
+<div class="cap-icon">💰</div>
+<div class="cap-name">收入归因</div>
+<div class="cap-desc">每笔收入追溯到具体AI推荐来源，多触点按贡献分配权重</div>
+<a href="/enterprise-revenue-attribution.html" class="cap-link">了解更多 →</a>
+</div>
+<div class="cap-card">
+<div class="cap-icon">📈</div>
+<div class="cap-name">ROI 测量</div>
+<div class="cap-desc">量化AI渠道投入产出比，用数据证明AI推广的价值</div>
+<a href="/enterprise-roi.html" class="cap-link">了解更多 →</a>
+</div>
+<div class="cap-card">
+<div class="cap-icon">📋</div>
+<div class="cap-name">客户案例</div>
+<div class="cap-desc">美业、教培、本地生活、高客单行业真实归因案例</div>
+<a href="/cases.html" class="cap-link">查看案例 →</a>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">企业级保障</div>
+
+<div class="metric-row">
+<div class="metric-card">
+<div class="metric-num">SLA</div>
+<div class="metric-label">99.9% 可用性保障</div>
+</div>
+<div class="metric-card">
+<div class="metric-num">专属</div>
+<div class="metric-label">独立部署实例</div>
+</div>
+<div class="metric-card">
+<div class="metric-num">定制</div>
+<div class="metric-label">验证规则适配业务</div>
+</div>
+<div class="metric-card">
+<div class="metric-num">优先</div>
+<div class="metric-label">技术支持与响应</div>
+</div>
+</div>
+
+<div class="section-body">
+<strong>专属部署</strong>——企业数据不出租户，验证规则按业务定制。<br>
+<strong>SLA 保障</strong>——99.9% API 可用性，关键归因链路零中断。<br>
+<strong>定制验证</strong>——根据行业特性配置验证策略，不是一套规则打天下。<br>
+<strong>优先支持</strong>——专属技术对接，问题第一时间响应。
+</div>
+
+<hr class="divider">
+
+<div class="section-title">适用行业</div>
+
+<div class="cap-grid">
+<div class="cap-card">
+<div class="cap-name">美业 / 医美</div>
+<div class="cap-desc">AI咨询→到店→成交全链路归因</div>
+</div>
+<div class="cap-card">
+<div class="cap-name">本地生活</div>
+<div class="cap-desc">AI推荐→下单→核销归因验证</div>
+</div>
+<div class="cap-card">
+<div class="cap-name">教育培训</div>
+<div class="cap-desc">AI引流→试听→报名收入追踪</div>
+</div>
+<div class="cap-card">
+<div class="cap-name">高客单行业</div>
+<div class="cap-desc">长周期咨询→成交归因与佣金结算</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">想了解 Fly 如何为你的企业验证AI收入？</div>
+<a href="/enterprise-revenue-attribution.html" class="cta-link">收入归因详解 →</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>
