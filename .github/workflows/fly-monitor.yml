@@ -1,0 +1,23 @@
+name: minimal-debug-v2
+on:
+  push:
+  schedule:
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: show event
+        run: |
+          echo "EVENT_NAME=${{ github.event_name }}"
+          echo "REF=${{ github.ref }}"
+          date
+      - name: mark push or schedule
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "TRIGGER=push"
+          fi
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "TRIGGER=schedule"
+          fi
