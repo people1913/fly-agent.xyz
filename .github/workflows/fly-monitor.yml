@@ -1,4 +1,5 @@
 name: Fly Monitor
+# trigger-verify: push validation 2026-06-11
 
 on:
   schedule:
