@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action ID · Verification Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--bg2);padding:2px 10px;border-radius:10px}
+.content{padding:32px;overflow-y:auto;flex:1}
+.def-box{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.def-box .def-sub{font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8}
+.card h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--dark)}
+.card p{color:var(--text3);font-size:12px;line-height:1.7}
+.card code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
+.section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.sub-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--dark);margin-top:8px}
+.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
+.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
+.api-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;overflow:hidden}
+.api-block .api-hd{background:var(--deep-green);color:#fff;padding:8px 14px;font-family:var(--mono);font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.api-block .api-hd .method{background:#2563EB;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.api-block pre{padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.7;overflow-x:auto;color:var(--text2)}
+.api-block .api-desc{padding:10px 14px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);line-height:1.6}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.badge-green{background:var(--bg2);color:var(--deep-green)}
+.badge-blue{background:#EFF6FF;color:#2563EB}
+.badge-yellow{background:#FEF9C3;color:#92400E}
+.badge-red{background:#FEF2F2;color:#DC2626}
+.hint-text{font-size:11px;color:var(--text4);margin-bottom:24px;font-style:italic}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.stat-item{flex:1;min-width:80px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;position:relative;overflow:hidden}
+.stat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-item.s-created::before{background:#2563EB}
+.stat-item.s-referred::before{background:#059669}
+.stat-item.s-converted::before{background:#7C3AED}
+.stat-item.s-settled::before{background:#DC2626}
+.stat-item.s-expired::before{background:#64748B}
+.stat-item.s-anomaly::before{background:#D97706}
+.stat-item.s-disputed::before{background:#D97706}
+.stat-item.s-rejected::before{background:#991B1B}
+.stat-num{font-size:20px;font-weight:800;color:var(--dark);font-family:var(--mono);line-height:1.2}
+.stat-label{font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.5px;margin-top:4px;text-transform:uppercase}
+.stat-pct{font-size:9px;color:var(--text4);margin-top:2px}
+
+/* Interactive Lifecycle SVG */
+.lifecycle-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:8px;overflow-x:auto}
+.lifecycle-wrap svg text{font-family:'Inter','Noto Sans SC',sans-serif}
+.lifecycle-wrap svg .node-group{cursor:pointer}
+.lifecycle-wrap svg .node-group:hover .node-rect{filter:brightness(1.15)}
+.lifecycle-wrap svg .node-rect{rx:8;ry:8;stroke-width:2;transition:all .2s}
+.lifecycle-wrap svg .arrow-line{fill:none;stroke-width:1.5}
+.lifecycle-wrap svg .label-text{font-size:12px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.lifecycle-wrap svg .sub-text{font-size:9px;fill:rgba(255,255,255,.7);text-anchor:middle;dominant-baseline:central}
+
+/* Node detail panel */
+.node-detail{background:#fff;border:2px solid var(--deep-green);border-radius:10px;padding:20px 24px;margin-bottom:24px;display:none;position:relative;animation:fadeIn .25s ease}
+.node-detail.active{display:block}
+.node-detail .nd-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.node-detail .nd-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.node-detail .nd-title{font-size:16px;font-weight:800;color:var(--dark)}
+.node-detail .nd-subtitle{font-size:12px;color:var(--text3);margin-left:8px}
+.node-detail .nd-rules{display:flex;flex-direction:column;gap:10px}
+.node-detail .nd-rule{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.7;color:var(--text2)}
+.node-detail .nd-rule .nd-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+.node-detail .nd-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text4);line-height:1}
+.node-detail .nd-close:hover{color:var(--dark)}
+
+/* Cross-nav link */
+.cross-nav{display:flex;align-items:center;gap:8px;margin-bottom:24px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:13px}
+.cross-nav a{color:var(--deep-green);font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px}
+.cross-nav a:hover{text-decoration:underline}
+.cross-nav .arrow{color:var(--text4);font-size:16px}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Action ID</h1><span class="tag">Unique Attribution Identifier</span></div>
+<div class="content">
+
+<div class="def-box">
+  <div class="def-label">定义</div>
+  <div class="def-text">Action ID = 归因链路的唯一标识符</div>
+  <div class="def-sub">从推荐→咨询→成交→佣金，全链路共享同一个 Action ID，实现端到端追溯。每一条归因链路有且仅有一个 Action ID。</div>
+</div>
+
+<!-- Cross navigation: Attribution ↔ Action ID -->
+<div class="cross-nav">
+  <span style="color:var(--text3)">信号来源：</span>
+  <a href="/attribution.html">Attribution 信号流 ←</a>
+  <span class="arrow">→</span>
+  <span style="font-weight:700;color:var(--dark)">Action ID 状态机</span>
+</div>
+
+<h2 class="section-title">生命周期流程图</h2>
+
+<!-- Stats bar with demo data -->
+<div class="stats-bar">
+  <div class="stat-item s-created">
+    <div class="stat-num" id="statCreated">12,431</div>
+    <div class="stat-label">Created</div>
+    <div class="stat-pct">100%</div>
+  </div>
+  <div class="stat-item s-referred">
+    <div class="stat-num">8,902</div>
+    <div class="stat-label">Referred</div>
+    <div class="stat-pct">71.6%</div>
+  </div>
+  <div class="stat-item s-converted">
+    <div class="stat-num">2,118</div>
+    <div class="stat-label">Converted</div>
+    <div class="stat-pct">17.0%</div>
+  </div>
+  <div class="stat-item s-settled">
+    <div class="stat-num">1,967</div>
+    <div class="stat-label">Settled</div>
+    <div class="stat-pct">15.8%</div>
+  </div>
+  <div class="stat-item s-expired">
+    <div class="stat-num">3,529</div>
+    <div class="stat-label">Expired</div>
+    <div class="stat-pct">28.4%</div>
+  </div>
+  <div class="stat-item s-anomaly">
+    <div class="stat-num">47</div>
+    <div class="stat-label">Anomaly</div>
+    <div class="stat-pct">0.4%</div>
+  </div>
+  <div class="stat-item s-disputed">
+    <div class="stat-num">23</div>
+    <div class="stat-label">Disputed</div>
+    <div class="stat-pct">0.2%</div>
+  </div>
+  <div class="stat-item s-rejected">
+    <div class="stat-num">128</div>
+    <div class="stat-label">Rejected</div>
+    <div class="stat-pct">1.0%</div>
+  </div>
+</div>
+<p class="hint-text" style="margin-top:0">📊 Demo 数据 · 展示系统运行状态</p>
+
+<div class="lifecycle-wrap">
+<svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#94A3B8"/></marker>
+    <marker id="ahg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#059669"/></marker>
+    <marker id="ahr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#DC2626"/></marker>
+    <marker id="ahy" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#D97706"/></marker>
+  </defs>
+
+  <!-- === ROW 1: Happy Path === -->
+  <g class="node-group" onclick="showDetail('created')">
+    <rect x="10" y="24" width="140" height="52" class="node-rect" fill="#2563EB" stroke="#1D4ED8"/>
+    <text x="80" y="44" class="label-text" font-size="13">CREATED</text>
+    <text x="80" y="60" class="sub-text">推荐触发</text>
+  </g>
+
+  <line x1="150" y1="50" x2="198" y2="50" class="arrow-line" stroke="#059669" marker-end="url(#ahg)"/>
+
+  <g class="node-group" onclick="showDetail('referred')">
+    <rect x="206" y="24" width="140" height="52" class="node-rect" fill="#059669" stroke="#047857"/>
+    <text x="276" y="44" class="label-text" font-size="13">REFERRED</text>
+    <text x="276" y="60" class="sub-text">咨询验证</text>
+  </g>
+
+  <line x1="346" y1="50" x2="394" y2="50" class="arrow-line" stroke="#7C3AED" marker-end="url(#ah)"/>
+
+  <g class="node-group" onclick="showDetail('converted')">
+    <rect x="402" y="24" width="140" height="52" class="node-rect" fill="#7C3AED" stroke="#6D28D9"/>
+    <text x="472" y="44" class="label-text" font-size="13">CONVERTED</text>
+    <text x="472" y="60" class="sub-text">成交确认</text>
+  </g>
+
+  <line x1="542" y1="50" x2="590" y2="50" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+
+  <g class="node-group" onclick="showDetail('settled')">
+    <rect x="598" y="24" width="130" height="52" class="node-rect" fill="#DC2626" stroke="#B91C1C"/>
+    <text x="663" y="44" class="label-text" font-size="13">SETTLED</text>
+    <text x="663" y="60" class="sub-text">结算锁定 🔒</text>
+  </g>
+
+  <!-- === Branch arrows down === -->
+  <line x1="80" y1="76" x2="80" y2="152" class="arrow-line" stroke="#94A3B8" stroke-dasharray="4,3" marker-end="url(#ah)"/>
+  <line x1="276" y1="76" x2="276" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
+  <line x1="472" y1="76" x2="472" y2="152" class="arrow-line" stroke="#D97706" stroke-dasharray="4,3" marker-end="url(#ahy)"/>
+
+  <!-- === ROW 2: Exception States === -->
+  <g class="node-group" onclick="showDetail('expired')">
+    <rect x="10" y="160" width="140" height="52" class="node-rect" fill="#64748B" stroke="#475569"/>
+    <text x="80" y="180" class="label-text" font-size="13">EXPIRED</text>
+    <text x="80" y="196" class="sub-text">超时过期 🔒</text>
+  </g>
+
+  <g class="node-group" onclick="showDetail('anomaly')">
+    <rect x="206" y="160" width="140" height="52" class="node-rect" fill="#D97706" stroke="#B45309"/>
+    <text x="276" y="180" class="label-text" font-size="13">ANOMALY</text>
+    <text x="276" y="196" class="sub-text">验证异常</text>
+  </g>
+
+  <g class="node-group" onclick="showDetail('disputed')">
+    <rect x="402" y="160" width="140" height="52" class="node-rect" fill="#D97706" stroke="#B45309"/>
+    <text x="472" y="180" class="label-text" font-size="13">DISPUTED</text>
+    <text x="472" y="196" class="sub-text">归因争议</text>
+  </g>
+
+  <!-- ANOMALY → CONVERTED (recovery) -->
+  <path d="M346 186 Q380 186 394 90" class="arrow-line" stroke="#059669" stroke-dasharray="3,3" marker-end="url(#ahg)"/>
+  <text x="385" y="140" font-size="9" fill="#059669" text-anchor="middle">人工审核通过</text>
+
+  <!-- DISPUTED → SETTLED (recovery) -->
+  <path d="M542 186 Q576 186 590 90" class="arrow-line" stroke="#059669" stroke-dasharray="3,3" marker-end="url(#ahg)"/>
+  <text x="578" y="140" font-size="9" fill="#059669" text-anchor="middle">争议解决</text>
+
+  <!-- ANOMALY → REJECTED -->
+  <line x1="276" y1="212" x2="340" y2="280" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+  <!-- DISPUTED → REJECTED -->
+  <line x1="472" y1="212" x2="410" y2="280" class="arrow-line" stroke="#DC2626" marker-end="url(#ahr)"/>
+
+  <!-- REJECTED -->
+  <g class="node-group" onclick="showDetail('rejected')">
+    <rect x="298" y="288" width="140" height="52" class="node-rect" fill="#991B1B" stroke="#7F1D1D"/>
+    <text x="368" y="308" class="label-text" font-size="13">REJECTED</text>
+    <text x="368" y="324" class="sub-text">验证失败 🔒</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="598" y="160" width="130" height="76" rx="6" fill="#fff" stroke="#E2E8F0"/>
+  <line x1="612" y1="178" x2="636" y2="178" stroke="#059669" stroke-width="2"/>
+  <text x="642" y="182" font-size="9" fill="#64748B">正常流转</text>
+  <line x1="612" y1="196" x2="636" y2="196" stroke="#D97706" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="642" y="200" font-size="9" fill="#64748B">异常/争议</text>
+  <line x1="612" y1="214" x2="636" y2="214" stroke="#DC2626" stroke-width="2"/>
+  <text x="642" y="218" font-size="9" fill="#64748B">拒绝/终态</text>
+  <text x="663" y="232" font-size="8" fill="#94A3B8" text-anchor="middle">🔒 = 不可逆终态</text>
+</svg>
+</div>
+<p class="hint-text">💡 点击任意状态节点查看详细规则</p>
+
+<!-- Node Detail Panel -->
+<div class="node-detail" id="detailPanel" style="position:relative">
+  <button class="nd-close" onclick="hideDetail()">✕</button>
+  <div class="nd-header">
+    <div class="nd-dot" id="ndDot"></div>
+    <span class="nd-title" id="ndTitle"></span>
+    <span class="nd-subtitle" id="ndSub"></span>
+  </div>
+  <div class="nd-rules" id="ndRules"></div>
+</div>
+
+<script>
+var nodeInfo={
+  created:{color:'#2563EB',title:'CREATED · 推荐触发',sub:'归因链起点',
+    rules:[
+      {color:'#2563EB',text:'生成时机：用户通过推荐链接/二维码/渠道入口进入时，系统在第一时刻签发 Action ID'},
+      {color:'#2563EB',text:'格式规则：act_{timestamp}_{random}，例如 act_1717920000_a3f8b2c1'},
+      {color:'#2563EB',text:'前置验证：①来源渠道已验证 ②推荐人Agent注册有效 ③入口参数合法（防注入/防重放）'},
+      {color:'#2563EB',text:'哈希初始化：生成第一个SHA-256哈希节点，验证链初始化'},
+      {color:'#94A3B8',text:'超时机制：7天未转化自动进入 EXPIRED 终态'}
+    ]},
+  referred:{color:'#059669',title:'REFERRED · 咨询验证',sub:'信号传递确认',
+    rules:[
+      {color:'#059669',text:'触发条件：用户发起咨询/互动，Action ID 随行为传递'},
+      {color:'#059669',text:'GATE 1 来源验证：确认信号来自声称的渠道，校验渠道回调签名'},
+      {color:'#059669',text:'GATE 2 因果验证：确认咨询确实由推荐触发，而非独立行为'},
+      {color:'#059669',text:'哈希追加：当前事件数据 + 前一哈希 → 新哈希，链式追加'},
+      {color:'#D97706',text:'异常出口：验证失败 → ANOMALY（需人工审核）'}
+    ]},
+  converted:{color:'#7C3AED',title:'CONVERTED · 成交确认',sub:'归因锁定',
+    rules:[
+      {color:'#7C3AED',text:'触发条件：交易完成，Action ID 与订单绑定'},
+      {color:'#7C3AED',text:'GATE 3 完整性验证：哈希链无断裂，从CREATED到CONVERTED连续'},
+      {color:'#7C3AED',text:'金额验证：成交金额合理性校验，异常金额自动标记'},
+      {color:'#7C3AED',text:'归因锁定：验证链锁定归因结果，此后不可篡改'},
+      {color:'#D97706',text:'争议出口：对归因结果有异议 → DISPUTED'}
+    ]},
+  settled:{color:'#DC2626',title:'SETTLED · 结算锁定',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#DC2626',text:'GATE 4 唯一性验证：同一 Action ID 不可重复触发结算'},
+      {color:'#DC2626',text:'全链路验证：必须走完 CREATED→REFERRED→CONVERTED 完整链路'},
+      {color:'#DC2626',text:'Trust Score 检查：信任评分达标才可结算（默认阈值 60）'},
+      {color:'#DC2626',text:'佣金计算：基于验证结果分配佣金，非基于声明'},
+      {color:'#DC2626',text:'🔒 终态锁定：结算后 Action ID 永久锁定，不可再触发任何流程'}
+    ]},
+  expired:{color:'#64748B',title:'EXPIRED · 超时过期',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#64748B',text:'触发条件：Action ID 生成后7天未进入 REFERRED 状态'},
+      {color:'#64748B',text:'常见原因：用户点击推荐链接后未发起咨询'},
+      {color:'#64748B',text:'数据保留：过期 Action ID 的验证记录仍可查询，用于统计漏斗'},
+      {color:'#64748B',text:'🔒 终态：不可恢复，不可重新激活'}
+    ]},
+  anomaly:{color:'#D97706',title:'ANOMALY · 验证异常',sub:'需人工审核',
+    rules:[
+      {color:'#D97706',text:'触发条件：验证链断裂、时序异常、哈希不匹配'},
+      {color:'#D97706',text:'典型场景：0秒内完成推荐→成交（刷单特征）'},
+      {color:'#D97706',text:'典型场景：渠道回调签名验证失败'},
+      {color:'#059669',text:'恢复路径：人工审核通过 → CONVERTED'},
+      {color:'#DC2626',text:'拒绝路径：审核确认作弊 → REJECTED'}
+    ]},
+  disputed:{color:'#D97706',title:'DISPUTED · 归因争议',sub:'多方争议中',
+    rules:[
+      {color:'#D97706',text:'触发条件：推荐人或渠道对归因结果提出异议'},
+      {color:'#D97706',text:'典型场景：多个渠道声称同一转化'},
+      {color:'#D97706',text:'处理方式：基于完整哈希链审计，确认真实归因'},
+      {color:'#059669',text:'恢复路径：争议解决 → SETTLED'},
+      {color:'#DC2626',text:'拒绝路径：争议确认无效 → REJECTED'}
+    ]},
+  rejected:{color:'#991B1B',title:'REJECTED · 验证失败',sub:'终态 · 不可逆',
+    rules:[
+      {color:'#991B1B',text:'触发来源：ANOMALY 审核确认作弊 / DISPUTED 争议确认无效'},
+      {color:'#991B1B',text:'典型原因：伪造来源、归因劫持、刷单作弊、数据篡改'},
+      {color:'#991B1B',text:'记录保留：拒绝记录写入审计日志，哈希链仍可追溯'},
+      {color:'#991B1B',text:'🔒 终态：不可恢复，相关推荐人信用评分下调'}
+    ]}
+};
+
+function showDetail(key){
+  var info=nodeInfo[key];if(!info)return;
+  var panel=document.getElementById('detailPanel');
+  document.getElementById('ndDot').style.background=info.color;
+  document.getElementById('ndTitle').textContent=info.title;
+  document.getElementById('ndSub').textContent=info.sub;
+  var rulesEl=document.getElementById('ndRules');rulesEl.innerHTML='';
+  info.rules.forEach(function(r,i){
+    var div=document.createElement('div');div.className='nd-rule';
+    div.innerHTML='<div class="nd-num" style="background:'+r.color+'">'+(i+1)+'</div><div>'+r.text+'</div>';
+    rulesEl.appendChild(div);
+  });
+  panel.classList.add('active');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function hideDetail(){document.getElementById('detailPanel').classList.remove('active');}
+</script>
+
+<h2 class="section-title">生成规则</h2>
+<div class="card"><h3>格式</h3><p>Action ID 采用 <code>act_{timestamp}_{random}</code> 格式，例如：<code>act_1717920000_a3f8b2c1</code></p></div>
+<div class="card"><h3>生成时机</h3><p>当用户通过推荐链接/二维码/渠道入口进入时，系统在<strong>第一时间</strong>生成 Action ID。不是咨询时才生成，不是成交后才补——是信号产生的第一刻。</p></div>
+<div class="card"><h3>唯一性保证</h3><p>时间戳 + 随机数 + 服务节点ID 三重保证，碰撞概率低于 10⁻¹⁸。同一 Action ID 只能走一次完整生命周期，SETTLED 后永久锁定。</p></div>
+
+<h2 class="section-title">验证规则</h2>
+<div class="gate-card"><div class="gate-badge">GATE 1</div><div class="gate-row">来源验证：Action ID 必须由系统签发，不能伪造</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 2</div><div class="gate-row">因果验证：事件之间的因果关系必须成立</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 3</div><div class="gate-row">完整性验证：哈希链无断裂，全链路可追溯</div></div>
+<div class="gate-card"><div class="gate-badge">GATE 4</div><div class="gate-row">唯一性验证：同一个 Action ID 不能重复使用</div></div>
+
+<h2 class="section-title">API 示例</h2>
+<div class="api-block">
+  <div class="api-hd"><span class="method">POST</span> /v1/action — 创建 Action ID</div>
+  <pre>{
+  "source": "douyin",
+  "referrer": "agent_008",
+  "entry_point": "qrcode",
+  "metadata": {
+    "campaign_id": "camp_2024_summer",
+    "content_id": "video_12345"
+  }
+}</pre>
+  <div class="api-desc">请求体必须包含 <code>source</code>（来源渠道）和 <code>referrer</code>（推荐人标识）。<code>metadata</code> 可选。</div>
+</div>
+<div class="api-block">
+  <div class="api-hd">响应 201 Created</div>
+  <pre>{
+  "action_id": "act_1717920000_a3f8b2c1",
+  "status": "CREATED",
+  "source": "douyin",
+  "referrer": "agent_008",
+  "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb924...",
+  "created_at": "2026-06-09T12:00:00Z",
+  "expires_at": "2026-06-16T12:00:00Z"
+}</pre>
+</div>
+<div class="api-block">
+  <div class="api-hd"><span class="method">GET</span> /v1/action/:id — 查询生命周期</div>
+  <pre>{
+  "action_id": "act_1717920000_a3f8b2c1",
+  "status": "CONVERTED",
+  "lifecycle": [
+    {"stage": "CREATED",    "at": "2026-06-09T12:00:00Z", "hash": "sha256:e3b0c4..."},
+    {"stage": "REFERRED",   "at": "2026-06-09T14:30:00Z", "hash": "sha256:7a8b9c..."},
+    {"stage": "CONVERTED",  "at": "2026-06-10T09:15:00Z", "hash": "sha256:1d2e3f..."}
+  ],
+  "chain_valid": true,
+  "trust_score": 87
+}</pre>
+</div>
+
+</div>
+</div>
+</body>
+</html>
