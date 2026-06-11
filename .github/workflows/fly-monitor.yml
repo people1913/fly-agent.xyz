@@ -1,12 +1,9 @@
 name: Fly Monitor
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types: [cf_cron_trigger]
   push:
     branches: [main]
-  repository_dispatch:
-    types: [monitor]
-  schedule:
-    - cron: "*/5 * * * *"
 jobs:
   health-check:
     runs-on: ubuntu-latest
