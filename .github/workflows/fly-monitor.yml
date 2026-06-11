@@ -1,4 +1,4 @@
-name: minimal-debug
+name: minimal-debug-v2
 on:
   push:
   schedule:
