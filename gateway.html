@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gate 5 构建验证 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.gate-hero{text-align:center;padding:40px 24px 32px}
+.gate-hero .gate-num{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.gate-hero .gate-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.gate-hero .gate-zh{font-size:16px;color:var(--text3);margin-bottom:16px}
+.gate-hero .gate-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;margin-bottom:8px}
+.def-box .def-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:16px}
+.vs-col.before{background:var(--bg3);border:1px solid var(--border)}
+.vs-col.after{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.vs-col.before .vs-title{color:var(--text4)}
+.vs-col.after .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.before .vs-item{color:var(--text3)}
+.vs-col.after .vs-item{color:var(--deep-green);font-weight:600}
+.step-row{display:flex;gap:12px;margin-bottom:24px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.next-box .next-label{font-size:10px;font-weight:700;color:var(--text4);letter-spacing:2px;margin-bottom:8px}
+.next-box .next-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Gate 5 · 构建验证</h1><span class="tag">验证体系</span></div>
+<div class="content">
+
+<div class="gate-hero">
+<div class="gate-num">GATE 5 / 6</div>
+<div class="gate-title">构建验证</div>
+<div class="gate-zh">Build Verification</div>
+<div class="gate-oneliner">你的验证流程是否按正确规则构建？每一步是否合规？</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">为什么需要构建验证</div>
+<div class="section-body">
+系统部署了，但<strong>验证流程是否按规范执行？Prompt过滤是否生效？合规检测是否到位？如果验证规则本身有问题，再好的数据也会产出错误结果。</strong>
+</div>
+
+<div class="vs-row">
+<div class="vs-col before">
+<div class="vs-title">没有构建验证</div>
+<div class="vs-item">验证规则可能遗漏关键步骤</div>
+<div class="vs-item">Prompt内容未过滤可能违规</div>
+<div class="vs-item">合规检测配置不完整</div>
+<div class="vs-item">验证流程缺乏工程保障</div>
+</div>
+<div class="vs-col after">
+<div class="vs-title">经过构建验证</div>
+<div class="vs-item">验证流程按P1-P5原则构建</div>
+<div class="vs-item">Prompt过滤自动拦截违规内容</div>
+<div class="vs-item">合规检测覆盖全部必要项</div>
+<div class="vs-item">工程冻结原则确保稳定运行</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">构建验证做了什么</div>
+<div class="def-box">
+<div class="def-label">核心动作</div>
+<div class="def-text">Fly的Gateway按照P1-P5工程冻结原则构建验证流程，从身份注入、归因追踪、Prompt过滤、合规检测到行为验证，每一步都有明确的规则和边界，确保验证流程本身的可靠性和合规性。</div>
+</div>
+
+<div class="step-row">
+<div class="step-card">
+<div class="step-num">STEP 1</div>
+<div class="step-title">身份注入 + 归因追踪</div>
+<div class="step-desc">每个请求自动注入身份标识，归因信息全程追踪</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 2</div>
+<div class="step-title">Prompt过滤 + 合规检测</div>
+<div class="step-desc">自动过滤违规Prompt内容，检测是否符合平台合规要求</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 3</div>
+<div class="step-title">行为验证 + 审计记录</div>
+<div class="step-desc">验证行为真实性，所有操作留痕可审计</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="next-box">
+<div class="next-label">下一关</div>
+<div class="next-text">构建验证确保了「验证流程可靠」，接下来需要持续监控「系统运行是否健康」</div>
+<a href="/security.html" class="next-link">Gate 6 健康验证 →</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>
