@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDK · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:#EA580C;background:#FFF7ED;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#EA580C;margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:#EA580C;font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.highlight-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#EA580C;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#EA580C;line-height:1.7}
+.feature-row{display:flex;gap:12px;margin-bottom:24px}
+.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.coming-soon{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-top:24px}
+.coming-soon .cs-text{font-size:14px;font-weight:600;color:var(--text3);line-height:1.6}
+.coming-soon .cs-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#EA580C;background:#FFF7ED;padding:4px 12px;border-radius:12px;letter-spacing:1px}</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>SDK</h1><span class="tag">开发者</span></div>
+<div class="content">
+
+<div class="page-hero">
+<div class="page-label">DEVELOPER</div>
+<div class="page-title">SDK</div>
+<div class="page-sub">5分钟接入归因验证</div>
+<div class="page-oneliner">TypeScript / Python SDK，快速集成到你的项目</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">SDK能力</div>
+<div class="feature-row"><div class="feature-card">
+<div class="feat-title">TypeScript SDK</div>
+<div class="feat-desc">npm install @fly/sdk — 完整类型定义，IDE自动补全</div>
+</div><div class="feature-card">
+<div class="feat-title">Python SDK</div>
+<div class="feat-desc">pip install fly-sdk — 简洁API，3行代码开始归因</div>
+</div></div>
+<div class="feature-row"><div class="feature-card">
+<div class="feat-title">自动Behavior ID</div>
+<div class="feat-desc">SDK自动为每个AI推荐生成Behavior ID，无需手动配置</div>
+</div><div class="feature-card">
+<div class="feat-title">本地调试工具</div>
+<div class="feat-desc">fly dev 命令启动本地调试，实时查看归因数据</div>
+</div></div>
+
+<div class="coming-soon">
+<div class="cs-text">文档正在编写中，即将上线</div>
+<div class="cs-badge">COMING SOON</div>
+</div>
+
+</div>
+</div>
+</body>
+</html>
