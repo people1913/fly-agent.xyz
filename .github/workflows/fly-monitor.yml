@@ -2,157 +2,24 @@ name: Fly Monitor
 
 on:
   schedule:
-    - cron: '*/2 * * * *'      # 验证用：每2分钟
+    - cron: '*/2 * * * *'
   push:
-    branches: [main]
-    paths:
-      - '.github/workflows/fly-monitor.yml'
+    branches:
+      - "**"
   workflow_dispatch:
-    inputs:
-      check_type:
-        description: 'Check type: health | trend | backup | all'
-        required: false
-        default: 'all'
-
-env:
-  API_BASE: https://api.fly-agent.xyz
-  SITE_BASE: https://fly-agent.xyz
-  CF_ACCOUNT: 014fc3114b2e2befeac9aaaf08a09a5b
-  ALERT_EMAIL_TO: fly-agent@coze.email
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "EVENT=${{ github.event_name }} REF=${{ github.ref }}"
+
   health-check:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Log Event
-        run: echo "event=${{ github.event_name }} ref=${{ github.ref }}"
-
       - name: Check API Health
-        id: health
         run: |
-          HEALTH=$(curl -s -m 10 ${{ env.API_BASE }}/v1/health)
+          HEALTH=$(curl -s -m 10 https://api.fly-agent.xyz/v1/health)
+          echo "$HEALTH"
           STATUS=$(echo "$HEALTH" | jq -r '.status // "unknown"')
-          DB=$(echo "$HEALTH" | jq -r '.db // "unknown"')
-          KV=$(echo "$HEALTH" | jq -r '.kv // "unknown"')
-          VERSION=$(echo "$HEALTH" | jq -r '.version // "unknown"')
-          echo "status=$STATUS" >> $GITHUB_OUTPUT
-          echo "db=$DB" >> $GITHUB_OUTPUT
-          echo "kv=$KV" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "### API Health: status=$STATUS db=$DB kv=$KV version=$VERSION" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$STATUS" != "ok" ] || [ "$DB" != "ok" ] || [ "$KV" != "ok" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P0] API异常: status=$STATUS db=$DB kv=$KV" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check Short Link
-        id: shortlink
-        run: |
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${{ env.API_BASE }}/s/nonexist)
-          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
-          echo "### Short Link: /s/nonexist -> $HTTP_CODE" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$HTTP_CODE" != "302" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P0] 短链异常: /s/返回$HTTP_CODE (期望302)" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check Site
-        id: site
-        run: |
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${{ env.SITE_BASE }}/index.html)
-          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
-          echo "### Site: index.html -> $HTTP_CODE" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P0] 首页不可达: HTTP $HTTP_CODE" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Send Alerts
-        if: steps.health.outputs.alert == 'true' || steps.shortlink.outputs.alert == 'true' || steps.site.outputs.alert == 'true'
-        run: |
-          MSG=""
-          [ "${{ steps.health.outputs.alert }}" == "true" ] && MSG="$MSG
-${{ steps.health.outputs.message }}"
-          [ "${{ steps.shortlink.outputs.alert }}" == "true" ] && MSG="$MSG
-${{ steps.shortlink.outputs.message }}"
-          [ "${{ steps.site.outputs.alert }}" == "true" ] && MSG="$MSG
-${{ steps.site.outputs.message }}"
-          MSG=$(echo -e "$MSG" | sed '/^$/d')
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          # 邮件通知
-          SUBJECT="[Fly Attribution P0/P1] 健康检查告警"
-          TEXT_BODY="Fly Attribution 健康检查告警
-          ================================
-
-          $(echo -e "$MSG")
-
-          时间: $TIMESTAMP
-          来源: GitHub Actions health-check"
-
-          curl -s -X POST "https://api.resend.com/emails"             -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}"             -H "Content-Type: application/json"             -d "$(jq -n               --arg from "onboarding@resend.dev"               --arg to "${{ env.ALERT_EMAIL_TO }}"               --arg subject "$SUBJECT"               --arg text "$TEXT_BODY"               '{from: $from, to: [$to], subject: $subject, text: $text}')" || true
-
-  trend-check:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip for now
-        run: echo "trend-check placeholder - cron改为6h时启用"
-
-  backup-verify:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip for now
-        run: echo "backup-verify placeholder - cron改为每日3:00时启用"
-
-  notify-failure:
-    if: always() && (needs.health-check.result == 'failure' || needs.trend-check.result == 'failure' || needs.backup-verify.result == 'failure')
-    runs-on: ubuntu-latest
-    needs: [health-check, trend-check, backup-verify]
-    steps:
-      - name: Send Failure Notification
-        run: |
-          FAILED_JOBS=""
-          
-          if [ "${{ needs.health-check.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}
-- health-check（健康检查）"
-          fi
-          if [ "${{ needs.trend-check.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}
-- trend-check（趋势检查）"
-          fi
-          if [ "${{ needs.backup-verify.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}
-- backup-verify（备份验证）"
-          fi
-          
-          if [ -n "$FAILED_JOBS" ]; then
-            TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-            
-            SUBJECT="[Fly Attribution P0] Workflow执行失败"
-            TEXT_BODY="Fly Attribution Workflow 失败通知
-          ================================
-
-          $(echo -e "$FAILED_JOBS")
-
-          时间: $TIMESTAMP
-          来源: GitHub Actions notify-failure"
-
-            curl -s -X POST "https://api.resend.com/emails"               -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}"               -H "Content-Type: application/json"               -d "$(jq -n                 --arg from "onboarding@resend.dev"                 --arg to "${{ env.ALERT_EMAIL_TO }}"                 --arg subject "$SUBJECT"                 --arg text "$TEXT_BODY"                 '{from: $from, to: [$to], subject: $subject, text: $text}')" || true
-            
-            echo "### Failure notification sent" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### No failures detected" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "### Health: $STATUS" >> $GITHUB_STEP_SUMMARY
