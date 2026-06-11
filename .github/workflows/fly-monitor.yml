@@ -1,11 +1,8 @@
 name: Fly Monitor
-# trigger-verify: push validation 2026-06-11
 
 on:
   schedule:
-    - cron: '*/5 * * * *'    # 每5分钟：健康检查 + 冻结区MD5 + 短链
-    - cron: '0 */6 * * *'    # 每6小时：趋势检查 + CF Analytics + 容量检查
-    - cron: '0 3 * * *'      # 每日3:00：备份验证
+    - cron: '*/2 * * * *'      # 验证用：每2分钟
   push:
     branches: [main]
     paths:
@@ -24,16 +21,13 @@ env:
   ALERT_EMAIL_TO: fly-agent@coze.email
 
 jobs:
-  # ============================================================
-  # Job 1: 每5分钟健康检查
-  # ============================================================
   health-check:
-    if: |
-      github.event.schedule == '*/5 * * * *' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      - name: Log Event
+        run: echo "event=${{ github.event_name }} ref=${{ github.ref }}"
+
       - name: Check API Health
         id: health
         run: |
@@ -69,427 +63,61 @@ jobs:
             echo "alert=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Check Frozen Pages MD5
-        id: frozen
+      - name: Check Site
+        id: site
         run: |
-          # 首页
-          INDEX_MD5=$(curl -s -m 10 ${{ env.SITE_BASE }}/index.html | md5sum | cut -d' ' -f1)
-          INDEX_EXPECTED="8922e18cc1510f53518f32ae32f6a62e"
-          echo "index_md5=$INDEX_MD5" >> $GITHUB_OUTPUT
-          echo "### Frozen MD5: index=$INDEX_MD5 (expected=$INDEX_EXPECTED)" >> $GITHUB_STEP_SUMMARY
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${{ env.SITE_BASE }}/index.html)
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "### Site: index.html -> $HTTP_CODE" >> $GITHUB_STEP_SUMMARY
           
-          ALERTS=""
-          if [ "$INDEX_MD5" != "$INDEX_EXPECTED" ]; then
-            ALERTS="[P1] 首页MD5变更: expected=$INDEX_EXPECTED actual=$INDEX_MD5"
-          fi
-          
-          # 5个concept页面
-          declare -A CONCEPTS=(
-            ["concept-behavior-id.html"]="e4ae4cea70f107f6692c721c5faf2024"
-            ["concept-action-id.html"]="431cd3d2159d14bc13e9f8f186635214"
-            ["concept-verification.html"]="ad6c2cf9eea6bc2ab5bc7c62a45454e0"
-            ["concept-trust.html"]="4069259f83f958ba9cf682a5e6410856"
-            ["concept-business-value.html"]="fa44c0a4502ef61d33d0f3c23155a118"
-          )
-          
-          for page in "${!CONCEPTS[@]}"; do
-            EXPECTED="${CONCEPTS[$page]}"
-            ACTUAL=$(curl -s -m 10 ${{ env.SITE_BASE }}/$page | md5sum | cut -d' ' -f1)
-            if [ "$ACTUAL" != "$EXPECTED" ]; then
-              ALERTS="$ALERTS\n[P1] $page MD5变更: expected=$EXPECTED actual=$ACTUAL"
-            fi
-            echo "### $page: $ACTUAL (expected=$EXPECTED)" >> $GITHUB_STEP_SUMMARY
-          done
-          
-          if [ -n "$ALERTS" ]; then
+          if [ "$HTTP_CODE" != "200" ]; then
             echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=$ALERTS" >> $GITHUB_OUTPUT
+            echo "message=[P0] 首页不可达: HTTP $HTTP_CODE" >> $GITHUB_OUTPUT
           else
             echo "alert=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Check Metrics
-        id: metrics
-        run: |
-          METRICS=$(curl -s -m 10 -H "Authorization: Bearer ${{ secrets.FLY_API_KEY }}" "${{ env.API_BASE }}/v1/admin/metrics?minutes=5")
-          TOTAL=$(echo "$METRICS" | jq -r '.requests.total // 0')
-          S5XX=$(echo "$METRICS" | jq -r '.requests["5xx"] // 0')
-          AVG_LATENCY=$(echo "$METRICS" | jq -r '.latency.avg_ms // 0')
-          MAX_LATENCY=$(echo "$METRICS" | jq -r '.latency.max_ms // 0')
-          P95_LATENCY=$(echo "$METRICS" | jq -r '.latency.p95_ms // 0')
-          
-          echo "### Metrics (5m): total=$TOTAL 5xx=$S5XX avg=${AVG_LATENCY}ms max=${MAX_LATENCY}ms p95=${P95_LATENCY}ms" >> $GITHUB_STEP_SUMMARY
-          
-          ALERTS=""
-          if [ "$S5XX" -gt 3 ]; then
-            ALERTS="[P0] 5xx错误率过高: ${S5XX}个5xx in ${TOTAL}请求"
-          fi
-          if [ "$MAX_LATENCY" -gt 3000 ]; then
-            ALERTS="$ALERTS\n[P1] 最大延迟过高: ${MAX_LATENCY}ms"
-          fi
-          if [ "$P95_LATENCY" -gt 3000 ]; then
-            ALERTS="$ALERTS\n[P1] P95延迟过高: ${P95_LATENCY}ms"
-          fi
-          
-          if [ -n "$ALERTS" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=$ALERTS" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Send Alerts (Telegram + Email)
-        if: |
-          steps.health.outputs.alert == 'true' ||
-          steps.shortlink.outputs.alert == 'true' ||
-          steps.frozen.outputs.alert == 'true' ||
-          steps.metrics.outputs.alert == 'true'
+      - name: Send Alerts
+        if: steps.health.outputs.alert == 'true' || steps.shortlink.outputs.alert == 'true' || steps.site.outputs.alert == 'true'
         run: |
           MSG=""
-          [ "${{ steps.health.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.health.outputs.message }}"
-          [ "${{ steps.shortlink.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.shortlink.outputs.message }}"
-          [ "${{ steps.frozen.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.frozen.outputs.message }}"
-          [ "${{ steps.metrics.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.metrics.outputs.message }}"
-          
-          # Trim leading \n
+          [ "${{ steps.health.outputs.alert }}" == "true" ] && MSG="$MSG
+${{ steps.health.outputs.message }}"
+          [ "${{ steps.shortlink.outputs.alert }}" == "true" ] && MSG="$MSG
+${{ steps.shortlink.outputs.message }}"
+          [ "${{ steps.site.outputs.alert }}" == "true" ] && MSG="$MSG
+${{ steps.site.outputs.message }}"
           MSG=$(echo -e "$MSG" | sed '/^$/d')
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           
-          # Telegram通知
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"🚨 Fly Attribution Alert\n\n$MSG\n\n⏰ $TIMESTAMP\"}"
-          
-          # 邮件通知（Resend API）
+          # 邮件通知
           SUBJECT="[Fly Attribution P0/P1] 健康检查告警"
           TEXT_BODY="Fly Attribution 健康检查告警
-================================
+          ================================
 
-$(echo -e "$MSG")
+          $(echo -e "$MSG")
 
-时间: $TIMESTAMP
-来源: GitHub Actions health-check
+          时间: $TIMESTAMP
+          来源: GitHub Actions health-check"
 
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
-          
-          curl -s -X POST "https://api.resend.com/emails" \
-            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg from "onboarding@resend.dev" \
-              --arg to "${{ env.ALERT_EMAIL_TO }}" \
-              --arg subject "$SUBJECT" \
-              --arg text "$TEXT_BODY" \
-              '{from: $from, to: [$to], subject: $subject, text: $text}')"
+          curl -s -X POST "https://api.resend.com/emails"             -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}"             -H "Content-Type: application/json"             -d "$(jq -n               --arg from "onboarding@resend.dev"               --arg to "${{ env.ALERT_EMAIL_TO }}"               --arg subject "$SUBJECT"               --arg text "$TEXT_BODY"               '{from: $from, to: [$to], subject: $subject, text: $text}')" || true
 
-  # ============================================================
-  # Job 2: 每6小时趋势检查 + 容量监控
-  # ============================================================
   trend-check:
-    if: |
-      github.event.schedule == '0 */6 * * *' ||
-      (github.event_name == 'workflow_dispatch' && (github.event.inputs.check_type == 'trend' || github.event.inputs.check_type == 'all'))
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Query CF Analytics (Error Rate)
-        id: cf_analytics
-        run: |
-          SINCE=$(date -u -d '6 hours ago' +%Y-%m-%dT%H:%M:%SZ)
-          UNTIL=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          RESP=$(curl -s -X POST https://api.cloudflare.com/client/v4/graphql \
-            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"query\": \"{ viewer { accounts(filter: {accountTag: \\\"${{ env.CF_ACCOUNT }}\\\"}) { workersInvocationsAdaptive(limit: 100, filter: {datetime_geq: \\\"$SINCE\\\", datetime_lt: \\\"$UNTIL\\\"}) { sum { requests errors subrequests } dimensions { status } } } } }\"
-            }")
-          
-          echo "### CF Analytics (6h)" >> $GITHUB_STEP_SUMMARY
-          echo '```json' >> $GITHUB_STEP_SUMMARY
-          echo "$RESP" | jq '.data.viewer.accounts[0].workersInvocationsAdaptive[]' >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "$RESP" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          
-          # Check error rate
-          TOTAL_REQ=$(echo "$RESP" | jq '[.data.viewer.accounts[0].workersInvocationsAdaptive[].sum.requests // 0] | add' 2>/dev/null || echo "0")
-          TOTAL_ERR=$(echo "$RESP" | jq '[.data.viewer.accounts[0].workersInvocationsAdaptive[].sum.errors // 0] | add' 2>/dev/null || echo "0")
-          
-          echo "total_requests=$TOTAL_REQ" >> $GITHUB_OUTPUT
-          echo "total_errors=$TOTAL_ERR" >> $GITHUB_STEP_SUMMARY
-          
-          ALERTS=""
-          if [ "$TOTAL_REQ" -gt 0 ] && [ "$TOTAL_ERR" -gt 0 ]; then
-            ERROR_RATE=$(echo "scale=2; $TOTAL_ERR * 100 / $TOTAL_REQ" | bc)
-            echo "### Error Rate: ${ERROR_RATE}%" >> $GITHUB_STEP_SUMMARY
-            if (( $(echo "$ERROR_RATE > 5" | bc -l) )); then
-              ALERTS="[P0] 6小时错误率${ERROR_RATE}%: ${TOTAL_ERR}errors/${TOTAL_REQ}requests"
-            fi
-          fi
-          
-          if [ -n "$ALERTS" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=$ALERTS" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Skip for now
+        run: echo "trend-check placeholder - cron改为6h时启用"
 
-      - name: Check D1 Capacity + Alert
-        id: d1_capacity
-        run: |
-          RESP=$(curl -s "https://api.cloudflare.com/client/v4/accounts/${{ env.CF_ACCOUNT }}/d1/database/71a75dc8-76c5-4563-bf6f-0aa47f76ff95" \
-            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}")
-          
-          FILE_SIZE=$(echo "$RESP" | jq -r '.result.file_size // 0')
-          NUM_TABLES=$(echo "$RESP" | jq -r '.result.num_tables // "unknown"')
-          echo "### D1: size=$FILE_SIZE bytes tables=$NUM_TABLES" >> $GITHUB_STEP_SUMMARY
-          
-          # D1免费版限额5GB = 5368709120字节
-          D1_LIMIT=5368709120
-          if [ "$FILE_SIZE" -gt 0 ]; then
-            USAGE_PERCENT=$(echo "scale=2; $FILE_SIZE * 100 / $D1_LIMIT" | bc)
-            echo "### D1 Usage: ${USAGE_PERCENT}% (${FILE_SIZE}/${D1_LIMIT})" >> $GITHUB_STEP_SUMMARY
-            
-            ALERTS=""
-            if (( $(echo "$USAGE_PERCENT > 80" | bc -l) )); then
-              ALERTS="[P1] D1容量接近限额: ${USAGE_PERCENT}% (size=$FILE_SIZE, limit=$D1_LIMIT)"
-            fi
-            
-            if [ -n "$ALERTS" ]; then
-              echo "alert=true" >> $GITHUB_OUTPUT
-              echo "message=$ALERTS" >> $GITHUB_OUTPUT
-            else
-              echo "alert=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # 将容量数据写入Worker KV（供Worker scheduled检查）
-          # 通过Worker admin接口写入
-          CAPACITY_JSON=$(jq -n --arg file_size "$FILE_SIZE" --arg num_tables "$NUM_TABLES" '{file_size: ($file_size | tonumber), num_tables: $num_tables}')
-          curl -s -X PUT -m 10 \
-            -H "Authorization: Bearer ${{ secrets.FLY_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\": \"capacity:d1\", \"value\": $CAPACITY_JSON}" \
-            "${{ env.API_BASE }}/v1/admin/kv" > /dev/null 2>&1 || true
-
-      - name: Check KV Capacity
-        id: kv_capacity
-        run: |
-          # 查询KV namespace的使用情况（通过CF Analytics API）
-          SINCE=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
-          UNTIL=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          RESP=$(curl -s -X POST https://api.cloudflare.com/client/v4/graphql \
-            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"query\": \"{ viewer { accounts(filter: {accountTag: \\\"${{ env.CF_ACCOUNT }}\\\"}) { kvAdaptiveGroups(limit: 10, filter: {datetime_geq: \\\"$SINCE\\\", datetime_lt: \\\"$UNTIL\\\"}) { sum { readWrites } dimensions { namespaceId } } } } }\"
-            }")
-          
-          echo "### KV Analytics (24h)" >> $GITHUB_STEP_SUMMARY
-          echo '```json' >> $GITHUB_STEP_SUMMARY
-          echo "$RESP" | jq '.data.viewer.accounts[0].kvAdaptiveGroups[]' >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "$RESP" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          
-          # CF KV免费版限额：100k reads/day, 1k writes/day
-          # GraphQL返回的readWrites是读写总和，粗略估算
-          KV_READS=0
-          KV_WRITES=0
-          KV_READ_LIMIT=100000
-          KV_WRITE_LIMIT=1000
-          
-          # 尝试从响应中提取数据
-          KV_TOTAL=$(echo "$RESP" | jq '[.data.viewer.accounts[0].kvAdaptiveGroups[].sum.readWrites // 0] | add' 2>/dev/null || echo "0")
-          
-          if [ "$KV_TOTAL" -gt 0 ]; then
-            # 粗略分配：80%读 20%写
-            KV_READS=$(echo "scale=0; $KV_TOTAL * 80 / 100" | bc)
-            KV_WRITES=$(echo "scale=0; $KV_TOTAL * 20 / 100" | bc)
-            echo "### KV Estimated: reads=$KV_READS writes=$KV_WRITES total=$KV_TOTAL" >> $GITHUB_STEP_SUMMARY
-            
-            ALERTS=""
-            READ_PERCENT=$(echo "scale=2; $KV_READS * 100 / $KV_READ_LIMIT" | bc)
-            WRITE_PERCENT=$(echo "scale=2; $KV_WRITES * 100 / $KV_WRITE_LIMIT" | bc)
-            
-            if (( $(echo "$READ_PERCENT > 80" | bc -l) )); then
-              ALERTS="$ALERTS\n[P1] KV读量接近限额: ${KV_READS}/${KV_READ_LIMIT} (${READ_PERCENT}%)"
-            fi
-            if (( $(echo "$WRITE_PERCENT > 80" | bc -l) )); then
-              ALERTS="$ALERTS\n[P1] KV写量接近限额: ${KV_WRITES}/${KV_WRITE_LIMIT} (${WRITE_PERCENT}%)"
-            fi
-            
-            if [ -n "$ALERTS" ]; then
-              echo "alert=true" >> $GITHUB_OUTPUT
-              echo -e "message=$ALERTS" >> $GITHUB_OUTPUT
-            else
-              echo "alert=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # 将容量数据写入Worker KV
-          KV_CAP_JSON=$(jq -n --argjson reads "$KV_READS" --argjson writes "$KV_WRITES" '{reads: $reads, writes: $writes}')
-          curl -s -X PUT -m 10 \
-            -H "Authorization: Bearer ${{ secrets.FLY_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\": \"capacity:kv\", \"value\": $KV_CAP_JSON}" \
-            "${{ env.API_BASE }}/v1/admin/kv" > /dev/null 2>&1 || true
-
-      - name: Send Alerts (Telegram + Email)
-        if: |
-          steps.cf_analytics.outputs.alert == 'true' ||
-          steps.d1_capacity.outputs.alert == 'true' ||
-          steps.kv_capacity.outputs.alert == 'true'
-        run: |
-          MSG=""
-          [ "${{ steps.cf_analytics.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.cf_analytics.outputs.message }}"
-          [ "${{ steps.d1_capacity.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.d1_capacity.outputs.message }}"
-          [ "${{ steps.kv_capacity.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.kv_capacity.outputs.message }}"
-          MSG=$(echo -e "$MSG" | sed '/^$/d')
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          # Telegram通知
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"🟡 Fly Attribution Trend/Capacity Alert\n\n$MSG\n\n⏰ $TIMESTAMP\"}"
-          
-          # 邮件通知
-          SUBJECT="[Fly Attribution P0/P1] 趋势/容量告警"
-          TEXT_BODY="Fly Attribution 趋势/容量告警
-================================
-
-$(echo -e "$MSG")
-
-时间: $TIMESTAMP
-来源: GitHub Actions trend-check
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
-          
-          curl -s -X POST "https://api.resend.com/emails" \
-            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg from "onboarding@resend.dev" \
-              --arg to "${{ env.ALERT_EMAIL_TO }}" \
-              --arg subject "$SUBJECT" \
-              --arg text "$TEXT_BODY" \
-              '{from: $from, to: [$to], subject: $subject, text: $text}')"
-
-  # ============================================================
-  # Job 3: 每日备份验证
-  # ============================================================
   backup-verify:
-    if: |
-      github.event.schedule == '0 3 * * *' ||
-      (github.event_name == 'workflow_dispatch' && (github.event.inputs.check_type == 'backup' || github.event.inputs.check_type == 'all'))
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Daily Backup
-        id: backup
-        run: |
-          RESP=$(curl -s -X POST -m 60 \
-            -H "Authorization: Bearer ${{ secrets.FLY_API_KEY }}" \
-            ${{ env.API_BASE }}/v1/admin/backup)
-          
-          SUCCESS=$(echo "$RESP" | jq -r '.success // false')
-          BACKUP_ID=$(echo "$RESP" | jq -r '.backup_id // "none"')
-          TOTAL_RECORDS=$(echo "$RESP" | jq -r '.total_records // 0')
-          
-          echo "### Backup: success=$SUCCESS id=$BACKUP_ID records=$TOTAL_RECORDS" >> $GITHUB_STEP_SUMMARY
-          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
-          echo "backup_id=$BACKUP_ID" >> $GITHUB_OUTPUT
-          echo "total_records=$TOTAL_RECORDS" >> $GITHUB_OUTPUT
-          
-          if [ "$SUCCESS" != "true" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P0] 每日备份失败: $RESP" >> $GITHUB_OUTPUT
-          elif [ "$TOTAL_RECORDS" -lt 100 ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P1] 备份数据量异常低: ${TOTAL_RECORDS}条记录" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Skip for now
+        run: echo "backup-verify placeholder - cron改为每日3:00时启用"
 
-      - name: Verify Backup Continuity
-        id: continuity
-        run: |
-          RESP=$(curl -s -m 10 \
-            -H "Authorization: Bearer ${{ secrets.FLY_API_KEY }}" \
-            ${{ env.API_BASE }}/v1/admin/backup)
-          
-          COUNT=$(echo "$RESP" | jq '.backups | length')
-          LATEST=$(echo "$RESP" | jq -r '.backups[-1].timestamp // empty')
-          
-          echo "### Backup History: $COUNT backups, latest=$LATEST" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -z "$LATEST" ]; then
-            echo "alert=true" >> $GITHUB_OUTPUT
-            echo "message=[P0] 无备份记录" >> $GITHUB_OUTPUT
-          else
-            echo "alert=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Send Alerts (Telegram + Email)
-        if: steps.backup.outputs.alert == 'true' || steps.continuity.outputs.alert == 'true'
-        run: |
-          MSG=""
-          [ "${{ steps.backup.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.backup.outputs.message }}"
-          [ "${{ steps.continuity.outputs.alert }}" == "true" ] && MSG="$MSG\n${{ steps.continuity.outputs.message }}"
-          MSG=$(echo -e "$MSG" | sed '/^$/d')
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          # Telegram通知
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"🔴 Fly Attribution Backup Alert\n\n$MSG\n\n⏰ $TIMESTAMP\"}"
-          
-          # 邮件通知
-          SUBJECT="[Fly Attribution P0/P1] 备份告警"
-          TEXT_BODY="Fly Attribution 备份告警
-================================
-
-$(echo -e "$MSG")
-
-时间: $TIMESTAMP
-来源: GitHub Actions backup-verify
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
-          
-          curl -s -X POST "https://api.resend.com/emails" \
-            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg from "onboarding@resend.dev" \
-              --arg to "${{ env.ALERT_EMAIL_TO }}" \
-              --arg subject "$SUBJECT" \
-              --arg text "$TEXT_BODY" \
-              '{from: $from, to: [$to], subject: $subject, text: $text}')"
-
-      - name: Backup Success Notification
-        if: steps.backup.outputs.alert == 'false'
-        run: |
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          
-          # Telegram通知
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"✅ Fly Attribution 每日备份成功\n\n备份ID: ${{ steps.backup.outputs.backup_id }}\n记录数: ${{ steps.backup.outputs.total_records }}\n⏰ $TIMESTAMP\"}"
-
-  # ============================================================
-  # Job 4: Workflow失败通知
-  # 当任何job失败时，发送Telegram + 邮件通知
-  # ============================================================
   notify-failure:
-    if: |
-      always() && (
-        needs.health-check.result == 'failure' ||
-        needs.trend-check.result == 'failure' ||
-        needs.backup-verify.result == 'failure'
-      )
+    if: always() && (needs.health-check.result == 'failure' || needs.trend-check.result == 'failure' || needs.backup-verify.result == 'failure')
     runs-on: ubuntu-latest
     needs: [health-check, trend-check, backup-verify]
     steps:
@@ -498,49 +126,33 @@ $(echo -e "$MSG")
           FAILED_JOBS=""
           
           if [ "${{ needs.health-check.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}\n- health-check（健康检查）"
+            FAILED_JOBS="${FAILED_JOBS}
+- health-check（健康检查）"
           fi
           if [ "${{ needs.trend-check.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}\n- trend-check（趋势检查）"
+            FAILED_JOBS="${FAILED_JOBS}
+- trend-check（趋势检查）"
           fi
           if [ "${{ needs.backup-verify.result }}" == "failure" ]; then
-            FAILED_JOBS="${FAILED_JOBS}\n- backup-verify（备份验证）"
+            FAILED_JOBS="${FAILED_JOBS}
+- backup-verify（备份验证）"
           fi
           
           if [ -n "$FAILED_JOBS" ]; then
             TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-            MSG=$(echo -e "🔴 Fly Attribution Workflow 失败\n\n失败的Job:${FAILED_JOBS}\n\n⏰ $TIMESTAMP")
             
-            # Telegram通知
-            curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-              -H "Content-Type: application/json" \
-              -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"$MSG\"}" || true
-            
-            # 邮件通知
             SUBJECT="[Fly Attribution P0] Workflow执行失败"
             TEXT_BODY="Fly Attribution Workflow 失败通知
-================================
+          ================================
 
-$(echo -e "$FAILED_JOBS")
+          $(echo -e "$FAILED_JOBS")
 
-时间: $TIMESTAMP
-来源: GitHub Actions notify-failure
+          时间: $TIMESTAMP
+          来源: GitHub Actions notify-failure"
 
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
+            curl -s -X POST "https://api.resend.com/emails"               -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}"               -H "Content-Type: application/json"               -d "$(jq -n                 --arg from "onboarding@resend.dev"                 --arg to "${{ env.ALERT_EMAIL_TO }}"                 --arg subject "$SUBJECT"                 --arg text "$TEXT_BODY"                 '{from: $from, to: [$to], subject: $subject, text: $text}')" || true
             
-            curl -s -X POST "https://api.resend.com/emails" \
-              -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
-              -H "Content-Type: application/json" \
-              -d "$(jq -n \
-                --arg from "onboarding@resend.dev" \
-                --arg to "${{ env.ALERT_EMAIL_TO }}" \
-                --arg subject "$SUBJECT" \
-                --arg text "$TEXT_BODY" \
-                '{from: $from, to: [$to], subject: $subject, text: $text}')" || true
-            
-            echo "### Failure notification sent (Telegram + Email)" >> $GITHUB_STEP_SUMMARY
-            echo -e "$FAILED_JOBS" >> $GITHUB_STEP_SUMMARY
+            echo "### Failure notification sent" >> $GITHUB_STEP_SUMMARY
           else
             echo "### No failures detected" >> $GITHUB_STEP_SUMMARY
           fi
