@@ -654,8 +654,11 @@ export default {
           const botResult = detectBot(userAgent);
           const signalQuality = determineSignalQuality(0, botResult.isBot);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ? OR short_id = ?").bind(actionId, actionId).first();
-          const ipHash = await hmacUserId(clientIP, env.IP_SALT || 'fly-attribution-salt-2026');
-          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, 'click', ?, ?, datetime('now'))").bind(`act_${crypto.randomUUID()}`, action?.agent_id || 'agt_system', action?.channel || 'direct', ipHash, actionId, JSON.stringify({ referrer: request.headers.get('Referer') || '', ua: userAgent.slice(0, 200), signal_quality: signalQuality, bot_name: botResult.botName || null, human_score: 0 })).run();
+          if (action) {
+            // 只有action存在时才记录click（避免外键约束失败）
+            const ipHash = await hmacUserId(clientIP, env.IP_SALT || 'fly-attribution-salt-2026');
+            await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, 'click', ?, ?, datetime('now'))").bind(`act_${crypto.randomUUID()}`, action.agent_id, action.channel, ipHash, actionId, JSON.stringify({ referrer: request.headers.get('Referer') || '', ua: userAgent.slice(0, 200), signal_quality: signalQuality, bot_name: botResult.botName || null, human_score: 0 })).run();
+          }
           return Response.redirect('https://fly-agent.xyz', 302);
         }
 
