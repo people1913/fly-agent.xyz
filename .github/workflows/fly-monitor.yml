@@ -157,15 +157,15 @@ jobs:
           # 邮件通知（Resend API）
           SUBJECT="[Fly Attribution P0/P1] 健康检查告警"
           TEXT_BODY="Fly Attribution 健康检查告警
-================================
-
-$(echo -e "$MSG")
-
-时间: $TIMESTAMP
-来源: GitHub Actions health-check
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
+          ================================
+          
+          $(echo -e "$MSG")
+          
+          时间: $TIMESTAMP
+          来源: GitHub Actions health-check
+          
+          ---
+          此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
           
           curl -s -X POST "https://api.resend.com/emails" \
             -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
@@ -352,15 +352,15 @@ $(echo -e "$MSG")
           # 邮件通知
           SUBJECT="[Fly Attribution P0/P1] 趋势/容量告警"
           TEXT_BODY="Fly Attribution 趋势/容量告警
-================================
-
-$(echo -e "$MSG")
-
-时间: $TIMESTAMP
-来源: GitHub Actions trend-check
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
+          ================================
+          
+          $(echo -e "$MSG")
+          
+          时间: $TIMESTAMP
+          来源: GitHub Actions trend-check
+          
+          ---
+          此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
           
           curl -s -X POST "https://api.resend.com/emails" \
             -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
@@ -443,15 +443,15 @@ $(echo -e "$MSG")
           # 邮件通知
           SUBJECT="[Fly Attribution P0/P1] 备份告警"
           TEXT_BODY="Fly Attribution 备份告警
-================================
-
-$(echo -e "$MSG")
-
-时间: $TIMESTAMP
-来源: GitHub Actions backup-verify
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
+          ================================
+          
+          $(echo -e "$MSG")
+          
+          时间: $TIMESTAMP
+          来源: GitHub Actions backup-verify
+          
+          ---
+          此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
           
           curl -s -X POST "https://api.resend.com/emails" \
             -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
@@ -508,15 +508,15 @@ $(echo -e "$MSG")
             # 邮件通知
             SUBJECT="[Fly Attribution P0] Workflow执行失败"
             TEXT_BODY="Fly Attribution Workflow 失败通知
-================================
-
-$(echo -e "$FAILED_JOBS")
-
-时间: $TIMESTAMP
-来源: GitHub Actions notify-failure
-
----
-此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
+            ================================
+            
+            $(echo -e "$FAILED_JOBS")
+            
+            时间: $TIMESTAMP
+            来源: GitHub Actions notify-failure
+            
+            ---
+            此邮件由 Fly Attribution Monitor v2.9.0 自动发送"
             
             curl -s -X POST "https://api.resend.com/emails" \
               -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
