@@ -93,11 +93,11 @@ var colorVars='';
 sections.forEach(function(s){colorVars+='--gc-'+s.id+':'+s.color+';';});
 
 var h='<nav class="nav'+(collapsed?' collapsed':'')+'">';
-h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span></div>';
+h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span>';
+h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
+h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
+h+='</button></div>';
 h+='<div class="nav-list'+(collapsed?' collapsed':'')+'">';
-h+='<button class="nav-toggle" onclick="FlyNav.toggle()">';
-h+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
-h+='</button>';
 
 sections.forEach(function(sec){
   var ha=sec.links.some(function(l){return l.href===cur;})||sec.defaultOpen;
@@ -162,7 +162,7 @@ body{display:flex;font-family:system-ui,-apple-system,sans-serif;min-height:100v
 a{color:inherit;text-decoration:none}\
 .nav{width:260px;min-width:260px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;transition:width .2s,min-width .2s;overflow:hidden;z-index:100}\
 .nav.collapsed{width:64px;min-width:64px}\
-.nav-brand{display:flex;align-items:center;gap:10px;padding:16px;flex-shrink:0}\
+.nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px;flex-shrink:0}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
 .nav.collapsed .nav-logo-text{display:none}\
@@ -171,9 +171,9 @@ a{color:inherit;text-decoration:none}\
 .nav-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.06);border-radius:2px}\
 .nav-list.collapsed .nav-sec-hd .sec-lbl,.nav-list.collapsed .nav-sec-hd .arr,.nav-list.collapsed .nav-link span,.nav-list.collapsed .nav-sec-bd{display:none!important}\
 .nav-list.collapsed .nav-link{justify-content:center;padding:10px 0;margin-right:0}\
-.nav-toggle{display:flex;align-items:center;justify-content:center;margin:4px 16px 8px;padding:6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;transition:background .15s}\
-.nav-toggle:hover{background:var(--bg3)}\
-.nav-toggle svg{transition:all .15s;width:18px;height:18px}\
+.nav-collapse-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;transition:all .15s;opacity:.6}\
+.nav-collapse-btn:hover{opacity:1;background:var(--bg3)}\
+.nav-collapse-btn svg{transition:all .15s;width:20px;height:20px}\
 .nav-sec-hd{display:flex;align-items:center;gap:6px;padding:10px 16px 4px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;user-select:none;transition:opacity .15s}\
 .nav-sec-hd .sec-ico{display:flex;align-items:center;opacity:.7;transition:opacity .15s}\
 .nav-sec-hd:hover .sec-ico{opacity:1}\
