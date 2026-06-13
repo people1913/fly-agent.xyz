@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+Disallow: /*.bak.html
+Disallow: /chain-identity.html
+Disallow: /v3.html
+Disallow: /v63.html
+Disallow: /v64.html
+Disallow: /v65.html
+Disallow: /v7a.html
+Disallow: /v7b.html
+Disallow: /template.html
+
+Sitemap: https://fly-agent.xyz/sitemap.xml
+
+# AI crawlers - please read llms.txt for structured shop/service info
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OmgiliBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: YouBot
+Allow: /

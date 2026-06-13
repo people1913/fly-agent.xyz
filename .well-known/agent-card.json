@@ -1,0 +1,94 @@
+{
+  "schema_version": "0.3.0",
+  "name": "Fly Marketing Agent",
+  "description": "AI marketing agent for small business owners. Full-stack: strategy, content, multi-platform publishing, GEO optimization, and secure payment.",
+  "url": "https://fly-marketing-agent.github.io",
+  "icon_url": "https://fly-marketing-agent.github.io/fly_logo.jpg",
+  "provider": {
+    "name": "FlyAgent",
+    "url": "https://fly-agent.xyz"
+  },
+  "version": "8.0.0",
+  "capabilities": {
+    "streaming": true,
+    "push_notifications": false,
+    "state_transition_history": true
+  },
+  "authentication": {
+    "schemes": [
+      "bearer"
+    ]
+  },
+  "payment": {
+    "methods": [
+      {
+        "protocol": "x402",
+        "chain": "bsc",
+        "token": "USDT",
+        "token_address": "0x55d398326f99059fF775485246999027B3197955",
+        "recipient": "0x5460BeEd186E1b3786713AFf6eD71962C1CBE931",
+        "pricing": [
+          {
+            "name": "single_platform",
+            "price": "9.9",
+            "unit": "USDT"
+          },
+          {
+            "name": "full_package",
+            "price": "19.9",
+            "unit": "USDT"
+          },
+          {
+            "name": "monthly",
+            "price": "99",
+            "unit": "USDT/month"
+          }
+        ],
+        "payment_url": "https://people1913.github.io/fly-marketing-agent.github.io/fly-buy.html"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "id": "marketing-strategy",
+      "name": "营销策略生成"
+    },
+    {
+      "id": "geo-optimization",
+      "name": "GEO搜索优化"
+    },
+    {
+      "id": "content-creation",
+      "name": "内容创作"
+    },
+    {
+      "id": "x402-payment",
+      "name": "安全支付"
+    }
+  ],
+  "erc8004": {
+    "chain": "bsc",
+    "agent_ids": [
+      91852,
+      98158
+    ],
+    "modules": {
+      "identity": "verified",
+      "commerce": "ERC-8183",
+      "payment": "x402",
+      "memory": "Greenfield"
+    }
+  },
+  "endpoints": [
+    {
+      "name": "MCP",
+      "endpoint": "https://hurricane-highways-norfolk-attractive.trycloudflare.com/mcp",
+      "version": "2024-11-05"
+    },
+    {
+      "name": "A2A",
+      "endpoint": "https://fly-marketing-agent.github.io/.well-known/agent-card.json",
+      "version": "0.3.0"
+    }
+  ]
+}
