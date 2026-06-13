@@ -93,7 +93,7 @@ var colorVars='';
 sections.forEach(function(s){colorVars+='--gc-'+s.id+':'+s.color+';';});
 
 var h='<nav class="nav'+(collapsed?' collapsed':'')+'">';
-h+='<div class="nav-brand"><div class="nav-logo">F</div><span class="nav-logo-text">Fly 验证归因</span></div>';
+h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span></div>';
 h+='<div class="nav-list'+(collapsed?' collapsed':'')+'">';
 h+='<button class="nav-toggle" onclick="FlyNav.toggle()">';
 h+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
