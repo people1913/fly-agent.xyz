@@ -95,7 +95,7 @@ sections.forEach(function(s){colorVars+='--gc-'+s.id+':'+s.color+';';});
 var h='<nav class="nav'+(collapsed?' collapsed':'')+'">';
 h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span>';
 h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
-h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
+h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
 h+='</button></div>';
 h+='<div class="nav-list'+(collapsed?' collapsed':'')+'">';
 
