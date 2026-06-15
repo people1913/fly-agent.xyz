@@ -81,8 +81,13 @@ links:[
 ];
 
 /* ── 渲染 ── */
-var nav=document.createElement('nav');nav.className='nav';nav.setAttribute('aria-label','文档导航');
+var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
+var nav=document.createElement('nav');nav.className='nav'+(collapsed?' collapsed':'');nav.setAttribute('aria-label','文档导航');
 var h='';
+h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span>';
+h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
+h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
+h+='</button></div>';
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
   h+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
@@ -95,6 +100,14 @@ sections.forEach(function(sec){
 });
 nav.innerHTML=h;
 document.body.insertBefore(nav,document.body.firstChild);
+
+window.FlyNav={
+  toggle:function(){
+    var n=document.querySelector('.nav');
+    if(n)n.classList.toggle('collapsed');
+    localStorage.setItem('fly_nav_collapsed',document.querySelector('.nav.collapsed')?'1':'0');
+  }
+};
 
 /* ── 交互 ── */
 nav.querySelectorAll('.nav-sec > .nav-link').forEach(function(el){
@@ -117,7 +130,14 @@ nav.querySelectorAll('.nav-sec-bd .nav-link').forEach(function(a){
 
 /* 样式注入 */
 var cs=document.createElement('style');cs.textContent='\
+:root{--dark:#0F172A;--text2:#1E293B;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--blue:#2563EB}\
 .nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:60px 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
+.nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px;flex-shrink:0}\
+.nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
+.nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
+.nav.collapsed .nav-logo-text{display:none}\
+.nav-collapse-btn{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748B;transition:all .15s;flex-shrink:0}\
+.nav-collapse-btn:hover{background:#f1f5f9;color:#0F172A}\
 .nav-link{position:relative;display:flex;align-items:center;gap:8px;padding:6px 16px;color:var(--text2);text-decoration:none;transition:background .15s,color .15s;line-height:1.4;font-weight:500}\
 .nav-link[data-group=identity]:hover{color:#1A3D2E;background:rgba(26,61,46,.06)}\
 .nav-link[data-group=trust]:hover{color:#059669;background:rgba(5,150,105,.06)}\
