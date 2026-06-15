@@ -3,77 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>微信归因 · Fly</title>
+<title>微信 · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
+.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
+.feature-row{display:flex;gap:12px;margin-bottom:24px}
+.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
+.compare-row{display:flex;gap:16px;margin-bottom:24px}
+.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
+.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
+.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.compare-col.bad .col-title{color:#DC2626}
+.compare-col.good .col-title{color:#16A34A}
+.compare-col ul{list-style:none;padding:0}
+.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
+.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
 </style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
 <div class="topbar"><h1>微信</h1><span class="tag">渠道归因</span></div>
-<div style="padding:32px;overflow-y:auto">
-<p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">微信渠道AI归因验证方案。追踪从AI推荐→公众号/小程序→成交→佣金的全链路，验证微信流量真实性。</p>
-<div class="chart-row" style="margin-bottom:24px"><div class="mini-chart"><div class="num">3,156/日</div><div class="lbl">验证请求</div></div><div class="mini-chart"><div class="num">96.7%</div><div class="lbl">通过率</div></div><div class="mini-chart"><div class="num">12ms</div><div class="lbl">平均延迟</div></div><div class="mini-chart"><div class="num">203件/日</div><div class="lbl">防刷拦截</div></div></div>
-<div class="card" style="margin-bottom:24px"><div class="lb">归因链路</div><div class="row" style="font-family:var(--mono);font-size:13px;color:var(--deep-green);letter-spacing:0.5px">AI推荐 → 公众号/小程序曝光 → 用户点击 → 成交 → 佣金结算</div></div>
-<div class="card"><div class="lb">公众号归因</div><div class="row">追踪AI推荐→公众号文章→小程序→成交的完整链路</div></div><div class="card"><div class="lb">小程序归因</div><div class="row">追踪小程序内AI推荐→用户行为→成交→佣金归因</div></div><div class="card"><div class="lb">社群归因</div><div class="row">追踪社群AI推荐→用户互动→成交的归因路径</div></div>
-</div>
+<div class="content">
+
+
+<div class="page-hero">
+<div class="page-label">CHANNEL</div>
+<div class="page-title">微信</div>
+<div class="page-sub">微信渠道 AI 归因验证方案</div>
+<div class="page-oneliner">追踪公众号/小程序/私域 AI 推荐→成交→佣金全链路</div>
 </div>
 
-<script>
-let cv=null;
-function sp(t){document.getElementById('inp').value=t;send()}
+<hr class="divider">
 
-</script>
+<div class="section-title">为什么需要微信归因验证</div>
+<div class="section-body">微信生态覆盖公众号、小程序、企业微信、社群等多场景。<strong>微信的私域裂变传播容易被滥用——虚假分享、裂变作弊、机器人拉群，没有验证的归因不可信。</strong></div>
+
+
+<hr class="divider">
+
+<div class="section-title">核心能力</div>
+<div class="highlight-box">
+<div class="hl-label">核心能力</div>
+<div class="hl-text">验证微信私域推荐的真实性——防裂变作弊、防虚假分享、防机器人拉群</div>
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">公众号归因</div><div class="feat-desc">追踪公众号文章内 AI 推荐链接的点击和转化，支持图文和视频号场景</div></div>
+
+<div class="feature-card"><div class="feat-title">小程序归因</div><div class="feat-desc">小程序内 AI 推荐→用户操作→支付的归因追踪，支持小程序跳转回调</div></div>
+
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">私域社群归因</div><div class="feat-desc">微信群/企微群内 AI 推荐的归因追踪，区分真实推荐和裂变作弊</div></div>
+
+<div class="feature-card"><div class="feat-title">裂变验证</div><div class="feat-desc">验证分享行为的真实性——真实用户分享 vs 机器人批量转发 vs 利益驱动裂变</div></div>
+
+</div>
+
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">微信渠道接入完成，继续接入美团</div>
+<a href="/channel-meituan.html" class="cta-link">美团渠道 →</a>
+</div>
+
+</div>
+</div>
 </body>
 </html>
