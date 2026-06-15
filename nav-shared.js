@@ -131,7 +131,7 @@ nav.querySelectorAll('.nav-sec-bd .nav-link').forEach(function(a){
 /* 样式注入 */
 var cs=document.createElement('style');cs.textContent='\
 :root{--dark:#0F172A;--text2:#1E293B;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--blue:#2563EB}\
-.nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:60px 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
+.nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
 .nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px;flex-shrink:0}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
