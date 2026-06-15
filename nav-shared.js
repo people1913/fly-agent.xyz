@@ -167,8 +167,8 @@ body{display:flex;flex-wrap:wrap}\
 .nav-link svg{flex-shrink:0;opacity:.55;transition:opacity .15s;width:16px;height:16px}\
 .nav-link:hover svg{opacity:.9}\
 .nav-link.active svg{opacity:1}\
-.nav-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}
+.nav-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}\
 .nav-link.arrow-open .nav-arrow{transform:rotate(90deg)}\
 .nav-sec{border-top:1px solid var(--border);margin-top:6px;padding-top:2px}\
 .nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
