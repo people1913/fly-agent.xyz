@@ -168,7 +168,7 @@ body{display:flex;position:relative}\
 .nav-link.active[data-group=attribution]{color:#6366F1}.nav-link.active[data-group=attribution]::before{background:#6366F1}.nav-link.active[data-group=attribution] svg{color:#6366F1}\
 .nav-link.active[data-group=governance]{color:#64748B}.nav-link.active[data-group=governance]::before{background:#64748B}.nav-link.active[data-group=governance] svg{color:#64748B}\
 @media(max-width:768px){.nav{display:none}}\
-.main{margin-top:48px}\
+.main{margin-top:48px;min-height:calc(100vh - 48px)}\
 .fly-docs-panel{display:flex;flex-direction:column;flex:1;min-width:0;overflow-y:auto}\
 .fly-docs-panel.hidden{display:none!important}\
 .fly-chat-panel{flex:1;display:flex;flex-direction:column;height:100vh;background:#f7f8fa;min-width:0;align-items:center}\
