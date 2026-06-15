@@ -7,72 +7,97 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#D97706;background:#FFFBEB;padding:2px 10px;border-radius:10px}
+.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
 .content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
 .page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#D97706;margin-bottom:8px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
 .page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
 .page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#D97706;font-weight:600;line-height:1.6}
+.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
 .divider{border:none;border-top:1px solid var(--border);margin:32px 0}
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
-.highlight-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#D97706;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#D97706;line-height:1.7}
+.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
+.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
 .feature-row{display:flex;gap:12px;margin-bottom:24px}
 .feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
 .feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.coming-soon{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-top:24px}
-.coming-soon .cs-text{font-size:14px;font-weight:600;color:var(--text3);line-height:1.6}
-.coming-soon .cs-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#D97706;background:#FFFBEB;padding:4px 12px;border-radius:12px;letter-spacing:1px}</style>
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
+.compare-row{display:flex;gap:16px;margin-bottom:24px}
+.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
+.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
+.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.compare-col.bad .col-title{color:#DC2626}
+.compare-col.good .col-title{color:#16A34A}
+.compare-col ul{list-style:none;padding:0}
+.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
+.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
+</style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Partner</h1><span class="tag">渠道</span></div>
+<div class="topbar"><h1>Partner</h1><span class="tag">渠道归因</span></div>
 <div class="content">
+
 
 <div class="page-hero">
 <div class="page-label">CHANNEL</div>
 <div class="page-title">Partner</div>
-<div class="page-sub">渠道合作伙伴计划</div>
-<div class="page-oneliner">与Fly一起，为你的客户带来AI归因验证能力</div>
+<div class="page-sub">合作伙伴渠道归因验证</div>
+<div class="page-oneliner">追踪合作伙伴推荐→成交→分润的全链路</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">Partner是什么</div>
-<div class="highlight-box">
-<div class="hl-label">核心定位</div>
-<div class="hl-text">集成Fly到你的产品中，为客户提供归因验证增值服务</div>
-</div>
-<div class="feature-row"><div class="feature-card">
-<div class="feat-title">技术合作伙伴</div>
-<div class="feat-desc">集成Fly到你的产品中，为客户提供归因验证增值服务</div>
-</div><div class="feature-card">
-<div class="feat-title">咨询合作伙伴</div>
-<div class="feat-desc">帮助企业客户部署和优化Fly归因验证体系</div>
-</div></div>
-<div class="feature-row"><div class="feature-card">
-<div class="feat-title">利润分成</div>
-<div class="feat-desc">合作伙伴享受佣金分成，每带来一个付费客户都有收益</div>
-</div><div class="feature-card">
-<div class="feat-title">联合营销</div>
-<div class="feat-desc">Fly提供联合品牌营销支持，共同拓展市场</div>
-</div></div>
+<div class="section-title">为什么需要 Partner 归因验证</div>
+<div class="section-body">企业合作伙伴（ISV、集成商、代理商）推荐客户购买产品，<strong>如何公平分配佣金？如何避免渠道冲突和归因争议？</strong></div>
 
-<div class="coming-soon">
-<div class="cs-text">详细方案即将上线，欢迎提前联系</div>
-<div class="cs-badge">COMING SOON</div>
+
+<hr class="divider">
+
+<div class="section-title">核心能力</div>
+<div class="highlight-box">
+<div class="hl-label">核心能力</div>
+<div class="hl-text">为合作伙伴推荐提供可验证的归因证据，公平分润、减少争议</div>
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">合作伙伴归因</div><div class="feat-desc">追踪 ISV/集成商/代理商推荐→客户成交的完整链路</div></div>
+
+<div class="feature-card"><div class="feat-title">渠道冲突解决</div><div class="feat-desc">当多个渠道同时推荐同一客户时，按时间戳和验证结果公平分配归因</div></div>
+
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">分润透明</div><div class="feat-desc">所有分润记录链上可查，合作伙伴可随时查看归因状态和佣金明细</div></div>
+
+<div class="feature-card"><div class="feat-title">多层级分润</div><div class="feat-desc">支持多级合作伙伴关系——推荐人→介绍人→成交，按比例自动分配</div></div>
+
+</div>
+
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">Partner 接入完成，查看 Distribution 方案</div>
+<a href="/channel-distribution.html" class="cta-link">Distribution →</a>
 </div>
 
 </div>
