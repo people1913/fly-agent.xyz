@@ -84,10 +84,12 @@ links:[
 var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
 var topBar=document.createElement('div');topBar.className='nav-top';
 var h='';
+h+='<div class="nav-top-left">';
 h+='<span class="nav-logo-text">Fly</span>';
 h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
 h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
-h+='</button>';
+h+='</button></div>';
+h+='<div class="nav-top-right"></div>';
 topBar.innerHTML=h;
 var nav=document.createElement('nav');nav.className='nav'+(collapsed?' collapsed':'');nav.setAttribute('aria-label','文档导航');
 var nb='';
@@ -138,7 +140,9 @@ nav.querySelectorAll('.nav-sec-bd .nav-link').forEach(function(a){
 var cs=document.createElement('style');cs.textContent='\
 :root{--dark:#0F172A;--text2:#1E293B;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--blue:#2563EB}\
 body{display:flex;flex-wrap:wrap}\
-.nav-top{width:100%;flex-shrink:0;display:flex;align-items:center;justify-content:flex-start;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border);height:48px;gap:8px}\
+.nav-top{width:100%;flex-shrink:0;display:flex;align-items:center;height:48px;border-bottom:1px solid var(--border)}\
+.nav-top-left{width:220px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-right:1px solid var(--border);height:100%}\
+.nav-top-right{flex:1}\
 .nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
 .nav.collapsed{width:64px;min-width:64px}\
 .nav-body{flex:1;overflow-y:auto}\
