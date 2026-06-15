@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
@@ -24,6 +25,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
+.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
 .highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
 .highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
 .highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
@@ -33,7 +35,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
 .cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
 .cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
+.compare-row{display:flex;gap:16px;margin-bottom:24px}
+.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
+.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
+.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.compare-col.bad .col-title{color:#DC2626}
+.compare-col.good .col-title{color:#16A34A}
+.compare-col ul{list-style:none;padding:0}
+.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
+.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
+</style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
@@ -41,53 +54,59 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="topbar"><h1>Agent Identity</h1><span class="tag">AI Native</span></div>
 <div class="content">
 
+
 <div class="page-hero">
 <div class="page-label">AI NATIVE</div>
 <div class="page-title">Agent Identity</div>
-<div class="page-sub">AI Agent身份验证与授权</div>
-<div class="page-oneliner">确认Agent身份，授权可信行为</div>
+<div class="page-sub">AI Agent 身份验证与授权</div>
+<div class="page-oneliner">确认 Agent 身份，授权可信行为</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">为什么需要Agent Identity</div>
-<div class="section-body">
-Agent Registry记录了Agent的身份信息，但<strong>每次Agent参与归因时，如何确认它就是注册的那个Agent？如何防止身份冒用？</strong>Agent Identity提供实时身份验证。
-</div>
+<div class="section-title">为什么需要 Agent Identity</div>
+<div class="section-body">Agent Registry 记录了 Agent 的身份信息，但<strong>每次 Agent 参与归因时，如何确认它就是注册的那个 Agent？如何防止身份冒用？</strong>Agent Identity 提供实时身份验证和权限管理。</div>
+
+
+<hr class="divider">
+<div class="section-title">身份验证流程</div>
+<div class="section-body">Agent 注册时获得 API Key + Secret。每次请求携带签名（HMAC-SHA256），系统验证签名有效性、令牌时效、权限范围。验证通过后，Agent 身份绑定到当前归因事件，全程可追溯。</div>
+
+
+<hr class="divider">
+<div class="section-title">身份安全机制</div>
+<div class="section-body">API Key 每 90 天自动轮换；异常请求（频率突增、IP 异常、权限越界）自动冻结并通知 Agent 创建者；所有身份验证记录留存审计链，不可篡改。</div>
+
 
 <hr class="divider">
 
-<div class="section-title">Agent Identity提供什么</div>
+<div class="section-title">核心能力</div>
 <div class="highlight-box">
 <div class="hl-label">核心能力</div>
-<div class="hl-text">每次Agent请求自动验证身份令牌，确认请求来自注册Agent</div>
+<div class="hl-text">每次 Agent 请求自动验证身份令牌，确认请求来自注册 Agent，防止身份冒用和权限滥用</div>
 </div>
 
 <div class="feature-row">
-<div class="feature-card">
-<div class="feat-title">身份令牌验证</div>
-<div class="feat-desc">每次Agent请求自动验证身份令牌，确认请求来自注册Agent</div>
+
+<div class="feature-card"><div class="feat-title">身份令牌验证</div><div class="feat-desc">每次 Agent 参与归因事件时，系统自动验证其身份令牌（JWT），确认请求来自注册的 Agent</div></div>
+
+<div class="feature-card"><div class="feat-title">会话绑定机制</div><div class="feat-desc">Agent 身份与归因会话绑定，防止跨会话身份复用——一次会话一个身份上下文</div></div>
+
 </div>
-<div class="feature-card">
-<div class="feat-title">会话绑定机制</div>
-<div class="feat-desc">Agent身份与归因会话绑定，防止跨会话身份复用</div>
-</div>
-</div>
+
 <div class="feature-row">
-<div class="feature-card">
-<div class="feat-title">权限分级授权</div>
-<div class="feat-desc">不同Agent获得不同的数据访问权限，最小权限原则</div>
+
+<div class="feature-card"><div class="feat-title">权限分级授权</div><div class="feat-desc">不同 Agent 获得不同的数据访问权限：读取、创建、结算——最小权限原则</div></div>
+
+<div class="feature-card"><div class="feat-title">异常身份告警</div><div class="feat-desc">检测到身份冒用、异常登录、令牌过期等行为，实时告警并冻结相关 Agent</div></div>
+
 </div>
-<div class="feature-card">
-<div class="feat-title">异常身份告警</div>
-<div class="feat-desc">检测到身份冒用、异常登录等行为，实时告警并冻结</div>
-</div>
-</div>
+
 
 <hr class="divider">
 
 <div class="cta-box">
-<div class="cta-text">Agent身份可信，接下来衡量Agent产生的商业价值</div>
+<div class="cta-text">Agent 身份可信，接下来衡量 Agent 产生的商业价值</div>
 <a href="/sdk.html" class="cta-link">Agent Revenue →</a>
 </div>
 
