@@ -97,7 +97,7 @@ nb+='<div class="nav-body">';
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
   nb+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
-  nb+='<a class="nav-link" data-group="'+sec.id+'" style="color:'+sec.color+'" href="javascript:void(0)">'+sec.icon+'<span>'+sec.label+'</span></a>';
+  nb+='<a class="nav-link" data-group="'+sec.id+'" style="color:'+sec.color+'" href="javascript:void(0)">'+sec.icon+'<span>'+sec.label+'</span><span class="nav-arrow">›</span></a>';
   nb+='<div class="nav-sec-bd '+op+'">';
   sec.links.forEach(function(l){
     nb+='<a class="nav-link" data-group="'+sec.id+'" href="'+l.href+'" title="'+l.text+'">'+l.icon+'<span>'+l.text+'</span></a>';
@@ -123,6 +123,7 @@ nav.querySelectorAll('.nav-sec > .nav-link').forEach(function(el){
     e.preventDefault();
     var bd=this.nextElementSibling;
     bd.classList.toggle('open');
+    this.classList.toggle('arrow-open');
   });
 });
 
@@ -166,7 +167,9 @@ body{display:flex;flex-wrap:wrap}\
 .nav-link svg{flex-shrink:0;opacity:.55;transition:opacity .15s;width:16px;height:16px}\
 .nav-link:hover svg{opacity:.9}\
 .nav-link.active svg{opacity:1}\
-.nav-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.nav-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}
+.nav-link.arrow-open .nav-arrow{transform:rotate(90deg)}\
 .nav-sec{border-top:1px solid var(--border);margin-top:6px;padding-top:2px}\
 .nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
 .nav-sec-bd{overflow:hidden;max-height:0;transition:max-height .25s ease}\
