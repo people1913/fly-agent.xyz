@@ -7,33 +7,46 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#EA580C;background:#FFF7ED;padding:2px 10px;border-radius:10px}
+.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
 .content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
 .page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#EA580C;margin-bottom:8px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
 .page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
 .page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#EA580C;font-weight:600;line-height:1.6}
+.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
 .divider{border:none;border-top:1px solid var(--border);margin:32px 0}
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
-.highlight-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#EA580C;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#EA580C;line-height:1.7}
+.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
+.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
 .feature-row{display:flex;gap:12px;margin-bottom:24px}
 .feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
 .feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.coming-soon{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-top:24px}
-.coming-soon .cs-text{font-size:14px;font-weight:600;color:var(--text3);line-height:1.6}
-.coming-soon .cs-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#EA580C;background:#FFF7ED;padding:4px 12px;border-radius:12px;letter-spacing:1px}</style>
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
+.compare-row{display:flex;gap:16px;margin-bottom:24px}
+.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
+.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
+.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.compare-col.bad .col-title{color:#DC2626}
+.compare-col.good .col-title{color:#16A34A}
+.compare-col ul{list-style:none;padding:0}
+.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
+.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
+</style>
 </head>
 <body>
 <script src="/nav-shared.js"></script>
@@ -41,34 +54,55 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="topbar"><h1>Schema</h1><span class="tag">开发者</span></div>
 <div class="content">
 
+
 <div class="page-hero">
 <div class="page-label">DEVELOPER</div>
 <div class="page-title">Schema</div>
 <div class="page-sub">数据模型定义</div>
-<div class="page-oneliner">标准化的归因数据结构，确保一致性</div>
+<div class="page-oneliner">Behavior ID、Action ID、Verification、Trust 的数据结构</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">Schema能力</div>
-<div class="feature-row"><div class="feature-card">
-<div class="feat-title">Behavior Schema</div>
-<div class="feat-desc">AI推荐信号的标准数据结构：来源、内容、时间、上下文</div>
-</div><div class="feature-card">
-<div class="feat-title">Action Schema</div>
-<div class="feat-desc">用户行为的标准数据结构：行为类型、关联推荐、成交金额</div>
-</div></div>
-<div class="feature-row"><div class="feature-card">
-<div class="feat-title">Attribution Schema</div>
-<div class="feat-desc">归因结果的标准数据结构：归因链、权重、证明</div>
-</div><div class="feature-card">
-<div class="feat-title">版本管理</div>
-<div class="feat-desc">Schema版本化，新版本向后兼容，老版本自动迁移</div>
-</div></div>
+<div class="section-title">数据模型概览</div>
+<div class="section-body">理解 Fly 的核心数据模型是正确集成 API 的基础。<strong>四大核心模型：Behavior（行为）、Action（归因）、Verification（验证）、Trust（信任）。</strong></div>
 
-<div class="coming-soon">
-<div class="cs-text">文档正在编写中，即将上线</div>
-<div class="cs-badge">COMING SOON</div>
+
+<hr class="divider">
+<div class="section-title">数据关系</div>
+<div class="section-body">Behavior 1:1 Action（一个行为产生一个归因）| Action 1:N Verification（一个归因多次验证）| Action 1:1 Trust（一个归因一个信任评级）| 哈希链串联所有事件，不可篡改。</div>
+
+
+<hr class="divider">
+
+<div class="section-title">核心模型</div>
+<div class="highlight-box">
+<div class="hl-label">核心模型</div>
+<div class="hl-text">Behavior → Action → Verification → Trust 四层数据模型，层层递进</div>
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">Behavior 模型</div><div class="feat-desc">behavior_id, source, platform, agent_id, content_hash, timestamp, context — 记录推荐行为</div></div>
+
+<div class="feature-card"><div class="feat-title">Action 模型</div><div class="feat-desc">action_id, behavior_id, status, lifecycle[], source, referrer, hash — 归因链路</div></div>
+
+</div>
+
+<div class="feature-row">
+
+<div class="feature-card"><div class="feat-title">Verification 模型</div><div class="feat-desc">gate_results[], chain_hash, is_valid, verified_at — 四重验证结果</div></div>
+
+<div class="feature-card"><div class="feat-title">Trust 模型</div><div class="feat-desc">trust_score, level, factors{}, updated_at — 信任评级</div></div>
+
+</div>
+
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">数据模型理解完成，查看 OpenAPI 规范</div>
+<a href="/dev-openapi.html" class="cta-link">OpenAPI →</a>
 </div>
 
 </div>
