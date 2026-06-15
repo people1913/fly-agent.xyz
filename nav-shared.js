@@ -84,10 +84,11 @@ links:[
 var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
 var nav=document.createElement('nav');nav.className='nav'+(collapsed?' collapsed':'');nav.setAttribute('aria-label','文档导航');
 var h='';
-h+='<div class="nav-brand"><span class="nav-logo-text">Fly</span>';
+h+='<div class="nav-top"><span class="nav-logo-text">Fly</span>';
 h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
 h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
 h+='</button></div>';
+h+='<div class="nav-body">';
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
   h+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
@@ -98,6 +99,7 @@ sections.forEach(function(sec){
   });
   h+='</div></div>';
 });
+h+='</div>';
 nav.innerHTML=h;
 document.body.insertBefore(nav,document.body.firstChild);
 
@@ -131,12 +133,14 @@ nav.querySelectorAll('.nav-sec-bd .nav-link').forEach(function(a){
 /* 样式注入 */
 var cs=document.createElement('style');cs.textContent='\
 :root{--dark:#0F172A;--text2:#1E293B;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--blue:#2563EB}\
-.nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
+body{display:flex;position:relative}\
+.nav-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border);z-index:10;height:48px}\
+.nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0;margin-top:48px}\
 .nav.collapsed{width:64px;min-width:64px}\
-.nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px;flex-shrink:0}\
+.nav-body{flex:1;overflow-y:auto}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
-.nav.collapsed .nav-logo-text{display:none}\
+.nav.collapsed .nav-logo-text{font-size:12px}\
 .nav.collapsed .nav-sec-bd{display:none!important}\
 .nav.collapsed .nav-link span{display:none}\
 .nav.collapsed .nav-link{justify-content:center;padding:10px 0}\
@@ -164,6 +168,7 @@ var cs=document.createElement('style');cs.textContent='\
 .nav-link.active[data-group=attribution]{color:#6366F1}.nav-link.active[data-group=attribution]::before{background:#6366F1}.nav-link.active[data-group=attribution] svg{color:#6366F1}\
 .nav-link.active[data-group=governance]{color:#64748B}.nav-link.active[data-group=governance]::before{background:#64748B}.nav-link.active[data-group=governance] svg{color:#64748B}\
 @media(max-width:768px){.nav{display:none}}\
+.main{margin-top:48px}\
 .fly-docs-panel{display:flex;flex-direction:column;flex:1;min-width:0;overflow-y:auto}\
 .fly-docs-panel.hidden{display:none!important}\
 .fly-chat-panel{flex:1;display:flex;flex-direction:column;height:100vh;background:#f7f8fa;min-width:0;align-items:center}\
