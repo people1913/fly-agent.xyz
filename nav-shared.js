@@ -152,8 +152,6 @@ body{display:flex;flex-wrap:wrap}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
 .nav.collapsed .nav-logo-text{font-size:12px}\
 .nav.collapsed .nav-link span{display:none}\
-.nav.collapsed .nav-sec-bd{max-height:1000px!important}\
-.nav.collapsed .nav-sec-bd .nav-link{padding-left:24px}\
 .nav-collapse-btn{width:32px;height:32px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748B;transition:all .15s;flex-shrink:0}\
 .nav-collapse-btn:hover{background:#f1f5f9;color:#0F172A}\
 .nav-link{position:relative;display:flex;align-items:center;gap:8px;padding:6px 16px;color:var(--text2);text-decoration:none;transition:background .15s,color .15s;line-height:1.4;font-weight:500}\
