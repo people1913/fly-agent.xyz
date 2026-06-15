@@ -82,7 +82,7 @@ links:[
 
 /* ── 渲染 ── */
 var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
-var topBar=document.createElement('div');topBar.className='nav-top';
+var topBar=document.createElement('div');topBar.className='nav-top'+(collapsed?' collapsed':'');
 var h='';
 h+='<div class="nav-top-left">';
 h+='<span class="nav-logo-text">Fly</span>';
@@ -111,8 +111,8 @@ document.body.insertBefore(topBar,document.body.firstChild);
 
 window.FlyNav={
   toggle:function(){
-    var n=document.querySelector('.nav');
-    if(n)n.classList.toggle('collapsed');
+    var n=document.querySelector('.nav'),t=document.querySelector('.nav-top');
+    if(n)n.classList.toggle('collapsed');if(t)t.classList.toggle('collapsed');
     localStorage.setItem('fly_nav_collapsed',document.querySelector('.nav.collapsed')?'1':'0');
   }
 };
@@ -145,6 +145,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-top-right{flex:1;padding:0 32px}\
 .nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
 .nav.collapsed{width:64px;min-width:64px}\
+.nav-top.collapsed .nav-top-left{width:64px;justify-content:center;padding:0}\
 .nav-body{flex:1;overflow-y:auto}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden}\
