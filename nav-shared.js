@@ -97,8 +97,9 @@ nb+='<div class="nav-body">';
 
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
+  var arrowOpen=sec.defaultOpen?' arrow-open':'';
   nb+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
-  nb+='<a class="nav-link" data-group="'+sec.id+'" style="color:'+sec.color+'" href="javascript:void(0)">'+sec.icon+'<span>'+sec.label+'</span><span class="nav-arrow">›</span></a>';
+  nb+='<a class="nav-link'+arrowOpen+'" data-group="'+sec.id+'" style="color:'+sec.color+'" href="javascript:void(0)">'+sec.icon+'<span>'+sec.label+'</span><span class="nav-arrow">›</span></a>';
   nb+='<div class="nav-sec-bd '+op+'">';
   sec.links.forEach(function(l){
     nb+='<a class="nav-link" data-group="'+sec.id+'" href="'+l.href+'" title="'+l.text+'">'+l.icon+'<span>'+l.text+'</span></a>';
