@@ -142,7 +142,7 @@ var cs=document.createElement('style');cs.textContent='\
 :root{--dark:#0F172A;--text2:#1E293B;--text3:#475569;--text4:#94A3B8;--border:#e2e8f0;--blue:#2563EB}\
 body{display:flex;flex-wrap:wrap}\
 .nav-top{width:100%;flex-shrink:0;display:flex;align-items:center;height:48px;border-bottom:1px solid var(--border)}\
-.nav-top-left{width:220px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-right:1px solid var(--border);height:100%}\
+.nav-top-left{width:220px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-right:1px solid var(--border);height:48px}\
 .nav-top-right{flex:1;padding:0 32px}\
 .nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
 .nav.collapsed{width:80px;min-width:80px}\
