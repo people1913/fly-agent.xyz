@@ -1,0 +1,20 @@
+name = "fly-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "FLY_D1"
+database_name = "fly-db"
+database_id = "71a75dc8-76c5-4563-bf6f-0aa47f76ff95"
+
+[[kv_namespaces]]
+binding = "FLY_KV"
+id = "fea93561708c4272886554d83e546922"
+
+[[routes]]
+pattern = "api.fly-agent.xyz/*"
+zone_name = "fly-agent.xyz"
+
+[triggers]
+crons = ["*/5 * * * *"]
