@@ -136,6 +136,7 @@ nav.querySelectorAll('.nav-sec-bd .nav-link').forEach(function(a){
   if(hp===path){
     a.classList.add('active');
     var bd=a.closest('.nav-sec-bd');if(bd)bd.classList.add('open');
+    var sec=a.closest('.nav-sec');if(sec){var hdr=sec.querySelector(':scope>.nav-link');if(hdr)hdr.classList.add('arrow-open');}
   }
 });
 
