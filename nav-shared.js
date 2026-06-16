@@ -147,7 +147,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-top-right{flex:1;padding:0 32px}\
 .nav{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:0 0 24px;font-size:13px;display:flex;flex-direction:column;gap:0}\
 .nav.collapsed{width:80px;min-width:80px}\
-.nav-top.collapsed .nav-top-left{width:80px!important;padding:0!important;display:flex!important;align-items:center!important;height:48px!important}\
+.nav-top.collapsed .nav-top-left{width:80px!important;padding:0!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:5px!important;height:48px!important}\
 .nav-body{flex:1;overflow-y:auto}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
 .nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;height:48px;display:inline-flex;align-items:center;justify-content:center}\
