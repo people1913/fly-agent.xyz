@@ -150,7 +150,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-top.collapsed .nav-top-left{width:80px;padding:0;align-items:center}\
 .nav-body{flex:1;overflow-y:auto}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
-.nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;line-height:48px}\
+.nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;line-height:48px!important;display:flex;align-items:center}\
 .nav.collapsed .nav-logo-text{font-size:12px}\
 .nav.collapsed .nav-link span:not(.nav-arrow){display:none}\
 .nav.collapsed .nav-arrow{margin:0}\
