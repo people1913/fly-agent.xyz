@@ -85,7 +85,7 @@ var collapsed=localStorage.getItem('fly_nav_collapsed')==='1';
 var topBar=document.createElement('div');topBar.className='nav-top'+(collapsed?' collapsed':'');
 var h='';
 h+='<div class="nav-top-left">';
-h+='<span class="nav-logo-text">Fly</span>';
+h+='<a href="/" class="nav-logo-text">Fly</a>';
 h+='<button class="nav-collapse-btn" onclick="FlyNav.toggle()">';
 h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>';
 h+='</button></div>';
@@ -94,7 +94,9 @@ topBar.innerHTML=h;
 var nav=document.createElement('nav');nav.className='nav'+(collapsed?' collapsed':'');nav.setAttribute('aria-label','文档导航');
 var nb='';
 nb+='<div class="nav-body">';
-nb+='<a class="nav-link fly-concept-entry" href="/" title="Fly概念" style="color:#0F172A;font-weight:700;border-bottom:1px solid #e2e8f0;padding:10px 16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>Fly概念</span></a>';
+nb+='<div class="nav-sec fly-concept-group" style="border-top:none;margin-top:0;padding-top:0">';
+nb+='<a class="nav-link fly-concept-title arrow-open" data-group="fly-concept" style="color:#0F172A;font-weight:700" href="javascript:void(0)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>Fly概念</span><span class="nav-arrow">›</span></a>';
+nb+='<div class="nav-sec-bd open">';
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
   nb+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
@@ -105,6 +107,7 @@ sections.forEach(function(sec){
   });
   nb+='</div></div>';
 });
+nb+='</div></div>';
 nb+='</div>';
 nav.innerHTML=nb;
 document.body.insertBefore(nav,document.body.firstChild);
@@ -150,7 +153,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-top.collapsed .nav-top-left{width:80px!important;padding:0!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:5px!important;height:48px!important}\
 .nav-body{flex:1;overflow-y:auto}\
 .nav-logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}\
-.nav-logo-text{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;height:48px;display:inline-flex;align-items:center;justify-content:center}\
+.nav-logo-text{font-size:14px;text-decoration:none;cursor:pointer;font-weight:700;color:var(--dark);white-space:nowrap;height:48px;display:inline-flex;align-items:center;justify-content:center}\
 .nav.collapsed .nav-logo-text{font-size:12px}\
 .nav.collapsed .nav-link span:not(.nav-arrow){display:none}\
 .nav.collapsed .nav-arrow{margin:0}\
@@ -171,7 +174,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}\
 .nav-link.arrow-open .nav-arrow{transform:rotate(90deg)}\
 .nav-sec{border-top:1px solid var(--border);margin-top:6px;padding-top:2px}\
-.fly-concept-entry:hover{background:rgba(37,99,235,.06)!important;color:#2563EB!important};.nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
+.fly-concept-title:hover{background:rgba(37,99,235,.06)!important;color:#2563EB!important};.nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
 .nav-sec-bd{overflow:hidden;max-height:0;transition:max-height .25s ease}\
 .nav-sec-bd.open{max-height:1200px}\
 .nav-link.active[data-group=identity]{color:#1A3D2E}.nav-link.active[data-group=identity]::before{background:#1A3D2E}.nav-link.active[data-group=identity] svg{color:#1A3D2E}\
