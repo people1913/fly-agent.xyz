@@ -10,7 +10,7 @@ var sections=[
 // ── 1. Identity（身份层）深绿 #1A3D2E ── Agent身份/注册/平台接入
 {id:'identity',label:'Identity 身份层',color:'#1A3D2E',defaultOpen:true,icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
 links:[
-{href:'/',text:'Fly概念',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>'},
+
 {href:'/concept-behavior-id.html',text:'Behavior ID 行为ID',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2m-9-11h2m18 0h2m-3.3-7.7-1.4 1.4M6.7 19.3l-1.4 1.4m0-15.4 1.4 1.4m10.6 12.6 1.4 1.4"/></svg>'},
 {href:'/concept-action-id.html',text:'Action ID 动作ID',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>'},
 {href:'/concept-verification.html',text:'Verification 验证',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>'},
@@ -94,6 +94,7 @@ topBar.innerHTML=h;
 var nav=document.createElement('nav');nav.className='nav'+(collapsed?' collapsed':'');nav.setAttribute('aria-label','文档导航');
 var nb='';
 nb+='<div class="nav-body">';
+nb+='<a class="nav-link fly-concept-entry" href="/" title="Fly概念" style="color:#0F172A;font-weight:700;border-bottom:1px solid #e2e8f0;padding:10px 16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>Fly概念</span></a>';
 sections.forEach(function(sec){
   var op=sec.defaultOpen?'open':'';
   nb+='<div class="nav-sec" data-sec-id="'+sec.id+'">';
@@ -170,7 +171,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}\
 .nav-link.arrow-open .nav-arrow{transform:rotate(90deg)}\
 .nav-sec{border-top:1px solid var(--border);margin-top:6px;padding-top:2px}\
-.nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
+.fly-concept-entry:hover{background:rgba(37,99,235,.06)!important;color:#2563EB!important};.nav-sec:first-of-type{border-top:none;margin-top:0;padding-top:0}\
 .nav-sec-bd{overflow:hidden;max-height:0;transition:max-height .25s ease}\
 .nav-sec-bd.open{max-height:1200px}\
 .nav-link.active[data-group=identity]{color:#1A3D2E}.nav-link.active[data-group=identity]::before{background:#1A3D2E}.nav-link.active[data-group=identity] svg{color:#1A3D2E}\
