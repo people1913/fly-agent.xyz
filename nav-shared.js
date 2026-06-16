@@ -173,7 +173,7 @@ body{display:flex;flex-wrap:wrap}\
 .nav-arrow{margin-left:auto;font-size:12px;color:#94A3B8;transition:transform .2s;display:inline-block}\
 .nav-link.arrow-open .nav-arrow{transform:rotate(90deg)}\
 .nav-sec{border-top:1px solid var(--border);margin-top:6px;padding-top:2px}\
-;.nav-sec:first-of-type{border-top:none!important;margin-top:0!important;padding-top:0!important}\
+.nav-sec:first-of-type{border-top:none!important;margin-top:0!important;padding-top:0!important}\
 .nav-sec-bd{overflow:hidden;max-height:0;transition:max-height .25s ease}\
 .nav-sec-bd.open{max-height:1200px}\
 .nav-link.active[data-group=identity]{color:#1A3D2E}.nav-link.active[data-group=identity]::before{background:#1A3D2E}.nav-link.active[data-group=identity] svg{color:#1A3D2E}\
