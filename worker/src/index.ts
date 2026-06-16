@@ -1160,6 +1160,50 @@ export default {
           return json({ action_id: body.action_id, signal_quality: nq, human_score: hs });
         }
 
+        // === v3.0.2: Dashboard数据端点 ===
+        if (path === '/dashboard' && method === 'GET') {
+          const version = 'v3.0.2';
+          const tables = ['agents', 'actions', 'verifications', 'audit_events', 'role_assignments', 'policies'];
+          const counts: Record<string, number> = {};
+          let totalRecords = 0;
+          for (const table of tables) {
+            try {
+              const result = await env.FLY_D1.prepare(`SELECT COUNT(*) as cnt FROM ${table}`).first();
+              const count = (result?.cnt as number) || 0;
+              counts[table] = count;
+              totalRecords += count;
+            } catch { counts[table] = -1; }
+          }
+          const latestAudit = await env.FLY_D1.prepare("SELECT * FROM audit_events ORDER BY created_at DESC LIMIT 1").first();
+          return json({
+            version, timestamp: new Date().toISOString(), db: 'ok', kv: 'ok',
+            tables: counts, total_records: totalRecords,
+            latest_activity: latestAudit ? { event: latestAudit.action, entity: latestAudit.entity_type, at: latestAudit.created_at } : null
+          });
+        }
+
+        // === v3.0.2: 全局审计链验证 ===
+        if (path === '/v1/audit/verify-chain' && method === 'POST') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          const body: any = await request.json().catch(() => ({}));
+          const limit = Math.min(parseInt(body.limit || '1000'), 5000);
+          const events = await env.FLY_D1.prepare("SELECT * FROM audit_events ORDER BY created_at ASC LIMIT ?").bind(limit).all();
+          let chainValid = true;
+          let brokenAt: any = null;
+          for (const evt of events.results as any[]) {
+            const hashInput = `${evt.prev_hash}${evt.event_id}${evt.entity_type}${evt.entity_id}${evt.action}${evt.actor_id}${evt.created_at}`;
+            const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
+            const expected = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            if (evt.event_hash !== expected) {
+              chainValid = false;
+              brokenAt = { event_id: evt.event_id, expected, actual: evt.event_hash };
+              break;
+            }
+          }
+          return json({ chain_valid: chainValid, total_events: events.results.length, checked: chainValid ? events.results.length : (events.results as any[]).findIndex((e: any) => e.event_id === brokenAt?.event_id) + 1, broken_at: brokenAt });
+        }
+
         // === 漏洞7：审计链查询 ===
         if (path.startsWith('/v1/audit/') && method === 'GET') {
           const parts = path.split('/v1/audit/')[1].split('/');
