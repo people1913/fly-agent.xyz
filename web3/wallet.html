@@ -8,9 +8,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:960px}
+.main{margin-left:280px;padding:48px 64px;max-width:1100px}
 @media(max-width:900px){.main{margin-left:0;padding:24px}}
 h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#475569,#94A3B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
 .features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
 .feat{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px}
@@ -19,6 +20,28 @@ h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#475569,#94A
 .status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
 .status-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.problem-box{background:linear-gradient(135deg,rgba(234,179,8,0.1),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);border-radius:12px;padding:24px;margin-bottom:32px}
+.problem-title{color:#EAB308;font-size:16px;font-weight:600;margin-bottom:12px}
+.problem-list{list-style:none;padding:0}
+.problem-list li{color:#e2e8f0;font-size:14px;line-height:1.8;padding-left:24px;position:relative}
+.problem-list li::before{content:"⚠";position:absolute;left:0}
+.chain-flow{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px;margin:24px 0}
+.chain-steps{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.chain-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:100px}
+.chain-step-num{width:36px;height:36px;border-radius:50%;background:#475569;color:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
+.chain-step-label{font-size:13px;color:#94a3b8}
+.chain-step-value{font-size:12px;color:#475569;margin-top:4px;font-family:monospace}
+.chain-arrow{color:#475569;font-size:20px}
+.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:24px 0}
+.gate-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px}
+.gate-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.gate-num{width:24px;height:24px;border-radius:50%;background:#22C55E;color:#0F172A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.gate-title{color:#e2e8f0;font-size:14px;font-weight:600}
+.gate-desc{color:#94a3b8;font-size:13px;line-height:1.6}
+.use-case{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:16px 0}
+.use-case-title{color:#e2e8f0;font-size:16px;font-weight:600;margin-bottom:12px}
+.use-case-flow{font-family:monospace;font-size:13px;color:#94a3b8;line-height:1.8;background:#0F172A;padding:16px;border-radius:8px}
+.code-block{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:16px;margin:16px 0;font-family:monospace;font-size:13px;color:#e2e8f0;overflow-x:auto}
 .api-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-top:24px}
 .api-title{font-family:monospace;font-size:13px;color:#475569;margin-bottom:8px}
 .api-endpoint{font-family:monospace;font-size:14px;color:#e2e8f0;padding:8px 12px;background:#0F172A;border-radius:6px;margin-bottom:8px}
@@ -29,24 +52,228 @@ h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#475569,#94A
 <script src="/nav-shared.js?v=20260616h"></script>
 <div class="main">
 <h1>Wallet ID</h1>
-<p class="desc">链上身份层——连接钱包地址与 Fly 归因链路，实现链上身份与行为归因统一</p>
-<div class="features">
-<div class="feat"><div class="feat-label">🔗 多链支持</div><div class="feat-text">Ethereum / Solana / Base 钱包地址注册</div></div>
-<div class="feat"><div class="feat-label">🆔 统一 ID</div><div class="feat-text">每个钱包生成唯一 Wallet ID（wlt_xxx）</div></div>
-<div class="feat"><div class="feat-label">✅ 所有权验证</div><div class="feat-text">签名验证确认钱包归属</div></div>
-<div class="feat"><div class="feat-label">📊 归因绑定</div><div class="feat-text">Wallet → Behavior → Action → Verification</div></div>
+<p class="desc">链上身份层——连接钱包地址与 Fly 归因链路，实现链上身份与行为归因的统一</p>
+
+<div class="problem-box">
+<div class="problem-title">核心问题：链上身份碎片化</div>
+<ul class="problem-list">
+<li>用户在 Ethereum 有一个钱包，在 Solana 有另一个钱包——如何证明是同一个人？</li>
+<li>AI 推荐了用户，用户用钱包完成交易——如何证明推荐有效？</li>
+<li>用户在多个 DApp 交互——如何追踪完整行为链路？</li>
+<li>钱包地址是匿名的，但归因需要可识别身份</li>
+<li>跨链场景下，行为归因断裂</li>
+</ul>
 </div>
-<div class="status"><span class="status-dot"></span>API 已上线 · 可调用</div>
+
+<h2>完整归因链路</h2>
+<div class="chain-flow">
+<div class="chain-steps">
+<div class="chain-step">
+<div class="chain-step-num">1</div>
+<div class="chain-step-label">钱包注册</div>
+<div class="chain-step-value">0x742d... → wlt_xxx</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">2</div>
+<div class="chain-step-label">行为绑定</div>
+<div class="chain-step-value">wlt_xxx → bhv_xxx</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">3</div>
+<div class="chain-step-label">动作归因</div>
+<div class="chain-step-value">bhv_xxx → ACT_xxx</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">4</div>
+<div class="chain-step-label">链上验证</div>
+<div class="chain-step-value">ACT_xxx → tx_hash</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">5</div>
+<div class="chain-step-label">价值确认</div>
+<div class="chain-step-value">Trust Score</div>
+</div>
+</div>
+</div>
+
+<h2>多链支持</h2>
+<div class="features">
+<div class="feat">
+<div class="feat-label">🔷 Ethereum</div>
+<div class="feat-text">EVM 兼容链的钱包注册，支持 ERC-20/ERC-721 交易归因</div>
+</div>
+<div class="feat">
+<div class="feat-label">🔵 Base</div>
+<div class="feat-text">Coinbase L2 链，低成本归因，Coinbase Wallet 原生集成</div>
+</div>
+<div class="feat">
+<div class="feat-label">🟣 Solana</div>
+<div class="feat-text">高性能链支持，SPL Token 交易归因，Phantom 钱包集成</div>
+</div>
+<div class="feat">
+<div class="feat-label">🔗 更多链</div>
+<div class="feat-text">Arbitrum / Optimism / Polygon 等 L2，按需扩展</div>
+</div>
+</div>
+
+<h2>签名验证流程</h2>
+<div class="chain-flow">
+<div class="chain-steps">
+<div class="chain-step">
+<div class="chain-step-num">1</div>
+<div class="chain-step-label">生成挑战</div>
+<div class="chain-step-value">nonce + timestamp</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">2</div>
+<div class="chain-step-label">钱包签名</div>
+<div class="chain-step-value">sign(message)</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">3</div>
+<div class="chain-step-label">验证签名</div>
+<div class="chain-step-value">recover(address)</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">4</div>
+<div class="chain-step-label">绑定 ID</div>
+<div class="chain-step-value">wallet_id = wlt_xxx</div>
+</div>
+</div>
+</div>
+
+<div class="code-block">
+// 1. 前端发起注册请求<br>
+POST /v1/web3/wallets/challenge<br>
+{"address": "0x742d35Cc...", "chain": "ethereum"}<br>
+→ 返回: {"nonce": "abc123...", "message": "Sign to verify..."}<br><br>
+// 2. 用户签名<br>
+const signature = await wallet.signMessage(message);<br><br>
+// 3. 提交签名，获取 Wallet ID<br>
+POST /v1/web3/wallets<br>
+{"address": "0x742d...", "chain": "ethereum", "signature": "0x..."}<br>
+→ 返回: {"wallet_id": "wlt_xxx", "created_at": "..."}
+</div>
+
+<h2>Fly 六层验证在钱包层的应用</h2>
+<div class="gate-grid">
+<div class="gate-card">
+<div class="gate-header">
+<div class="gate-num">1</div>
+<div class="gate-title">Gate 1: 身份验证</div>
+</div>
+<div class="gate-desc">钱包签名证明地址所有权，防止伪造地址注册</div>
+</div>
+<div class="gate-card">
+<div class="gate-header">
+<div class="gate-num">2</div>
+<div class="gate-title">Gate 2: 行为绑定</div>
+</div>
+<div class="gate-desc">钱包地址与 Behavior ID 绑定，建立链上行为档案</div>
+</div>
+<div class="gate-card">
+<div class="gate-header">
+<div class="gate-num">3</div>
+<div class="gate-title">Gate 3: 跨链关联</div>
+</div>
+<div class="gate-desc">同一用户的多链钱包关联，统一归因视图</div>
+</div>
+<div class="gate-card">
+<div class="gate-header">
+<div class="gate-num">4</div>
+<div class="gate-title">Gate 4: 链上存证</div>
+</div>
+<div class="gate-desc">注册事件上链存证，公开可验证</div>
+</div>
+</div>
+
+<h2>使用场景</h2>
+
+<div class="use-case">
+<div class="use-case-title">场景 1: AI 推荐的 NFT 购买</div>
+<div class="use-case-flow">
+AI Agent 推荐了一个 NFT 项目
+    ↓
+用户点击链接，生成 Behavior ID (bhv_xxx)
+    ↓
+用户连接钱包，Fly 记录 wallet_id (wlt_xxx)
+    ↓
+用户购买 NFT，交易 hash: 0xtx_abc123
+    ↓
+Fly 验证: AI推荐 → 链上购买，归因成功
+    ↓
+项目方获得: "这笔交易来自 AI 推荐"
+</div>
+</div>
+
+<div class="use-case">
+<div class="use-case-title">场景 2: 跨链 DeFi 收益归因</div>
+<div class="use-case-flow">
+用户在 Ethereum 上被推荐了某 DeFi 协议
+    ↓
+用户跨链到 Base，在 DEX 上交易
+    ↓
+用户在 Solana 上质押 LP Token
+    ↓
+Fly 关联: 3 个链上的行为都属于同一个推荐链路
+    ↓
+收益归因: "这个用户在 3 条链上产生了 $10,000 TVL"
+</div>
+</div>
+
+<div class="use-case">
+<div class="use-case-title">场景 3: 项目方 KYC + 归因</div>
+<div class="use-case-flow">
+项目方需要知道用户来源（AI推荐/自然流量/KOL推荐）
+    ↓
+用户连接钱包，Fly 返回 wallet_id + 来源标签
+    ↓
+项目方看到: "wlt_xxx 来自 AI Agent 推荐，Trust Score 85"
+    ↓
+项目方可以: 给 AI 渠道用户特殊权益，激励更多 AI 推荐
+</div>
+</div>
+
+<h2>API 接口</h2>
+
+<div class="api-box">
+<div class="api-title">POST /v1/web3/wallets/challenge</div>
+<div class="api-endpoint">{"address": "0x742d35Cc...", "chain": "ethereum"}</div>
+<div class="api-desc">生成签名挑战，返回 nonce 和待签名消息</div>
+</div>
+
 <div class="api-box">
 <div class="api-title">POST /v1/web3/wallets</div>
-<div class="api-endpoint">{"chain": "ethereum", "address": "0x742d35Cc...", "verification_type": "ownership_proof"}</div>
-<div class="api-desc">注册链上钱包，返回 Wallet ID</div>
+<div class="api-endpoint">{"address": "0x742d35Cc...", "chain": "ethereum", "signature": "0x..."}</div>
+<div class="api-desc">提交签名，验证所有权，返回 Wallet ID</div>
 </div>
+
 <div class="api-box">
 <div class="api-title">GET /v1/web3/wallets</div>
 <div class="api-endpoint">?chain=ethereum&limit=10</div>
 <div class="api-desc">查询已注册钱包列表</div>
 </div>
+
+<div class="api-box">
+<div class="api-title">GET /v1/web3/wallets/:wallet_id</div>
+<div class="api-endpoint">wlt_xxx</div>
+<div class="api-desc">查询钱包详情，包括关联的 Behavior ID 列表</div>
+</div>
+
+<div class="api-box">
+<div class="api-title">POST /v1/web3/wallets/link</div>
+<div class="api-endpoint">{"wallet_id_1": "wlt_xxx", "wallet_id_2": "wlt_yyy"}</div>
+<div class="api-desc">关联同一用户的多链钱包（需要两个钱包都签名验证）</div>
+</div>
+
+<div class="status"><span class="status-dot"></span>API 已上线 · 可调用</div>
 </div>
 </body>
 </html>
