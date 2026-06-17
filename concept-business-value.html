@@ -47,6 +47,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .compare-col ul{list-style:none;padding:0}
 .compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
 .compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
+.scenario-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0}
+.scenario-box .sc-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:8px}
+.scenario-box .sc-body{font-size:13px;color:var(--text2);line-height:1.7}
+.calculation-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin:16px 0}
+.calculation-box .calc-title{font-size:12px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
+.calculation-box .calc-formula{font-size:14px;font-weight:600;color:var(--deep-green);line-height:1.6;font-family:var(--mono)}
 </style>
   <meta name="description" content="Business Value 是归因链的终点。将 AI 推荐转化为可结算的商业价值，让推荐者获得应得收益。">
 </head>
@@ -67,12 +73,125 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <hr class="divider">
 
 <div class="section-title">为什么需要 Business Value</div>
-<div class="section-body">企业接入 AI 渠道后，最关心的问题是：<strong>AI 到底带来了多少真实收入？投入产出比如何？</strong>Business Value 基于已验证的 Signal 数据，量化每个 AI 渠道、每个 Agent、每次推荐的真实商业贡献。</div>
+<div class="section-body">
+<p>企业接入 AI 渠道后，最关心的问题是：<strong>AI 到底带来了多少真实收入？投入产出比如何？</strong></p>
+
+<p style="margin-top:12px">传统的营销归因可以追踪广告投放、社交媒体推广的效果，但 AI 推荐完全不同：</p>
+
+<ul style="margin-top:12px;padding-left:20px;line-height:2">
+<li><strong>AI 推荐不是广告</strong>：它出现在对话中，不是点击链接</li>
+<li><strong>AI Agent 不是媒体</strong>：它自主决策，不受广告主直接控制</li>
+<li><strong>用户行为更复杂</strong>：可能在多个 AI 平台反复确认后才购买</li>
+<li><strong>传统工具失效</strong>：UTM 参数、Cookie、像素追踪都无法准确捕捉</li>
+</ul>
+
+<p style="margin-top:12px">Business Value 基于已验证的 Signal 数据，量化每个 AI 渠道、每个 Agent、每次推荐的真实商业贡献。这不是估算，是<strong>可审计的真实收入归因</strong>。</p>
+</div>
 
 
 <hr class="divider">
-<div class="section-title">商业价值计算方式</div>
-<div class="section-body">Business Value = Σ(已验证 SETTLED 的 Action ID 对应的成交金额)。只统计通过四重 Gate 验证且 Trust Score 达标的成交。未验证、验证失败、异常标记的成交不计入。所有计算过程可通过审计链追溯。</div>
+
+<div class="section-title">为什么 AI 推荐无法用传统方式结算</div>
+<div class="section-body">
+<p>当前的 AI 生态中，推荐者（AI Agent）和被推荐方（品牌/商家）之间缺乏可信的结算机制。原因如下：</p>
+</div>
+
+<div class="compare-row">
+<div class="compare-col bad">
+<div class="col-title">问题 1：无法证明「推荐发生了」</div>
+<ul>
+<li>AI 推荐是对话的一部分，没有独立的追踪链接</li>
+<li>推荐内容可能被修改、删除，无法事后验证</li>
+<li>品牌方无法确认 AI 是否真的推荐了自己</li>
+</ul>
+</div>
+<div class="compare-col bad">
+<div class="col-title">问题 2：无法证明「用户是因为推荐才购买」</div>
+<ul>
+<li>用户可能先看到推荐，后来自己搜索购买</li>
+<li>多个 AI Agent 可能都推荐了同一产品</li>
+<li>传统归因无法区分「AI 推荐」vs「用户自主决策」</li>
+</ul>
+</div>
+</div>
+
+<div class="compare-row">
+<div class="compare-col bad">
+<div class="col-title">问题 3：无法量化「推荐的价值」</div>
+<ul>
+<li>不同 Agent 的推荐影响力不同（头部 Agent vs 小众 Agent）</li>
+<li>推荐的质量不同（精准推荐 vs 泛泛而谈）</li>
+<li>没有标准化的价值评估体系</li>
+</ul>
+</div>
+<div class="compare-col bad">
+<div class="col-title">问题 4：缺乏可信的结算依据</div>
+<ul>
+<li>品牌方可能拒绝承认 AI 推荐的贡献</li>
+<li>推荐者无法证明自己带来了收入</li>
+<li>双方对「多少佣金合理」没有共识</li>
+</ul>
+</div>
+</div>
+
+<div class="section-body">
+<p>这些问题导致 AI 推荐生态无法形成正向循环：推荐者没有动力持续推荐，品牌方无法评估 AI 渠道的真实价值。</p>
+</div>
+
+
+<hr class="divider">
+
+<div class="section-title">Fly 如何建立结算基础</div>
+<div class="section-body">
+<p>Fly 通过完整的归因验证链，为 AI 推荐建立可信的结算依据：</p>
+</div>
+
+<div class="scenario-box">
+<div class="sc-title">第一步：记录推荐行为（Behavior ID）</div>
+<div class="sc-body">
+当 AI Agent 推荐你的产品时，Fly 自动生成 Behavior ID，记录推荐的来源、时间、内容和上下文。这个记录是不可篡改的，证明「推荐确实发生了」。
+</div>
+</div>
+
+<div class="scenario-box">
+<div class="sc-title">第二步：追踪用户行为（Action ID）</div>
+<div class="sc-body">
+用户点击推荐链接后，Fly 追踪其后续行为（浏览、加购、购买等），生成 Action ID 并与 Behavior ID 关联。这证明「用户确实因为推荐而行动」。
+</div>
+</div>
+
+<div class="scenario-box">
+<div class="sc-title">第三步：验证行为真实性（Verification）</div>
+<div class="sc-body">
+Fly 的 6 层 Gate 验证体系检查每个 Action 的真实性：数据完整性、安全合规、归因链路、部署状态、构建一致性、系统健康度。只有验证通过的行为才被认可。
+</div>
+</div>
+
+<div class="scenario-box">
+<div class="sc-title">第四步：建立信任评分（Trust Score）</div>
+<div class="sc-body">
+基于验证历史和 Agent 行为一致性，Fly 为每个 AI Agent 计算 Trust Score。高信任度的 Agent 推荐带来的转化，在结算时获得更高权重。
+</div>
+</div>
+
+<div class="scenario-box">
+<div class="sc-title">第五步：计算商业价值（Business Value）</div>
+<div class="sc-body">
+只统计通过验证的、Trust Score 达标的成交金额，形成可审计的 Business Value。这个数值可以作为佣金结算、ROI 评估、渠道优化的依据。
+</div>
+</div>
+
+<div class="calculation-box">
+<div class="calc-title">商业价值计算公式</div>
+<div class="calc-formula">
+Business Value = Σ(已验证 SETTLED 的 Action ID 对应的成交金额)<br>
+其中：验证通过 + Trust Score ≥ 阈值 + 审计链完整
+</div>
+</div>
+
+<div class="section-body">
+<p>整个过程中，每个环节都有记录、可追溯、可审计。品牌方无法否认 AI 推荐的贡献，推荐者也能证明自己带来了真实收入。</p>
+</div>
 
 
 <hr class="divider">
@@ -84,19 +203,24 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 </div>
 
 <div class="feature-row">
-
 <div class="feature-card"><div class="feat-title">收入归因量化</div><div class="feat-desc">精确到每个 AI 渠道、每个 Agent、每次推荐带来的真实成交金额</div></div>
-
 <div class="feature-card"><div class="feat-title">ROI 衡量</div><div class="feat-desc">AI 投入 vs AI 带来的可验证收入，计算真实投资回报率</div></div>
-
 </div>
 
 <div class="feature-row">
-
 <div class="feature-card"><div class="feat-title">渠道对比</div><div class="feat-desc">跨渠道商业价值对比——ChatGPT vs Claude vs 抖音 vs 小红书，谁带来的真实收入更多</div></div>
-
 <div class="feature-card"><div class="feat-title">佣金优化</div><div class="feat-desc">基于 Trust Score 和验证结果优化佣金分配比例，让真正带来收入的渠道/Agent 获得更高回报</div></div>
+</div>
 
+<div class="section-body">
+<p style="margin-top:24px">更重要的是，Business Value 建立了 AI 推荐的<strong>经济基础</strong>：</p>
+
+<ul style="margin-top:12px;padding-left:20px;line-height:2">
+<li><strong>对品牌方</strong>：知道每一分钱的 AI 营销投入带来了多少真实收入，可以优化预算分配</li>
+<li><strong>对推荐者</strong>：证明自己带来的商业价值，获得公平合理的佣金回报</li>
+<li><strong>对用户</strong>：收到的推荐更精准、更可信，因为推荐者有动力维护声誉</li>
+<li><strong>对整个生态</strong>：形成正向循环，推动 AI 推荐生态的健康发展</li>
+</ul>
 </div>
 
 
