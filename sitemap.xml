@@ -29,6 +29,13 @@
   <url><loc>https://fly-agent.xyz/industry-highticket.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://fly-agent.xyz/industry-local.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
+  <!-- Web3 -->
+  <url><loc>https://fly-agent.xyz/web3/wallet.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/web3/tx-verification.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/web3/ethereum.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/web3/base.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/web3/solana.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
   <!-- 生态与参考 -->
   <url><loc>https://fly-agent.xyz/ecosystem.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://fly-agent.xyz/cases.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
