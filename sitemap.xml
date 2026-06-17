@@ -23,6 +23,12 @@
   <url><loc>https://fly-agent.xyz/enterprise-roi.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://fly-agent.xyz/enterprise-revenue-attribution.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
+  <!-- 行业解决方案 -->
+  <url><loc>https://fly-agent.xyz/industry-beauty.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/industry-education.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/industry-highticket.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://fly-agent.xyz/industry-local.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
   <!-- 生态与参考 -->
   <url><loc>https://fly-agent.xyz/ecosystem.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://fly-agent.xyz/cases.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
