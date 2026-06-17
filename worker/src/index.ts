@@ -854,6 +854,7 @@ export default {
         // === 漏洞6：信号质量升级 ===
         if (path === '/v1/signal/verify' && method === 'POST') {
           const body: any = await request.json();
+          if (!body?.action_id) return json({ error: "action_id is required" }, 400);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ?").bind(body.action_id).first();
           if (!action) return json({ error: "not found" }, 404);
           let hs = 0;
