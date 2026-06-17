@@ -8,16 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
 .chart-row{display:flex;gap:12px;margin-bottom:24px}
 .mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
 .mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
@@ -25,55 +22,180 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
 .card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
 .card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
+.section-title{font-size:14px;font-weight:700;color:var(--deep-green);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.challenge-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:16px;margin-bottom:24px}
+.challenge-box .title{font-size:11px;font-weight:700;color:#92400E;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.challenge-box .item{font-size:12px;line-height:1.8;color:#78350F;padding-left:12px;position:relative}
+.challenge-box .item::before{content:"•";position:absolute;left:0;color:#D97706}
 .flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
 .flow-step{display:flex;align-items:stretch;gap:0}
 .flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
 .flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
+.flow-step-num .line{flex:1;width:2px;margin-top:2px;background:var(--mint-border)}
 .flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
 .flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
 .flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
 .gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
 .gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+.gate-card .gate-title{font-size:13px;font-weight:700;color:var(--deep-green);margin:8px 0 4px}
+.gate-card .gate-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.roi-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:12px}
+.roi-table th{background:var(--deep-green);color:#fff;padding:10px 12px;text-align:left;font-weight:600}
+.roi-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.roi-table tr:last-child td{border-bottom:none}
+.roi-table .highlight{color:var(--deep-green);font-weight:700}
+.code-block{background:#1E293B;color:#E2E8F0;padding:16px;border-radius:8px;font-family:var(--mono);font-size:11px;line-height:1.8;overflow-x:auto;margin-bottom:24px}
+.code-block .comment{color:#64748B}
+.code-block .keyword{color:#7DD3FC}
+.code-block .string{color:#86EFAC}
+.code-block .number{color:#FCD34D}
 </style>
 </head>
 <body>
 <script src="/nav-shared.js?v=20260616h"></script>
 <div class="main">
-<div class="topbar"><h1>高客单行业</h1></div>
-<div style="padding:32px;overflow-y:auto">
-<p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">高客单行业AI归因验证方案。追踪从AI推荐→深度咨询→成交→佣金的全链路，保障大额归因的完整性与可信度。</p>
-<div class="chart-row" style="margin-bottom:24px"><div class="mini-chart"><div class="num">567/日</div><div class="lbl">验证请求</div></div><div class="mini-chart"><div class="num">98.2%</div><div class="lbl">通过率</div></div><div class="mini-chart"><div class="num">43件/日</div><div class="lbl">防刷拦截</div></div><div class="mini-chart"><div class="num">¥86.5万/月</div><div class="lbl">佣金保障</div></div></div>
-<div class="card" style="margin-bottom:24px"><div class="lb">归因链路</div><div class="row" style="font-family:var(--mono);font-size:13px;color:var(--deep-green);letter-spacing:0.5px">AI推荐 → 深度咨询 → 方案确认 → 成交 → 佣金结算</div></div>
-<div class="card"><div class="lb">大额归因</div><div class="row">追踪高客单AI推荐→深度咨询→成交→佣金的完整链路</div></div><div class="card"><div class="lb">链路完整性</div><div class="row">确保长链路每个节点可验证，防止归因断裂</div></div><div class="card"><div class="lb">风险控制</div><div class="row">大额佣金结算前的多重验证与风险控制</div></div>
+<div class="topbar"><h1>高客单行业 · AI归因验证</h1><span class="tag" style="font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px">行业方案</span></div>
+<div style="padding:32px;overflow-y:auto;max-width:900px">
+
+<p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">高客单行业AI归因验证方案。追踪从AI推荐→深度咨询→方案确认→成交→佣金的全链路，保障大额归因的完整性与可信度。</p>
+
+<div class="chart-row" style="margin-bottom:32px">
+<div class="mini-chart"><div class="num">567/日</div><div class="lbl">验证请求</div></div>
+<div class="mini-chart"><div class="num">98.2%</div><div class="lbl">通过率</div></div>
+<div class="mini-chart"><div class="num">43件/日</div><div class="lbl">防刷拦截</div></div>
+<div class="mini-chart"><div class="num">¥86.5万/月</div><div class="lbl">佣金保障</div></div>
+</div>
+
+<!-- 行业特有挑战 -->
+<h2 class="section-title">行业挑战</h2>
+<div class="challenge-box">
+<div class="title">高客单行业归因的特殊性</div>
+<div class="item">销售周期长（30-90天），决策链路复杂且多变</div>
+<div class="item">多人参与决策：采购、技术、财务、管理层，归因需关联多角色</div>
+<div class="item">高单价（5万-500万），单笔佣金纠纷影响巨大</div>
+<div class="item">定制化方案，每个客户归因链可能完全不同</div>
+<div class="item">分期付款普遍，佣金需支持多期结算追溯</div>
+</div>
+
+<!-- 完整归因链路 -->
+<h2 class="section-title">完整归因链路</h2>
+<div class="flow-pipeline">
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#DC2626">1</div><div class="line"></div></div>
+<div class="flow-step-body"><h3>需求发现</h3><p>用户通过AI搜索/推荐发现解决方案，产生 Behavior ID</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#EA580C">2</div><div class="line"></div></div>
+<div class="flow-step-body"><h3>深度咨询</h3><p>多轮技术咨询、方案沟通，生成多个关联 Action ID</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#D97706">3</div><div class="line"></div></div>
+<div class="flow-step-body"><h3>方案演示</h3><p>定制化方案演示/PoC，生成演示 Verification ID</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#16A34A">4</div><div class="line"></div></div>
+<div class="flow-step-body"><h3>商务谈判</h3><p>报价、合同条款协商，关联多方参与者 Action ID</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#0284C7">5</div><div class="line"></div></div>
+<div class="flow-step-body"><h3>签约成交</h3><p>合同签署，系统验证完整归因链，计算Trust Score</p></div>
+</div>
+<div class="flow-step">
+<div class="flow-step-num"><div class="circle" style="background:#7C3AED">6</div></div>
+<div class="flow-step-body"><h3>佣金结算</h3><p>Trust Score ≥ 80（高客单阈值）触发结算，支持分期佣金</p></div>
 </div>
 </div>
 
-<script>
-let cv=null;
-function sp(t){document.getElementById('inp').value=t;send()}
+<!-- Fly 如何验证 -->
+<h2 class="section-title">Fly 六层验证</h2>
+<div class="gate-card">
+<div class="gate-badge">Gate 1</div>
+<div class="gate-title">数据完整性</div>
+<div class="gate-desc">完整记录90天内所有触点数据，支持多角色、多阶段归因追溯。任意节点数据丢失即告警。</div>
+</div>
+<div class="gate-card">
+<div class="gate-badge">Gate 2</div>
+<div class="gate-title">安全策略</div>
+<div class="gate-desc">企业级安全验证：域名白名单、IP归属验证、设备指纹关联。防止虚假询盘和钓鱼行为。</div>
+</div>
+<div class="gate-card">
+<div class="gate-badge">Gate 3</div>
+<div class="gate-title">归因链验证</div>
+<div class="gate-desc">支持多触点、多角色归因：采购/技术/决策者分别追踪，按贡献度分配权重。</div>
+</div>
+<div class="gate-card">
+<div class="gate-badge">Gate 4</div>
+<div class="gate-title">部署验证</div>
+<div class="gate-desc">验证CRM/ERP集成：商机同步、合同状态回传、回款确认接口正常运行。</div>
+</div>
+<div class="gate-card">
+<div class="gate-badge">Gate 5</div>
+<div class="gate-title">构建验证</div>
+<div class="gate-desc">验证佣金规则：阶梯佣金、分期结算、退款扣回、年度返利等复杂规则配置正确。</div>
+</div>
+<div class="gate-card">
+<div class="gate-badge">Gate 6</div>
+<div class="gate-title">健康验证</div>
+<div class="gate-desc">持续监控长周期转化漏斗、Trust Score趋势。大额交易自动升级验证等级。</div>
+</div>
 
-</script>
+<!-- ROI 示例 -->
+<h2 class="section-title">ROI 示例（示意数据）</h2>
+<table class="roi-table">
+<tr><th>指标</th><th>数值</th><th>说明</th></tr>
+<tr><td>AI曝光</td><td>2,000</td><td>AI搜索/推荐总曝光</td></tr>
+<tr><td>有效询盘</td><td>50</td><td>通过Gate1-2验证的真实询盘</td></tr>
+<tr><td>方案演示</td><td>15</td><td>完成PoC/演示的客户</td></tr>
+<tr><td>商务谈判</td><td>8</td><td>进入报价阶段的客户</td></tr>
+<tr><td>签约成交</td><td>3</td><td>完成签约的客户</td></tr>
+<tr><td class="highlight">AI归因成交</td><td class="highlight">2单</td><td class="highlight">Trust Score ≥ 80，确认为AI归因</td></tr>
+<tr><td>客单价</td><td>¥180,000</td><td>平均合同金额</td></tr>
+<tr><td class="highlight">AI贡献GMV</td><td class="highlight">¥360,000</td><td class="highlight">2单 × ¥180,000</td></tr>
+</table>
+
+<!-- 技术实现 -->
+<h2 class="section-title">技术实现示意</h2>
+<div class="code-block">
+<span class="comment">// 1. 企业用户通过AI搜索发现解决方案</span>
+<span class="keyword">POST</span> /v1/behavior
+{
+  <span class="string">"source"</span>: <span class="string">"ai_search"</span>,
+  <span class="string">"query"</span>: <span class="string">"企业级CRM解决方案"</span>,
+  <span class="string">"company"</span>: <span class="string">"acme_corp"</span>,
+  <span class="string">"role"</span>: <span class="string">"CTO"</span>
+}
+<span class="comment">// 返回: { "behavior_id": "beh_20260617_enterprise..." }</span>
+
+<span class="comment">// 2. 多轮咨询（关联多个参与者）</span>
+<span class="keyword">POST</span> /v1/action
+{
+  <span class="string">"behavior_id"</span>: <span class="string">"beh_20260617_enterprise..."</span>,
+  <span class="string">"agent"</span>: <span class="string">"sales_ai"</span>,
+  <span class="string">"action_type"</span>: <span class="string">"technical_consult"</span>,
+  <span class="string">"participants"</span>: [
+    { <span class="string">"role"</span>: <span class="string">"CTO"</span>, <span class="string">"user_id"</span>: <span class="string">"usr_cto"</span> },
+    { <span class="string">"role"</span>: <span class="string">"采购"</span>, <span class="string">"user_id"</span>: <span class="string">"usr_purchase"</span> }
+  ]
+}
+
+<span class="comment">// 3. 方案演示验证</span>
+<span class="keyword">POST</span> /v1/verification
+{
+  <span class="string">"action_id"</span>: <span class="string">"act_20260617_demo..."</span>,
+  <span class="string">"verifier"</span>: <span class="string">"vendor"</span>,
+  <span class="string">"evidence"</span>: {
+    <span class="string">"demo_type"</span>: <span class="string">"poc"</span>,
+    <span class="string">"duration_days"</span>: <span class="number">14</span>,
+    <span class="string">"success_criteria_met"</span>: <span class="keyword">true</span>
+  }
+}
+
+<span class="comment">// 4. 签约成交（高客单阈值 Trust Score ≥ 80）</span>
+<span class="keyword">GET</span> /v1/attribution?opportunity_id=opp_xxx
+<span class="comment">// 返回: { "trust_score": 85, "settlement_status": "ready", "commission": 54000 }</span>
+</div>
+
+</div>
+</div>
 </body>
 </html>
