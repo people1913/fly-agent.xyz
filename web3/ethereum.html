@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ethereum · Fly</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛓</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:960px}
+.main{margin-left:280px;padding:48px 64px;max-width:1100px}
 @media(max-width:900px){.main{margin-left:0;padding:24px}}
 h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#627EEA,#94A3B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
 .features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
 .feat{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px}
@@ -19,6 +20,30 @@ h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#627EEA,#94A
 .status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
 .status-dot{width:8px;height:8px;border-radius:50%;background:#627EEA;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.problem-box{background:linear-gradient(135deg,rgba(234,179,8,0.1),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);border-radius:12px;padding:24px;margin-bottom:32px}
+.problem-title{color:#EAB308;font-size:16px;font-weight:600;margin-bottom:12px}
+.problem-list{list-style:none;padding:0}
+.problem-list li{color:#e2e8f0;font-size:14px;line-height:1.8;padding-left:24px;position:relative}
+.problem-list li::before{content:"⚠";position:absolute;left:0}
+.chain-flow{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px;margin:24px 0}
+.chain-steps{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.chain-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:100px}
+.chain-step-num{width:36px;height:36px;border-radius:50%;background:#627EEA;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
+.chain-step-label{font-size:13px;color:#94a3b8}
+.chain-step-value{font-size:12px;color:#627EEA;margin-top:4px;font-family:monospace}
+.chain-arrow{color:#475569;font-size:20px}
+.use-case{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:16px 0}
+.use-case-title{color:#e2e8f0;font-size:16px;font-weight:600;margin-bottom:12px}
+.use-case-flow{font-family:monospace;font-size:13px;color:#94a3b8;line-height:1.8;background:#0F172A;padding:16px;border-radius:8px}
+.code-block{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:16px;margin:16px 0;font-family:monospace;font-size:13px;color:#e2e8f0;overflow-x:auto}
+.api-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-top:24px}
+.api-title{font-family:monospace;font-size:13px;color:#475569;margin-bottom:8px}
+.api-endpoint{font-family:monospace;font-size:14px;color:#e2e8f0;padding:8px 12px;background:#0F172A;border-radius:6px;margin-bottom:8px}
+.api-desc{font-size:13px;color:#94a3b8}
+.spec-table{width:100%;border-collapse:collapse;margin:24px 0}
+.spec-table th,.spec-table td{border:1px solid #334155;padding:12px;text-align:left;font-size:13px}
+.spec-table th{background:#1e293b;color:#e2e8f0;font-weight:600}
+.spec-table td{color:#94a3b8}
 </style>
 </head>
 <body>
@@ -26,12 +51,185 @@ h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#627EEA,#94A
 <div class="main">
 <h1>Ethereum</h1>
 <p class="desc">Ethereum 链上归因——将链上交易与 AI 行为归因打通，实现 DeFi / NFT / DApp 场景的可验证归因</p>
-<div class="features">
-<div class="feat"><div class="feat-label">💎 ETH 交易归因</div><div class="feat-text">将链上交易哈希绑定 Action ID</div></div>
-<div class="feat"><div class="feat-label">📜 智能合约验证</div><div class="feat-text">合约交互行为自动生成 Behavior ID</div></div>
-<div class="feat"><div class="feat-label">🏦 交易所归因</div><div class="feat-text">CEX/DEX 充提与 AI 推荐关联</div></div>
-<div class="feat"><div class="feat-label">🔍 链上可查</div><div class="feat-text">归因结果上链存证，公开可验证</div></div>
+
+<div class="problem-box">
+<div class="problem-title">Ethereum 归因的特殊挑战</div>
+<ul class="problem-list">
+<li>Gas 费用高，每次交互都有成本——归因必须精准，不能浪费在无效追踪上</li>
+<li>DeFi 蓝筹（Uniswap/Aave/Compound）用户量大，但归因接口分散</li>
+<li>NFT 市场（OpenSea/Blur）交易频繁，需要追踪铸造、购买、转卖全链路</li>
+<li>DAO 治理投票、空投领取等行为也需要归因</li>
+<li>EVM 生态庞大，ERC-20/ERC-721/ERC-1155 标准各异</li>
+</ul>
 </div>
+
+<h2>链规格与 Fly 适配</h2>
+<table class="spec-table">
+<tr>
+<th>规格</th>
+<th>Ethereum</th>
+<th>Fly 适配方式</th>
+</tr>
+<tr>
+<td>共识机制</td>
+<td>Proof of Stake (PoS)</td>
+<td>区块确认后触发归因验证</td>
+</tr>
+<tr>
+<td>区块时间</td>
+<td>~12秒</td>
+<td>实时监听，低延迟归因</td>
+</tr>
+<tr>
+<td>Gas 机制</td>
+<td>EIP-1559 + 小费</td>
+<td>Gas 消耗计入行为成本</td>
+</tr>
+<tr>
+<td>代币标准</td>
+<td>ERC-20/721/1155</td>
+<td>分别追踪转账、铸造、交易</td>
+</tr>
+<tr>
+<td>智能合约</td>
+<td>Solidity Vyper</td>
+<td>合约交互自动生成 Behavior ID</td>
+</tr>
+</table>
+
+<h2>完整归因链路</h2>
+<div class="chain-flow">
+<div class="chain-steps">
+<div class="chain-step">
+<div class="chain-step-num">1</div>
+<div class="chain-step-label">AI 推荐</div>
+<div class="chain-step-value">Agent → 用户</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">2</div>
+<div class="chain-step-label">钱包连接</div>
+<div class="chain-step-value">MetaMask → wlt_xxx</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">3</div>
+<div class="chain-step-label">合约交互</div>
+<div class="chain-step-value">swap/mint/claim</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">4</div>
+<div class="chain-step-label">交易确认</div>
+<div class="chain-step-value">tx_hash</div>
+</div>
+<div class="chain-arrow">→</div>
+<div class="chain-step">
+<div class="chain-step-num">5</div>
+<div class="chain-step-label">归因绑定</div>
+<div class="chain-step-value">ACT_xxx ↔ tx_hash</div>
+</div>
+</div>
+</div>
+
+<h2>支持场景</h2>
+
+<div class="use-case">
+<div class="use-case-title">DEX 交易归因</div>
+<div class="use-case-flow">
+AI Agent 推荐了某代币
+    ↓
+用户在 Uniswap V3 上 swap
+    ↓
+Fly 捕获: swap 事件 + tx_hash + 用户钱包
+    ↓
+归因: "这笔 swap 来自 AI 推荐，贡献了 $X 交易量"
+</div>
+</div>
+
+<div class="use-case">
+<div class="use-case-title">NFT 铸造归因</div>
+<div class="use-case-flow">
+AI Agent 推荐了 NFT 项目
+    ↓
+用户在铸造页面 mint
+    ↓
+Fly 捕获: mint 事件 + tokenId + tx_hash
+    ↓
+归因: "这个 NFT 来自 AI 渠道，可以分配白名单或佣金"
+</div>
+</div>
+
+<div class="use-case">
+<div class="use-case-title">借贷协议归因</div>
+<div class="use-case-flow">
+AI Agent 推荐了高收益借贷池
+    ↓
+用户在 Aave 存入资产
+    ↓
+Fly 捕获: deposit 事件 + 金额 + tx_hash
+    ↓
+归因: "这笔存款来自 AI 推荐，TVL 贡献可追踪"
+</div>
+</div>
+
+<div class="use-case">
+<div class="use-case-title">空投领取归因</div>
+<div class="use-case-flow">
+AI Agent 通知用户有空投资格
+    ↓
+用户 claim 代币
+    ↓
+Fly 捕获: claim 事件 + 数量 + tx_hash
+    ↓
+归因: "这次空投的 X% 来自 AI 渠道用户"
+</div>
+</div>
+
+<h2>技术实现</h2>
+<div class="code-block">
+// 监听 Uniswap V3 Swap 事件<br>
+contract UniswapV3Pool {<br>
+&nbsp;&nbsp;event Swap(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;address indexed sender,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;address indexed recipient,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int256 amount0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int256 amount1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uint160 sqrtPriceX96<br>
+&nbsp;&nbsp;);<br>
+}<br><br>
+// Fly 监听 Swap 事件，匹配已注册钱包<br>
+if (walletRegistry.isRegistered(recipient)) {<br>
+&nbsp;&nbsp;// 创建归因记录<br>
+&nbsp;&nbsp;createAttribution({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tx_hash,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wallet_id: getWalletId(recipient),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_type: "DEX_SWAP",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;amount: Math.abs(amount0)<br>
+&nbsp;&nbsp;});<br>
+}
+</div>
+
+<h2>API 接口</h2>
+
+<div class="api-box">
+<div class="api-title">POST /v1/web3/ethereum/attributions</div>
+<div class="api-endpoint">{"tx_hash": "0xtx_abc", "event_type": "swap", "contract": "0xUniswapV3"}</div>
+<div class="api-desc">创建 Ethereum 链上交易归因记录</div>
+</div>
+
+<div class="api-box">
+<div class="api-title">GET /v1/web3/ethereum/transactions</div>
+<div class="api-endpoint">?wallet_id=wlt_xxx&event_type=swap&limit=20</div>
+<div class="api-desc">查询钱包的 Ethereum 交易归因列表</div>
+</div>
+
+<div class="api-box">
+<div class="api-title">GET /v1/web3/ethereum/stats</div>
+<div class="api-endpoint">?period=7d</div>
+<div class="api-desc">查询 Ethereum 链归因统计（交易量、用户数、Gas 消耗）</div>
+</div>
+
 <div class="status"><span class="status-dot"></span>数据模型就绪 · 链上接入规划中</div>
 </div>
 </body>
