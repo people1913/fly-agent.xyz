@@ -15,6 +15,8 @@
   <!-- 实现层 -->
   <url><loc>https://fly-agent.xyz/signal-flow.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://fly-agent.xyz/action-id.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://fly-agent.xyz/trust.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://fly-agent.xyz/gate-attribution-verification.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
   <!-- 企业版 -->
   <url><loc>https://fly-agent.xyz/enterprise.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
