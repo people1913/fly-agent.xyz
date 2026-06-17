@@ -37,7 +37,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .next-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:16px 20px}
 .next-box .next-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:6px}
 .next-box .next-text{font-size:14px;font-weight:600;color:#5B21B6;line-height:1.6}
-.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
+.compare-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.compare-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-weight:700;border:1px solid var(--border)}
+.compare-table td{padding:10px 12px;border:1px solid var(--border);vertical-align:top}
+.compare-table tr:nth-child(even){background:var(--bg2)}
+.feature-list{margin:16px 0;padding-left:0;list-style:none}
+.feature-list li{position:relative;padding:12px 0 12px 28px;border-bottom:1px solid var(--border)}
+.feature-list li:before{content:"✓";position:absolute;left:0;color:var(--deep-green);font-weight:700}
+.feature-list li:last-child{border-bottom:none}
+.lifecycle-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0}
+.lifecycle-box .lc-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px}
+.lifecycle-steps{display:flex;gap:8px;flex-wrap:wrap}
+.lc-step{flex:1;min-width:120px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.lc-step .lc-num{font-size:10px;font-weight:700;color:var(--text4);margin-bottom:4px}
+.lc-step .lc-name{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.lc-step .lc-desc{font-size:11px;color:var(--text3);line-height:1.4}</style>
   <meta name="description" content="Behavior ID 是 Fly 归因体系的起点。识别用户真实行为意图，区别于 Cookie 和 Session，建立可验证的行为标识。">
 </head>
 <body>
@@ -57,6 +72,24 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="def-box">
 <div class="def-text">Behavior ID 是 Fly 为每一次 AI 推荐行为分配的唯一标识。它记录了这个推荐来自哪个 AI 平台、哪个 Agent、在什么时间发生。</div>
 </div>
+
+<div class="sec-title">核心理解</div>
+<div class="sec-body">
+<p>当用户在 ChatGPT、Claude、Coze 等 AI 平台上与 Agent 对话时，Agent 可能会推荐你的产品或服务。这次推荐行为本身需要被记录和追踪。</p>
+
+<p style="margin-top:12px">Behavior ID 就是这个记录的载体。它不是用户的身份标识，不是浏览器的 Cookie，也不是会话的 Session——它是<strong>推荐行为</strong>的标识。</p>
+
+<p style="margin-top:12px">一个 Behavior ID 包含：</p>
+<ul class="feature-list">
+<li><strong>来源平台</strong>：推荐发生在哪个 AI 平台（ChatGPT、Claude、Coze、Dify 等）</li>
+<li><strong>Agent 标识</strong>：具体是哪个 AI Agent 发出的推荐（Agent ID 或名称）</li>
+<li><strong>时间戳</strong>：推荐发生的精确时间</li>
+<li><strong>推荐内容</strong>：Agent 推荐了什么产品、服务或链接</li>
+<li><strong>上下文</strong>：用户问了什么问题、对话的背景</li>
+</ul>
+
+<p style="margin-top:12px">这些信息的组合构成了一个不可篡改的行为记录，为后续的归因验证提供基础。</p>
+</div>
 </div>
 
 <!-- WHY -->
@@ -65,16 +98,145 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="axiom-box">
 <div class="axiom-text">AI 推荐了你的产品，但你不知道这条推荐从哪来。<br>没有 Behavior ID，每一次推荐都是「黑箱」——你知道流量来了，却不知道谁带来的。</div>
 </div>
+
+<div class="sec-title">与传统方案的区别</div>
+<div class="sec-body">
+<p>你可能在想：这不是 Cookie 或 UTM 参数能解决的吗？答案是：不能。</p>
+</div>
+
+<table class="compare-table">
+<thead>
+<tr>
+<th>特性</th>
+<th>Cookie</th>
+<th>Session</th>
+<th>UTM 参数</th>
+<th>Behavior ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>追踪对象</strong></td>
+<td>浏览器/设备</td>
+<td>用户会话</td>
+<td>营销链接</td>
+<td><strong>推荐行为</strong></td>
+</tr>
+<tr>
+<td><strong>跨平台能力</strong></td>
+<td>受限于浏览器</td>
+<td>受限于应用</td>
+<td>仅限点击来源</td>
+<td><strong>跨所有 AI 平台</strong></td>
+</tr>
+<tr>
+<td><strong>记录推荐者</strong></td>
+<td>❌ 不记录</td>
+<td>❌ 不记录</td>
+<td>⚠️ 仅记录渠道</td>
+<td><strong>✓ 精确到 Agent</strong></td>
+</tr>
+<tr>
+<td><strong>防篡改</strong></td>
+<td>用户可清除</td>
+<td>服务端控制</td>
+<td>用户可修改</td>
+<td><strong>加密签名</strong></td>
+</tr>
+<tr>
+<td><strong>隐私合规</strong></td>
+<td>需用户同意</td>
+<td>需用户登录</td>
+<td>不涉及隐私</td>
+<td><strong>不涉及用户身份</strong></td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>传统网站</td>
+<td>登录系统</td>
+<td>广告投放</td>
+<td><strong>AI 推荐归因</strong></td>
+</tr>
+</tbody>
+</table>
+
+<div class="sec-title" style="margin-top:24px">AI 时代的特殊挑战</div>
+<div class="sec-body">
+<p>AI 推荐与传统广告有本质区别：</p>
+
+<ul class="feature-list">
+<li><strong>对话式推荐</strong>：用户不是在点击广告，而是在与 AI 对话，推荐是自然语言的一部分</li>
+<li><strong>多轮交互</strong>：推荐可能发生在多轮对话之后，上下文复杂</li>
+<li><strong>跨平台流动</strong>：用户可能在 ChatGPT 收到推荐，在 Claude 再次确认，最后通过 Coze 完成购买</li>
+<li><strong>Agent 自治</strong>：AI Agent 可能自主决定推荐什么，不受广告主直接控制</li>
+</ul>
+
+<p style="margin-top:12px">传统的归因工具无法处理这些场景。Behavior ID 专为 AI 推荐设计，能够准确记录每一次推荐行为的完整信息。</p>
+</div>
 </div>
 
 <!-- HOW -->
 <div class="concept-section">
 <div class="sec-label how">怎么工作</div>
+
 <div class="step-row">
 <div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">AI 推荐发生</div><div class="step-desc">用户在 ChatGPT、Claude 等平台收到推荐，点击链接</div></div>
 <div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">生成 Behavior ID</div><div class="step-desc">Fly 自动为这次推荐生成唯一标识，绑定来源信息</div></div>
 <div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">记录上下文</div><div class="step-desc">推荐内容、平台、Agent、时间全部关联到这个 ID</div></div>
+</div>
 
+<div class="sec-title" style="margin-top:24px">Behavior ID 的生命周期</div>
+<div class="lifecycle-box">
+<div class="lc-title">从生成到归档</div>
+<div class="lifecycle-steps">
+<div class="lc-step"><div class="lc-num">PHASE 1</div><div class="lc-name">生成</div><div class="lc-desc">AI 推荐发生时，Fly SDK 自动生成 Behavior ID</div></div>
+<div class="lc-step"><div class="lc-num">PHASE 2</div><div class="lc-name">传播</div><div class="lc-desc">Behavior ID 随推荐链接传递到用户浏览器</div></div>
+<div class="lc-step"><div class="lc-num">PHASE 3</div><div class="lc-name">关联</div><div class="lc-desc">用户的后续行为（Action ID）与 Behavior ID 关联</div></div>
+<div class="lc-step"><div class="lc-num">PHASE 4</div><div class="lc-name">验证</div><div class="lc-desc">Fly 验证行为链的完整性和真实性</div></div>
+<div class="lc-step"><div class="lc-num">PHASE 5</div><div class="lc-name">归档</div><div class="lc-desc">验证完成后，记录长期保存用于审计</div></div>
+</div>
+</div>
+
+<div class="sec-title" style="margin-top:24px">技术实现</div>
+<div class="sec-body">
+<p>Behavior ID 的生成遵循以下规则：</p>
+
+<ul class="feature-list">
+<li><strong>唯一性</strong>：每个推荐行为生成一个全局唯一的 ID（UUID v4）</li>
+<li><strong>不可预测</strong>：ID 本身不包含可推测的信息，防止伪造</li>
+<li><strong>加密签名</strong>：使用 HMAC-SHA256 对关键信息签名，确保数据完整性</li>
+<li><strong>时间绑定</strong>：ID 与精确时间戳绑定，支持时序分析</li>
+</ul>
+
+<p style="margin-top:12px">一个典型的 Behavior ID 示例：</p>
+<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--text2);overflow-x:auto">
+BID-7f8a9b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c<br>
+平台: chatgpt<br>
+Agent: shopping-assistant<br>
+时间: 2026-06-17T10:30:45Z<br>
+签名: a1b2c3d4e5f6...
+</div>
+
+<p style="margin-top:12px">这个 ID 会被嵌入到推荐链接中，当用户点击时，Fly 的追踪系统会自动识别并记录。</p>
+</div>
+</div>
+
+<!-- VALUE -->
+<div class="concept-section">
+<div class="sec-label" style="color:#059669">验证价值</div>
+<div class="sec-title">Behavior ID 带来的能力</div>
+<div class="sec-body">
+<p>有了 Behavior ID，你可以：</p>
+
+<ul class="feature-list">
+<li><strong>精确归因</strong>：知道每一笔转化来自哪个 AI Agent 的推荐，不再"盲猜"</li>
+<li><strong>公平结算</strong>：根据真实的推荐贡献计算佣金，避免争议</li>
+<li><strong>优化策略</strong>：分析哪些 AI 平台、哪些 Agent 带来的转化质量最高</li>
+<li><strong>防止欺诈</strong>：验证推荐行为的真实性，防止虚假归因</li>
+<li><strong>合规审计</strong>：完整的推荐记录，满足监管和合规要求</li>
+</ul>
+
+<p style="margin-top:12px">更重要的是，Behavior ID 建立了 AI 推荐的<strong>可追溯性</strong>——这是 AI 商业化的基础设施。</p>
 </div>
 </div>
 
