@@ -587,7 +587,9 @@ function json(data: any, status = 200, headers: Record<string, string> = {}): Re
 }
 
 // ============================================================
-// v2.7.0: 指标采集 — KV滚动窗口（每分钟一个桶）
+// v3.1.0: 指标采集 — 5分钟桶 + 内存聚合 + 阈值落盘
+// 解决：每请求1次KV PUT → 50次请求或60秒落盘1次
+// 预期：500 PUT/天 → 20~50 PUT/天
 // ============================================================
 
 /** 指标桶数据结构 */
@@ -599,7 +601,7 @@ interface MetricBucket {
   s5xx: number;
   lat_sum: number;
   lat_max: number;
-  lat_samples: number[];  // 采样延迟（最多200个/分钟，用于P95计算）
+  lat_samples: number[];  // 采样延迟（最多200个/5分钟，用于P95计算）
 }
 
 /** 聚合指标结果 */
@@ -614,21 +616,75 @@ interface AggregatedMetrics {
   p95_ms: number;
 }
 
+/** 模块级内存缓存 — Worker实例生命周期内有效，被回收时未落盘数据丢失（best-effort） */
+let _metricCache: {
+  bucketIndex: number;        // 当前5分钟桶索引
+  data: MetricBucket;         // 桶内聚合数据
+  requestCount: number;       // 自上次落盘以来的请求计数
+  lastFlushTime: number;      // 上次落盘时间戳(ms)
+} | null = null;
+
+/** 获取5分钟桶索引 */
+function getMetricBucketIndex(): number {
+  const minute = Math.floor(Date.now() / 60000);
+  return Math.floor(minute / 5);
+}
+
+/** 获取5分钟桶的KV key */
+function getMetricBucketKey(bucketIndex: number): string {
+  return `metrics:m5:${bucketIndex}`;
+}
+
+/** 初始化内存缓存 */
+function initMetricCache(bucketIndex: number): void {
+  _metricCache = {
+    bucketIndex,
+    data: {
+      total: 0, s2xx: 0, s3xx: 0, s4xx: 0, s5xx: 0,
+      lat_sum: 0, lat_max: 0, lat_samples: [],
+    },
+    requestCount: 0,
+    lastFlushTime: Date.now(),
+  };
+}
+
+/** 落盘阈值常量 */
+const METRIC_FLUSH_REQUESTS = 50;    // 每50次请求落盘一次
+const METRIC_FLUSH_INTERVAL = 60000; // 每60秒落盘一次
+
+/** 落盘内存缓存到KV */
+async function flushMetricCache(env: Env): Promise<void> {
+  if (!_metricCache || _metricCache.data.total === 0) return;
+  try {
+    const key = getMetricBucketKey(_metricCache.bucketIndex);
+    await env.FLY_KV.put(key, JSON.stringify(_metricCache.data), { expirationTtl: 3600 });
+    _metricCache.lastFlushTime = Date.now();
+    _metricCache.requestCount = 0;
+  } catch (e) {
+    // 落盘失败不影响主流程，静默忽略
+  }
+}
+
 /**
- * 记录单次请求指标到KV分钟桶
+ * 记录单次请求指标（内存聚合 + 阈值落盘）
+ * 落盘条件（任一触发）：50次请求 / 60秒 / 桶切换
  * 异步调用，失败不影响主流程
  */
 async function recordRequestMetric(env: Env, status: number, latencyMs: number): Promise<void> {
-  const minute = Math.floor(Date.now() / 60000);
-  const key = `metrics:m:${minute}`;
-
   try {
-    const raw = await env.FLY_KV.get(key);
-    const data: MetricBucket = raw ? JSON.parse(raw) : {
-      total: 0, s2xx: 0, s3xx: 0, s4xx: 0, s5xx: 0,
-      lat_sum: 0, lat_max: 0, lat_samples: [],
-    };
+    const currentBucket = getMetricBucketIndex();
 
+    // 初始化或处理桶切换
+    if (!_metricCache) {
+      initMetricCache(currentBucket);
+    } else if (_metricCache.bucketIndex !== currentBucket) {
+      // 桶切换：先落盘旧桶，再初始化新桶
+      await flushMetricCache(env);
+      initMetricCache(currentBucket);
+    }
+
+    // 更新内存数据
+    const data = _metricCache!.data;
     data.total += 1;
     if (status >= 200 && status < 300) data.s2xx += 1;
     else if (status >= 300 && status < 400) data.s3xx += 1;
@@ -638,35 +694,49 @@ async function recordRequestMetric(env: Env, status: number, latencyMs: number):
     data.lat_sum += latencyMs;
     if (latencyMs > data.lat_max) data.lat_max = latencyMs;
 
-    // 采样延迟数据（最多200样本/分钟，用于P95计算）
+    // 采样延迟数据（最多200样本/5分钟，用于P95计算）
     if (data.lat_samples.length < 200) {
       data.lat_samples.push(latencyMs);
     } else {
-      // 桶满时随机替换，保证采样均匀分布
       const idx = Math.floor(Math.random() * data.total);
       if (idx < 200) data.lat_samples[idx] = latencyMs;
     }
 
-    // TTL 600秒（10分钟），覆盖5分钟查询窗口
-    await env.FLY_KV.put(key, JSON.stringify(data), { expirationTtl: 600 });
+    _metricCache!.requestCount += 1;
+
+    // 检查是否需要落盘
+    const now = Date.now();
+    if (_metricCache!.requestCount >= METRIC_FLUSH_REQUESTS ||
+        (now - _metricCache!.lastFlushTime) >= METRIC_FLUSH_INTERVAL) {
+      await flushMetricCache(env);
+    }
   } catch (e) {
     // 指标记录失败不影响主流程，静默忽略
   }
 }
 
 /**
- * 聚合最近N分钟的指标数据
- * 读取KV分钟桶并汇总
+ * 聚合最近N分钟的指标数据（5分钟桶查询）
+ * 查询前会先落盘当前内存缓存，确保数据完整
  */
 async function getAggregatedMetrics(env: Env, minutes: number): Promise<AggregatedMetrics | null> {
   try {
-    const nowMinute = Math.floor(Date.now() / 60000);
+    const nowBucket = getMetricBucketIndex();
+    const bucketsToRead = Math.max(1, Math.ceil(minutes / 5));
+
     let total = 0, s2xx = 0, s3xx = 0, s4xx = 0, s5xx = 0;
     let latSum = 0, latMax = 0;
     const allSamples: number[] = [];
 
-    for (let i = 0; i < minutes; i++) {
-      const key = `metrics:m:${nowMinute - i}`;
+    // 查询前落盘当前内存数据，确保查询到最新数据
+    if (_metricCache && _metricCache.data.total > 0) {
+      await flushMetricCache(env);
+    }
+
+    for (let i = 0; i < bucketsToRead; i++) {
+      const bucketIndex = nowBucket - i;
+      if (bucketIndex < 0) break;
+      const key = getMetricBucketKey(bucketIndex);
       const raw = await env.FLY_KV.get(key);
       if (!raw) continue;
       const data: MetricBucket = JSON.parse(raw);
