@@ -1190,10 +1190,12 @@ export default {
           if (body.target_level && ['L2', 'L3', 'L4'].includes(body.target_level) && verifierType !== 'audit' && verifierType !== 'external') {
             return json({ error: "verification rejected: L2+ requires audit or external verifier" }, 403);
           }
+          // 铁律5：action_id必须非空
+          if (!body.action_id || body.action_id.length === 0) return json({ error: "verification rejected: action_id is required" }, 400);
           const verificationId = `vrf_${crypto.randomUUID()}`;
           await env.FLY_D1.prepare("INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(verificationId, body.action_id ?? null, body.verifier ?? null, body.result || 'pending', body.confidence || 0, JSON.stringify(body.evidence || [])).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: verifierType === 'system' ? 'system' : 'user', actor_id: body.verifier_id, actor_name: body.verifier_name || body.verifier, source: 'api', reason: 'verification_created', before: '{}', after: JSON.stringify({ verification_id: verificationId, verifier: body.verifier, verifier_type: verifierType, result: body.result }) });
-          return json({ success: true, verification_id: verificationId, verifier_type: verifierType, rules_checked: ["self_verification_blocked", "verifier_id_required", "evidence_required", "L2_source_check"] }, 201);
+          return json({ success: true, verification_id: verificationId, verifier_type: verifierType, rules_checked: ["self_verification_blocked", "verifier_id_required", "evidence_required", "action_id_required", "L2_source_check"] }, 201);
         }
 
         // === 漏洞6：短链Bot检测 ===
