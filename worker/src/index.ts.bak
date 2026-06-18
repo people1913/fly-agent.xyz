@@ -1119,13 +1119,13 @@ export default {
           const validChannels = ["douyin", "xiaohongshu", "wechat", "meituan", "feishu", "geo", "direct"];
           if (!validChannels.includes(body.channel)) return json({ error: "invalid channel" }, 400);
           // 24h去重
-          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id ?? null, body.agent_id ?? null, body.channel ?? null, body.signal_type ?? null).first();
+          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id ?? null, body.agent_id, body.channel, body.signal_type).first();
           if (existing) return json({ success: true, action_id: existing.id, dedup: true });
           const actionId = `act_${crypto.randomUUID()}`;
           const metadata: any = body.metadata || {};
           metadata.signal_quality = body.signal_quality || "raw";
           metadata.human_score = body.human_score || 0;
-          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id ?? null, body.channel ?? null, body.user_id ?? null, body.signal_type ?? null, body.short_id || null, JSON.stringify(metadata)).run();
+          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id, body.channel, body.user_id ?? null, body.signal_type, body.short_id || null, JSON.stringify(metadata)).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'action', entity_id: actionId, action: 'created', actor_type: 'system', actor_id: 'sys_api', actor_name: 'api-gateway', source: 'api', reason: 'action_created', before: '{}', after: JSON.stringify({ action_id: actionId, signal_type: body.signal_type, signal_quality: metadata.signal_quality }) });
           return json({ success: true, action_id: actionId, signal_quality: metadata.signal_quality }, 201);
         }
@@ -1174,12 +1174,9 @@ export default {
           const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
           if (!auth.ok) return json({ error: auth.error }, 401);
           const body: any = await request.json();
-          // 铁律1：verifier ≠ subject（只有当字段都存在时才比较，避免 undefined===undefined）
-          if (body.verifier && body.subject && body.verifier === body.subject) {
+          // 铁律1：verifier ≠ subject
+          if (body.verifier === body.subject || body.verifier_id === body.subject_id) {
             return json({ error: "verification rejected: verifier cannot be the same as subject (self-verification forbidden)" }, 403);
-          }
-          if (body.verifier_id && body.subject_id && body.verifier_id === body.subject_id) {
-            return json({ error: "verification rejected: verifier_id cannot be the same as subject_id (self-verification forbidden)" }, 403);
           }
           // 铁律2：verifier_id必须非空
           if (!body.verifier_id || body.verifier_id.length === 0) return json({ error: "verification rejected: verifier_id is required" }, 400);
@@ -1191,7 +1188,7 @@ export default {
             return json({ error: "verification rejected: L2+ requires audit or external verifier" }, 403);
           }
           const verificationId = `vrf_${crypto.randomUUID()}`;
-          await env.FLY_D1.prepare("INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(verificationId, body.action_id ?? null, body.verifier ?? null, body.result || 'pending', body.confidence || 0, JSON.stringify(body.evidence || [])).run();
+          await env.FLY_D1.prepare("INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(verificationId, body.action_id, body.verifier, body.result || 'pending', body.confidence || 0, JSON.stringify(body.evidence)).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: verifierType === 'system' ? 'system' : 'user', actor_id: body.verifier_id, actor_name: body.verifier_name || body.verifier, source: 'api', reason: 'verification_created', before: '{}', after: JSON.stringify({ verification_id: verificationId, verifier: body.verifier, verifier_type: verifierType, result: body.result }) });
           return json({ success: true, verification_id: verificationId, verifier_type: verifierType, rules_checked: ["self_verification_blocked", "verifier_id_required", "evidence_required", "L2_source_check"] }, 201);
         }
@@ -1219,10 +1216,7 @@ export default {
 
         // === 漏洞6：信号质量升级 ===
         if (path === '/v1/signal/verify' && method === 'POST') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
           const body: any = await request.json();
-          if (!body.action_id) return json({ error: "action_id is required" }, 400);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ?").bind(body.action_id).first();
           if (!action) return json({ error: "not found" }, 404);
           let hs = 0;
@@ -1238,8 +1232,6 @@ export default {
 
         // === v3.0.2: Dashboard数据端点 ===
         if (path === '/dashboard' && method === 'GET') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
           const version = 'v3.0.2';
           const tables = ['agents', 'actions', 'verifications', 'audit_events', 'role_assignments', 'policies'];
           const counts: Record<string, number> = {};
