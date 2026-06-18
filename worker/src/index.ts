@@ -1119,13 +1119,13 @@ export default {
           const validChannels = ["douyin", "xiaohongshu", "wechat", "meituan", "feishu", "geo", "direct"];
           if (!validChannels.includes(body.channel)) return json({ error: "invalid channel" }, 400);
           // 24h去重
-          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id ?? null, body.agent_id ?? null, body.channel ?? null, body.signal_type ?? null).first();
+          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id || "anonymous", body.agent_id ?? null, body.channel ?? null, body.signal_type ?? null).first();
           if (existing) return json({ success: true, action_id: existing.id, dedup: true });
           const actionId = `act_${crypto.randomUUID()}`;
           const metadata: any = body.metadata || {};
           metadata.signal_quality = body.signal_quality || "raw";
           metadata.human_score = body.human_score || 0;
-          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id ?? null, body.channel ?? null, body.user_id ?? null, body.signal_type ?? null, body.short_id || null, JSON.stringify(metadata)).run();
+          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id ?? null, body.channel ?? null, body.user_id || "anonymous", body.signal_type ?? null, body.short_id || null, JSON.stringify(metadata)).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'action', entity_id: actionId, action: 'created', actor_type: 'system', actor_id: 'sys_api', actor_name: 'api-gateway', source: 'api', reason: 'action_created', before: '{}', after: JSON.stringify({ action_id: actionId, signal_type: body.signal_type, signal_quality: metadata.signal_quality }) });
           return json({ success: true, action_id: actionId, signal_quality: metadata.signal_quality }, 201);
         }
