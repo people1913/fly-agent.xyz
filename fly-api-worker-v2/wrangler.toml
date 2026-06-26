@@ -1,0 +1,21 @@
+name = "fly-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database
+[[d1_databases]]
+binding = "FLY_D1"
+database_name = "fly-db"
+database_id = "71a75dc8-76c5-4563-bf6f-0aa47f76ff95"
+
+# KV Namespace
+[[kv_namespaces]]
+binding = "FLY_KV"
+id = "fea93561708c4272886554d83e546922"
+
+# 环境变量
+[vars]
+IP_SALT = "fly-attribution-salt-2026"
+API_KEYS = "fly_demo_key_2026"
+LEDGER_PRIVATE_KEY = "b4a923cfc395c2103d97d2f37ed98bf9f3b3490dfc360900da53ab0a62be4c0b"
