@@ -3,97 +3,501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>信任中心 · Fly</title>
+<meta name="description" content="Fly信任中心——SLA承诺、安全审计、合规认证、系统运行状态。AI Agent信任与归因基础设施。">
+<title>信任中心 · Fly · AI Agent信任与归因基础设施</title>
+<meta property="og:title" content="信任中心 · Fly · AI Agent信任与归因基础设施">
+<meta property="og:description" content="Fly信任中心——SLA承诺、安全审计、合规认证、系统运行状态。">
+<meta property="og:url" content="https://fly-agent.xyz/trust.html">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://fly-agent.xyz/trust.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+:root{
+--bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;--bg4:#E8ECF0;
+--blue:#2563EB;--blue-light:#60A5FA;
+--dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
+--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+--border:#E2E8F0;
+--sec-bg:#0B1120;--sec-text:#E2E8F0;--sec-blue:#60A5FA;--sec-border:#1E293B;
+--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
-.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
-
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;font-size:16px}
+a{color:var(--blue);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+header .container{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:6px;letter-spacing:-0.5px}
+.logo-sub{color:#0F172A;font-size:18px;font-weight:700;margin-left:4px;letter-spacing:-0.5px}
+nav{display:flex;align-items:center;gap:20px}
+nav a{font-size:13px;color:var(--text2);transition:color .15s;letter-spacing:.3px;font-weight:500}
+nav a:hover{color:var(--dark)}
+.nav-cta{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.nav-cta:hover{opacity:.85}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.sec-label{font-family:var(--mono);font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.sec-title{font-size:28px;font-weight:700;line-height:1.3;margin-bottom:6px;letter-spacing:-.5px;color:var(--dark)}
+.sec-desc{font-size:14px;color:var(--text2);margin-bottom:28px;max-width:560px}
+.hero-sec{padding:120px 0 80px;background:var(--sec-bg);color:var(--sec-text);border-bottom:1px solid var(--sec-border)}
+.hero-sec .container{max-width:720px;margin:0 auto;text-align:center}
+.hero-sec h1{font-size:42px;font-weight:800;line-height:1.15;letter-spacing:-1.5px;color:#FFFFFF;margin-bottom:16px}
+.hero-sec h1 em{font-style:normal;color:var(--sec-blue)}
+.hero-sec .hero-sub{font-size:16px;color:#94A3B8;line-height:1.6;margin-bottom:28px}
+.hero-sec .hero-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:0}
+.hero-sec .hero-tag{padding:6px 16px;border:1px solid var(--sec-border);border-radius:6px;font-size:12px;font-family:var(--mono);color:var(--sec-blue);background:rgba(96,165,250,.06)}
+.btn-p{display:inline-block;padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans);text-decoration:none}
+.btn-p:hover{opacity:.85}
+.section{padding:80px 0;border-bottom:1px solid var(--border)}
+.section-dark{padding:80px 0;background:var(--sec-bg);color:var(--sec-text);border-bottom:1px solid var(--sec-border)}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px}
+.card-dark{background:rgba(255,255,255,.04);border:1px solid var(--sec-border);border-radius:8px;padding:28px}
+.card-label{font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:2px;margin-bottom:8px}
+.card h3{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.card-dark h3{font-size:15px;font-weight:700;color:#FFFFFF;margin-bottom:6px}
+.card p{font-size:13px;color:var(--text2);line-height:1.7}
+.card-dark p{font-size:13px;color:#94A3B8;line-height:1.7}
+.feat-list{margin-top:16px}
+.feat-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:13px;color:var(--text2)}
+.feat-item .check{color:var(--blue);font-weight:700;min-width:16px}
+.card-dark .feat-item{color:#94A3B8}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.status-green{background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.4)}
+.status-amber{background:var(--amber);box-shadow:0 0 6px rgba(245,158,11,.4)}
+.sla-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:8px}
+.sla-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .6s}
+.audit-timeline{position:relative;padding-left:24px;border-left:2px solid var(--border)}
+.audit-timeline .audit-item{margin-bottom:24px;position:relative}
+.audit-timeline .audit-item::before{content:'';position:absolute;left:-29px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--blue);border:2px solid var(--bg)}
+.audit-date{font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:1px;margin-bottom:4px}
+.audit-title{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:2px}
+.audit-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.compliance-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600}
+.badge-green{background:rgba(16,185,129,.08);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.badge-amber{background:rgba(245,158,11,.08);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.module-table{width:100%;border-collapse:collapse;font-size:13px}
+.module-table th{text-align:left;padding:12px 16px;font-size:11px;font-family:var(--mono);color:var(--blue);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid var(--border)}
+.module-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text2)}
+.module-table td:first-child{font-weight:600;color:var(--dark)}
+.cta-section{padding:80px 0;text-align:center;background:var(--bg2)}
+.cta-section h2{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:8px;letter-spacing:-1px}
+.cta-section p{font-size:14px;color:var(--text2);margin-bottom:24px}
+footer{border-top:1px solid var(--border);padding:40px 0 24px;background:var(--bg2)}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:24px}
+.footer-brand{font-size:14px;color:var(--dark);font-weight:600;max-width:400px}
+.footer-brand span{font-weight:400;font-size:11px;color:var(--text2)}
+.footer-links{display:flex;flex-wrap:wrap;gap:16px}
+.footer-links a{font-size:13px;color:var(--text2)}
+.footer-links a:hover{color:var(--dark)}
+.footer-copy{font-size:11px;color:var(--text2);border-top:1px solid var(--border);padding-top:16px}
+@media(max-width:768px){
+.hero-sec h1{font-size:28px}
+.hero-sec .hero-sub{font-size:14px}
+.card-grid,.card-grid-3{grid-template-columns:1fr}
+.sec-title{font-size:22px}
+nav{gap:12px}nav a{font-size:12px}
+}
 </style>
 </head>
 <body>
-<script src="/nav-shared.js"></script>
-<div class="main">
-<div class="topbar"><h1>信任中心</h1><span class="tag">安全与合规</span></div>
-<div class="content">
-<div class="section" id="encryption">
-<h2>数据加密</h2>
-<p>Fly 对所有数据采用端到端加密策略，确保归因数据从生成到存储到结算全程受到保护。</p>
-<div class="card"><h3>传输加密</h3><p>所有 API 调用与数据传输使用 TLS 1.3 加密，拒绝降级攻击。证书由权威 CA 签发，支持证书固定（Certificate Pinning）。</p></div>
-<div class="card"><h3>存储加密</h3><p>静态数据采用 AES-256-GCM 加密，密钥由独立 KMS 管理，每 90 天自动轮换。密钥与数据物理隔离存储。</p></div>
+
+<header>
+<div class="container">
+<div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · 信任基础设施</span></div>
+<nav>
+<a href="/">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html" style="color:var(--blue);font-weight:600">信任中心</a>
+<a href="/" class="btn-p" style="font-size:12px">开始验证</a>
+</nav>
 </div>
-<div class="section" id="hashchain">
-<h2>哈希链验证</h2>
-<p>每条 Action ID 的验证链路通过 SHA-256 哈希链连接，任何单点篡改都会导致整条链断裂，确保数据不可篡改。</p>
-<div class="card"><h3>链式结构</h3><p>每个验证步骤的输出哈希作为下一步的输入，形成：推荐→咨询→成交→佣金的完整哈希链。任何中间节点的数据变更都会导致后续所有哈希失效。</p></div>
-<div class="card"><h3>链上锚点</h3><p>每日将哈希链根哈希同步至公开账本，提供独立第三方验证能力。任何人都可以验证特定日期的数据完整性。</p></div>
+</header>
+
+<div class="hero-sec">
+<div class="container">
+<div class="sec-label" style="color:var(--sec-blue)">Trust Center</div>
+<h1>可验证的<em>信任</em></h1>
+<div class="hero-sub">
+企业不买概念，买确定性。<br>
+Fly的每个安全声明，都有可验证的证据。<br>
+SLA承诺、审计记录、合规状态——全透明、可追溯。
 </div>
-<div class="section" id="access">
-<h2>访问控制</h2>
-<p>基于角色的细粒度权限控制，确保每个用户只能访问其权限范围内的数据。</p>
-<div class="card"><h3>RBAC 权限模型</h3><p>预设管理员、审计员、运营、只读四个角色，支持自定义角色与细粒度权限配置。所有权限变更留有审计日志。</p></div>
-<div class="card"><h3>API 安全</h3><p>API 调用需携带有效 Token，Token 有效期 2 小时且支持即时吊销。所有 API 调用记录留存 180 天，支持回溯审查。</p></div>
+<div class="hero-tags">
+<span class="hero-tag">实时检测</span>
+<span class="hero-tag">不可篡改审计</span>
+<span class="hero-tag">合规认证</span>
+<span class="hero-tag">实时状态</span>
 </div>
+</div>
+</div>
+
+<div class="section" id="status">
+<div class="container">
+<div class="sec-label">01 / System Status</div>
+<div class="sec-title">实时运行状态</div>
+<div class="sec-desc">所有核心服务可用性，实时可查。</div>
+<div style="font-size:11px;color:#64748B;margin-bottom:8px">状态字典（全站统一）：running = 正常运行 · degraded = 性能降级 · down = 服务中断</div>
+<table class="module-table">
+<thead>
+<tr><th>服务 (字段名)</th><th>状态</th><th>响应时间</th><th>SLA</th></tr>
+</thead>
+<tbody>
+<tr><td>Fly Gateway <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">gateway</span></td><td id="gw-status"><span class="status-dot status-amber"></span>检测中…</td><td id="gw-latency">—</td><td>99.9%</td></tr>
+<tr><td>Agent Runtime <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">identity_layer</span></td><td id="coze-status"><span class="status-dot status-amber"></span>检测中…</td><td id="coze-latency">—</td><td>99.9%</td></tr>
+<tr><td>Prompt Firewall <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">prompt_firewall</span></td><td id="fw-status"><span class="status-dot status-amber"></span>检测中…</td><td id="fw-latency">—</td><td>99.9%</td></tr>
+<tr><td>审计日志 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">audit_log</span></td><td id="audit-status"><span class="status-dot status-amber"></span>检测中…</td><td id="audit-latency">—</td><td>99.9%</td></tr>
+<tr><td>归因追踪 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">attribution</span></td><td id="attr-status"><span class="status-dot status-amber"></span>检测中…</td><td id="attr-latency">—</td><td>99.9%</td></tr>
+<tr><td>Verification Engine <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">verification_engine</span></td><td id="ve-status"><span class="status-dot status-amber"></span>检测中…</td><td id="ve-latency">—</td><td>99.9%</td></tr>
+<tr><td>Trust Engine <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">trust_engine</span></td><td id="te-status"><span class="status-dot status-amber"></span>检测中…</td><td id="te-latency">—</td><td>99.9%</td></tr>
+<tr><td>Governance <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">governance</span></td><td id="gov-status"><span class="status-dot status-amber"></span>检测中…</td><td id="gov-latency">—</td><td>99.9%</td></tr>
+<tr><td>Agent Registry <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">agent_registry</span></td><td id="ar-status"><span class="status-dot status-amber"></span>检测中…</td><td id="ar-latency">—</td><td>99.9%</td></tr>
+<tr><td>KV Storage <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">kv_storage</span></td><td id="kv-status"><span class="status-dot status-amber"></span>检测中…</td><td id="kv-latency">—</td><td>99.9%</td></tr>
+<tr><td>Rate Limit <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">rate_limit</span></td><td id="rl-status"><span class="status-dot status-amber"></span>检测中…</td><td id="rl-latency">—</td><td>99.9%</td></tr>
+</tbody>
+</table>
+<div style="margin-top:20px;font-size:12px;color:var(--text2)">
+数据来源：<a href="https://api.fly-agent.xyz/v1/status" style="color:var(--blue)">api.fly-agent.xyz/v1/status</a> · 上次刷新：<span id="last-check">—</span>
+</div><div style="font-size:11px;color:#64748B;margin-top:4px">状态字典（全站统一）：running = 正常运行 · degraded = 性能降级 · down = 服务中断。服务名与 /v1/status 字段一一对应。SLA 基于 /v1/status 的 uptime 字段计算，月度可用性 = (正常分钟数 - 计划维护窗口) / 总分钟数。</div>
+</div>
+</div>
+
+<div class="section-dark" id="modules">
+<div class="container">
+<div class="sec-label" style="color:var(--sec-blue)">02 / Module Status</div>
+<div class="sec-title" style="color:#FFFFFF">产品模块状态</div>
+<div class="sec-desc" style="color:#94A3B8">不写"计划中"，只写真实状态。每个模块的成熟度一目了然。</div>
+<div class="card-grid-3">
+<div class="card-dark">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已上线</div>
+<h3>Attribution 归因</h3>
+<p>action_id全链路追踪、GEO标记、渠道归因、不可篡改哈希链存证</p>
+</div>
+<div class="card-dark">
+<div class="compliance-badge badge-amber" style="margin-bottom:12px"><span class="status-dot status-amber"></span>内测</div>
+<h3>Verification 验证</h3>
+<p>行为真伪判定、刷量识别、到店验证、咨询质量评分</p>
+</div>
+<div class="card-dark">
+<div class="compliance-badge badge-amber" style="margin-bottom:12px"><span class="status-dot status-amber"></span>Beta</div>
+<h3>Optimization 优化</h3>
+<p>投流ROI计算、渠道对比、预算分配建议、A/B归因</p>
+</div>
+<div class="card-dark">
+<div class="compliance-badge badge-amber" style="margin-bottom:12px"><span class="status-dot status-amber"></span>内测</div>
+<h3>Compliance 合规</h3>
+<p>医疗违规检测、广告法识别、隐私采集拦截、金融风险管控</p>
+</div>
+<div class="card-dark">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已上线</div>
+<h3>Prompt Firewall</h3>
+<p>jailbreak拦截、prompt leak检测、越权调用拦截、DAN模式防护</p>
+</div>
+<div class="card-dark">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已上线</div>
+<h3>Audit 审计</h3>
+<p>不可篡改审计日志、SHA-256哈希链、action_id关联、90天保留</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section" id="sla">
+<div class="container">
+<div class="sec-label">03 / SLA Commitment</div>
+<div class="sec-title">服务等级承诺</div>
+<div class="sec-desc">白纸黑字，不玩文字游戏。</div>
+<div class="card-grid">
+<div class="card">
+<div class="card-label">Availability</div>
+<h3>99.9% 可用性</h3>
+<p>月度计算，排除计划维护窗口。低于承诺自动触发补偿。</p>
+<div class="sla-bar"><div class="sla-fill" style="width:99.9%"></div></div>
+</div>
+<div class="card">
+<div class="card-label">Response Time</div>
+<h3>Gateway &lt; 200ms</h3>
+<p>Fly Gateway层延迟（不含Agent Runtime）。P99监控，超限自动告警。</p>
+<div class="sla-bar"><div class="sla-fill" style="width:85%"></div></div>
+</div>
+<div class="card">
+<div class="card-label">Data Retention</div>
+<h3>审计日志 90天</h3>
+<p>所有action_id关联的审计记录保留90天。企业版可扩展至1年。</p>
+<div class="sla-bar"><div class="sla-fill" style="width:100%"></div></div>
+</div>
+<div class="card">
+<div class="card-label">Incident Response</div>
+<h3>P0 &lt; 1小时响应</h3>
+<p>安全事件分级：P0（数据泄露/服务中断）1小时内响应，P1（性能降级）4小时内响应。</p>
+<div class="sla-bar"><div class="sla-fill" style="width:60%"></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section-dark" id="audit">
+<div class="container">
+<div class="sec-label" style="color:var(--sec-blue)">04 / Security Audit</div>
+<div class="sec-title" style="color:#FFFFFF">安全审计记录</div>
+<div class="sec-desc" style="color:#94A3B8">信任不是声明出来的，是审计出来的。</div>
+<div class="audit-timeline" style="border-color:var(--sec-border)">
+<div class="audit-item" style="color:var(--sec-text)">
+<div class="audit-date" style="color:var(--sec-blue)">2026-06-04</div>
+<div class="audit-title" style="color:#FFFFFF">Prompt Firewall上线</div>
+<div class="audit-desc" style="color:#94A3B8">8类攻击模式检测（jailbreak/prompt leak/DAN/tool override/越权/安全绕过/角色覆写/限制移除），1命中即拦截，合规3类检测同步上线</div>
+</div>
+<div class="audit-item" style="color:var(--sec-text)">
+<div class="audit-date" style="color:var(--sec-blue)">2026-06-04</div>
+<div class="audit-title" style="color:#FFFFFF">不可篡改审计存证</div>
+<div class="audit-desc" style="color:#94A3B8">SHA-256哈希链 + PrevHash关联 + action_id全链路追踪，每条记录可验证完整性</div>
+</div>
+<div class="audit-item" style="color:var(--sec-text)">
+<div class="audit-date" style="color:var(--sec-blue)">2026-06-03</div>
+<div class="audit-title" style="color:#FFFFFF">Security安全中心上线</div>
+<div class="audit-desc" style="color:#94A3B8">5大安全模块公开：Prompt Security / Runtime Isolation / Audit Trail / Compliance / Gateway Security</div>
+</div>
+<div class="audit-item" style="color:var(--sec-text)">
+<div class="audit-date" style="color:var(--sec-blue)">2026-06-02</div>
+<div class="audit-title" style="color:#FFFFFF">Gateway架构确立</div>
+<div class="audit-desc" style="color:#94A3B8">Fly = Trust Gateway，Coze = Agent Runtime。架构分离，信任层独立</div>
+</div>
+<div class="audit-item" style="color:var(--sec-text)">
+<div class="audit-date" style="color:var(--sec-blue)">2026-06-01</div>
+<div class="audit-title" style="color:#FFFFFF">数据边界声明</div>
+<div class="audit-desc" style="color:#94A3B8">只采5项：action_id / 脱敏ID / 订单号 / 金额 / 时间。不采手机号、姓名、身份证、地址、银行卡</div>
+</div>
+</div>
+</div>
+</div>
+
 <div class="section" id="compliance">
-<h2>合规认证</h2>
-<p>Fly 遵循国内外数据安全与隐私保护法规，持续更新合规能力。</p>
-<div class="card"><h3>数据隐私</h3><p>符合 GDPR 和《个人信息保护法》要求。用户数据最小化采集，支持数据导出与删除请求，数据处理协议可按需签署。</p></div>
-<div class="card"><h3>等保合规</h3><p>系统架构满足等保二级要求，关键模块达到等保三级标准。数据存储于境内节点，不进行跨境数据传输。</p></div>
+<div class="container">
+<div class="sec-label">05 / Compliance</div>
+<div class="sec-title">合规与认证</div>
+<div class="sec-desc">遵循行业标准，持续获取认证。</div>
+<div class="card-grid">
+<div class="card">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已实现</div>
+<h3>数据最小化</h3>
+<div class="feat-list">
+<div class="feat-item"><span class="check">✓</span>只采5项业务数据</div>
+<div class="feat-item"><span class="check">✓</span>不采手机号、姓名、身份证</div>
+<div class="feat-item"><span class="check">✓</span>不采地址、银行卡号</div>
+<div class="feat-item"><span class="check">✓</span>前端禁止收集商业敏感数据</div>
 </div>
-<div class="section" id="audit">
-<h2>安全审计</h2>
-<p>持续的安全审计与漏洞管理，保障系统长期安全运行。</p>
-<div class="card"><h3>第三方审计</h3><p>每年进行两次第三方安全审计，覆盖应用安全、基础设施安全与合规性检查。审计报告可联系 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0370666076716a777a43656f7a2e6264666d772d7b7a79">[email&#160;protected]</a> 申请获取。</p></div>
-<div class="card"><h3>漏洞赏金</h3><p>持续运行漏洞赏金计划，欢迎安全研究员提交漏洞报告。严重漏洞最高奖励 ¥50,000。提交地址：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f08395938582998489b0969c89dd9197959e84de88898a">[email&#160;protected]</a></p></div>
+</div>
+<div class="card">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已实现</div>
+<h3>Prompt安全治理</h3>
+<div class="feat-list">
+<div class="feat-item"><span class="check">✓</span>Jailbreak攻击拦截</div>
+<div class="feat-item"><span class="check">✓</span>Prompt泄露检测</div>
+<div class="feat-item"><span class="check">✓</span>越权调用拦截</div>
+<div class="feat-item"><span class="check">✓</span>Tool权限隔离</div>
+</div>
+</div>
+<div class="card">
+<div class="compliance-badge badge-green" style="margin-bottom:12px"><span class="status-dot status-green"></span>已实现</div>
+<h3>广告法合规</h3>
+<div class="feat-list">
+<div class="feat-item"><span class="check">✓</span>医疗违规用语自动拦截</div>
+<div class="feat-item"><span class="check">✓</span>绝对化用语检测</div>
+<div class="feat-item"><span class="check">✓</span>隐私采集风险拦截</div>
+<div class="feat-item"><span class="check">✓</span>金融风险内容管控</div>
+</div>
+</div>
+<div class="card">
+<div class="compliance-badge badge-amber" style="margin-bottom:12px"><span class="status-dot status-amber"></span>规划中</div>
+<h3>SOC 2 Type II</h3>
+<div class="feat-list">
+<div class="feat-item"><span class="check" style="color:var(--amber)">○</span>第三方安全审计</div>
+<div class="feat-item"><span class="check" style="color:var(--amber)">○</span>内部控制体系</div>
+<div class="feat-item"><span class="check" style="color:var(--amber)">○</span>数据处理透明度</div>
+<div class="feat-item"><span class="check" style="color:var(--amber)">○</span>计划2026 Q3启动</div>
 </div>
 </div>
 </div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</div>
+</div>
+
+
+<!-- 05.5 Trust Score 来源链 -->
+<div class="section" id="trust-score-chain">
+<div class="container">
+<div class="sec-label">Trust Score 来源链</div>
+<div class="sec-title">每个评分，都追溯到源头</div>
+<div class="sec-desc">不可解释的Trust = 没有Trust。Fly的信任评分6维动态计算，每个维度可验证、可审计。</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px">
+<div class="card" style="border:1px solid var(--border);border-radius:8px;padding:20px">
+<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">trust_score</h3>
+<div style="font-size:12px;color:#94A3B8;margin-bottom:8px">float · 0.0 — 10.0</div>
+<div style="font-size:13px;color:#64748B">6维动态计算：identity + capability + behavior + security + governance + audit</div>
+<div style="font-size:11px;color:#2563EB;margin-top:8px">来源：/v1/agent/:id · 字段：trust_score</div>
+</div>
+
+<div class="card" style="border:1px solid var(--border);border-radius:8px;padding:20px">
+<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">trust_version</h3>
+<div style="font-size:12px;color:#94A3B8;margin-bottom:8px">string · 评分算法版本</div>
+<div style="font-size:13px;color:#64748B">算法版本化，避免黑箱升级导致评分不可比较。v1 = 基线算法</div>
+<div style="font-size:11px;color:#2563EB;margin-top:8px">来源：/v1/agent/:id · 字段：trust_version</div>
+</div>
+
+<div class="card" style="border:1px solid var(--border);border-radius:8px;padding:20px">
+<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">trust_updated_at</h3>
+<div style="font-size:12px;color:#94A3B8;margin-bottom:8px">timestamp · 评分更新时间</div>
+<div style="font-size:13px;color:#64748B">没有时间戳的评分不可审计。每次评分变动都记录时间。</div>
+<div style="font-size:11px;color:#2563EB;margin-top:8px">来源：/v1/agent/:id · 字段：trust_updated_at</div>
+</div>
+
+<div class="card" style="border:1px solid var(--border);border-radius:8px;padding:20px">
+<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">verification_status</h3>
+<div style="font-size:12px;color:#94A3B8;margin-bottom:8px">enum · 6值过程状态</div>
+<div style="font-size:13px;color:#64748B">pending → partial → verified / failed / expired / revoked。Verification是过程，不是标签。</div>
+<div style="font-size:11px;color:#2563EB;margin-top:8px">来源：/v1/agent/:id · 字段：verification_status + verification_level</div>
+<div style="margin-top:8px;font-size:11px;color:#64748B">字段定义与 Agent Registry Schema 一致，详见 API 文档：<a href="https://docs.fly-agent.xyz" style="color:#2563EB">GET /v1/agent/:id</a>。</div>
+</div>
+</div>
+
+<div style="margin-top:24px;padding:16px;background:var(--bg2);border-left:3px solid #2563EB;border-radius:0 6px 6px 0;font-size:13px;color:#1E40AF">
+所有Trust数据均可通过 <a href="/agent-registry.html" style="color:#2563EB">Agent Registry</a> 查询验证。接口文档：<strong>GET /v1/agent/:id</strong>（详见 <a href="https://docs.fly-agent.xyz" style="color:#2563EB">API 文档</a>）。
+</div><div style="margin-top:12px;padding:12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;color:#475569"><b>5层映射</b>：Identity(Layer 1) → Trust(Layer 2) → Verification(Layer 3) → Attribution(Layer 4) → Governance(Layer 5)。Trust Score 属于 Layer 2，由 Layer 3 Verification Engine 提供验证数据，Layer 1 Identity 提供身份基础。</div>
+<div style="margin-top:12px;padding:12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;color:#475569">
+<b>层 ↔ 字段 ↔ 页面映射总表</b>
+<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:8px">
+<tr style="border-bottom:1px solid #E2E8F0"><th style="text-align:left;padding:6px 8px;color:#2563EB">层</th><th style="text-align:left;padding:6px 8px;color:#2563EB">层名</th><th style="text-align:left;padding:6px 8px;color:#2563EB">主要 Registry 字段</th><th style="text-align:left;padding:6px 8px;color:#2563EB">主要页面</th></tr>
+<tr style="border-bottom:1px solid #E2E8F0"><td style="padding:6px 8px">Layer 1</td><td style="padding:6px 8px">Identity</td><td style="padding:6px 8px;font-family:monospace">agent_id, agent_fingerprint, owner_org, operator_id</td><td style="padding:6px 8px">Agent Registry · Identity</td></tr>
+<tr style="border-bottom:1px solid #E2E8F0"><td style="padding:6px 8px">Layer 2</td><td style="padding:6px 8px">Trust</td><td style="padding:6px 8px;font-family:monospace">trust_score, trust_version, trust_updated_at</td><td style="padding:6px 8px">Agent Registry · Trust；信任中心 · Trust Score 来源链</td></tr>
+<tr style="border-bottom:1px solid #E2E8F0"><td style="padding:6px 8px">Layer 3</td><td style="padding:6px 8px">Verification</td><td style="padding:6px 8px;font-family:monospace">verification_status, verification_level, verification_updated_at</td><td style="padding:6px 8px">Agent Registry · Verification；安全中心 · 01–03</td></tr>
+<tr style="border-bottom:1px solid #E2E8F0"><td style="padding:6px 8px">Layer 4</td><td style="padding:6px 8px">Attribution</td><td style="padding:6px 8px;font-family:monospace">action_id, audit_log, attribution</td><td style="padding:6px 8px">首页 · 归因验证；安全中心 · 03 Audit Trail；信任中心 · System Status</td></tr>
+<tr><td style="padding:6px 8px">Layer 5</td><td style="padding:6px 8px">Governance</td><td style="padding:6px 8px;font-family:monospace">capability_scope, tool_access, execution_mode</td><td style="padding:6px 8px">Agent Registry · Capability / Owner；安全中心 · 02 / 05 / 08</td></tr>
+</table>
+</div></div>
+</div>
+</div>
+
+<div class="section-dark" id="data-boundary">
+<div class="container">
+<div class="sec-label" style="color:var(--sec-blue)">06 / Data Boundary</div>
+<div class="sec-title" style="color:#FFFFFF">数据边界：采什么，不采什么</div>
+<div class="sec-desc" style="color:#94A3B8">白纸黑字写清楚，不模糊、不偷采。</div>
+<div class="card-grid" style="grid-template-columns:1fr 1fr">
+<div class="card-dark">
+<h3 style="color:var(--green)">✓ 只采5项</h3>
+<div class="feat-list">
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--green)">1</span>action_id — 行为唯一标识</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--green)">2</span>脱敏ID — 用户匿名标识</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--green)">3</span>订单号 — 交易关联</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--green)">4</span>金额 — 归因计算</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--green)">5</span>时间 — 时序验证</div>
+</div>
+</div>
+<div class="card-dark">
+<h3 style="color:var(--red)">✗ 绝不采集</h3>
+<div class="feat-list">
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--red)">✗</span>手机号</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--red)">✗</span>姓名</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--red)">✗</span>身份证号</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--red)">✗</span>详细地址</div>
+<div class="feat-item" style="color:#94A3B8"><span class="check" style="color:var(--red)">✗</span>银行卡号</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="cta-section">
+<div class="container">
+<h2>信任需要验证，不是声明</h2>
+<p>查看Fly如何让AI Agent的每一步行为可审计、可归因、可验证。</p>
+<a href="/gateway.html" class="btn-p">查看Agent Gateway</a>
+<a href="/security.html" class="btn-p" style="background:var(--bg);color:var(--blue);border:1px solid var(--border);margin-left:8px">安全中心</a>
+</div>
+</div>
+
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：guomanman@joyunzhiling.cn</span></div>
+<div class="footer-links">
+<a href="/">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html">信任中心</a>
+<a href="#" title="即将上线">隐私政策</a>
+<a href="#" title="即将上线">退款政策</a>
+<a href="#" title="即将上线">服务条款</a>
+</div>
+</div>
+<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="mailto:guomanman@joyunzhiling.cn" style="color:var(--text3);text-decoration:underline">guomanman@joyunzhiling.cn</a></div>
+</div>
+</footer>
+
+
+<script>
+(function(){
+  const API='https://api.fly-agent.xyz';
+  const now=new Date();
+  const ts=now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  document.getElementById('last-check').textContent=ts;
+
+  function setStatus(id,status,latency){
+    const el=document.getElementById(id);
+    if(!el)return;
+    const latEl=document.getElementById(id.replace('-status','-latency'));
+    if(status==='running'){
+      el.innerHTML='<span class="status-dot status-green"></span>运行中';
+      if(latEl&&latency!=null)latEl.textContent=latency+'ms';
+      else if(latEl)latEl.textContent='—';
+    }else if(status==='degraded'){
+      el.innerHTML='<span class="status-dot status-amber"></span>降级';
+      if(latEl)latEl.textContent='—';
+    }else{
+      el.innerHTML='<span class="status-dot status-red"></span>故障';
+      if(latEl)latEl.textContent='超时';
+    }
+  }
+
+  // 读取 /v1/status 真实数据
+  fetch(API+'/v1/status').then(r=>r.json()).then(data=>{
+    if(!data||!data.services)return;
+    const s=data.services;
+    // Fly Gateway (gateway)
+    if(s.gateway)setStatus('gw-status',s.gateway.status,s.gateway.response_ms);
+    // Agent Runtime (identity_layer)
+    if(s.identity_layer)setStatus('coze-status',s.identity_layer.status,null);
+    // Prompt Firewall
+    if(s.prompt_firewall)setStatus('fw-status',s.prompt_firewall.status,null);
+    // 审计日志 (audit_log)
+    if(s.audit_log)setStatus('audit-status',s.audit_log.status,null);
+    // 归因追踪 (attribution)
+    if(s.attribution)setStatus('attr-status',s.attribution.status,null);
+    if(s.verification_engine)setStatus('ve-status',s.verification_engine.status,null);
+    if(s.trust_engine)setStatus('te-status',s.trust_engine.status,null);
+    if(s.governance)setStatus('gov-status',s.governance.status,null);
+    if(s.agent_registry)setStatus('ar-status',s.agent_registry.status,null);
+    if(s.kv_storage)setStatus('kv-status',s.kv_storage.status,null);
+    if(s.rate_limit)setStatus('rl-status',s.rate_limit.status,null);
+  }).catch(()=>{
+    setStatus('gw-status','down',null);
+    setStatus('coze-status','down',null);
+    setStatus('fw-status','down',null);
+    setStatus('audit-status','down',null);
+    setStatus('attr-status','down',null);
+    setStatus('ve-status','down',null);
+    setStatus('te-status','down',null);
+    setStatus('gov-status','down',null);
+    setStatus('ar-status','down',null);
+    setStatus('kv-status','down',null);
+    setStatus('rl-status','down',null);
+  });
+})();
+</script>
+
+</body>
 </html>

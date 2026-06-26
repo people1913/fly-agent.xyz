@@ -3,69 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Registry · Fly · AI Agent信任与归因基础设施</title>
-    <meta name="description" content="Agent Registry——Fly AI Agent信任与归因基础设施的Agent身份注册与验证索引。16字段6组可验证身份体系，从注册到生产准入全链路。">
-    <meta property="og:title" content="Agent Registry · Fly · AI Agent信任与归因基础设施">
-    <meta property="og:description" content="Fly Agent Registry——可验证Agent身份索引，16字段身份注册与验证。">
+<title>Agent Registry - 可验证Agent身份索引 | Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+:root{--bg:#FFFFFF;--bg2:#F8FAFC;--dark:#0F172A;--blue:#2563EB;--blue-light:#60A5FA;--text2:#737373;--text3:#94A3B8;--border:#E2E8F0;--mono:'Space Grotesk',monospace;--sans:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{min-height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
-.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
-/* 折叠侧边栏 */
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--dark);line-height:1.6}
+.container{max-width:960px;margin:0 auto;padding:0 24px}
 
-.chart-row{display:flex;gap:12px;margin-bottom:24px}
-.mini-chart{flex:1;background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:16px;text-align:center}
-.mini-chart .num{font-size:22px;font-weight:800;color:var(--deep-green)}
-.mini-chart .lbl{font-size:10px;color:var(--text4);margin-top:4px}
-.card{background:var(--bg);border:1px solid var(--mint-border);border-radius:8px;padding:14px;margin-top:8px;font-family:var(--mono);font-size:12px;line-height:2}
-.card .lb{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;font-family:var(--sans);margin-bottom:4px}
-.card .row{display:flex;align-items:center;gap:6px;font-size:13px;line-height:2}
-/* Signal Flow Page */
-.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.axiom-box .axiom-label{font-size:10px;font-weight:700;color:#DC2626;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
-.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
-.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
-.def-box .def-sub{font-size:12px;color:#2D6A4F;margin-top:6px;line-height:1.5}
-.vs-row{display:flex;gap:16px;margin-bottom:24px}
-.vs-col{flex:1;border-radius:8px;padding:14px}
-.vs-col.wrong{background:#FEF2F2;border:1px solid #FECACA}
-.vs-col.right{background:var(--mint);border:1px solid var(--mint-border)}
-.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.vs-col.wrong .vs-title{color:#DC2626}
-.vs-col.right .vs-title{color:var(--deep-green)}
-.vs-col .vs-item{font-size:12px;line-height:2}
-.vs-col.wrong .vs-item{color:#991B1B;text-decoration:line-through}
-.vs-col.right .vs-item{color:var(--deep-green);font-weight:600}
-.flow-pipeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
-.flow-step{display:flex;align-items:stretch;gap:0}
-.flow-step-num{width:36px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.flow-step-num .circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.flow-step-num .line{flex:1;width:2px;margin-top:2px}
-.flow-step-body{flex:1;padding-bottom:16px;padding-left:8px}
-.flow-step-body h3{font-size:13px;font-weight:700;margin-bottom:2px}
-.flow-step-body p{font-size:12px;color:var(--text3);line-height:1.6}
-.gate-card{background:var(--bg2);border:2px solid var(--deep-green);border-radius:8px;padding:16px;margin-bottom:16px;position:relative}
-.gate-card .gate-badge{position:absolute;top:-10px;left:12px;background:var(--deep-green);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
-.gate-card .gate-row{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.8;font-family:var(--mono)}
-.gate-card .gate-claim{color:var(--text3);text-decoration:line-through}
-.gate-card .gate-ok{color:var(--deep-green);font-weight:700}
+/* NAV */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+header .container{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font-family:var(--sans);font-size:18px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;text-decoration:none}
+.logo-sub{font-size:13px;color:var(--text3);font-weight:400}
+nav{display:flex;align-items:center;gap:20px}
+nav a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .15s;font-weight:500}
+nav a:hover{color:var(--dark)}
+.nav-cta{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans);text-decoration:none}
+.nav-cta:hover{opacity:.85}
+
+/* HERO */
+.hero{padding:120px 0 60px;text-align:center;border-bottom:1px solid var(--border)}
+.hero-label{font-size:14px;color:var(--text3);font-weight:500;margin-bottom:12px;font-family:var(--mono)}
+.hero h1{font-size:36px;font-weight:800;color:var(--dark);letter-spacing:-1px;margin-bottom:12px}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero-desc{font-size:16px;color:var(--text2);max-width:640px;margin:0 auto;line-height:1.7}
+.hero-desc strong{color:var(--dark);font-weight:600}
+
+/* SCHEMA */
+.schema-section{padding:60px 0;border-bottom:1px solid var(--border)}
+.sec-label{font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.sec-title{font-size:24px;font-weight:700;color:var(--dark);margin-bottom:8px}
+.sec-desc{font-size:14px;color:var(--text2);margin-bottom:32px}
+
+/* Field groups */
+.field-group{margin-bottom:32px}
+.field-group-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--blue);display:inline-block}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-card{padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.field-card.full{grid-column:1/-1}
+.field-name{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue);margin-bottom:4px}
+.field-type{font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:8px}
+.field-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.field-example{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:8px;padding:6px 8px;background:var(--bg);border-radius:4px;word-break:break-all}
+.field-required{font-size:10px;color:#059669;font-weight:700;margin-left:4px}
+.field-problem{font-size:11px;color:#1E40AF;margin-top:6px;padding:4px 8px;background:#EFF6FF;border-radius:4px}
+
+/* Registry Record Example */
+.record-section{padding:60px 0;border-bottom:1px solid var(--border)}
+.record-block{background:var(--dark);border-radius:8px;padding:24px;overflow-x:auto}
+.record-block pre{font-family:var(--mono);font-size:12px;color:#E2E8F0;line-height:1.8;white-space:pre}
+.record-block .comment{color:#64748B}
+.record-block .key{color:#60A5FA}
+.record-block .string{color:#34D399}
+.record-block .number{color:#FBBF24}
+
+/* FLOW */
+.flow-section{padding:60px 0;border-bottom:1px solid var(--border)}
+.flow-steps{display:flex;flex-direction:column;gap:0;max-width:600px;margin:0 auto}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:16px 0}
+.flow-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue);min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:#EFF6FF;border-radius:50%}
+.flow-content h3{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.flow-content p{font-size:13px;color:var(--text2)}
+.flow-arrow{text-align:center;color:var(--text3);font-size:12px;padding:0 0 0 40px}
+
+/* CTA */
+.cta-section{padding:80px 0;text-align:center}
+.cta-section h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.cta-section p{color:var(--text2);margin-bottom:24px}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.cta-btn:hover{opacity:.85}
+
+/* FOOTER */
+footer{padding:40px 0;border-top:1px solid var(--border);text-align:center}
+footer p{font-size:12px;color:var(--text3)}
+
+@media(max-width:768px){
+  .hero h1{font-size:28px}
+  .field-grid{grid-template-columns:1fr}
+  nav{gap:12px}nav a{font-size:12px}
+}
 </style>
 </head>
 <body>
-<script src="/nav-shared.js"></script>
-<div class="main">
 
 <!-- NAV -->
+<header>
+<div class="container">
+<a href="/" class="logo">Fly<span class="logo-sub"> · Trust & Attribution Infrastructure</span></a>
+<nav>
+<a href="/">首页</a>
+<a href="/agent-registry.html" style="color:var(--blue);font-weight:600">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html">信任中心</a>
+<a href="/" class="btn-p" style="font-size:12px">开始验证</a>
+</nav>
+</div>
+</header>
 
 <!-- HERO -->
 <section class="hero">
@@ -321,20 +357,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <footer>
 <div class="container">
 <div class="footer-grid">
-<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e186948e8c808f8c808fa18b8e98948f9b89888d888f86cf828f">[email&#160;protected]</a></span></div>
+<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：guomanman@joyunzhiling.cn</span></div>
 <div class="footer-links">
 <a href="/">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
 <a href="/security.html">安全中心</a>
 <a href="/trust.html">信任中心</a>
-<a href="/enterprise.html">企业版</a>
-<a href="/privacy.html">隐私政策</a>
-<a href="/terms.html#refund">退款政策</a>
-<a href="/terms.html">服务条款</a>
+<a href="#" title="即将上线">隐私政策</a>
+<a href="#" title="即将上线">退款政策</a>
+<a href="#" title="即将上线">服务条款</a>
 </div>
 </div>
-<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="/cdn-cgi/l/email-protection#365143595b57585b5758765c594f43584c5e5f5a5f5851185558" style="color:var(--text3);text-decoration:underline"><span class="__cf_email__" data-cfemail="6a0d1f05070b04070b042a0005131f041002030603040d440904">[email&#160;protected]</span></a></div>
+<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="mailto:guomanman@joyunzhiling.cn" style="color:var(--text3);text-decoration:underline">guomanman@joyunzhiling.cn</a></div>
 </div>
 </footer>
 
-</div><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</body>
 </html>

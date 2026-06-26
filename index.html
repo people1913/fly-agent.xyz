@@ -4,24 +4,24 @@
 <meta charset="UTF-8">
 <meta name="msvalidate.01" content="0BA1715603F725EDEA2F49423B9D78B0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Fly——AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计的基础设施层。从身份注册到行为审计全链路可追溯，数据可验证、归因可审计、运行可治理。">
+<meta name="description" content="Fly——AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计的基础设施层。从AI推荐到真实成交全链路归因，数据可溯源、ROI可算、行为可验证。">
 <title>Fly · AI Agent信任与归因基础设施</title>
 <meta property="og:title" content="Fly · AI Agent信任与归因基础设施">
-<meta property="og:description" content="Fly·AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计。从身份注册到行为审计全链路可追溯，数据可验证、归因可审计。">
+<meta property="og:description" content="Fly·AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计。从AI推荐到真实成交全链路归因，数据可溯源、行为可验证。">
 <meta property="og:url" content="https://fly-agent.xyz">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://fly-agent.xyz/">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fly-agent.xyz/fly_logo.jpg">
 
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"FlyAgent","url":"https://fly-agent.xyz","description":"AI Agent 信任与归因基础设施，验证AI行为是否可信","slogan":"验证每一次AI行为是否可信"},{"@type":"SoftwareApplication","name":"FlyAgent","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"AI Agent信任与归因基础设施——可信归因·行为验证·安全审计"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Fly是什么","acceptedAnswer":{"@type":"Answer","text":"Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。"}},{"@type":"Question","name":"什么是action_id","acceptedAnswer":{"@type":"Answer","text":"action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。"}}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"FlyAgent","url":"https://fly-agent.xyz","description":"AI Agent Trust & Attribution Infrastructure，验证AI行为是否可信","slogan":"验证每一次AI行为是否可信"},{"@type":"SoftwareApplication","name":"FlyAgent","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"AI Agent信任与归因基础设施——可信归因·行为验证·安全审计"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Fly是什么","acceptedAnswer":{"@type":"Answer","text":"Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。"}},{"@type":"Question","name":"什么是action_id","acceptedAnswer":{"@type":"Answer","text":"action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。"}}]}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
 --bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;--bg4:#E8ECF0;
---blue:#2563EB;--blue-light:#60A5FA;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--tan:#64748B;--tan-light:#94A3B8;
+--blue:#2563EB;--blue-light:#60A5FA;
 --dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
 --mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
 --border:#E2E8F0;
@@ -36,15 +36,15 @@ a:hover{opacity:.8}
 header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 header .container{display:flex;justify-content:space-between;align-items:center;height:56px}
 .logo{font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:6px;letter-spacing:-0.5px}
-.logo b{color:#0F172A;font-size:35px;font-weight:700;font-family:var(--sans)}.logo-sub{color:#0F172A;font-size:18px;font-weight:700;margin-left:4px;letter-spacing:-0.5px}
+.logo b{color:#0F172A;font-size:22px;font-weight:700;font-family:var(--sans)}.logo-sub{color:#0F172A;font-size:18px;font-weight:700;margin-left:4px;letter-spacing:-0.5px}
 nav{display:flex;align-items:center;gap:20px}
 nav a{font-size:13px;color:var(--text2);transition:color .15s;letter-spacing:.3px;font-weight:500}
 nav a:hover{color:var(--dark)}
-.nav-cta{padding:8px 18px;background:var(--deep-green);color:#E8F5EC;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.nav-cta{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
 .nav-cta:hover{opacity:.85}
 
 .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.sec-label{font-family:var(--mono);font-size:11px;color:var(--tan);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.sec-label{font-family:var(--mono);font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
 .sec-title{font-size:28px;font-weight:700;line-height:1.3;margin-bottom:6px;letter-spacing:-.5px;color:var(--dark)}
 .sec-desc{font-size:14px;color:var(--text2);margin-bottom:28px;max-width:560px}
 
@@ -53,13 +53,13 @@ nav a:hover{color:var(--dark)}
 .hero .container{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:720px;margin:0 auto}
 .hero h1{font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-1.5px;color:var(--dark);margin-bottom:16px}
 .hero h1 em{font-style:normal;color:var(--blue)}
-.hero-tagline{font-size:20px;font-family:var(--sans);font-weight:800;color:var(--blue);margin:0 0 12px 0;letter-spacing:-1px;line-height:1.2}
+.hero-tagline{font-size:48px;font-family:var(--sans);font-weight:800;color:var(--blue);margin:0 0 12px 0;letter-spacing:-1px;line-height:1.2}
 .hero-label{font-size:24px;font-family:var(--sans);color:#94A3B8;font-weight:400;letter-spacing:-1px;margin:0 0 12px 0;line-height:1.2}
-.hero-pain{font-size:44px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.2;margin:0 0 12px 0;font-family:var(--sans)}
+.hero-pain{font-size:56px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.2;margin:0 0 12px 0;font-family:var(--sans)}
 .hero-trust{margin:0 0 12px 0;font-size:15px;color:#94A3B8;font-weight:500}
 .hero-trust .dot{color:#CBD5E1;margin:0 1px}
 .hero-btns{display:flex;gap:32px;margin:0;flex-wrap:wrap;justify-content:center}
-.btn-p{padding:8px 18px;background:var(--deep-green);color:#E8F5EC;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.btn-p{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
 .btn-p:hover{opacity:.85}
 .btn-s{padding:8px 18px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--sans)}
 .btn-s:hover{border-color:var(--text3);color:var(--dark)}
@@ -174,7 +174,7 @@ footer{border-top:1px solid var(--border);padding:40px 0 24px;background:var(--b
 
 /* RESPONSIVE */
 @media(max-width:768px){
-.hero-label{font-size:16px}.hero-pain{font-size:36px}.hero-tagline{font-size:16px}
+.hero-label{font-size:16px}.hero-pain{font-size:32px}.hero-tagline{font-size:24px}
 .problem-grid{grid-template-columns:1fr}
 .price-grid{grid-template-columns:1fr}
 .compliance-mini{grid-template-columns:1fr}
@@ -206,64 +206,749 @@ nav{gap:12px}nav a{font-size:12px}
 <!-- NAV -->
 <header>
 <div class="container">
-<div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · 信任与归因基础设施</span></div>
+<div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · Trust & Attribution Infrastructure</span></div>
 <nav>
-<a href="/signal-flow.html" class="nav-cta" style="text-decoration:none;background:var(--deep-green);color:#E8F5EC">溯源 Fly</a>
+<a href="/" style="color:var(--blue);font-weight:600">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html">信任中心</a>
+<button class="nav-cta" onclick="openVerifyModal()">开始验证</button>
 </nav>
 </div>
 </header>
 
 <!-- ===== SECTION 1: HERO ===== -->
-<section class="hero" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center">
-<div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0">
-<div style="font-family:var(--sans);font-size:16px;color:#94A3B8;letter-spacing:0;font-weight:400;margin-bottom:18px">AI时代的归因验证基础设施</div>
-<div class="hero-pain" style="white-space:nowrap;margin-bottom:16px">每一次 AI 推荐，都应该产生可验证收入</div>
-<div style="font-size:28px;font-weight:600;color:#1A3D2E;letter-spacing:-0.5px;line-height:1.5;font-family:var(--sans);margin-bottom:16px">AI Platform → Behavior ID → Action ID → Verification → Trust → Business Value<br>从信号采集到商业价值的完整验证链路</div>
-<div style="display:flex;flex-direction:column;align-items:center;gap:1.5px">
-<div style="font-size:16px;color:#CBD5E1">互联网时代——Google Analytics 证明流量价值</div>
-<div style="font-size:19px;color:#0F172A;font-weight:700">AI时代——Fly 验证 AI 是否真正带来收入</div>
-</div>
-<div style="margin-top:32px;display:flex;align-items:center;justify-content:center">
-<svg width="500" height="210" viewBox="0 0 500 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1A3D2E"/></marker>
-<marker id="arrow-fly" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6366F1"/></marker>
-</defs>
-<!-- Row 1: AI Platform → Behavior ID → Action ID -->
-<circle cx="70" cy="55" r="30" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
-<text x="70" y="51" text-anchor="middle" font-size="10" fill="#6366F1" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">AI Platform</text>
-<text x="70" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信号源</text>
-<circle cx="250" cy="55" r="30" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
-<text x="250" y="51" text-anchor="middle" font-size="10" fill="#7C3AED" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Behavior ID</text>
-<text x="250" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">行为标识</text>
-<circle cx="430" cy="55" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="430" y="51" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Action ID</text>
-<text x="430" y="65" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">归因标识</text>
-<!-- Row 1 arrows -->
-<path d="M102 50 L218 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M282 50 L398 50" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- Vertical: Action ID ↓ Verification -->
-<path d="M430 87 L430 123" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- Row 2: Verification → Trust → Business Value (right to left) -->
-<circle cx="430" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="430" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Verification</text>
-<text x="430" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">验证</text>
-<circle cx="250" cy="155" r="30" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-<text x="250" y="151" text-anchor="middle" font-size="10" fill="#059669" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Trust</text>
-<text x="250" y="165" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">信任层</text>
-<circle cx="70" cy="155" r="30" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
-<text x="70" y="151" text-anchor="middle" font-size="10" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Business</text>
-<text x="70" y="163" text-anchor="middle" font-size="9" fill="#D97706" font-weight="600" font-family="Inter,Noto Sans SC,sans-serif">Value</text>
-<text x="70" y="175" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,Noto Sans SC,sans-serif">商业价值</text>
-<!-- Row 2 arrows (right to left) -->
-<path d="M398 150 L282 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M218 150 L102 150" stroke="#1A3D2E" stroke-width="1.5" marker-end="url(#arrow)"/>
-<!-- Flywheel: Business Value ↺ AI Platform -->
-<path d="M40 155 Q12 155 12 105 Q12 55 40 55" stroke="#6366F1" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow-fly)" fill="none"/>
-<text x="5" y="110" text-anchor="middle" font-size="6.5" fill="#6366F1" font-family="Inter,Noto Sans SC,sans-serif" writing-mode="tb">更多AI接入</text>
-</svg>
+<section class="hero">
+<div class="container">
+<div class="hero-label">Fly · AI Agent Trust & Attribution Infrastructure</div>
+<div class="hero-pain">你的AI Agent，谁来验证它可信？</div>
+<div class="hero-tagline">The Trust Layer for AI Agent Execution</div>
+<div class="hero-trust">Identity <span class="dot">·</span> Trust <span class="dot">·</span> Verification <span class="dot">·</span> Attribution <span class="dot">·</span> Governance</div>
+<div class="hero-btns">
+<button class="btn-p" onclick="openVerifyModal()">开始验证</button>
+<button class="btn-s" onclick="document.getElementById('solution').scrollIntoView({behavior:'smooth'})">了解归因</button>
 </div>
 </div>
 </section>
 
->
+<!-- ===== SECTION 2: 痛点 ===== -->
+<section id="problem" style="padding:100px 0;background:var(--bg2);border-bottom:1px solid var(--border)">
+<div class="container">
+<div class="sec-label">难题</div>
+<h2 class="sec-title" style="font-size:32px;line-height:1.8;font-weight:800;color:#0F172A">花了钱，算不清账<br>客人来了，留不住<br>想放大，不敢投</h2>
+
+<div class="problem-flow" style="margin-top:24px">
+<span class="node">AI推荐</span><span class="arrow">→</span>
+<span class="node">客人点击</span><span class="arrow">→</span>
+<span class="node">到店咨询</span><span class="arrow">→</span>
+<span class="node" style="border-color:#DC2626;color:#DC2626;font-weight:600">断了？</span>
+</div>
+
+<div class="problem-grid">
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>发传单 → 不知道来没来人</h3>
+<p>印了500张传单，发出去了，钱花了，但进店的人从哪来的？不知道。</p>
+</div>
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>投推广 → 不知道哪个关键词有效</h3>
+<p>充了钱做推广，"附近按摩""青山湖养生"哪个词带来客户？不知道。</p>
+</div>
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>AI推荐了客人 → 到店算自然到店</h3>
+<p>AI搜索推荐了你，客人来了，但系统记成自然流量。ROI永远算不清。</p>
+</div>
+</div>
+
+<!-- 铁律精简 -->
+<div style="margin-top:28px;padding:20px 24px;background:var(--bg);border:2px solid var(--dark);border-radius:10px">
+<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:10px">验证层的底线，谁也不能破</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">边界铁律</div>
+<div style="font-size:12px;color:var(--text2)">测试店只做技术验证，数据不进商业报告</div>
+</div>
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">数据铁律</div>
+<div style="font-size:12px;color:var(--text2)">只收5项：action_id/脱敏ID/订单号/金额/时间</div>
+</div>
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">治理铁律</div>
+<div style="font-size:12px;color:var(--text2)">关键动作老板确认，AI不自作主张</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- ===== SECTION 3: 怎么解决 ===== -->
+<section id="solution" style="padding:100px 0;border-bottom:1px solid var(--border)">
+<div class="container">
+<div class="sec-label">怎么解决</div>
+<h2 class="sec-title">给AI投流装上<em style="color:var(--blue)">行车记录仪</em><span style="font-size:16px;font-weight:500;color:var(--text2);display:block;margin-top:6px">每一步留痕，每一笔可查</span></h2>
+
+<!-- 架构层 -->
+<div class="arch-layers" style="margin-bottom:40px">
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🪪</span>
+<div style="flex:1"><div class="arch-lname"><a href="/agent-registry.html" style="color:var(--dark);text-decoration:none">Layer 1 · Identity 身份层</a></div><div class="arch-value">Agent Registry · 可验证身份指纹 · fingerprint · runtime · scope · <a href="/agent-registry.html" style="color:var(--blue)">查看Registry →</a></div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🛡️</span>
+<div style="flex:1"><div class="arch-lname"><a href="/security.html" style="color:var(--dark);text-decoration:none">Layer 2 · Trust 信任层</a></div><div class="arch-value">行为可信评分 · Prompt防火墙 · 运行隔离 · 6维Trust Score · <a href="/security.html" style="color:var(--blue)">查看Security →</a></div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">✅</span>
+<div style="flex:1"><div class="arch-lname">Layer 3 · Verification 验证层</div><div class="arch-value">Behavior Verification Engine：6项行为验证 · pending → partial → verified → failed → expired → revoked</div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🔗</span>
+<div style="flex:1"><div class="arch-lname">Layer 4 · Attribution 归因层</div><div class="arch-value">action_id全链路追踪 · 不可篡改审计日志 · 哈希链存证 · 归因可信度评分</div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">⚙️</span>
+<div style="flex:1"><div class="arch-lname"><a href="/trust.html" style="color:var(--dark);text-decoration:none">Layer 5 · Governance 治理层</a></div><div class="arch-value">Agent权限 · Tool白名单 · Kill Switch · 审批流 · Session隔离 · 安全网关 · <a href="/trust.html" style="color:var(--blue)">信任中心 →</a></div></div>
+</div>
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+</section>
+
+<!-- ===== SECTION: Verification Engine ===== -->
+<section style="padding:80px 0;background:var(--bg1)">
+<div class="container">
+<div class="sec-label" style="text-align:center">Verification Engine</div>
+<h2 class="sec-title" style="text-align:center">AI行为验证引擎</h2>
+<p style="font-size:14px;color:var(--text2);text-align:center;max-width:560px;margin:0 auto 40px">不是"曝光了没有"，而是每一步行为是否真实发生。6维行为验证，构成AI行为验证基础设施。</p>
+
+<div style="max-width:720px;margin:0 auto">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
+
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">行为</div>
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">验证</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4AC;</span> 咨询</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否真人</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4DD;</span> 留资</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否有效</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F916;</span> 对话</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否真实</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4CD;</span> 到店</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否发生</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4B0;</span> 转化</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否完成</div>
+
+<div style="padding:14px 20px;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4CA;</span> ROI</div>
+<div style="padding:14px 20px;color:#334155">是否真实</div>
+
+</div>
+
+<div style="margin-top:24px;background:#EFF6FF;border-left:3px solid #2563EB;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13px;color:#1E40AF">
+护城河：传统归因只验证"有没有曝光"，Fly验证的是每一步行为是否真实——从咨询到ROI，6维交叉验证。
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== SECTION: Agent Runtime Governance ===== -->
+<section style="padding:80px 0;background:var(--bg2)">
+<div class="container">
+<div class="sec-label" style="text-align:center">Agent Runtime Governance</div>
+<h2 class="sec-title" style="text-align:center">Agent运行时治理</h2>
+<p style="font-size:14px;color:var(--text2);text-align:center;max-width:560px;margin:0 auto 40px">企业真正买单的能力：Agent权限、工具白名单、密钥隔离、紧急熔断、审批流、会话隔离。没有治理，就不允许进生产环境。</p>
+
+<div style="max-width:720px;margin:0 auto">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
+
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">能力</div>
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">说明</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Agent权限</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">每个Agent只能执行授权范围内的操作</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Tool白名单</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">未授权工具不可调用，越权自动拦截</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Secret隔离</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">密钥按Agent隔离，不可跨用</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Kill Switch</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">一键熔断，异常Agent立即停服</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">审批流</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">高危操作必须经人工审批才可执行</div>
+
+<div style="padding:14px 20px;color:#2563EB;font-weight:500">Session隔离</div>
+<div style="padding:14px 20px;color:#334155">会话之间数据不可互访，防止横向越权</div>
+
+</div>
+
+<div style="margin-top:24px;background:#EFF6FF;border-left:3px solid #2563EB;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13px;color:#1E40AF">
+没有治理的Agent = 没有刹车的车。企业允许Agent进生产环境的前提：权限受控、工具受限、密钥隔离、可随时熔断。
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== SECTION 5: 定价 + 合规 ===== -->
+<!-- ===== SECTION: 案例 ===== -->
+
+<!-- ===== SECTION 6: CTA + FAQ ===== -->
+<section id="cta" style="padding:100px 0;background:var(--bg2)">
+<div class="container" style="text-align:center">
+<div class="sec-label" style="text-align:center">Get Started</div>
+<h2 class="sec-title" style="text-align:center">开始使用Fly</h2>
+<p style="font-size:14px;color:var(--text2);margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto">AI Agent的每一步行为都可审计、可归因、可验证。从接入到验证，3步搞定。</p>
+
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px">
+<a href="/gateway.html" class="btn-p" style="padding:12px 28px;font-size:14px">立即接入BOT</a>
+<a href="/gateway.html" class="btn-p" style="padding:12px 28px;font-size:14px;background:var(--bg);color:var(--blue);border:1px solid var(--border)">查看API</a>
+<button class="btn-p" onclick="openVerifyModal()" style="padding:12px 28px;font-size:14px;background:var(--bg);color:var(--blue);border:1px solid var(--border)">申请企业验证</button>
+</div>
+
+<!-- 模块状态表（老师要求替代"模拟数据"） -->
+<div style="max-width:600px;margin:0 auto;text-align:left">
+<div class="sec-label">当前模块状态</div>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead>
+<tr style="border-bottom:2px solid var(--border)">
+<th style="text-align:left;padding:10px 12px;font-size:11px;font-family:var(--mono);color:var(--blue);letter-spacing:1px">模块</th>
+<th style="text-align:left;padding:10px 12px;font-size:11px;font-family:var(--mono);color:var(--blue);letter-spacing:1px">状态</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 1 · Identity 身份层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(identity_layer)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 2 · Trust 信任层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(trust_engine)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 3 · Verification 验证层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(verification_engine)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 4 · Attribution 归因层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(attribution)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 5 · Governance 治理层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(governance)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Audit 审计 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(audit_log)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+</tbody>
+</table><div style="font-size:11px;color:#64748B;margin-top:8px">状态字典（全站统一）：running = 正常运行 · degraded = 性能降级 · down = 服务中断。5层与 <a href="https://status.fly-agent.xyz" style="color:#2563EB">系统状态页</a> 一一对应。模块运行状态与 /v1/status 一一对应：Identity (identity_layer) · Trust (trust_engine) · Verification (verification_engine) · Attribution (attribution) · Governance (governance) · Audit (audit_log)。系统状态页：<a href="https://status.fly-agent.xyz" style="color:#2563EB">https://status.fly-agent.xyz</a>（当前数据来自 /v1/status）。</div>
+<div id="runtime-stats" style="margin-top:16px;padding:12px 16px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;font-size:12px;color:#166534;display:none"></div>
+<script>
+fetch('https://api.fly-agent.xyz/v1/status').then(r=>r.json()).then(d=>{
+  const el=document.getElementById('runtime-stats');
+  if(!el||d.status!=='ok')return;
+  const s=d.services||{};
+  const items=[
+    s.identity_layer?'Identity · '+s.identity_layer.status:''',
+    s.attribution?'Attribution · '+s.attribution.status:''',
+    s.verification_engine?'Verification · '+s.verification_engine.behaviors.length+' behaviors':''',
+    s.trust_engine?'Trust · '+s.trust_engine.score_range+' ('+s.trust_engine.dimensions.length+'维度)':''',
+    s.governance?'Governance · '+s.governance.status:'''
+  ].filter(Boolean);
+  el.innerHTML='<strong>Live Runtime</strong> · '+items.join(' · ')+' · <a href="https://status.fly-agent.xyz" style="color:#2563EB">查看详情</a>';
+  el.style.display='block';
+}).catch(()=>{});
+</script>
+</div>
+
+<!-- FAQ -->
+<div style="text-align:left;max-width:720px;margin:60px auto 0">
+<div class="sec-label">常见问题</div>
+<h2 class="sec-title">还有疑问？</h2>
+<div class="faq-list">
+<div class="faq-item">
+<div class="faq-q"><span>Fly是什么？</span><span class="pm">+</span></div>
+<div class="faq-a">Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>什么是action_id？</span><span class="pm">+</span></div>
+<div class="faq-a">action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>我的数据安全吗？</span><span class="pm">+</span></div>
+<div class="faq-a">只收5项归因数据（action_id/脱敏ID/订单号/金额/时间），绝不收集手机号/姓名/身份证。采用HMAC-SHA256+随机盐脱敏，不可逆还原。日常数据90天自动销毁。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>Fly跟GEO优化工具有什么区别？</span><span class="pm">+</span></div>
+<div class="faq-a">传统GEO只看"AI有没有推荐你"，Fly验证的是"AI推荐了你，客户来了、成交了、钱算得清"。归因验证是标配，GEO优化为可选增值。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>Prompt防火墙做什么？</span><span class="pm">+</span></div>
+<div class="faq-a">拦截jailbreak攻击、prompt泄露、越权调用、DAN模式等8类攻击模式，同时检测医疗违规、广告法、隐私采集等合规风险。</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：guomanman@joyunzhiling.cn</span></div>
+<div class="footer-links">
+<a href="/">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html">信任中心</a>
+<a href="#" title="即将上线">隐私政策</a>
+<a href="#" title="即将上线">退款政策</a>
+<a href="#" title="即将上线">服务条款</a>
+</div>
+</div>
+<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="mailto:guomanman@joyunzhiling.cn" style="color:var(--text3);text-decoration:underline">guomanman@joyunzhiling.cn</a></div>
+</div>
+</footer>
+
+<!-- VERIFY MODAL -->
+<div class="verify-overlay" id="verifyOverlay" onclick="if(event.target===this)closeVerifyModal()">
+<div class="verify-card">
+  <button class="verify-close" onclick="closeVerifyModal()">×</button>
+  <div id="verifyForm">
+    <!-- Step 1: 快速体验 -->
+    <div id="verifyStep1">
+      <h2 style="font-size:22px;font-weight:700;color:var(--dark);margin-bottom:6px">归因验证</h2>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">填写信息，Fly帮你算出真实归因结果</p><div style="font-size:11px;color:#64748B;margin-top:4px">5层运行态：Layer 1 Identity → Layer 2 Trust → Layer 3 Verification → Layer 4 Attribution → Layer 5 Governance，与 <a href="/agent-registry.html" style="color:#2563EB">Agent Registry</a> 字段一一映射。</div>
+      <div>
+        <div class="verify-field">
+          <label>邮箱 <span style="color:#DC2626">*</span></label>
+          <input type="email" id="v_email" placeholder="your@email.com" required>
+        </div>
+        <div class="verify-field">
+          <label>行业 <span style="color:#DC2626">*</span></label>
+          <select id="v_industry">
+            <option value="">请选择</option>
+            <option>美容美肤</option><option>口腔齿科</option><option>教育培训</option>
+            <option>健身运动</option><option>花店鲜花</option><option>宠物服务</option>
+            <option>餐饮美食</option><option>家政服务</option><option>健康养生</option><option>零售电商</option><option>其他</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>投流渠道 <span style="color:#DC2626">*</span></label>
+          <select id="v_channel">
+            <option value="">请选择</option>
+            <option>抖音</option><option>小红书</option><option>微信</option>
+            <option>美团</option><option>AI搜索推荐</option><option>其他</option>
+          </select>
+        </div>
+      </div>
+      <button class="verify-submit" onclick="goStep2()" style="width:100%">下一步：深度验证</button>
+      <button onclick="submitQuick()" style="width:100%;margin-top:8px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:var(--sans)">快速体验（仅3项）</button>
+    </div>
+
+    <!-- Step 2: 深度验证 -->
+    <div id="verifyStep2" style="display:none">
+      <h2 style="font-size:22px;font-weight:700;color:var(--dark);margin-bottom:6px">深度验证</h2>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">补充成交数据，获取真实归因结果</p>
+      <div>
+        <div class="verify-field">
+          <label>店铺/公司名</label>
+          <input type="text" id="v_shop" placeholder="选填">
+        </div>
+        <div class="verify-field">
+          <label>城市</label>
+          <input type="text" id="v_city" placeholder="选填">
+        </div>
+        <div class="verify-field">
+          <label>AI投放内容链接</label>
+          <input type="text" id="v_link" placeholder="选填，如抖音视频链接">
+        </div>
+        <div class="verify-field">
+          <label>最近一单咨询来源</label>
+          <select id="v_source">
+            <option value="">选填</option>
+            <option>抖音AI推荐</option><option>小红书笔记</option><option>微信朋友圈</option>
+            <option>美团搜索</option><option>AI搜索推荐</option><option>老客转介绍</option><option>不清楚</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>是否到店核销</label>
+          <select id="v_visit">
+            <option value="">选填</option>
+            <option value="yes">是，到店了</option><option value="no">否，没来</option><option value="unknown">不确定</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>成交金额（元）</label>
+          <input type="number" id="v_amount" placeholder="选填，如298">
+        </div>
+      </div>
+      <button class="verify-submit" onclick="submitVerify()" style="width:100%">提交验证，看归因结果</button>
+      <button onclick="document.getElementById('verifyStep2').style.display='none';document.getElementById('verifyStep1').style.display='block'" style="width:100%;margin-top:8px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:var(--sans)">返回上一步</button>
+    </div>
+  </div>
+  <!-- 验证结果页 -->
+  <div id="verifyResult" style="display:none;padding:8px 0">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#60A5FA);color:#fff;font-size:24px;margin-bottom:12px">✓</div>
+      <h2 style="font-size:20px;font-weight:700;color:var(--dark);margin-bottom:4px">归因验证结果</h2>
+      <p style="font-size:12px;color:var(--text2)" id="vrSummary"></p>
+    </div>
+    <div id="vrTrustScore" style="background:#F0F9FF;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #BFDBFE">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:10px">归因信任评分</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
+        <div style="font-size:36px;font-weight:700;color:var(--dark)" id="vrScoreNum">--</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--dark)" id="vrScoreLabel">--</div>
+          <div style="font-size:12px;font-weight:700;color:#2563EB" id="vrScoreTier">--</div>
+        </div>
+      </div>
+      <div style="background:#E2E8F0;border-radius:4px;height:6px;margin-bottom:10px;overflow:hidden">
+        <div id="vrScoreBar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);width:0%;transition:width 0.6s"></div>
+      </div>
+      <div id="vrScoreDetail" style="font-size:12px;color:#64748B;line-height:1.8"></div>
+    </div>
+
+    
+    <div id="vrVerdict" style="background:#F8FAFC;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #E2E8F0">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">验证判定</div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:8px">基于提交数据的真实性与完整性自动判定</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px">
+        <div id="vrV1" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">真实咨询</div>
+          <div id="vrV1Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV1Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+        <div id="vrV2" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">真实到店</div>
+          <div id="vrV2Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV2Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+        <div id="vrV3" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">刷量检测</div>
+          <div id="vrV3Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV3Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="vrAuditTrail" style="background:#FAFAFA;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #E2E8F0">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">审计存证</div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:8px">本次验证行为已记录，哈希链校验不可篡改</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+        <div><span style="color:#94A3B8">Trace ID</span><div id="vrTraceId" style="color:#475569;font-family:monospace;word-break:break-all">--</div></div>
+        <div><span style="color:#94A3B8">时间戳</span><div id="vrTimestamp" style="color:#475569">--</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:12px">
+        <span style="color:#94A3B8">SHA-256</span>
+        <div id="vrHash" style="color:#475569;font-family:monospace;font-size:11px;word-break:break-all;background:#fff;border-radius:6px;padding:8px;margin-top:4px;border:1px solid #E2E8F0">--</div>
+      </div>
+      <div style="margin-top:8px;font-size:12px">
+        <span style="color:#94A3B8">Prev Hash</span>
+        <div id="vrPrevHash" style="color:#94A3B8;font-family:monospace;font-size:11px;word-break:break-all;background:#fff;border-radius:6px;padding:8px;margin-top:4px;border:1px solid #E2E8F0">--</div>
+      </div>
+    </div>
+
+    <div style="background:#F8FAFC;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">投流归因现状</div>
+      <div id="vrStatus" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="background:#F0F9FF;border-radius:12px;padding:16px;margin-bottom:14px;border-left:3px solid #2563EB">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:8px">Fly归因验证方案</div>
+      <div id="vrPlan" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="background:#FFF7ED;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #F59E0B">
+      <div style="font-size:13px;font-weight:600;color:#D97706;margin-bottom:8px">流失预警</div>
+      <div id="vrRisk" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div id="vrTips" style="display:none;background:#EFF6FF;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #2563EB">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:8px">提分建议</div>
+      <div id="vrTipsList" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+
+    <div id="vrROI" style="display:none;background:#F0FDF4;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #22C55E">
+      <div style="font-size:13px;font-weight:600;color:#16A34A;margin-bottom:8px">归因测算</div>
+      <div id="vrROIDetail" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-p" style="width:100%;font-size:14px" onclick="closeVerifyModal();openFlyChat()">和Fly聊聊，获取详细验证方案</button>
+      <p style="font-size:11px;color:#94A3B8;margin-top:8px">验证结果已发送至你的邮箱</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="legal-overlay" id="legalOverlay">
+<div class="legal-card" id="legalContent"></div>
+</div>
+
+<script>
+function copyWechat(){
+  navigator.clipboard.writeText("One1913U");
+  const b=event.target.closest('button');
+  if(b){const orig=b.textContent;b.textContent="已复制微信号 ✓";setTimeout(()=>{b.textContent=orig},2000)}
+}
+
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+  });
+});
+
+document.querySelectorAll('a[href^="#"],nav a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})});
+});
+
+function showPrivacy(){document.getElementById('legalContent').innerHTML=`<h2>隐私政策</h2><p style="color:var(--text3);margin-bottom:14px">最后更新：2026年5月</p><h3>数据收集</h3><p>我们仅收集action_id、脱敏ID、订单号、金额、访问时间。不收集身份证号、银行卡号等敏感信息。</p><h3>数据使用</h3><p>您的数据仅用于：1）归因验证和优化建议；2）生成经营报告；3）优化服务质量。不会出售给第三方。</p><h3>数据安全</h3><p>采用HMAC-SHA256+随机盐脱敏，不可逆还原。核心经营行为记录经可信验证后永久保存，不可篡改。日常数据存储在加密服务器中，仅您本人可访问。</p><h3>您的权利</h3><p>您有权随时查看、导出您的数据。其他数据可在要求后7个工作日内删除。</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+function showTerms(){document.getElementById('legalContent').innerHTML=`<h2>服务条款</h2><p style="color:var(--text3);margin-bottom:14px">最后更新：2026年5月</p><h3>服务内容</h3><p>FlyAgent提供AI投流归因验证、GEO优化、经营可信验证等服务。AI生成建议后需经用户确认方可执行。</p><h3>付费方式</h3><p>沙盒验证通过后按需接入，详询运营团队。</p><h3>免责声明</h3><p>AI生成的诊断建议和内容仅供参考，经营决策由用户自行承担。</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+function showContact(){document.getElementById('legalContent').innerHTML=`<h2>联系我们</h2><p>微信：One1913U</p><p>邮箱：guomanman@joyunzhiling.cn</p><p>公司：杭州九运智领科技</p><p>工作时间：周一至周五 9:00-18:00</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+
+// 归因信任评分计算
+function _flyBuildStatus(industry,channel,source,visit,amount){var parts=[industry+"门店，"+channel+"投流"];if(source)parts.push("咨询来源："+source);if(visit==="yes")parts.push("到店：已核销");else if(visit==="no")parts.push("到店：未到店");if(amount)parts.push("成交：¥"+amount);var filled=0;if(source)filled++;if(visit)filled++;if(amount)filled++;if(filled===0)parts.push("归因数据：无");else parts.push("归因数据："+filled+"/3项");return parts.join("｜")}
+
+function _flyBuildPlan(industry,channel,source,visit,amount){var has=[];var need=[];if(source)has.push("咨询来源已追踪");else need.push("咨询来源");if(visit==="yes")has.push("到店已核销");else if(visit==="no")has.push("到店未核销");else need.push("到店核销");if(amount)has.push("成交金额已关联");else need.push("成交金额");if(has.length===3)return"归因链路完整："+has.join("→");if(has.length>0)return"已验证："+has.join("；")+"。待验证："+need.join("、");return"待验证：咨询来源、到店核销、成交金额"}
+
+function _flyBuildRisk(industry,channel,source,visit,amount){if(source&&visit==="yes"&&amount)return"单笔归因已闭环，需持续追踪验证稳定性";if(visit==="no")return"咨询后未到店，该笔投流未产生成交";var filled=0;if(source)filled++;if(visit)filled++;if(amount)filled++;if(filled===0)return"无归因数据，投流效果未知";return"归因数据不完整（"+filled+"/3），结论不可靠"}
+
+function _flyChannelFeature(ch){var m={"抖音":"抖音投流费用占比最大，精准归因难度也最高","小红书":"小红书种草周期长但复购率高","微信":"微信私域归因最难，客户质量最高","美团":"美团流量精准但抽成压利","AI搜索推荐":"AI渠道新且效果未知，沙盒验证能降低试错","其他":"多渠道投放时归因更重要"};return m[ch]||m["其他"]}
+
+function _flyTrustScore(industry, channel, source, visit, amount){
+  var score=0, details=[], tips=[];
+  var indBase={'美容美肤':12,'口腔齿科':14,'教育培训':10,'健身运动':8,'花店鲜花':6,'宠物服务':9,'餐饮美食':11,'家政服务':7,'健康养生':10,'零售电商':13,'其他':5};
+  var indScore=indBase[industry]||5;
+  score+=indScore;
+  details.push('行业归因适配 +'+indScore);
+  if(indScore<10)tips.push('行业归因方案少，更需Fly验证');
+  var chBase={'抖音':13,'小红书':10,'微信':8,'美团':12,'AI搜索推荐':14,'其他':6};
+  var chScore=chBase[channel]||6;
+  score+=chScore;
+  details.push('渠道可追踪性 +'+chScore);
+  if(chScore<10)tips.push('该渠道归因难度高，需额外埋点');
+  var matchMap={'美容美肤|抖音':13,'美容美肤|小红书':14,'美容美肤|微信':10,'口腔齿科|美团':14,'口腔齿科|抖音':12,'口腔齿科|微信':11,'教育培训|抖音':11,'教育培训|微信':13,'餐饮美食|美团':14,'餐饮美食|抖音':12,'零售电商|AI搜索推荐':14,'零售电商|抖音':12,'健身运动|小红书':13,'花店鲜花|小红书':14,'宠物服务|小红书':12,'家政服务|微信':12,'健康养生|微信':12,'健康养生|小红书':11};
+  var matchKey=industry+'|'+channel;
+  var matchScore=matchMap[matchKey]||8;
+  score+=matchScore;
+  details.push('渠道行业匹配 +'+matchScore);
+  if(matchScore<10)tips.push('该渠道与行业匹配度偏低');
+  var dataScore=0;
+  if(source)dataScore+=8;if(visit)dataScore+=9;if(amount)dataScore+=8;
+  score+=dataScore;
+  details.push('数据完整度 +'+dataScore);
+  if(dataScore===0)tips.push('补充咨询来源和到店数据可大幅提分');
+  else if(dataScore<17)tips.push('补充成交金额可再提升');
+  var actScore=0;
+  if(visit==='yes')actScore=18;else if(visit==='no')actScore=10;else actScore=3;
+  score+=actScore;
+  details.push('行为验证深度 +'+actScore);
+  if(visit!=='yes')tips.push('到店核销是验证链关键环节');
+  var closure=0;
+  if(source&&visit==='yes'&&amount)closure=10;else if(source&&visit==='yes')closure=7;else if(source||visit==='yes')closure=4;else closure=0;
+  score+=closure;
+  details.push('归因闭环度 +'+closure);
+  if(closure<7)tips.push('完整归因闭环=咨询来源+到店核销+成交金额');
+  var tier='T1',label='不可信';
+  if(score>=85){tier='T5';label='高可信';}
+  else if(score>=70){tier='T4';label='可信';}
+  else if(score>=50){tier='T3';label='已验证';}
+  else if(score>=30){tier='T2';label='待验证';}
+  else{tier='T1';label='不可信';}
+  return {score:score,tier:tier,label:label,details:details,tips:tips};
+}
+
+
+function _flyVerdict(source,visit,amount){
+  var v1=document.getElementById('vrV1'),v2=document.getElementById('vrV2'),v3=document.getElementById('vrV3');
+  var v1i=document.getElementById('vrV1Icon'),v1l=document.getElementById('vrV1Label');
+  var v2i=document.getElementById('vrV2Icon'),v2l=document.getElementById('vrV2Label');
+  var v3i=document.getElementById('vrV3Icon'),v3l=document.getElementById('vrV3Label');
+  // 真实咨询判定
+  if(source){
+    v1i.textContent='✓';v1l.textContent='已验证';v1l.style.color='#2563EB';v1.style.borderColor='#BFDBFE';v1.style.background='#F0F9FF';
+  }else{
+    v1i.textContent='⏳';v1l.textContent='待验证';v1l.style.color='#64748B';v1.style.borderColor='#E2E8F0';v1.style.background='#fff';
+  }
+  // 真实到店判定
+  if(visit==='yes'){
+    v2i.textContent='✓';v2l.textContent='已核销';v2l.style.color='#2563EB';v2.style.borderColor='#BFDBFE';v2.style.background='#F0F9FF';
+  }else if(visit==='no'){
+    v2i.textContent='✗';v2l.textContent='未到店';v2l.style.color='#DC2626';v2.style.borderColor='#FECACA';v2.style.background='#FEF2F2';
+  }else{
+    v2i.textContent='⏳';v2l.textContent='待验证';v2l.style.color='#64748B';v2.style.borderColor='#E2E8F0';v2.style.background='#fff';
+  }
+  // 刷量检测判定
+  if(source&&visit==='yes'&&amount){
+    v3i.textContent='✓';v3l.textContent='无异常';v3l.style.color='#2563EB';v3.style.borderColor='#BFDBFE';v3.style.background='#F0F9FF';
+  }else if(visit==='no'&&source){
+    v3i.textContent='⚠';v3l.textContent='疑似刷量';v3l.style.color='#D97706';v3.style.borderColor='#FDE68A';v3.style.background='#FFFBEB';
+  }else{
+    v3i.textContent='⏳';v3l.textContent='数据不足';v3l.style.color='#64748B';v3.style.borderColor='#E2E8F0';v3.style.background='#fff';
+  }
+}
+
+function openVerifyModal(){document.getElementById("verifyOverlay").classList.add("show");document.getElementById("verifyForm").style.display="block";document.getElementById("verifyStep1").style.display="block";document.getElementById("verifyStep2").style.display="none";document.getElementById("verifyResult").style.display="none"}
+// ========== 审计存证（哈希链） ==========
+async function _flyAuditTrail(data){
+  var traceId='fly-'+Date.now().toString(36)+'-'+Math.random().toString(36).substr(2,6);
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  var prevHash='';
+  try{var chain=JSON.parse(localStorage.getItem('fly_audit_chain')||'[]');if(chain.length>0)prevHash=chain[chain.length-1].hash;}catch(e){}
+  var raw=traceId+ts+JSON.stringify(data)+prevHash;
+  var hash='';
+  try{
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(raw));
+    var arr=Array.from(new Uint8Array(buf));
+    hash=arr.map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+  }catch(e){
+    var h=0;for(var i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}hash=Math.abs(h).toString(16).padStart(16,'0');
+  }
+  var record={traceId:traceId,ts:ts,hash:hash,prevHash:prevHash};
+  try{var chain=JSON.parse(localStorage.getItem('fly_audit_chain')||'[]');chain.push(record);if(chain.length>50)chain=chain.slice(-50);localStorage.setItem('fly_audit_chain',JSON.stringify(chain));}catch(e){}
+  document.getElementById('vrTraceId').textContent=traceId;
+  document.getElementById('vrTimestamp').textContent=ts;
+  document.getElementById('vrHash').textContent=hash;
+  document.getElementById('vrPrevHash').textContent=prevHash||'（首条记录）';
+}
+
+function goStep2(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value;var channel=document.getElementById("v_channel").value;if(!industry||!channel){alert("请选择行业和投流渠道");return}document.getElementById("verifyStep1").style.display="none";document.getElementById("verifyStep2").style.display="block"}function submitQuick(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value||"其他";var channel=document.getElementById("v_channel").value||"其他";var info=JSON.stringify({email:email,industry:industry,channel:channel,time:new Date().toISOString()});try{var arr=JSON.parse(localStorage.getItem("fly_leads")||"[]");arr.push(info);localStorage.setItem("fly_leads",JSON.stringify(arr))}catch(e){}document.getElementById("verifyForm").style.display="none";document.getElementById("vrSummary").textContent=industry+" · "+channel;document.getElementById("vrStatus").innerHTML=_flyBuildStatus(industry,channel,"","","")+'<br><span style="color:#94A3B8;font-size:12px">渠道特征：'+_flyChannelFeature(channel)+'</span>';document.getElementById("vrPlan").textContent=_flyBuildPlan(industry,channel,"","","");document.getElementById("vrRisk").textContent=_flyBuildRisk(industry,channel,"","","");var ts=_flyTrustScore(industry,channel,"","","");document.getElementById("vrScoreNum").textContent=ts.score;document.getElementById("vrScoreLabel").textContent=ts.label;document.getElementById("vrScoreTier").textContent=ts.tier;document.getElementById("vrScoreBar").style.width=ts.score+"%";document.getElementById("vrScoreDetail").innerHTML=ts.details.map(function(d){return"· "+d}).join("<br>");_flyAuditTrail({email:email,industry:industry,channel:channel});if(ts.tips&&ts.tips.length>0){document.getElementById("vrTips").style.display="block";document.getElementById("vrTipsList").innerHTML=ts.tips.map(function(t){return"→ "+t}).join("<br>");}else{document.getElementById("vrTips").style.display="none";}_flyVerdict("","","");document.getElementById("verifyResult").style.display="block"}function closeVerifyModal(){document.getElementById("verifyOverlay").classList.remove("show")}
+
+function submitVerify(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value||"其他";var channel=document.getElementById("v_channel").value||"其他";var shop=document.getElementById("v_shop").value||"";var city=document.getElementById("v_city").value||"";var link=document.getElementById("v_link").value||"";var source=document.getElementById("v_source").value||"";var visit=document.getElementById("v_visit").value||"";var amount=document.getElementById("v_amount").value||"";var info=JSON.stringify({email:email,industry:industry,channel:channel,shop:shop,city:city,link:link,source:source,visit:visit,amount:amount,time:new Date().toISOString()});try{var arr=JSON.parse(localStorage.getItem("fly_leads")||"[]");arr.push(info);localStorage.setItem("fly_leads",JSON.stringify(arr))}catch(e){}document.getElementById("verifyForm").style.display="none";document.getElementById("vrSummary").textContent=industry+" · "+channel+(city?" · "+city:"");document.getElementById("vrStatus").innerHTML=_flyBuildStatus(industry,channel,source,visit,amount)+'<br><span style="color:#94A3B8;font-size:12px">渠道特征：'+_flyChannelFeature(channel)+'</span>';document.getElementById("vrPlan").textContent=_flyBuildPlan(industry,channel,source,visit,amount);document.getElementById("vrRisk").textContent=_flyBuildRisk(industry,channel,source,visit,amount);if(source||visit||amount){var roiText="最近一单归因：";if(source)roiText+="咨询来自"+source;if(visit==="yes")roiText+=" → 已到店核销";else if(visit==="no")roiText+=" → 未到店（流失）";else roiText+=" → 到店情况未知";if(amount)roiText+=" → 成交¥"+amount;document.getElementById("vrROI").style.display="block";document.getElementById("vrROIDetail").textContent=roiText}var ts=_flyTrustScore(industry,channel,source,visit,amount);document.getElementById("vrScoreNum").textContent=ts.score;document.getElementById("vrScoreLabel").textContent=ts.label;document.getElementById("vrScoreTier").textContent=ts.tier;document.getElementById("vrScoreBar").style.width=ts.score+"%";document.getElementById("vrScoreDetail").innerHTML=ts.details.map(function(d){return"· "+d}).join("<br>");_flyAuditTrail({email:email,industry:industry,channel:channel,shop:shop,city:city,source:source,visit:visit,amount:amount});if(ts.tips&&ts.tips.length>0){document.getElementById("vrTips").style.display="block";document.getElementById("vrTipsList").innerHTML=ts.tips.map(function(t){return"→ "+t}).join("<br>");}else{document.getElementById("vrTips").style.display="none";}_flyVerdict(source,visit,amount);document.getElementById("verifyResult").style.display="block"}
+
+
+// ========== Fly自建聊天UI（Gateway模式） ==========
+var _flyConversationId = null;
+var _flyStreaming = false;
+
+var _flyGreetingShown = false;
+function openFlyChat() {
+  var vo=document.getElementById('verifyOverlay'); if(vo) vo.classList.remove('show');
+  var lo=document.getElementById('legalOverlay'); if(lo) lo.classList.remove('show');
+  var panel=document.getElementById('flyChatPanel');
+  if(panel) {
+    panel.classList.add('open');
+    if(!_flyGreetingShown && !_flyConversationId){
+      _flyGreetingShown=true;
+      _flyAppendMsg('bot','您好！我是Fly验证助手，专注解决AI投流“流量进、钱包空”的糊涂账，今天Fly帮你用数据，把每一分花出去的钱，利润赚没赚，算得明明白白……告诉Fly你现在最想解决哪个点，Fly帮你算出真实ROI……');
+    }
+    document.getElementById('flyChatInput').focus();
+  }
+}
+
+function closeFlyChat() {
+  var panel=document.getElementById('flyChatPanel');
+  if(panel) panel.classList.remove('open');
+}
+
+function _flyAppendMsg(role, text) {
+  var box=document.getElementById('flyChatMessages');
+  var div=document.createElement('div');
+  div.className='fly-msg fly-msg-'+role;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+  return div;
+}
+
+async function _flySend(){
+  var input=document.getElementById('flyChatInput');
+  var msg=input.value.trim();
+  if(!msg||_flyStreaming) return;
+  _flyStreaming=true;
+  input.value='';
+  _flyAppendMsg('user',msg);
+  var botDiv=_flyAppendMsg('bot','...');
+
+  try{
+    var body={message:msg};
+    if(_flyConversationId) body.conversation_id=_flyConversationId;
+
+    var res=await fetch('https://api.fly-agent.xyz/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+
+    if(!res.ok){
+      botDiv.textContent='\u8fde\u63a5\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5';
+      _flyStreaming=false;
+      return;
+    }
+
+    var reader=res.body.getReader();
+    var decoder=new TextDecoder();
+    var buffer='';
+    var fullText='';
+    var gotCid=false;
+
+    while(true){
+      var chunk=await reader.read();
+      if(chunk.done) break;
+      buffer+=decoder.decode(chunk.value,{stream:true});
+      var parts=buffer.split('\n\n');
+      buffer=parts.pop()||'';
+      for(var i=0;i<parts.length;i++){
+        var block=parts[i].trim();
+        if(!block) continue;
+        var lines=block.split('\n');
+        var dataLine='';
+        var sseType='';
+        for(var j=0;j<lines.length;j++){
+          if(lines[j].startsWith('event:'))sseType=lines[j].substring(6).trim();
+          if(lines[j].startsWith('data:'))dataLine=lines[j].substring(5).trim();
+        }
+        if(!dataLine||dataLine==='[DONE]') continue;
+        try{
+          var evt=JSON.parse(dataLine);
+          if(!gotCid&&evt.conversation_id){_flyConversationId=evt.conversation_id;gotCid=true;}
+          if(evt.type==='answer'&&evt.content&&sseType==='conversation.message.delta'){
+            fullText+=evt.content;
+            botDiv.textContent=fullText;
+            document.getElementById('flyChatMessages').scrollTop=99999;
+          }
+          if(evt.type==='answer'&&evt.content&&sseType==='conversation.message.completed'&&!fullText){
+            fullText=evt.content;
+            botDiv.textContent=fullText;
+          }
+        }catch(pe){}
+      }
+    }
+    if(!fullText) botDiv.textContent='\u6682\u65e0\u56de\u590d';
+  }catch(e){
+    botDiv.textContent='\u7f51\u7edc\u9519\u8bef\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5';
+  }
+  _flyStreaming=false;
+}
+
+// 回车发送
+document.addEventListener('DOMContentLoaded',function(){
+  var inp=document.getElementById('flyChatInput');
+  if(inp) inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_flySend();}
+  });
+});
+</script>
+
+<!-- ========== Fly自建聊天面板（Gateway模式） ========== -->
+<div id="flyChatPanel" class="fly-chat-panel">
+  <div class="fly-chat-header">
+    <span style="font-weight:700;color:#0F172A">Fly</span>
+    <span style="color:#94A3B8;font-size:12px;margin-left:4px">· 信任基础设施</span>
+    <button class="fly-chat-close" onclick="closeFlyChat()" title="关闭">✕</button>
+  </div>
+  <div id="flyChatMessages" class="fly-chat-messages">
+  </div>
+  <div class="fly-chat-input-bar">
+    <input id="flyChatInput" type="text" placeholder="输入你的问题..." autocomplete="off" />
+    <button onclick="_flySend()" title="发送">➤</button>
+  </div>
+</div>
+
+</body>
+</html>
