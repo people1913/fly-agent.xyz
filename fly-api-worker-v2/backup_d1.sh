@@ -14,7 +14,7 @@ set -e
 
 ACCOUNT_ID="014fc3114b2e2befeac9aaaf08a09a5b"
 DATABASE_ID="71a75dc8-76c5-4563-bf6f-0aa47f76ff95"
-CF_API_TOKEN="REDACTED_TOKEN"
+CF_API_TOKEN="${CF_API_TOKEN:?请设置环境变量 CF_API_TOKEN}"
 WORKER_BACKUP_URL="https://api.fly-agent.xyz/v1/backup/d1"
 WORKER_API_KEY="fly_demo_key_2026"
 

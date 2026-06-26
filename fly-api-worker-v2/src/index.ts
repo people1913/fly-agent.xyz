@@ -42,6 +42,7 @@ interface Env {
   IP_SALT: string;
   API_KEYS: string;
   LEDGER_PRIVATE_KEY: string;  // Trust Ledger 签名私钥
+  CF_API_TOKEN: string;        // Cloudflare API Token（通过 wrangler secret 设置）
 }
 
 type SignalType = "impression" | "click" | "consult" | "booking" | "deal";
@@ -1239,7 +1240,7 @@ export default {
           {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer REDACTED_TOKEN`,
+              'Authorization': `Bearer ${env.CF_API_TOKEN}`,
               'Content-Type': 'application/octet-stream'
             },
             body: sqlContent
