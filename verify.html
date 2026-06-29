@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <link rel="canonical" href="https://fly-agent.xyz/verify">
-<meta name="description" content="Fly Verify — 验证 AI 推荐，生成 Fly Trust Record">
+<meta name="description" content="Fly Verify — Issue a verifiable Trust Record for any AI recommendation">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fly Verify</title>
@@ -25,41 +25,29 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 .topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
 .content{padding:32px 40px 60px 48px;max-width:900px;overflow-y:auto}
 
-/* Hero Section */
-.hero{text-align:center;padding:48px 0 40px}
-.hero h2{font-size:28px;font-weight:800;color:var(--dark);letter-spacing:-.5px;margin-bottom:8px}
-.hero p{font-size:15px;color:var(--text3);margin-bottom:32px}
+/* Hero */
+.hero{text-align:center;padding:48px 0 24px}
+.hero h2{font-size:32px;font-weight:800;color:var(--dark);letter-spacing:-.5px;margin-bottom:8px;line-height:1.2}
+.hero .subtitle{font-size:18px;font-weight:600;color:var(--deep-green);margin-bottom:12px}
+.hero .desc{font-size:14px;color:var(--text3);max-width:520px;margin:0 auto}
+
+/* Value Proposition */
+.value-prop{text-align:center;padding:0 0 32px;font-size:15px;font-weight:500;color:var(--text3);font-style:italic}
 
 /* Verify Input */
-.verify-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:40px}
+.verify-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:40px}
 .verify-field{margin-bottom:16px}
-.verify-field label{display:block;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.verify-field input,.verify-field textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s}
-.verify-field input:focus,.verify-field textarea:focus{outline:none;border-color:var(--deep-green)}
-.verify-field textarea{min-height:80px;resize:vertical}
-.verify-actions{display:flex;gap:12px;align-items:center;margin-top:20px}
-.btn-verify{padding:12px 32px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
-.btn-verify:hover{opacity:.9}
-.btn-verify:disabled{opacity:.5;cursor:not-allowed}
-.btn-upload{padding:12px 24px;background:#fff;color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s;font-family:var(--sans)}
+.verify-field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.verify-field textarea{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;min-height:100px;resize:vertical;line-height:1.6}
+.verify-field textarea:focus{outline:none;border-color:var(--deep-green)}
+.verify-actions{display:flex;gap:12px;align-items:center;margin-top:16px}
+.btn-verify{padding:14px 36px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.btn-verify:hover{opacity:.9;transform:translateY(-1px)}
+.btn-verify:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-upload{padding:14px 24px;background:#fff;color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s;font-family:var(--sans)}
 .btn-upload:hover{border-color:var(--deep-green)}
-.verify-hint{font-size:12px;color:var(--text4);margin-top:8px}
 
-/* Result */
-.result-box{display:none;background:var(--mint);border:1px solid var(--mint-border);border-radius:12px;padding:24px;margin-bottom:40px}
-.result-box.show{display:block}
-.result-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.result-icon{width:40px;height:40px;background:var(--deep-green);border-radius:50%;display:flex;align-items:center;justify-content:center}
-.result-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
-.result-title{font-size:18px;font-weight:700;color:var(--deep-green)}
-.result-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px}
-.result-item{background:#fff;border-radius:8px;padding:12px 16px}
-.result-item .label{font-size:10px;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.result-item .value{font-size:14px;font-weight:600;color:var(--dark);font-family:var(--mono)}
-.btn-record{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--deep-green);color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .2s}
-.btn-record:hover{opacity:.9}
-
-/* Recent Records */
+/* Example Records */
 .section-title{font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .record-list{display:flex;flex-direction:column;gap:8px;margin-bottom:48px}
 .record-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .2s;cursor:pointer;text-decoration:none;color:var(--dark)}
@@ -69,7 +57,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 .status-pending{background:#FEF3C7;color:#92400E}
 .status-verified{background:var(--mint);color:var(--deep-green)}
 .status-eligible{background:#DBEAFE;color:#1E40AF}
-.record-time{font-size:11px;color:var(--text4);font-family:var(--mono)}
 
 /* How it works */
 .how-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:48px}
@@ -83,11 +70,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 .how-arrow{display:flex;align-items:center;color:var(--text4);font-size:18px;padding-top:12px}
 
 /* Loading */
-.loading{display:none;text-align:center;padding:20px}
+.loading{display:none;text-align:center;padding:24px;margin-bottom:24px}
 .loading.show{display:block}
-.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--deep-green);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--deep-green);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:13px;color:var(--text3)}
+.loading-text{font-size:14px;color:var(--text3);font-weight:500}
+
+/* Success */
+.success-box{display:none;text-align:center;padding:32px 24px;margin-bottom:24px;background:var(--mint);border:1px solid var(--mint-border);border-radius:12px}
+.success-box.show{display:block}
+.success-icon{width:48px;height:48px;background:var(--deep-green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.success-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2.5}
+.success-title{font-size:18px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
+.success-record{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.success-hint{font-size:12px;color:var(--text4)}
 
 /* Error */
 .error-box{display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px;margin-bottom:16px}
@@ -96,8 +92,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 
 @media(max-width:768px){
 .content{padding:24px 16px}
-.hero{padding:32px 0 24px}
-.hero h2{font-size:22px}
+.hero{padding:32px 0 20px}
+.hero h2{font-size:24px}
+.hero .subtitle{font-size:16px}
 .how-steps{flex-direction:column}
 .how-arrow{display:none}
 .verify-actions{flex-direction:column}
@@ -115,32 +112,41 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 
 <!-- Hero -->
 <div class="hero">
-<h2>Fly Verify</h2>
-<p>为任意 AI 推荐生成 Fly Trust Record</p>
+<h2>Verify Any AI Recommendation</h2>
+<p class="subtitle">Issue a Fly Trust Record</p>
+<p class="desc">Generate a verifiable Trust Record with traceable evidence and attribution.</p>
 </div>
+
+<!-- Value Proposition -->
+<div class="value-prop">Every AI recommendation deserves a verifiable Trust Record.</div>
 
 <!-- Verify Input -->
 <div class="verify-box">
 <div class="verify-field">
-<label>AI 推荐来源</label>
-<input type="text" id="sourceName" placeholder="例如：ChatGPT、Claude、Coze Agent">
-</div>
-<div class="verify-field">
-<label>推荐内容 URL 或描述</label>
-<textarea id="evidenceInput" placeholder="粘贴 AI 推荐的链接，或描述推荐内容..."></textarea>
+<label>What would you like to verify?</label>
+<textarea id="evidenceInput" placeholder="Paste a URL, describe an AI recommendation, or upload a screenshot..."></textarea>
 </div>
 <div class="verify-actions">
-<button class="btn-verify" id="btnVerify" onclick="doVerify()">Verify</button>
-<button class="btn-upload" onclick="document.getElementById('fileInput').click()">上传截图</button>
+<button class="btn-verify" id="btnVerify" onclick="doVerify()">Issue Trust Record</button>
+<button class="btn-upload" onclick="document.getElementById('fileInput').click()">Upload Screenshot</button>
 <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(this)">
 </div>
-<div class="verify-hint">支持 URL、文本描述、或上传截图作为验证证据</div>
 </div>
 
 <!-- Loading -->
 <div class="loading" id="loading">
 <div class="loading-spinner"></div>
-<div class="loading-text">正在验证...</div>
+<div class="loading-text" id="loadingText">Issuing Fly Trust Record...</div>
+</div>
+
+<!-- Success -->
+<div class="success-box" id="successBox">
+<div class="success-icon">
+<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+</div>
+<div class="success-title">Trust Record Issued</div>
+<div class="success-record" id="successRecordId">-</div>
+<div class="success-hint">Redirecting to Trust Record...</div>
 </div>
 
 <!-- Error -->
@@ -148,35 +154,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <div class="error-text" id="errorText"></div>
 </div>
 
-<!-- Result -->
-<div class="result-box" id="resultBox">
-<div class="result-header">
-<div class="result-icon">
-<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-</div>
-<div class="result-title">验证完成</div>
-</div>
-<div class="result-meta">
-<div class="result-item">
-<div class="label">Record ID</div>
-<div class="value" id="resultId">-</div>
-</div>
-<div class="result-item">
-<div class="label">Trust Score</div>
-<div class="value" id="resultScore">-</div>
-</div>
-<div class="result-item">
-<div class="label">Status</div>
-<div class="value" id="resultStatus">-</div>
-</div>
-</div>
-<a class="btn-record" id="resultLink" href="#" target="_blank">
-查看 Trust Record →
-</a>
-</div>
-
-<!-- Recent Records -->
-<div class="section-title">Recent Trust Records</div>
+<!-- Example Records -->
+<div class="section-title">Example Trust Records</div>
 <div class="record-list" id="recordList">
 <!-- 动态加载 -->
 </div>
@@ -190,7 +169,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
 </div>
 <div class="how-step-label">Evidence</div>
-<div class="how-step-desc">提交 AI 推荐的证据</div>
+<div class="how-step-desc">Submit proof of the AI recommendation</div>
 </div>
 <div class="how-arrow">→</div>
 <div class="how-step">
@@ -198,7 +177,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>
 </div>
 <div class="how-step-label">Verification</div>
-<div class="how-step-desc">验证证据完整性</div>
+<div class="how-step-desc">Validate evidence integrity</div>
 </div>
 <div class="how-arrow">→</div>
 <div class="how-step">
@@ -206,7 +185,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
 </div>
 <div class="how-step-label">Trust</div>
-<div class="how-step-desc">计算信任评分</div>
+<div class="how-step-desc">Compute trust score</div>
 </div>
 <div class="how-arrow">→</div>
 <div class="how-step">
@@ -214,7 +193,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <svg viewBox="0 0 24 24"><path d="M12 1v22m-4-4l4 4 4-4"/><path d="M5 12h14"/></svg>
 </div>
 <div class="how-step-label">Ledger</div>
-<div class="how-step-desc">链上存证，不可篡改</div>
+<div class="how-step-desc">On-chain attestation, immutable</div>
 </div>
 </div>
 </div>
@@ -227,131 +206,148 @@ const API_BASE = 'https://api.fly-agent.xyz';
 const API_KEY = 'fly_demo_key_2026';
 
 async function doVerify() {
-const sourceName = document.getElementById('sourceName').value.trim() || 'AI Agent';
-const evidenceInput = document.getElementById('evidenceInput').value.trim();
+  const evidenceInput = document.getElementById('evidenceInput').value.trim();
 
-if (!evidenceInput) {
-showError('请输入验证内容');
-return;
-}
+  if (!evidenceInput) {
+    showError('Please enter something to verify.');
+    return;
+  }
 
-hideError();
-showLoading(true);
-document.getElementById('resultBox').classList.remove('show');
-document.getElementById('btnVerify').disabled = true;
+  // 隐藏之前的错误和成功状态
+  hideError();
+  hideSuccess();
+  document.getElementById('btnVerify').disabled = true;
 
-try {
-const response = await fetch(`${API_BASE}/v1/verify`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': `Bearer ${API_KEY}`
-},
-body: JSON.stringify({
-source: {
-type: 'user-verify',
-name: sourceName
-},
-evidence: [{
-evidence_id: 'evi_user_001',
-type: 'user_input',
-description: evidenceInput,
-data: {
-content: evidenceInput,
-timestamp: new Date().toISOString()
-}
-}]
-})
-});
+  // Step 1: 显示 loading
+  showLoading(true, 'Issuing Fly Trust Record...');
 
-const data = await response.json();
+  // Auto-detect source from input content
+  const isUrl = /^https?:\/\//i.test(evidenceInput);
+  const sourceName = isUrl ? 'Web Source' : 'AI Recommendation';
 
-if (!response.ok) {
-throw new Error(data.error || '验证失败');
-}
+  try {
+    const response = await fetch(`${API_BASE}/v1/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        source: {
+          type: 'user-verify',
+          name: sourceName
+        },
+        evidence: [{
+          evidence_id: 'evi_user_001',
+          type: isUrl ? 'url' : 'user_input',
+          description: evidenceInput.substring(0, 200),
+          data: {
+            content: evidenceInput,
+            timestamp: new Date().toISOString()
+          }
+        }]
+      })
+    });
 
-showResult(data);
-} catch (err) {
-showError(err.message);
-} finally {
-showLoading(false);
-document.getElementById('btnVerify').disabled = false;
-}
-}
+    const data = await response.json();
 
-function showResult(data) {
-const box = document.getElementById('resultBox');
-document.getElementById('resultId').textContent = data.record_id || '-';
-document.getElementById('resultScore').textContent = data.trust?.score ? `${data.trust.score}%` : '-';
-document.getElementById('resultStatus').textContent = data.status || '-';
-document.getElementById('resultLink').href = `/trust-record/${data.record_id}`;
-box.classList.add('show');
+    if (!response.ok) {
+      throw new Error(data.error || 'Unable to issue Trust Record. Please check your input and try again.');
+    }
+
+    // Step 2: 显示成功状态
+    showLoading(false);
+    showSuccess(data.record_id);
+
+    // Step 3: 800ms 后自动跳转
+    setTimeout(() => {
+      window.location.href = `/trust-record/${data.record_id}`;
+    }, 800);
+
+  } catch (err) {
+    showLoading(false);
+    document.getElementById('btnVerify').disabled = false;
+    showError(err.message);
+  }
 }
 
 function showError(msg) {
-const box = document.getElementById('errorBox');
-document.getElementById('errorText').textContent = msg;
-box.classList.add('show');
+  const box = document.getElementById('errorBox');
+  document.getElementById('errorText').textContent = msg;
+  box.classList.add('show');
 }
 
 function hideError() {
-document.getElementById('errorBox').classList.remove('show');
+  document.getElementById('errorBox').classList.remove('show');
 }
 
-function showLoading(show) {
-document.getElementById('loading').classList.toggle('show', show);
+function showLoading(show, text) {
+  const el = document.getElementById('loading');
+  el.classList.toggle('show', show);
+  if (text) document.getElementById('loadingText').textContent = text;
+}
+
+function showSuccess(recordId) {
+  document.getElementById('successRecordId').textContent = recordId;
+  document.getElementById('successBox').classList.add('show');
+}
+
+function hideSuccess() {
+  document.getElementById('successBox').classList.remove('show');
 }
 
 function handleUpload(input) {
-if (input.files && input.files[0]) {
-const file = input.files[0];
-document.getElementById('evidenceInput').value = `[上传文件: ${file.name}]`;
-}
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    document.getElementById('evidenceInput').value = `[Screenshot: ${file.name}]`;
+  }
 }
 
-// Load recent records
-async function loadRecentRecords() {
-try {
-const response = await fetch(`${API_BASE}/v1/records/recent?limit=5`);
-if (response.ok) {
-const data = await response.json();
-renderRecords(data.records || []);
-return;
-}
-} catch (e) {}
+// Load example records
+async function loadRecords() {
+  try {
+    const response = await fetch(`${API_BASE}/v1/records/recent?limit=5`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.records && data.records.length > 0) {
+        renderRecords(data.records);
+        return;
+      }
+    }
+  } catch (e) {}
 
-// Fallback: show demo data
-renderRecords([
-{ record_id: 'FLY-20260628-00001', status: 'pending', created_at: '2026-06-28T12:35:34Z' }
-]);
+  // Fallback: show demo data
+  renderRecords([
+    { record_id: 'FLY-20260628-00001', status: 'verified', created_at: '2026-06-28T12:35:34Z' },
+    { record_id: 'FLY-20260628-00002', status: 'verified', created_at: '2026-06-28T14:22:10Z' },
+    { record_id: 'FLY-20260629-00001', status: 'pending', created_at: '2026-06-29T09:15:00Z' }
+  ]);
 }
 
 function renderRecords(records) {
-const list = document.getElementById('recordList');
-if (!records.length) {
-list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text4)">暂无记录</div>';
-return;
-}
+  const list = document.getElementById('recordList');
+  if (!records.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text4)">No records yet</div>';
+    return;
+  }
 
-list.innerHTML = records.map(r => {
-const statusClass = r.status === 'verified' ? 'status-verified' :
-r.status === 'eligible' ? 'status-eligible' : 'status-pending';
-const statusText = r.status === 'verified' ? 'Verified' :
-r.status === 'eligible' ? 'Eligible' : 'Pending';
-const time = r.created_at ? new Date(r.created_at).toLocaleDateString('zh-CN') : '';
+  list.innerHTML = records.map(r => {
+    const statusClass = r.status === 'verified' ? 'status-verified' :
+                        r.status === 'eligible' ? 'status-eligible' : 'status-pending';
+    const statusText = r.status === 'verified' ? 'Verified' :
+                       r.status === 'eligible' ? 'Eligible' : 'Pending';
 
-return `
-<a class="record-item" href="/trust-record/${r.record_id}">
-<span class="record-id">${r.record_id}</span>
-<span class="record-status ${statusClass}">${statusText}</span>
-<span class="record-time">${time}</span>
-</a>
-`;
-}).join('');
+    return `
+      <a class="record-item" href="/trust-record/${r.record_id}">
+        <span class="record-id">${r.record_id}</span>
+        <span class="record-status ${statusClass}">${statusText}</span>
+      </a>
+    `;
+  }).join('');
 }
 
 // Init
-loadRecentRecords();
+loadRecords();
 </script>
 </body>
 </html>
