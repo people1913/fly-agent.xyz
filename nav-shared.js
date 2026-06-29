@@ -128,11 +128,11 @@ body{display:flex;flex-wrap:wrap}\
 .nav-collapse-btn{width:32px!important;height:32px!important;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex!important;align-items:center!important;justify-content:center!important;color:#64748B;transition:all .15s;flex-shrink:0;padding:0!important}\
 .nav-collapse-btn:hover{background:#f1f5f9;color:#0F172A}\
 .nav-link{position:relative;display:flex;align-items:center;gap:8px;padding:6px 16px;color:var(--text2);text-decoration:none;transition:background .15s,color .15s;line-height:1.4;font-weight:500}\
-.nav-link[data-group=identity]:hover{color:#1A3D2E;background:rgba(26,61,46,.06)}\
-.nav-link[data-group=trust]:hover{color:#059669;background:rgba(5,150,105,.06)}\
-.nav-link[data-group=verification]:hover{color:#D97706;background:rgba(217,119,6,.06)}\
-.nav-link[data-group=attribution]:hover{color:#6366F1;background:rgba(99,102,241,.06)}\
-.nav-link[data-group=governance]:hover{color:#64748B;background:rgba(100,116,139,.06)}\
+.nav-link[data-group=fly]:hover{color:#1A3D2E;background:rgba(26,61,46,.06)}\
+.nav-link[data-group=source]:hover{color:#1A3D2E;background:rgba(26,61,46,.06)}\
+.nav-link[data-group=evidence]:hover{color:#D97706;background:rgba(217,119,6,.06)}\
+.nav-link[data-group=attribution]:hover{color:#059669;background:rgba(5,150,105,.06)}\
+.nav-link[data-group=settlement]:hover{color:#64748B;background:rgba(100,116,139,.06)}\
 .nav-link.active{font-weight:600}\
 .nav-link.active::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:0 2px 2px 0}\
 .nav-link svg{flex-shrink:0;opacity:.55;transition:opacity .15s;width:16px;height:16px}\
