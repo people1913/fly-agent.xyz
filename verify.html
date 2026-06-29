@@ -112,9 +112,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 
 <!-- Hero -->
 <div class="hero">
-<h2>Verify Any AI Recommendation <span style="font-size:16px;color:var(--text3);font-weight:400">验证任何 AI 推荐</span></h2>
-<p class="subtitle">Issue a Fly Trust Record <span style="font-size:14px;color:var(--text4);font-weight:400">签发 Fly 信任记录</span></p>
-<p class="desc">Generate a verifiable Trust Record with traceable evidence and attribution.<br>生成一份可验证的信任记录，包含可追溯的证据和归因。</p>
+<h2>Track AI Revenue Attribution <span style="font-size:16px;color:var(--text3);font-weight:400">追踪 AI 收入归因</span></h2>
+<p class="subtitle">Issue an Attribution Record <span style="font-size:14px;color:var(--text4);font-weight:400">签发归因记录</span></p>
+<p class="desc">Generate an Attribution Record with traceable evidence and revenue allocation.<br>生成一份归因记录，包含可追溯的证据和收入分配。</p>
 </div>
 
 <!-- Value Proposition -->
@@ -123,8 +123,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <!-- Verify Input -->
 <div class="verify-box">
 <div class="verify-field">
-<label>What AI claim would you like to verify? 你想验证什么 AI 主张？</label>
-<input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers for edge computing&#10;例如: Gemini suggested using React for web development" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;margin-bottom:12px">
+<label>What AI action generated revenue? 什么 AI 行为产生了收入？</label>
+<input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers, user signed up&#10;例如: Gemini suggested React, project generated $500" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;margin-bottom:12px">
 </div>
 <div class="verify-field">
 <label>Evidence 证据（可选）</label>
@@ -140,7 +140,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <!-- Loading -->
 <div class="loading" id="loading">
 <div class="loading-spinner"></div>
-<div class="loading-text" id="loadingText">Issuing Fly Trust Record... 正在签发信任记录...</div>
+<div class="loading-text" id="loadingText">Issuing Attribution Record... 正在签发归因记录...</div>
 </div>
 
 <!-- Success -->
@@ -159,7 +159,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 </div>
 
 <!-- Example Records -->
-<div class="section-title">Example Trust Records 示例信任记录</div>
+<div class="section-title">Example Attribution Records 示例归因记录</div>
 <div class="record-list" id="recordList">
 <!-- 动态加载 -->
 </div>
@@ -215,7 +215,7 @@ async function doVerify() {
 
   // Claim 必填（Fly 是归因验证，不是断言存储）
   if (!claimInput) {
-    showError('Please enter a claim to verify. Fly verifies AI recommendations, not assertions.');
+    showError('Please describe the AI action that generated revenue.');
     return;
   }
 
@@ -228,7 +228,7 @@ async function doVerify() {
   document.getElementById('btnVerify').disabled = true;
 
   // Step 1: 显示 loading
-  const loadingMsg = evidenceInput ? 'Issuing Fly Trust Record...' : 'Issuing Trust Record (Pending Evidence status)...';
+  const loadingMsg = evidenceInput ? 'Issuing Attribution Record...' : 'Issuing Attribution Record (Pending Evidence status)...';
   showLoading(true, loadingMsg);
 
   // Auto-detect source from input content
@@ -256,7 +256,12 @@ async function doVerify() {
             timestamp: new Date().toISOString()
           }
         }] : [],
-        claim: claim
+        claim: claim,
+        attestation: {
+          attestor: '郭满满',
+          type: 'user-confirm',
+          statement: 'I confirm this AI recommendation was made'
+        }
       })
     });
 
