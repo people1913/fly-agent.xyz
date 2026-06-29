@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <link rel="canonical" href="https://fly-agent.xyz/verify">
-<meta name="description" content="Fly Verify — Issue a verifiable Trust Record for any AI recommendation">
+<meta name="description" content="Fly — Track AI Revenue Attribution, issue verifiable records for every AI-generated revenue">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fly Verify</title>
+<title>Fly — Track AI Revenue Attribution</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -105,7 +105,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <script src="/nav-shared.js?v=20260629"></script>
 <div class="main">
 <div class="topbar">
-<h1>Fly Verify</h1>
+<h1>Fly — Attribution</h1>
 
 </div>
 <div class="content">
@@ -118,7 +118,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 </div>
 
 <!-- Value Proposition -->
-<div class="value-prop">Every AI recommendation deserves a verifiable Trust Record.<br>每一条 AI 推荐，都值得拥有一份可验证的信任记录。</div>
+<div class="value-prop">Every AI action that generates revenue deserves a verifiable Attribution Record.<br>每一条产生收入的 AI 行为，都值得拥有一份可验证的归因记录。</div>
 
 <!-- Verify Input -->
 <div class="verify-box">
@@ -131,7 +131,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <textarea id="evidenceInput" placeholder="Paste a URL, describe an AI recommendation, or upload a screenshot...&#10;粘贴链接、描述 AI 推荐内容，或上传截图..."></textarea>
 </div>
 <div class="verify-actions">
-<button class="btn-verify" id="btnVerify" onclick="doVerify()">Issue Trust Record 签发信任记录</button>
+<button class="btn-verify" id="btnVerify" onclick="doVerify()">Issue Attribution Record 签发归因记录</button>
 <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Upload Screenshot 上传截图</button>
 <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(this)">
 </div>
@@ -148,9 +148,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <div class="success-icon">
 <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
 </div>
-<div class="success-title">Trust Record Issued 信任记录已签发</div>
+<div class="success-title">Attribution Record Issued 归因记录已签发</div>
 <div class="success-record" id="successRecordId">-</div>
-<div class="success-hint">Redirecting to Trust Record... 正在跳转到信任记录...</div>
+<div class="success-hint">Redirecting to Attribution Record... 正在跳转到归因记录...</div>
 </div>
 
 <!-- Error -->
@@ -268,7 +268,7 @@ async function doVerify() {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Unable to issue Trust Record. Please check your input and try again.');
+      throw new Error(data.error || 'Unable to issue Attribution Record. Please check your input and try again.');
     }
 
     // Step 2: 显示成功状态
