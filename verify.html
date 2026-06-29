@@ -123,7 +123,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <!-- Verify Input -->
 <div class="verify-box">
 <div class="verify-field">
-<label>What would you like to verify? 你想验证什么？</label>
+<label>What AI claim would you like to verify? 你想验证什么 AI 主张？</label>
+<input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers for edge computing&#10;例如: Gemini suggested using React for web development" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;margin-bottom:12px">
+</div>
+<div class="verify-field">
+<label>Evidence 证据（可选）</label>
 <textarea id="evidenceInput" placeholder="Paste a URL, describe an AI recommendation, or upload a screenshot...&#10;粘贴链接、描述 AI 推荐内容，或上传截图..."></textarea>
 </div>
 <div class="verify-actions">
@@ -206,11 +210,20 @@ const API_BASE = 'https://api.fly-agent.xyz';
 const API_KEY = 'fly_demo_key_2026';
 
 async function doVerify() {
+  const claimInput = document.getElementById('claimInput').value.trim();
   const evidenceInput = document.getElementById('evidenceInput').value.trim();
 
-  if (!evidenceInput) {
-    showError('Please enter something to verify.');
+  if (!claimInput && !evidenceInput) {
+    showError('Please enter a claim or evidence to verify.');
     return;
+  }
+
+  // 如果没有 claim，用 evidence 的第一句话作为 claim（简单规则）
+  let claim = claimInput;
+  if (!claim && evidenceInput) {
+    // 提取第一句话（句号、问号、感叹号或换行符分割）
+    const firstSentence = evidenceInput.split(/[.!?\n]/)[0].trim();
+    claim = firstSentence || evidenceInput.substring(0, 100);
   }
 
   // 隐藏之前的错误和成功状态
@@ -222,7 +235,7 @@ async function doVerify() {
   showLoading(true, 'Issuing Fly Trust Record...');
 
   // Auto-detect source from input content
-  const isUrl = /^https?:\/\//i.test(evidenceInput);
+  const isUrl = /^https?:\/\//i.test(evidenceInput || claimInput);
   const sourceName = isUrl ? 'Web Source' : 'AI Recommendation';
 
   try {
@@ -237,7 +250,7 @@ async function doVerify() {
           type: 'user-verify',
           name: sourceName
         },
-        evidence: [{
+        evidence: evidenceInput ? [{
           evidence_id: 'evi_user_001',
           type: isUrl ? 'url' : 'user_input',
           description: evidenceInput.substring(0, 200),
@@ -245,7 +258,8 @@ async function doVerify() {
             content: evidenceInput,
             timestamp: new Date().toISOString()
           }
-        }]
+        }] : [],
+        claim: claim
       })
     });
 
