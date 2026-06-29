@@ -1,12 +1,16 @@
 /**
- * Fly 官网共享侧边栏 v26 · 5层架构：Identity/Trust/Verification/Attribution/Governance
- * 页面隔离架构：DocsPanel / ChatPanel 完全分离，不共享DOM/state
- * 5组：Identity（身份层）/ Trust（信任层）/ Verification（验证层）/ Attribution（归因层）/ Governance（治理层）
- * 默认展开：Identity / Trust；其余收起
- * AI Platforms统一路径：/ai-platforms/xxx.html
+ * Fly 官网共享侧边栏 v27 · 产品优先架构
+ * 新增：⭐ Fly（产品入口）放最前面
+ * 5组：Identity/Trust/Verification/Attribution/Governance 保持不变
+ * 默认展开：Fly / Identity / Trust
  */
 (function(){
 var sections=[
+// ── 0. Fly（产品入口）深绿 #1A3D2E ── 默认进入
+{id:'fly',label:'⭐ Fly',color:'#1A3D2E',defaultOpen:true,icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+links:[
+{href:'/verify.html',text:'Fly Verify',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>'}
+]},
 // ── 1. Identity（身份层）深绿 #1A3D2E ── Agent身份/注册/平台接入
 {id:'identity',label:'Identity 身份层',color:'#1A3D2E',defaultOpen:true,icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
 links:[
