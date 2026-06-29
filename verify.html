@@ -213,18 +213,14 @@ async function doVerify() {
   const claimInput = document.getElementById('claimInput').value.trim();
   const evidenceInput = document.getElementById('evidenceInput').value.trim();
 
-  if (!claimInput && !evidenceInput) {
-    showError('Please enter a claim or evidence to verify.');
+  // Claim 必填（Fly 是归因验证，不是断言存储）
+  if (!claimInput) {
+    showError('Please enter a claim to verify. Fly verifies AI recommendations, not assertions.');
     return;
   }
 
-  // 如果没有 claim，用 evidence 的第一句话作为 claim（简单规则）
-  let claim = claimInput;
-  if (!claim && evidenceInput) {
-    // 提取第一句话（句号、问号、感叹号或换行符分割）
-    const firstSentence = evidenceInput.split(/[.!?\n]/)[0].trim();
-    claim = firstSentence || evidenceInput.substring(0, 100);
-  }
+  // 使用用户输入的 claim
+  const claim = claimInput;
 
   // 隐藏之前的错误和成功状态
   hideError();
@@ -232,7 +228,8 @@ async function doVerify() {
   document.getElementById('btnVerify').disabled = true;
 
   // Step 1: 显示 loading
-  showLoading(true, 'Issuing Fly Trust Record...');
+  const loadingMsg = evidenceInput ? 'Issuing Fly Trust Record...' : 'Issuing Trust Record (Pending Evidence status)...';
+  showLoading(true, loadingMsg);
 
   // Auto-detect source from input content
   const isUrl = /^https?:\/\//i.test(evidenceInput || claimInput);
