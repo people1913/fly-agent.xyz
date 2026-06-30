@@ -1,9 +1,9 @@
 /**
- * Fly API Worker v3.0.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.9.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
- * 5层能力架构：L1 Identity · L2 Proof · L3 Verification · L4 Trust Ledger · L5 Attribution Settlement + 硬边界
- * Governance横切L1-L5，不是线性层
+ * 8层6协议架构：L1-L8
+ * 6协议：AIP + FSS + FVP + ATP + FGP + ALP
  * 
  * API端点清单：
  *   GET  /v1/health                           — 健康检查（含D1/KV状态）
@@ -24,23 +24,23 @@
  *   POST /v1/admin/alert/test                 — v2.7.0: 告警测试
  *   POST /v1/admin/backup                     — v2.7.0: 触发备份
  *   GET  /v1/admin/backup                     — v2.7.0: 备份历史
- *   PUT  /v1/admin/kv                         — v2.9.0: KV写入（仅capacity:前缀）
- *   POST /attribution/ingest                  — v3.0.0: Event-Sourced归因写入（HMAC签名+Nonce防重放）
- *   GET  /attribution/status/:actionId        — v3.0.0: 完整状态机进度查询
- *   GET  /attribution/list                    — v2.11.0: attribution数据概览
- *   POST /attribution/shadow/:actionId        — v3.0.0: Layer 2 — Shadow归因计算
- *   POST /attribution/verify/:actionId        — v3.0.0: Layer 3 — Verification验证
- *   POST /attribution/replay/:actionId        — v3.0.0: 强制重新验证（忽略已有状态）
- *   POST /attribution/settle/:actionId        — v3.0.0: Layer 4 — 结算（验证通过后）
+ *   GET  /v1/proof/:actionId                  — v2.9.0: 归因链证明生成（Gate 3）
  * 
- * v3.0.0 Event-Sourced Attribution Ledger 改造：
- *   - HMAC-SHA256签名验证（Web Crypto API）
- *   - Nonce防重放（KV存储，TTL 600s）
- *   - 并发锁机制（D1 processing_lock + 5分钟过期）
- *   - Shadow归因纯函数（加权评分）
- *   - Verification纯函数（合规检查+信号完整性）
- *   - 状态机：CREATED → INGESTED → SHADOW_COMPLETED → VERIFICATION_COMPLETED → SETTLED
- *   - 完整审计链（每次状态变更）
+ * v2.9.0 新增：
+ *   - AttributionProof 可审计证明层（Gate 3 核心）
+ *   - schema_version 版本化 proof 结构
+ *   - KV 链式 proof_hash（前向链接防篡改）
+ *   - HMAC 签名验证
+ *   - settlement_eligible 结算判定
+ *   - blockers 不满足原因列表
+ * 
+ * v2.8.0 新增：
+ *   - 自动错误率告警（5xx>3% P1 / 5xx>10% P0，基于KV滚动窗口）
+ *   - P95延迟告警（>3000ms P1）
+ *   - D1/KV操作失败独立告警（P0）
+ *   - 告警去重（KV TTL 5分钟）
+ *   - 邮件告警通道（Resend API）
+ *   - 统一告警入口 alertTrigger()
  */
 
 // ============================================================
@@ -57,10 +57,6 @@ interface Env {
   // v2.8.0: 邮件告警配置
   ALERT_EMAIL_TO?: string;       // 告警收件邮箱（未配置则静默跳过）
   RESEND_API_KEY?: string;       // Resend API Key（免费3000封/月，未配置则静默跳过）
-  // v2.10.0: GitHub workflow_dispatch触发（替代GitHub Scheduler）
-  GITHUB_TOKEN?: string;         // GitHub PAT（未配置则静默跳过workflow_dispatch）
-  // v3.0.0: Event-Sourced Attribution Ledger
-  FLY_API_KEY?: string;          // HMAC签名验证密钥（用于attribution签名校验）
 }
 
 type SignalType = "impression" | "click" | "consult" | "booking" | "deal";
@@ -78,6 +74,185 @@ const RolePermissions: Record<string, Permission[]> = {
   verifier: ["verification:create", "verification:approve", "audit:view"],
   auditor: ["audit:view", "trust:recalculate"],
 };
+
+// ============================================================
+// v2.9.0: AttributionProof — 可审计归因证明（Gate 3 核心）
+// ============================================================
+
+/** 归因证明对象 v1.0 — 金融级可审计结构 */
+interface AttributionProof {
+  // 元数据
+  schema_version: string;          // "1.0" — 结构版本号
+  proof_id: string;                // "prf_xxx" — 唯一标识
+  action_id: string;               // 归因对象
+  agent_id: string;                // 关联Agent
+  generated_at: string;            // ISO时间戳
+
+  // 信任状态
+  trust_score: number;             // 当前agent信任分
+  trust_factors: {
+    unique_users: number;
+    channel_diversity: number;
+    verification_sources: number;
+    time_span_days: number;
+  };
+
+  // 验证状态
+  verification: {
+    status: "unverified" | "verified" | "rejected";
+    count: number;
+    latest_id: string | null;
+    self_verification_blocked: boolean;
+  };
+
+  // 信号质量
+  signal: {
+    quality: SignalQuality;
+    human_score: number;
+    bot_detected: boolean;
+  };
+
+  // 审计链
+  audit: {
+    latest_hash: string;
+    event_count: number;
+    chain_valid: boolean;
+  };
+
+  // 结算判定
+  settlement: {
+    eligible: boolean;
+    blockers: string[];            // 不满足时列出原因
+  };
+
+  // 防篡改（链式 + 签名）
+  integrity: {
+    prev_proof_hash: string;       // KV中上一个proof的hash（链式链接）
+    proof_hash: string;            // 本proof内容的SHA-256
+    signature: string;             // HMAC-SHA256签名
+  };
+}
+
+/**
+ * 生成归因证明对象
+ * 从已有Execution/Validation层提取事实，封装为可审计Proof
+ */
+async function generateAttributionProof(env: Env, actionId: string): Promise<AttributionProof | { error: string }> {
+  // 1. 查询action
+  const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ?").bind(actionId).first() as any;
+  if (!action) return { error: "action not found" };
+
+  const agentId = action.agent_id as string;
+  const metadata = JSON.parse((action.metadata as string) || '{}');
+
+  // 2. 查询agent + trust
+  const agent = await env.FLY_D1.prepare("SELECT * FROM agents WHERE id = ?").bind(agentId).first() as any;
+  const trustScore = agent ? (agent.trust_score as number) : 0;
+
+  // 3. 计算trust_factors
+  const uniqueUsers = await env.FLY_D1.prepare("SELECT COUNT(DISTINCT user_id) as cnt FROM actions WHERE agent_id = ?").bind(agentId).first();
+  const channelDiv = await env.FLY_D1.prepare("SELECT COUNT(DISTINCT channel) as cnt FROM actions WHERE agent_id = ?").bind(agentId).first();
+  const verifSources = await env.FLY_D1.prepare("SELECT COUNT(DISTINCT verifier) as cnt FROM verifications v JOIN actions a ON v.action_id = a.id WHERE a.agent_id = ?").bind(agentId).first();
+  const timeSpan = await env.FLY_D1.prepare("SELECT CAST(julianday('now') - julianday(MIN(created_at)) AS INTEGER) as days FROM actions WHERE agent_id = ?").bind(agentId).first();
+  const trustFactors = {
+    unique_users: (uniqueUsers?.cnt as number) || 0,
+    channel_diversity: (channelDiv?.cnt as number) || 0,
+    verification_sources: (verifSources?.cnt as number) || 0,
+    time_span_days: (timeSpan?.days as number) || 0,
+  };
+
+  // 4. 查询verification状态
+  const verifications = await env.FLY_D1.prepare("SELECT * FROM verifications WHERE action_id = ? ORDER BY created_at DESC").bind(actionId).all();
+  const vList = verifications.results as any[];
+  const vCount = vList.length;
+  const hasApproved = vList.some(v => v.result === 'approved' || v.result === 'verified');
+  const hasRejected = vList.some(v => v.result === 'rejected');
+  const vStatus: "unverified" | "verified" | "rejected" = hasApproved ? "verified" : hasRejected ? "rejected" : "unverified";
+  const selfVerifBlocked = vList.some(v => v.verifier === agentId);
+
+  // 5. 信号质量
+  const signalQuality = (metadata.signal_quality as SignalQuality) || "raw";
+  const humanScore = (metadata.human_score as number) || 0;
+  const botDetected = signalQuality === "bot";
+
+  // 6. 审计链
+  const auditEvents = await env.FLY_D1.prepare("SELECT * FROM audit_events WHERE entity_type = 'action' AND entity_id = ? ORDER BY created_at ASC").bind(actionId).all();
+  const aList = auditEvents.results as any[];
+  let auditChainValid = true;
+  let latestAuditHash = '0';
+  for (const evt of aList) {
+    const hashInput = `${evt.prev_hash}${evt.event_id}${evt.entity_type}${evt.entity_id}${evt.action}${evt.actor_id}${evt.created_at}`;
+    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
+    const expected = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    if (evt.event_hash !== expected) { auditChainValid = false; break; }
+    latestAuditHash = evt.event_hash as string;
+  }
+
+  // 7. 结算判定
+  const blockers: string[] = [];
+  if (trustScore < 60) blockers.push(`trust_score ${trustScore} < 60`);
+  if (vStatus !== "verified") blockers.push(`verification status: ${vStatus}`);
+  if (signalQuality === "bot") blockers.push("bot signal detected");
+  if (!auditChainValid) blockers.push("audit chain integrity failed");
+  if (selfVerifBlocked) blockers.push("self-verification detected");
+  const settlementEligible = blockers.length === 0;
+
+  // 8. 链式proof_hash（KV中取上一个）
+  const prevProofHash = (await env.FLY_KV.get("proof:latest_hash")) || "0";
+
+  // 9. 构建proof对象（不含integrity字段）
+  const proofCore = {
+    schema_version: "1.0",
+    action_id: actionId,
+    agent_id: agentId,
+    trust_score: trustScore,
+    trust_factors: trustFactors,
+    verification: {
+      status: vStatus,
+      count: vCount,
+      latest_id: vList.length > 0 ? vList[0].id : null,
+      self_verification_blocked: selfVerifBlocked,
+    },
+    signal: {
+      quality: signalQuality,
+      human_score: humanScore,
+      bot_detected: botDetected,
+    },
+    audit: {
+      latest_hash: latestAuditHash,
+      event_count: aList.length,
+      chain_valid: auditChainValid,
+    },
+    settlement: {
+      eligible: settlementEligible,
+      blockers: blockers,
+    },
+    prev_proof_hash: prevProofHash,
+  };
+
+  // 10. 计算proof_hash
+  const proofHashInput = JSON.stringify(proofCore);
+  const proofHashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(proofHashInput));
+  const proofHash = Array.from(new Uint8Array(proofHashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  // 11. HMAC签名
+  const signature = await hmacSha256(env.IP_SALT || 'fly-attribution-salt-2026', proofHash);
+
+  // 12. 更新KV链
+  await env.FLY_KV.put("proof:latest_hash", proofHash);
+
+  // 13. 返回完整proof
+  return {
+    ...proofCore,
+    generated_at: new Date().toISOString(),
+    proof_id: `prf_${crypto.randomUUID()}`,
+    integrity: {
+      prev_proof_hash: prevProofHash,
+      proof_hash: proofHash,
+      signature: signature,
+    },
+  } as AttributionProof;
+}
 
 // ============================================================
 // Bot Detection（漏洞6）
@@ -119,414 +294,6 @@ async function hmacSha256(key: string, data: string): Promise<string> {
 
 async function hmacUserId(plain: string, salt: string): Promise<string> {
   return `hmac_${await hmacSha256(salt, plain)}`;
-}
-
-// ============================================================
-// v3.0.0: HMAC Signature Verification（Event-Sourced Attribution）
-// ============================================================
-
-/**
- * 验证HMAC-SHA256签名
- * 输入格式：${payload}|${nonce}|${timestamp}
- * 使用Web Crypto API计算，与请求方签名比对
- */
-async function verifySignature(payload: string, signature: string, nonce: string, timestamp: string, secret: string): Promise<boolean> {
-  const input = `${payload}|${nonce}|${timestamp}`;
-  const computed = await hmacSha256(secret, input);
-  // 时间安全比较（避免timing attack）
-  if (computed.length !== signature.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < computed.length; i++) {
-    mismatch |= computed.charCodeAt(i) ^ signature.charCodeAt(i);
-  }
-  return mismatch === 0;
-}
-
-// ============================================================
-// v3.0.0: 并发锁机制（D1 processing_lock）
-// ============================================================
-
-/**
- * 获取并发锁 — 乐观锁（5分钟过期）
- * 利用D1的processing_lock字段实现分布式锁
- * @returns true=获取成功, false=锁已被占用
- */
-async function acquireLock(env: Env, actionId: string): Promise<boolean> {
-  try {
-    const result = await env.FLY_D1.prepare(
-      "UPDATE attribution_payloads SET processing_lock = 'locked', lock_expire_at = datetime('now', '+5 minutes') WHERE action_id = ? AND (processing_lock IS NULL OR lock_expire_at < datetime('now'))"
-    ).bind(actionId).run();
-    return (result.meta?.changes ?? 0) > 0;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * 释放并发锁
- */
-async function releaseLock(env: Env, actionId: string): Promise<void> {
-  try {
-    await env.FLY_D1.prepare(
-      "UPDATE attribution_payloads SET processing_lock = NULL, lock_expire_at = NULL WHERE action_id = ?"
-    ).bind(actionId).run();
-  } catch {
-    // 释放失败不影响主流程（锁会5分钟后自动过期）
-  }
-}
-
-// ============================================================
-// v3.0.0: Shadow Attribution 纯函数（Layer 2）
-// ============================================================
-
-/**
- * Shadow归因计算 — 纯函数，无副作用
- * 从payload.signals提取信号，加权计算综合得分
- * 禁止使用 Date.now(), fetch, Math.random() 等非纯函数
- */
-function runShadowAttribution(payload: any): { weighted_score: number; breakdown: { visits: number; transactions: number; chats: number; shares: number } } {
-  const signals = payload?.signals || {};
-  const visits = Number(signals.visits) || 0;
-  const transactions = Number(signals.transactions) || 0;
-  const chats = Number(signals.chats) || 0;
-  const shares = Number(signals.shares) || 0;
-
-  // 加权计算：visits*1.0 + transactions*1.0 + chats*0.5 + shares*0.3
-  const weightedScore = visits * 1.0 + transactions * 1.0 + chats * 0.5 + shares * 0.3;
-
-  return {
-    weighted_score: Math.round(weightedScore * 100) / 100,
-    breakdown: { visits, transactions, chats, shares },
-  };
-}
-
-// ============================================================
-// v3.0.0: Verification 纯函数（Layer 3）
-// ============================================================
-
-/**
- * 归因验证 — 纯函数，无副作用
- * 检查合规结果和信号完整性
- * @returns { status: 'pass'|'fail', confidence: 0-1, checks: string[] }
- */
-function runVerification(payload: any, shadowResult: any): { status: 'pass' | 'fail'; confidence: number; checks: string[] } {
-  const checks: string[] = [];
-  let passCount = 0;
-  const totalChecks = 2;
-
-  // Check 1: compliance_result 验证（如果存在）
-  if (payload?.compliance_result) {
-    if (payload.compliance_result.passed === true) {
-      checks.push('compliance: passed');
-      passCount++;
-    } else {
-      checks.push('compliance: failed or not passed');
-    }
-  } else {
-    // 没有compliance_result时视为通过（非强制）
-    checks.push('compliance: not required (no compliance_result in payload)');
-    passCount++;
-  }
-
-  // Check 2: signals 完整性检查
-  const signals = payload?.signals || {};
-  const requiredFields = ['visits', 'transactions', 'chats', 'shares'];
-  const presentFields = requiredFields.filter(f => signals[f] !== undefined && signals[f] !== null);
-  if (presentFields.length === requiredFields.length) {
-    checks.push(`signals: complete (${requiredFields.join(', ')})`);
-    passCount++;
-  } else {
-    const missing = requiredFields.filter(f => !presentFields.includes(f));
-    checks.push(`signals: incomplete (missing: ${missing.join(', ')})`);
-  }
-
-  const confidence = Math.round((passCount / totalChecks) * 100) / 100;
-  const status = passCount === totalChecks ? 'pass' : 'fail';
-
-  return { status, confidence, checks };
-}
-
-// ============================================================
-// v3.0.0: Auto-Process After Ingest — 后台自动触发 Shadow + Verification
-// ============================================================
-
-/**
- * ingest 成功后自动触发 shadow attribution → verification
- * 通过 ctx.waitUntil() 在后台异步执行，不阻塞 ingest 响应
- * 
- * 状态机推进：INGESTED → SHADOW_COMPLETED → VERIFICATION_COMPLETED
- * 失败时：status=FAILED + failure_reason 记录错误
- * 
- * 使用 try-catch-finally 确保 lock 一定释放
- */
-async function autoProcessAfterIngest(env: Env, actionId: string): Promise<void> {
-  // 获取并发锁
-  const locked = await acquireLock(env, actionId);
-  if (!locked) {
-    console.log(`[autoProcess] Could not acquire lock for ${actionId}, skipping auto-processing`);
-    return;
-  }
-
-  try {
-    // === Step 1: Shadow Attribution ===
-    const record = await env.FLY_D1.prepare(
-      "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-    ).bind(actionId).first();
-
-    if (!record) {
-      console.log(`[autoProcess] Record not found for ${actionId}`);
-      return;
-    }
-
-    const payload = JSON.parse(record.payload_json as string);
-    const shadowResult = runShadowAttribution(payload);
-
-    // 更新 D1: SHADOW_COMPLETED
-    await env.FLY_D1.prepare(
-      "UPDATE attribution_payloads SET shadow_result = ?, status = 'SHADOW_COMPLETED', worker_status = 'shadow_completed' WHERE action_id = ?"
-    ).bind(JSON.stringify(shadowResult), actionId).run();
-
-    // 写审计链: shadow completed
-    await writeAuditEvent(env, {
-      request_id: `req_${crypto.randomUUID()}`,
-      entity_type: 'attribution_payload',
-      entity_id: record.id as string,
-      action: 'status_changed',
-      actor_type: 'system',
-      actor_id: 'sys_auto_shadow',
-      actor_name: 'auto-shadow-attribution',
-      source: 'auto_ingest',
-      reason: 'auto_shadow_calculation_after_ingest',
-      before: 'INGESTED',
-      after: JSON.stringify({ status: 'SHADOW_COMPLETED', weighted_score: shadowResult.weighted_score, trigger: 'auto' })
-    });
-
-    // === Step 1.5: Delta + Calibration (if legacy_result exists) ===
-    const legacyResultStr = record.legacy_result as string | null;
-    if (legacyResultStr) {
-      try {
-        const legacy = JSON.parse(legacyResultStr);
-        const legacyValue = legacy.weighted_score ?? legacy.score ?? 0;
-        const shadowValue = shadowResult.weighted_score ?? 0;
-
-        let deltaScore: number;
-        if (legacyValue === 0 && shadowValue === 0) {
-          deltaScore = 0;
-        } else if (legacyValue === 0) {
-          deltaScore = shadowValue;
-        } else {
-          deltaScore = Math.abs(shadowValue - legacyValue) / Math.abs(legacyValue);
-        }
-        deltaScore = Math.round(deltaScore * 10000) / 10000;
-
-        let calibrationStatus: string;
-        if (deltaScore <= 0.05) calibrationStatus = 'MATCHED';
-        else if (deltaScore <= 0.20) calibrationStatus = 'PARTIAL_DEVIATION';
-        else calibrationStatus = 'DRIFT_DETECTED';
-
-        await env.FLY_D1.prepare(
-          "UPDATE attribution_payloads SET delta_score = ?, calibration_status = ? WHERE action_id = ?"
-        ).bind(deltaScore, calibrationStatus, actionId).run();
-
-        console.log(`[autoProcess] ${actionId} delta=${deltaScore} calibration=${calibrationStatus} (legacy=${legacyValue}, shadow=${shadowValue})`);
-      } catch (deltaErr: any) {
-        console.error(`[autoProcess] Delta calculation failed for ${actionId}: ${deltaErr.message}`);
-        // Non-fatal: continue to verification
-      }
-    }
-
-    // === Step 2: Verification ===
-    const verificationResult = runVerification(payload, shadowResult);
-    const verificationId = `vrf_${crypto.randomUUID().replace(/-/g, '').slice(0, 24)}`;
-
-    // 更新 D1: VERIFICATION_COMPLETED
-    await env.FLY_D1.prepare(
-      "UPDATE attribution_payloads SET verification_result = ?, verification_id = ?, status = 'VERIFICATION_COMPLETED', worker_status = 'verification_completed' WHERE action_id = ?"
-    ).bind(JSON.stringify(verificationResult), verificationId, actionId).run();
-
-    // 写审计链: verification completed
-    await writeAuditEvent(env, {
-      request_id: `req_${crypto.randomUUID()}`,
-      entity_type: 'attribution_payload',
-      entity_id: record.id as string,
-      action: 'verified',
-      actor_type: 'system',
-      actor_id: 'sys_auto_verification',
-      actor_name: 'auto-verification-engine',
-      source: 'auto_ingest',
-      reason: 'auto_verification_after_ingest',
-      before: 'SHADOW_COMPLETED',
-      after: JSON.stringify({ status: 'VERIFICATION_COMPLETED', verification_id: verificationId, verification_status: verificationResult.status, trigger: 'auto' })
-    });
-
-    console.log(`[autoProcess] ${actionId} → VERIFICATION_COMPLETED (shadow_score=${shadowResult.weighted_score}, verification=${verificationResult.status})`);
-
-  } catch (error: any) {
-    // === 失败处理：记录 failure_reason，状态设为 FAILED ===
-    const failureReason = error?.message || String(error);
-    console.error(`[autoProcess] Failed for ${actionId}: ${failureReason}`);
-
-    try {
-      await env.FLY_D1.prepare(
-        "UPDATE attribution_payloads SET status = 'FAILED', failure_reason = ?, worker_status = 'auto_process_failed' WHERE action_id = ?"
-      ).bind(failureReason.slice(0, 500), actionId).run();
-
-      // 写审计链: failed
-      await writeAuditEvent(env, {
-        request_id: `req_${crypto.randomUUID()}`,
-        entity_type: 'attribution_payload',
-        entity_id: actionId,
-        action: 'status_changed',
-        actor_type: 'system',
-        actor_id: 'sys_auto_process',
-        actor_name: 'auto-process-engine',
-        source: 'auto_ingest',
-        reason: 'auto_process_failed',
-        before: 'INGESTED',
-        after: JSON.stringify({ status: 'FAILED', failure_reason: failureReason.slice(0, 500), trigger: 'auto' })
-      });
-    } catch (innerError: any) {
-      console.error(`[autoProcess] Failed to update failure state for ${actionId}: ${innerError.message}`);
-    }
-  } finally {
-    // === 确保锁一定释放 ===
-    await releaseLock(env, actionId);
-  }
-}
-
-/**
- * Pipeline Queue Consumer
- * 由 Worker Cron (每5分钟) 触发，消费 job_queue 中的 PENDING 任务
- * 
- * 流程：
- * 1. 扫描 job_queue WHERE status = 'PENDING'
- * 2. 按 action_id 分组，对每个 action 执行完整的 shadow → verify 链路
- * 3. 更新 job_queue status + attribution_payloads status
- * 4. 失败时记录 failure_reason，retry_count++
- */
-async function processJobQueue(env: Env): Promise<void> {
-  try {
-    // 1. 获取 PENDING 的 jobs（按 created_at 排序，限制50条）
-    const pendingJobs = await env.FLY_D1.prepare(
-      "SELECT id, action_id, step, retry_count FROM job_queue WHERE status = 'PENDING' ORDER BY created_at ASC LIMIT 50"
-    ).all();
-
-    if (!pendingJobs.results || pendingJobs.results.length === 0) {
-      return; // 无任务
-    }
-
-    // 2. 按 action_id 去重（同一 action 可能有多个 job，只处理最新的）
-    const actionIds = [...new Set(pendingJobs.results.map((j: any) => j.action_id))];
-
-    for (const actionId of actionIds) {
-      try {
-        // 获取锁
-        const locked = await acquireLock(env, actionId);
-        if (!locked) {
-          console.log(`[queue] Skipping ${actionId}: lock held by another process`);
-          continue;
-        }
-
-        try {
-          // 读取当前记录
-          const record = await env.FLY_D1.prepare(
-            "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-          ).bind(actionId).first();
-
-          if (!record) {
-            console.log(`[queue] Record not found for ${actionId}, marking jobs as FAILED`);
-            await env.FLY_D1.prepare(
-              "UPDATE job_queue SET status = 'FAILED', failure_reason = 'record_not_found', updated_at = datetime('now') WHERE action_id = ? AND status = 'PENDING'"
-            ).bind(actionId).run();
-            continue;
-          }
-
-          const currentStatus = record.status as string;
-          
-          // 如果已经是终态，清理 queue
-          if (currentStatus === 'VERIFICATION_COMPLETED' || currentStatus === 'SETTLED') {
-            await env.FLY_D1.prepare(
-              "UPDATE job_queue SET status = 'DONE', updated_at = datetime('now') WHERE action_id = ? AND status = 'PENDING'"
-            ).bind(actionId).run();
-            continue;
-          }
-
-          // 执行 pipeline: shadow → verify
-          const payload = JSON.parse(record.payload_json as string);
-          
-          // === Step 1: Shadow Attribution ===
-          const shadowResult = runShadowAttribution(payload);
-          await env.FLY_D1.prepare(
-            "UPDATE attribution_payloads SET shadow_result = ?, status = 'SHADOW_COMPLETED', worker_status = 'shadow_completed', updated_at = datetime('now') WHERE action_id = ?"
-          ).bind(JSON.stringify(shadowResult), actionId).run();
-
-          // Delta + Calibration
-          const legacyResultStr = record.legacy_result as string | null;
-          if (legacyResultStr) {
-            const legacy = JSON.parse(legacyResultStr);
-            const legacyValue = legacy.weighted_score ?? legacy.score ?? 0;
-            const shadowValue = shadowResult.weighted_score ?? 0;
-            
-            let deltaScore: number;
-            if (legacyValue === 0 && shadowValue === 0) deltaScore = 0;
-            else if (legacyValue === 0) deltaScore = shadowValue;
-            else deltaScore = Math.abs(shadowValue - legacyValue) / Math.abs(legacyValue);
-            deltaScore = Math.round(deltaScore * 10000) / 10000;
-
-            let calibrationStatus: string;
-            if (deltaScore <= 0.05) calibrationStatus = 'MATCHED';
-            else if (deltaScore <= 0.20) calibrationStatus = 'PARTIAL_DEVIATION';
-            else calibrationStatus = 'DRIFT_DETECTED';
-
-            await env.FLY_D1.prepare(
-              "UPDATE attribution_payloads SET delta_score = ?, calibration_status = ?, updated_at = datetime('now') WHERE action_id = ?"
-            ).bind(deltaScore, calibrationStatus, actionId).run();
-          }
-
-          // === Step 2: Verification ===
-          const verificationResult = runVerification(payload, shadowResult);
-          const verificationId = `vrf_${crypto.randomUUID().replace(/-/g, '').slice(0, 24)}`;
-          
-          await env.FLY_D1.prepare(
-            "UPDATE attribution_payloads SET verification_result = ?, verification_id = ?, status = 'VERIFICATION_COMPLETED', worker_status = 'verification_completed', updated_at = datetime('now') WHERE action_id = ?"
-          ).bind(JSON.stringify(verificationResult), verificationId, actionId).run();
-
-          // 写审计链
-          await writeAuditEvent(env, {
-            request_id: `req_${crypto.randomUUID()}`,
-            entity_type: 'attribution_payload',
-            entity_id: record.id as string,
-            action: 'pipeline_completed',
-            actor_type: 'system',
-            actor_id: 'sys_queue_consumer',
-            actor_name: 'queue-pipeline-executor',
-            source: 'scheduled_cron',
-            reason: 'queue_triggered_pipeline',
-            before: currentStatus,
-            after: JSON.stringify({ status: 'VERIFICATION_COMPLETED', shadow_score: shadowResult.weighted_score, verification: verificationResult.status })
-          });
-
-          // 标记 job 为 DONE
-          await env.FLY_D1.prepare(
-            "UPDATE job_queue SET status = 'DONE', updated_at = datetime('now') WHERE action_id = ? AND status = 'PENDING'"
-          ).bind(actionId).run();
-
-          console.log(`[queue] ${actionId} → VERIFICATION_COMPLETED (shadow=${shadowResult.weighted_score}, verify=${verificationResult.status})`);
-
-        } finally {
-          await releaseLock(env, actionId);
-        }
-      } catch (err: any) {
-        console.error(`[queue] Failed for ${actionId}: ${err.message}`);
-        // 更新 retry_count，标记为 FAILED（可由下次 cron 重试）
-        await env.FLY_D1.prepare(
-          "UPDATE job_queue SET retry_count = retry_count + 1, failure_reason = ?, status = 'FAILED', next_retry_at = datetime('now', '+5 minutes'), updated_at = datetime('now') WHERE action_id = ? AND status = 'PENDING'"
-        ).bind((err.message || 'unknown').slice(0, 500), actionId).run();
-      }
-    }
-  } catch (err: any) {
-    console.error(`[queue] processJobQueue error: ${err.message}`);
-  }
 }
 
 // ============================================================
@@ -587,9 +354,7 @@ function json(data: any, status = 200, headers: Record<string, string> = {}): Re
 }
 
 // ============================================================
-// v3.1.0: 指标采集 — 5分钟桶 + 内存聚合 + 阈值落盘
-// 解决：每请求1次KV PUT → 50次请求或60秒落盘1次
-// 预期：500 PUT/天 → 20~50 PUT/天
+// v2.7.0: 指标采集 — KV滚动窗口（每分钟一个桶）
 // ============================================================
 
 /** 指标桶数据结构 */
@@ -601,7 +366,7 @@ interface MetricBucket {
   s5xx: number;
   lat_sum: number;
   lat_max: number;
-  lat_samples: number[];  // 采样延迟（最多200个/5分钟，用于P95计算）
+  lat_samples: number[];  // 采样延迟（最多200个/分钟，用于P95计算）
 }
 
 /** 聚合指标结果 */
@@ -616,75 +381,21 @@ interface AggregatedMetrics {
   p95_ms: number;
 }
 
-/** 模块级内存缓存 — Worker实例生命周期内有效，被回收时未落盘数据丢失（best-effort） */
-let _metricCache: {
-  bucketIndex: number;        // 当前5分钟桶索引
-  data: MetricBucket;         // 桶内聚合数据
-  requestCount: number;       // 自上次落盘以来的请求计数
-  lastFlushTime: number;      // 上次落盘时间戳(ms)
-} | null = null;
-
-/** 获取5分钟桶索引 */
-function getMetricBucketIndex(): number {
-  const minute = Math.floor(Date.now() / 60000);
-  return Math.floor(minute / 5);
-}
-
-/** 获取5分钟桶的KV key */
-function getMetricBucketKey(bucketIndex: number): string {
-  return `metrics:m5:${bucketIndex}`;
-}
-
-/** 初始化内存缓存 */
-function initMetricCache(bucketIndex: number): void {
-  _metricCache = {
-    bucketIndex,
-    data: {
-      total: 0, s2xx: 0, s3xx: 0, s4xx: 0, s5xx: 0,
-      lat_sum: 0, lat_max: 0, lat_samples: [],
-    },
-    requestCount: 0,
-    lastFlushTime: Date.now(),
-  };
-}
-
-/** 落盘阈值常量 */
-const METRIC_FLUSH_REQUESTS = 50;    // 每50次请求落盘一次
-const METRIC_FLUSH_INTERVAL = 60000; // 每60秒落盘一次
-
-/** 落盘内存缓存到KV */
-async function flushMetricCache(env: Env): Promise<void> {
-  if (!_metricCache || _metricCache.data.total === 0) return;
-  try {
-    const key = getMetricBucketKey(_metricCache.bucketIndex);
-    await env.FLY_KV.put(key, JSON.stringify(_metricCache.data), { expirationTtl: 3600 });
-    _metricCache.lastFlushTime = Date.now();
-    _metricCache.requestCount = 0;
-  } catch (e) {
-    // 落盘失败不影响主流程，静默忽略
-  }
-}
-
 /**
- * 记录单次请求指标（内存聚合 + 阈值落盘）
- * 落盘条件（任一触发）：50次请求 / 60秒 / 桶切换
+ * 记录单次请求指标到KV分钟桶
  * 异步调用，失败不影响主流程
  */
 async function recordRequestMetric(env: Env, status: number, latencyMs: number): Promise<void> {
+  const minute = Math.floor(Date.now() / 60000);
+  const key = `metrics:m:${minute}`;
+
   try {
-    const currentBucket = getMetricBucketIndex();
+    const raw = await env.FLY_KV.get(key);
+    const data: MetricBucket = raw ? JSON.parse(raw) : {
+      total: 0, s2xx: 0, s3xx: 0, s4xx: 0, s5xx: 0,
+      lat_sum: 0, lat_max: 0, lat_samples: [],
+    };
 
-    // 初始化或处理桶切换
-    if (!_metricCache) {
-      initMetricCache(currentBucket);
-    } else if (_metricCache.bucketIndex !== currentBucket) {
-      // 桶切换：先落盘旧桶，再初始化新桶
-      await flushMetricCache(env);
-      initMetricCache(currentBucket);
-    }
-
-    // 更新内存数据
-    const data = _metricCache!.data;
     data.total += 1;
     if (status >= 200 && status < 300) data.s2xx += 1;
     else if (status >= 300 && status < 400) data.s3xx += 1;
@@ -694,49 +405,35 @@ async function recordRequestMetric(env: Env, status: number, latencyMs: number):
     data.lat_sum += latencyMs;
     if (latencyMs > data.lat_max) data.lat_max = latencyMs;
 
-    // 采样延迟数据（最多200样本/5分钟，用于P95计算）
+    // 采样延迟数据（最多200样本/分钟，用于P95计算）
     if (data.lat_samples.length < 200) {
       data.lat_samples.push(latencyMs);
     } else {
+      // 桶满时随机替换，保证采样均匀分布
       const idx = Math.floor(Math.random() * data.total);
       if (idx < 200) data.lat_samples[idx] = latencyMs;
     }
 
-    _metricCache!.requestCount += 1;
-
-    // 检查是否需要落盘
-    const now = Date.now();
-    if (_metricCache!.requestCount >= METRIC_FLUSH_REQUESTS ||
-        (now - _metricCache!.lastFlushTime) >= METRIC_FLUSH_INTERVAL) {
-      await flushMetricCache(env);
-    }
+    // TTL 600秒（10分钟），覆盖5分钟查询窗口
+    await env.FLY_KV.put(key, JSON.stringify(data), { expirationTtl: 600 });
   } catch (e) {
     // 指标记录失败不影响主流程，静默忽略
   }
 }
 
 /**
- * 聚合最近N分钟的指标数据（5分钟桶查询）
- * 查询前会先落盘当前内存缓存，确保数据完整
+ * 聚合最近N分钟的指标数据
+ * 读取KV分钟桶并汇总
  */
 async function getAggregatedMetrics(env: Env, minutes: number): Promise<AggregatedMetrics | null> {
   try {
-    const nowBucket = getMetricBucketIndex();
-    const bucketsToRead = Math.max(1, Math.ceil(minutes / 5));
-
+    const nowMinute = Math.floor(Date.now() / 60000);
     let total = 0, s2xx = 0, s3xx = 0, s4xx = 0, s5xx = 0;
     let latSum = 0, latMax = 0;
     const allSamples: number[] = [];
 
-    // 查询前落盘当前内存数据，确保查询到最新数据
-    if (_metricCache && _metricCache.data.total > 0) {
-      await flushMetricCache(env);
-    }
-
-    for (let i = 0; i < bucketsToRead; i++) {
-      const bucketIndex = nowBucket - i;
-      if (bucketIndex < 0) break;
-      const key = getMetricBucketKey(bucketIndex);
+    for (let i = 0; i < minutes; i++) {
+      const key = `metrics:m:${nowMinute - i}`;
       const raw = await env.FLY_KV.get(key);
       if (!raw) continue;
       const data: MetricBucket = JSON.parse(raw);
@@ -794,7 +491,7 @@ async function sendTelegramAlert(env: Env, level: string, message: string, detai
     detailLines ? `\n${detailLines}` : '',
     ``,
     `⏰ ${timestamp}`,
-    `📦 v2.9.0`,
+    `📦 v2.8.0`,
   ].join('\n');
 
   try {
@@ -831,7 +528,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ``,
     `告警级别: ${level}`,
     `时间: ${timestamp}`,
-    `Worker版本: v2.9.0`,
+    `Worker版本: v2.8.0`,
     ``,
     `告警内容:`,
     message,
@@ -840,7 +537,7 @@ async function sendEmailAlert(env: Env, level: string, message: string, details:
     ...Object.entries(details).map(([k, v]) => `  ${k}: ${v}`),
     ``,
     `---`,
-    `此邮件由 Fly Attribution Worker v2.9.0 自动发送`,
+    `此邮件由 Fly Attribution Worker v2.8.0 自动发送`,
     `请勿直接回复`,
   ].join('\n');
 
@@ -987,66 +684,8 @@ async function checkAlertConditions(env: Env): Promise<void> {
 // ============================================================
 // Router — v2.8.0 增加指标采集和自动告警
 // ============================================================
-// === Schema Migration Gate（KV一次性锁，禁止进 request hot path 重复执行） ===
-async function ensureSchemaOnce(env: Env): Promise<void> {
-  const done = await env.FLY_KV.get('migration:attribution:v3');
-  if (done === 'true') return;
-  await ensureAttributionTable(env);
-  await env.FLY_KV.put('migration:attribution:v3', 'true');
-}
-
-// === 辅助函数：确保 attribution_payloads 表结构完整（含 ALTER TABLE 扩展字段） ===
-async function ensureAttributionTable(env: Env): Promise<void> {
-  // 创建基础表
-  await env.FLY_D1.prepare(`
-    CREATE TABLE IF NOT EXISTS attribution_payloads (
-      id TEXT PRIMARY KEY,
-      action_id TEXT NOT NULL,
-      payload_type TEXT NOT NULL,
-      payload_json TEXT NOT NULL,
-      attribution_status TEXT,
-      worker_status TEXT DEFAULT 'received',
-      created_at TEXT DEFAULT (datetime('now'))
-    )
-  `).run();
-
-  // ALTER TABLE 添加 v3.0.0 扩展字段（字段已存在时忽略错误）
-  const alterStatements = [
-    "ALTER TABLE attribution_payloads ADD COLUMN status TEXT DEFAULT 'CREATED'",
-    "ALTER TABLE attribution_payloads ADD COLUMN failure_reason TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN retry_cursor TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN nonce TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN payload_timestamp TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN signature TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN legacy_result TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN shadow_result TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN verification_result TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN processing_lock TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN lock_expire_at TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN verification_id TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN settled_at TEXT",
-    "ALTER TABLE attribution_payloads ADD COLUMN delta_score REAL",
-    "ALTER TABLE attribution_payloads ADD COLUMN calibration_status TEXT DEFAULT 'PENDING'",
-    "ALTER TABLE attribution_payloads ADD COLUMN settled_amount REAL",
-    "ALTER TABLE attribution_payloads ADD COLUMN gmv_amount REAL",
-    "ALTER TABLE attribution_payloads ADD COLUMN attribution_weight REAL DEFAULT 1.0",
-    "ALTER TABLE attribution_payloads ADD COLUMN currency TEXT DEFAULT 'CNY'",
-    "ALTER TABLE attribution_payloads ADD COLUMN settlement_method TEXT DEFAULT 'auto'",
-    "ALTER TABLE attribution_payloads ADD COLUMN business_event_id TEXT",
-  ];
-  for (const sql of alterStatements) {
-    try {
-      await env.FLY_D1.prepare(sql).run();
-    } catch {
-      // 字段已存在，忽略错误
-    }
-  }
-}
-
-
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    await ensureSchemaOnce(env);
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
@@ -1075,15 +714,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: 'v3.0.0', layers: 5, boundary: 'Payment/Clearing — Fly不进入', db: dbStatus, kv: kvStatus, bridge: 'attribution_payloads', event_sourced: true, timestamp: new Date().toISOString() });
-        }
-
-        // === Internal: 手动触发 queue consumer（调试用） ===
-        if (path === '/internal/trigger-queue' && method === 'POST') {
-          const before = await env.FLY_D1.prepare("SELECT COUNT(*) as cnt FROM job_queue WHERE status = 'PENDING'").first();
-          await processJobQueue(env);
-          const after = await env.FLY_D1.prepare("SELECT COUNT(*) as cnt FROM job_queue WHERE status = 'PENDING'").first();
-          return json({ success: true, before_pending: (before as any)?.cnt, after_pending: (after as any)?.cnt, triggered_at: new Date().toISOString() });
+          return json({ status, version: '2.9.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -1119,13 +750,13 @@ export default {
           const validChannels = ["douyin", "xiaohongshu", "wechat", "meituan", "feishu", "geo", "direct"];
           if (!validChannels.includes(body.channel)) return json({ error: "invalid channel" }, 400);
           // 24h去重
-          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id || "anonymous", body.agent_id ?? null, body.channel ?? null, body.signal_type ?? null).first();
+          const existing = await env.FLY_D1.prepare("SELECT id FROM actions WHERE user_id = ? AND agent_id = ? AND channel = ? AND signal_type = ? AND created_at > datetime('now', '-24 hours') LIMIT 1").bind(body.user_id ?? null, body.agent_id, body.channel, body.signal_type).first();
           if (existing) return json({ success: true, action_id: existing.id, dedup: true });
           const actionId = `act_${crypto.randomUUID()}`;
           const metadata: any = body.metadata || {};
           metadata.signal_quality = body.signal_quality || "raw";
           metadata.human_score = body.human_score || 0;
-          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id ?? null, body.channel ?? null, body.user_id || "anonymous", body.signal_type ?? null, body.short_id || null, JSON.stringify(metadata)).run();
+          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))").bind(actionId, body.agent_id, body.channel, body.user_id ?? null, body.signal_type, body.short_id || null, JSON.stringify(metadata)).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'action', entity_id: actionId, action: 'created', actor_type: 'system', actor_id: 'sys_api', actor_name: 'api-gateway', source: 'api', reason: 'action_created', before: '{}', after: JSON.stringify({ action_id: actionId, signal_type: body.signal_type, signal_quality: metadata.signal_quality }) });
           return json({ success: true, action_id: actionId, signal_quality: metadata.signal_quality }, 201);
         }
@@ -1174,12 +805,9 @@ export default {
           const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
           if (!auth.ok) return json({ error: auth.error }, 401);
           const body: any = await request.json();
-          // 铁律1：verifier ≠ subject（只有当字段都存在时才比较，避免 undefined===undefined）
-          if (body.verifier && body.subject && body.verifier === body.subject) {
+          // 铁律1：verifier ≠ subject
+          if (body.verifier === body.subject || body.verifier_id === body.subject_id) {
             return json({ error: "verification rejected: verifier cannot be the same as subject (self-verification forbidden)" }, 403);
-          }
-          if (body.verifier_id && body.subject_id && body.verifier_id === body.subject_id) {
-            return json({ error: "verification rejected: verifier_id cannot be the same as subject_id (self-verification forbidden)" }, 403);
           }
           // 铁律2：verifier_id必须非空
           if (!body.verifier_id || body.verifier_id.length === 0) return json({ error: "verification rejected: verifier_id is required" }, 400);
@@ -1190,12 +818,10 @@ export default {
           if (body.target_level && ['L2', 'L3', 'L4'].includes(body.target_level) && verifierType !== 'audit' && verifierType !== 'external') {
             return json({ error: "verification rejected: L2+ requires audit or external verifier" }, 403);
           }
-          // 铁律5：action_id必须非空
-          if (!body.action_id || body.action_id.length === 0) return json({ error: "verification rejected: action_id is required" }, 400);
           const verificationId = `vrf_${crypto.randomUUID()}`;
-          await env.FLY_D1.prepare("INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(verificationId, body.action_id ?? null, body.verifier ?? null, body.result || 'pending', body.confidence || 0, JSON.stringify(body.evidence || [])).run();
+          await env.FLY_D1.prepare("INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(verificationId, body.action_id, body.verifier, body.result || 'pending', body.confidence || 0, JSON.stringify(body.evidence)).run();
           await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: verifierType === 'system' ? 'system' : 'user', actor_id: body.verifier_id, actor_name: body.verifier_name || body.verifier, source: 'api', reason: 'verification_created', before: '{}', after: JSON.stringify({ verification_id: verificationId, verifier: body.verifier, verifier_type: verifierType, result: body.result }) });
-          return json({ success: true, verification_id: verificationId, verifier_type: verifierType, rules_checked: ["self_verification_blocked", "verifier_id_required", "evidence_required", "action_id_required", "L2_source_check"] }, 201);
+          return json({ success: true, verification_id: verificationId, verifier_type: verifierType, rules_checked: ["self_verification_blocked", "verifier_id_required", "evidence_required", "L2_source_check"] }, 201);
         }
 
         // === 漏洞6：短链Bot检测 ===
@@ -1211,20 +837,14 @@ export default {
           const botResult = detectBot(userAgent);
           const signalQuality = determineSignalQuality(0, botResult.isBot);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ? OR short_id = ?").bind(actionId, actionId).first();
-          if (action) {
-            // 只有action存在时才记录click（避免外键约束失败）
-            const ipHash = await hmacUserId(clientIP, env.IP_SALT || 'fly-attribution-salt-2026');
-            await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, 'click', ?, ?, datetime('now'))").bind(`act_${crypto.randomUUID()}`, action.agent_id, action.channel, ipHash, actionId, JSON.stringify({ referrer: request.headers.get('Referer') || '', ua: userAgent.slice(0, 200), signal_quality: signalQuality, bot_name: botResult.botName || null, human_score: 0 })).run();
-          }
+          const ipHash = await hmacUserId(clientIP, env.IP_SALT || 'fly-attribution-salt-2026');
+          await env.FLY_D1.prepare("INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?, ?, ?, ?, 'click', ?, ?, datetime('now'))").bind(`act_${crypto.randomUUID()}`, action?.agent_id || 'agt_system', action?.channel || 'direct', ipHash, actionId, JSON.stringify({ referrer: request.headers.get('Referer') || '', ua: userAgent.slice(0, 200), signal_quality: signalQuality, bot_name: botResult.botName || null, human_score: 0 })).run();
           return Response.redirect('https://fly-agent.xyz', 302);
         }
 
         // === 漏洞6：信号质量升级 ===
         if (path === '/v1/signal/verify' && method === 'POST') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
           const body: any = await request.json();
-          if (!body.action_id) return json({ error: "action_id is required" }, 400);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ?").bind(body.action_id).first();
           if (!action) return json({ error: "not found" }, 404);
           let hs = 0;
@@ -1236,52 +856,6 @@ export default {
           const nm = { ...om, signal_quality: nq, human_score: hs };
           await env.FLY_D1.prepare("UPDATE actions SET metadata = ? WHERE id = ?").bind(JSON.stringify(nm), body.action_id).run();
           return json({ action_id: body.action_id, signal_quality: nq, human_score: hs });
-        }
-
-        // === v3.0.2: Dashboard数据端点 ===
-        if (path === '/dashboard' && method === 'GET') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
-          const version = 'v3.0.2';
-          const tables = ['agents', 'actions', 'verifications', 'audit_events', 'role_assignments', 'policies'];
-          const counts: Record<string, number> = {};
-          let totalRecords = 0;
-          for (const table of tables) {
-            try {
-              const result = await env.FLY_D1.prepare(`SELECT COUNT(*) as cnt FROM ${table}`).first();
-              const count = (result?.cnt as number) || 0;
-              counts[table] = count;
-              totalRecords += count;
-            } catch { counts[table] = -1; }
-          }
-          const latestAudit = await env.FLY_D1.prepare("SELECT * FROM audit_events ORDER BY created_at DESC LIMIT 1").first();
-          return json({
-            version, timestamp: new Date().toISOString(), db: 'ok', kv: 'ok',
-            tables: counts, total_records: totalRecords,
-            latest_activity: latestAudit ? { event: latestAudit.action, entity: latestAudit.entity_type, at: latestAudit.created_at } : null
-          });
-        }
-
-        // === v3.0.2: 全局审计链验证 ===
-        if (path === '/v1/audit/verify-chain' && method === 'POST') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
-          const body: any = await request.json().catch(() => ({}));
-          const limit = Math.min(parseInt(body.limit || '1000'), 5000);
-          const events = await env.FLY_D1.prepare("SELECT * FROM audit_events ORDER BY created_at ASC LIMIT ?").bind(limit).all();
-          let chainValid = true;
-          let brokenAt: any = null;
-          for (const evt of events.results as any[]) {
-            const hashInput = `${evt.prev_hash}${evt.event_id}${evt.entity_type}${evt.entity_id}${evt.action}${evt.actor_id}${evt.created_at}`;
-            const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
-            const expected = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-            if (evt.event_hash !== expected) {
-              chainValid = false;
-              brokenAt = { event_id: evt.event_id, expected, actual: evt.event_hash };
-              break;
-            }
-          }
-          return json({ chain_valid: chainValid, total_events: events.results.length, checked: chainValid ? events.results.length : (events.results as any[]).findIndex((e: any) => e.event_id === brokenAt?.event_id) + 1, broken_at: brokenAt });
         }
 
         // === 漏洞7：审计链查询 ===
@@ -1302,6 +876,14 @@ export default {
             if (evt.event_hash !== expected) { chainValid = false; break; }
           }
           return json({ entity_type: entityType, entity_id: entityId, events: events.results, chain_valid: chainValid, total_events: events.results.length });
+        }
+
+        // === v2.9.0: 归因链证明生成（Gate 3 核心）===
+        if (path.startsWith('/v1/proof/') && method === 'GET') {
+          const actionId = path.split('/v1/proof/')[1];
+          const proof = await generateAttributionProof(env, actionId);
+          if ('error' in proof) return json({ error: proof.error }, 404);
+          return json(proof);
         }
 
         // === 漏洞8：角色授权 ===
@@ -1386,7 +968,7 @@ export default {
         if (path === '/v1/admin/alert/test' && method === 'POST') {
           const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
           if (!auth.ok) return json({ error: auth.error }, 401);
-          await alertTrigger(env, 'TEST', '告警测试 - 这是一个测试告警', { trigger: 'manual', version: 'v2.9.0' });
+          await alertTrigger(env, 'TEST', '告警测试 - 这是一个测试告警', { trigger: 'manual', version: 'v2.8.0' });
           return json({ success: true, message: 'Test alert sent to all configured channels', channels: { telegram: !!(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID), email: !!(env.RESEND_API_KEY && env.ALERT_EMAIL_TO) } });
         }
 
@@ -1431,535 +1013,6 @@ export default {
           return json({ success: true, backups });
         }
 
-        // === v2.9.0: KV写入端点（供GA写入容量数据） ===
-        if (path === '/v1/admin/kv' && method === 'PUT') {
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
-          try {
-            const body: any = await request.json();
-            const { key, value } = body;
-            if (!key || !value) return json({ error: 'key and value required' }, 400);
-            // 只允许写capacity:前缀的key（安全限制）
-            if (!key.startsWith('capacity:')) return json({ error: 'only capacity: keys allowed' }, 403);
-            await env.FLY_KV.put(key, typeof value === 'string' ? value : JSON.stringify(value), { expirationTtl: 86400 });
-            return json({ success: true, key });
-          } catch (e: any) {
-            return json({ error: e.message }, 400);
-          }
-        }
-
-        // ============================================================
-        // v3.0.0: Event-Sourced Attribution Ledger — 连接 attribution.js ↔ Worker API
-        // ============================================================
-
-        // === Layer 1: POST /attribution/ingest — Event Emitter（HMAC签名+Nonce防重放） ===
-        if (path === '/attribution/ingest' && method === 'POST') {
-          // 1. 验证 Authorization Bearer Token
-          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
-          if (!auth.ok) return json({ error: auth.error }, 401);
-
-          // 2. 解析 body
-          const body: any = await request.json();
-          const { payload, signature, nonce, timestamp, action_id, payload_type, legacy_result } = body;
-
-          // 3. 必填字段校验
-          if (!payload || !signature || !nonce || !timestamp || !action_id || !payload_type) {
-            return json({ error: 'missing required fields: payload, signature, nonce, timestamp, action_id, payload_type' }, 400);
-          }
-
-          // 4. 验证 timestamp 在 ±5分钟内
-          const tsMs = new Date(timestamp).getTime();
-          const nowMs = Date.now();
-          if (Math.abs(nowMs - tsMs) > 5 * 60 * 1000) {
-            return json({ error: 'expired timestamp' }, 400);
-          }
-
-          // 5. 验证 nonce 未被使用（KV防重放）
-          const existingNonce = await env.FLY_KV.get(`nonce:${nonce}`);
-          if (existingNonce) {
-            return json({ error: 'duplicate nonce' }, 400);
-          }
-
-          // 6. HMAC-SHA256 签名验证
-          const secret = env.FLY_API_KEY || env.IP_SALT || 'fly-attribution-salt-2026';
-          const payloadStr = typeof payload === 'string' ? payload : JSON.stringify(payload);
-          const sigValid = await verifySignature(payloadStr, signature, nonce, timestamp, secret);
-          if (!sigValid) {
-            return json({ error: 'invalid signature' }, 401);
-          }
-
-          // 7. 确保表结构完整
-
-          // 8. 获取并发锁（如果记录已存在）
-          const existing = await env.FLY_D1.prepare(
-            "SELECT id FROM attribution_payloads WHERE action_id = ?"
-          ).bind(action_id).first();
-
-          if (existing) {
-            const locked = await acquireLock(env, action_id);
-            if (!locked) {
-              return json({ error: 'resource is being processed, try again later' }, 409);
-            }
-            try {
-              // 检查当前状态：禁止状态回退
-              const currentRecord = await env.FLY_D1.prepare(
-                "SELECT id, status FROM attribution_payloads WHERE action_id = ?"
-              ).bind(action_id).first();
-              
-              const txId = existing.id as string;
-              const currentStatus = (currentRecord?.status as string) || 'INGESTED';
-              const FINAL_STATES = ['VERIFICATION_COMPLETED', 'SETTLED'];
-              
-              // 如果已经是终态，不允许回退状态，只更新payload
-              if (FINAL_STATES.includes(currentStatus)) {
-                const legacyStr = legacy_result ? (typeof legacy_result === 'string' ? legacy_result : JSON.stringify(legacy_result)) : null;
-                await env.FLY_D1.prepare(
-                  "UPDATE attribution_payloads SET payload_json = ?, nonce = ?, payload_timestamp = ?, signature = ?, legacy_result = ?, updated_at = datetime('now') WHERE id = ?"
-                ).bind(payloadStr, nonce, timestamp, signature, legacyStr, txId).run();
-
-                // 写审计链
-                await writeAuditEvent(env, {
-                  request_id: `req_${crypto.randomUUID()}`,
-                  entity_type: 'attribution_payload',
-                  entity_id: txId,
-                  action: 'payload_updated',
-                  actor_type: 'system',
-                  actor_id: auth.agentId || 'sys_attribution_bridge',
-                  actor_name: 'attribution-bridge',
-                  source: 'attribution_js',
-                  reason: 'payload_update_no_state_change',
-                  before: currentStatus,
-                  after: JSON.stringify({ action_id, status: currentStatus, nonce, note: 'state_protected' })
-                });
-
-                return json({ success: true, transaction_id: txId, status: currentStatus, note: 'payload_updated_state_protected' });
-              }
-
-              // 非终态：允许更新状态为INGESTED，触发pipeline
-              const legacyStr = legacy_result ? (typeof legacy_result === 'string' ? legacy_result : JSON.stringify(legacy_result)) : null;
-              await env.FLY_D1.prepare(
-                "UPDATE attribution_payloads SET payload_json = ?, status = 'INGESTED', nonce = ?, payload_timestamp = ?, signature = ?, worker_status = 'ingested', legacy_result = ?, delta_score = NULL, calibration_status = 'PENDING', updated_at = datetime('now') WHERE id = ?"
-              ).bind(payloadStr, nonce, timestamp, signature, legacyStr, txId).run();
-
-              // 写审计链
-              await writeAuditEvent(env, {
-                request_id: `req_${crypto.randomUUID()}`,
-                entity_type: 'attribution_payload',
-                entity_id: txId,
-                action: 'updated',
-                actor_type: 'system',
-                actor_id: auth.agentId || 'sys_attribution_bridge',
-                actor_name: 'attribution-bridge',
-                source: 'attribution_js',
-                reason: 'event_re_ingested',
-                before: currentStatus,
-                after: JSON.stringify({ action_id, status: 'INGESTED', nonce })
-              });
-
-              // 写 job_queue（由 cron 消费）
-              await env.FLY_D1.prepare(
-                "INSERT OR REPLACE INTO job_queue (id, action_id, step, status, created_at, updated_at) VALUES (?, ?, 'SHADOW', 'PENDING', datetime('now'), datetime('now'))"
-              ).bind(`job_${crypto.randomUUID()}`, action_id).run();
-
-              // Fast-path trigger: waitUntil 秒级触发，job_queue+cron 兜底
-              ctx.waitUntil(processJobQueue(env));
-
-              return json({ success: true, transaction_id: txId, status: 'INGESTED', queued: true });
-            } finally {
-              await releaseLock(env, action_id);
-            }
-          }
-
-          // 9. 新建记录
-          const txId = `tx_${crypto.randomUUID()}`;
-          const legacyStrNew = legacy_result ? (typeof legacy_result === 'string' ? legacy_result : JSON.stringify(legacy_result)) : null;
-          await env.FLY_D1.prepare(
-            "INSERT INTO attribution_payloads (id, action_id, payload_type, payload_json, status, nonce, payload_timestamp, signature, worker_status, legacy_result) VALUES (?, ?, ?, ?, 'INGESTED', ?, ?, ?, 'ingested', ?)"
-          ).bind(txId, action_id, payload_type, payloadStr, nonce, timestamp, signature, legacyStrNew).run();
-
-          // 10. 记录 nonce 到 KV（TTL 600秒 = 10分钟）
-          await env.FLY_KV.put(`nonce:${nonce}`, '1', { expirationTtl: 600 });
-
-          // 11. 写审计链
-          await writeAuditEvent(env, {
-            request_id: `req_${crypto.randomUUID()}`,
-            entity_type: 'attribution_payload',
-            entity_id: txId,
-            action: 'created',
-            actor_type: 'system',
-            actor_id: auth.agentId || 'sys_attribution_bridge',
-            actor_name: 'attribution-bridge',
-            source: 'attribution_js',
-            reason: 'event_ingested',
-            before: '{}',
-            after: JSON.stringify({ action_id, payload_type, status: 'INGESTED', nonce })
-          });
-
-          // 写 job_queue（由 cron 消费）
-          await env.FLY_D1.prepare(
-            "INSERT INTO job_queue (id, action_id, step, status, created_at, updated_at) VALUES (?, ?, 'SHADOW', 'PENDING', datetime('now'), datetime('now'))"
-          ).bind(`job_${crypto.randomUUID()}`, action_id).run();
-
-          // Fast-path trigger: waitUntil 秒级触发，job_queue+cron 兜底
-          ctx.waitUntil(processJobQueue(env));
-
-          return json({ success: true, transaction_id: txId, status: 'INGESTED', queued: true }, 201);
-        }
-
-        // === Layer 2: POST /attribution/shadow/:actionId — Shadow归因计算 ===
-        if (path.startsWith('/attribution/shadow/') && method === 'POST') {
-          const actionId = path.split('/attribution/shadow/')[1];
-          if (!actionId) return json({ error: 'action_id is required' }, 400);
-
-
-          // 获取锁
-          const locked = await acquireLock(env, actionId);
-          if (!locked) return json({ error: 'resource is being processed, try again later' }, 409);
-
-          try {
-            // 从 D1 读取 payload_json
-            const record = await env.FLY_D1.prepare(
-              "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-            ).bind(actionId).first();
-            if (!record) return json({ error: 'not found', action_id: actionId }, 404);
-
-            const payload = JSON.parse(record.payload_json as string);
-            const shadowResult = runShadowAttribution(payload);
-
-            // 更新 D1
-            await env.FLY_D1.prepare(
-              "UPDATE attribution_payloads SET shadow_result = ?, status = 'SHADOW_COMPLETED', worker_status = 'shadow_completed' WHERE action_id = ?"
-            ).bind(JSON.stringify(shadowResult), actionId).run();
-
-            // 写审计链
-            await writeAuditEvent(env, {
-              request_id: `req_${crypto.randomUUID()}`,
-              entity_type: 'attribution_payload',
-              entity_id: record.id as string,
-              action: 'status_changed',
-              actor_type: 'system',
-              actor_id: 'sys_shadow_attribution',
-              actor_name: 'shadow-attribution',
-              source: 'api',
-              reason: 'shadow_calculation_completed',
-              before: record.status as string || 'INGESTED',
-              after: JSON.stringify({ status: 'SHADOW_COMPLETED', weighted_score: shadowResult.weighted_score })
-            });
-
-            return json({ success: true, shadow_result: shadowResult, status: 'SHADOW_COMPLETED' });
-          } finally {
-            await releaseLock(env, actionId);
-          }
-        }
-
-        // === Layer 3: POST /attribution/verify/:actionId — Verification验证 ===
-        if (path.startsWith('/attribution/verify/') && method === 'POST') {
-          const actionId = path.split('/attribution/verify/')[1];
-          if (!actionId) return json({ error: 'action_id is required' }, 400);
-
-
-          // 获取锁
-          const locked = await acquireLock(env, actionId);
-          if (!locked) return json({ error: 'resource is being processed, try again later' }, 409);
-
-          try {
-            // 从 D1 读取 payload_json 和 shadow_result
-            const record = await env.FLY_D1.prepare(
-              "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-            ).bind(actionId).first();
-            if (!record) return json({ error: 'not found', action_id: actionId }, 404);
-
-            const payload = JSON.parse(record.payload_json as string);
-            const shadowResult = record.shadow_result ? JSON.parse(record.shadow_result as string) : null;
-
-            // 调用验证纯函数
-            const verificationResult = runVerification(payload, shadowResult);
-
-            // 生成 verification_id
-            const verificationId = `vrf_${crypto.randomUUID().replace(/-/g, '').slice(0, 24)}`;
-
-            // 更新 D1
-            await env.FLY_D1.prepare(
-              "UPDATE attribution_payloads SET verification_result = ?, verification_id = ?, status = 'VERIFICATION_COMPLETED', worker_status = 'verification_completed' WHERE action_id = ?"
-            ).bind(JSON.stringify(verificationResult), verificationId, actionId).run();
-
-            // 写审计链
-            await writeAuditEvent(env, {
-              request_id: `req_${crypto.randomUUID()}`,
-              entity_type: 'attribution_payload',
-              entity_id: record.id as string,
-              action: 'verified',
-              actor_type: 'system',
-              actor_id: 'sys_verification',
-              actor_name: 'verification-engine',
-              source: 'api',
-              reason: 'verification_completed',
-              before: record.status as string || 'SHADOW_COMPLETED',
-              after: JSON.stringify({ status: 'VERIFICATION_COMPLETED', verification_id: verificationId, verification_status: verificationResult.status })
-            });
-
-            return json({ success: true, verification_result: verificationResult, verification_id: verificationId, status: 'VERIFICATION_COMPLETED' });
-          } finally {
-            await releaseLock(env, actionId);
-          }
-        }
-
-        // === POST /attribution/replay/:actionId — 强制重新验证（忽略已有状态） ===
-        if (path.startsWith('/attribution/replay/') && method === 'POST') {
-          const actionId = path.split('/attribution/replay/')[1];
-          if (!actionId) return json({ error: 'action_id is required' }, 400);
-
-
-          // 获取锁
-          const locked = await acquireLock(env, actionId);
-          if (!locked) return json({ error: 'resource is being processed, try again later' }, 409);
-
-          try {
-            // 从 D1 读取 payload_json 和 shadow_result（强制重新计算）
-            const record = await env.FLY_D1.prepare(
-              "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-            ).bind(actionId).first();
-            if (!record) return json({ error: 'not found', action_id: actionId }, 404);
-
-            const payload = JSON.parse(record.payload_json as string);
-            const shadowResult = record.shadow_result ? JSON.parse(record.shadow_result as string) : null;
-
-            // 调用验证纯函数（强制重新计算，不管之前状态）
-            const verificationResult = runVerification(payload, shadowResult);
-
-            // 生成新的 verification_id
-            const verificationId = `vrf_${crypto.randomUUID().replace(/-/g, '').slice(0, 24)}`;
-
-            // 更新 D1（强制覆盖，不管之前状态）
-            await env.FLY_D1.prepare(
-              "UPDATE attribution_payloads SET verification_result = ?, verification_id = ?, status = 'VERIFICATION_COMPLETED', worker_status = 'replay_completed', failure_reason = NULL WHERE action_id = ?"
-            ).bind(JSON.stringify(verificationResult), verificationId, actionId).run();
-
-            // 写审计链
-            await writeAuditEvent(env, {
-              request_id: `req_${crypto.randomUUID()}`,
-              entity_type: 'attribution_payload',
-              entity_id: record.id as string,
-              action: 'status_changed',
-              actor_type: 'system',
-              actor_id: 'sys_replay',
-              actor_name: 'replay-engine',
-              source: 'api',
-              reason: 'forced_replay_verification',
-              before: record.status as string || 'UNKNOWN',
-              after: JSON.stringify({ status: 'VERIFICATION_COMPLETED', verification_id: verificationId, verification_status: verificationResult.status, replay: true })
-            });
-
-            return json({ success: true, verification_result: verificationResult, verification_id: verificationId, status: 'VERIFICATION_COMPLETED' });
-          } finally {
-            await releaseLock(env, actionId);
-          }
-        }
-
-        // === Layer 4: POST /attribution/settle/:actionId — 结算 ===
-        if (path.startsWith('/attribution/settle/') && method === 'POST') {
-          const actionId = path.split('/attribution/settle/')[1];
-          if (!actionId) return json({ error: 'action_id is required' }, 400);
-
-
-          // 获取锁
-          const locked = await acquireLock(env, actionId);
-          if (!locked) return json({ error: 'resource is being processed, try again later' }, 409);
-
-          try {
-            // 从 D1 读取当前状态
-            const record = await env.FLY_D1.prepare(
-              "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-            ).bind(actionId).first();
-            if (!record) return json({ error: 'not found', action_id: actionId }, 404);
-
-            // 检查 status 必须是 'VERIFICATION_COMPLETED'
-            if (record.status !== 'VERIFICATION_COMPLETED') {
-              return json({ error: `cannot settle: status is '${record.status}', expected 'VERIFICATION_COMPLETED'` }, 409);
-            }
-
-            // 检查 verification_result 中 status 必须是 'pass'
-            if (!record.verification_result) {
-              return json({ error: 'cannot settle: no verification_result found' }, 409);
-            }
-            const verResult = JSON.parse(record.verification_result as string);
-            if (verResult.status !== 'pass') {
-              return json({ error: `cannot settle: verification status is '${verResult.status}', expected 'pass'` }, 409);
-            }
-
-            // 从 payload_json 提取 GMV
-            const payload = JSON.parse(record.payload_json as string);
-            const gmvAmount = payload.gmv ?? 0;
-            const attributionWeight = 1.0; // 当前单touch，权重固定为1
-            const settledAmount = gmvAmount * attributionWeight;
-
-            // 生成业务事件ID（唯一标识结算记录）
-            const businessEventId = `settle_${crypto.randomUUID()}`;
-
-            // 更新 D1：结算（append-only 记录）
-            const settledAt = new Date().toISOString();
-            await env.FLY_D1.prepare(
-              "UPDATE attribution_payloads SET status = 'SETTLED', settled_at = ?, worker_status = 'settled', settled_amount = ?, gmv_amount = ?, attribution_weight = ?, currency = 'CNY', settlement_method = 'auto', business_event_id = ? WHERE action_id = ?"
-            ).bind(settledAt, settledAmount, gmvAmount, attributionWeight, businessEventId, actionId).run();
-
-            // 写审计链
-            await writeAuditEvent(env, {
-              request_id: `req_${crypto.randomUUID()}`,
-              entity_type: 'attribution_payload',
-              entity_id: record.id as string,
-              action: 'confirmed',
-              actor_type: 'system',
-              actor_id: 'sys_settlement',
-              actor_name: 'settlement-engine',
-              source: 'api',
-              reason: 'attribution_settled',
-              before: 'VERIFICATION_COMPLETED',
-              after: JSON.stringify({ 
-                status: 'SETTLED', 
-                settled_at: settledAt, 
-                verification_id: record.verification_id,
-                settled_amount: settledAmount,
-                gmv_amount: gmvAmount,
-                attribution_weight: attributionWeight,
-                business_event_id: businessEventId
-              })
-            });
-
-            return json({ 
-              success: true, 
-              status: 'SETTLED', 
-              settled_at: settledAt,
-              settled_amount: settledAmount,
-              gmv_amount: gmvAmount,
-              attribution_weight: attributionWeight,
-              currency: 'CNY',
-              business_event_id: businessEventId
-            });
-          } finally {
-            await releaseLock(env, actionId);
-          }
-        }
-
-        // === GET /attribution/settlements — 查询所有已结算记录（审计用） ===
-        if (path === '/attribution/settlements' && method === 'GET') {
-          const limit = parseInt(url.searchParams.get('limit') || '50');
-          const statusFilter = url.searchParams.get('status') || 'SETTLED';
-          
-          const results = await env.FLY_D1.prepare(
-            `SELECT id, action_id, settled_at, settled_amount, gmv_amount, attribution_weight, 
-                    currency, settlement_method, business_event_id, verification_id, created_at
-             FROM attribution_payloads 
-             WHERE status = ? 
-             ORDER BY settled_at DESC 
-             LIMIT ?`
-          ).bind(statusFilter, limit).all();
-          
-          // 计算汇总
-          let totalSettled = 0;
-          let totalGMV = 0;
-          for (const record of results.results as any[]) {
-            totalSettled += record.settled_amount || 0;
-            totalGMV += record.gmv_amount || 0;
-          }
-          
-          return json({ 
-            total: results.results.length,
-            total_settled_amount: totalSettled,
-            total_gmv_amount: totalGMV,
-            settlements: results.results 
-          });
-        }
-
-        // === GET /attribution/settlement/:id — 查询单笔结算详情 ===
-        if (path.startsWith('/attribution/settlement/') && method === 'GET') {
-          const actionId = path.split('/attribution/settlement/')[1];
-          
-          const record = await env.FLY_D1.prepare(
-            `SELECT id, action_id, payload_type, payload_json, status, settled_at, 
-                    settled_amount, gmv_amount, attribution_weight, currency, 
-                    settlement_method, business_event_id, verification_id, 
-                    shadow_result, verification_result, legacy_result, delta_score,
-                    calibration_status, created_at
-             FROM attribution_payloads 
-             WHERE action_id = ? AND status = 'SETTLED'
-             ORDER BY settled_at DESC 
-             LIMIT 1`
-          ).bind(actionId).first();
-          
-          if (!record) {
-            return json({ 
-              error: 'settlement not found', 
-              action_id: actionId,
-              hint: 'action may not be settled yet'
-            }, 404);
-          }
-          
-          return json({ 
-            action_id: record.action_id,
-            business_event_id: record.business_event_id,
-            settlement: {
-              settled_at: record.settled_at,
-              settled_amount: record.settled_amount,
-              gmv_amount: record.gmv_amount,
-              attribution_weight: record.attribution_weight,
-              currency: record.currency,
-              settlement_method: record.settlement_method
-            },
-            verification: {
-              verification_id: record.verification_id,
-              verification_result: record.verification_result ? JSON.parse(record.verification_result as string) : null
-            },
-            attribution: {
-              shadow_result: record.shadow_result ? JSON.parse(record.shadow_result as string) : null,
-              legacy_result: record.legacy_result ? JSON.parse(record.legacy_result as string) : null,
-              delta_score: record.delta_score,
-              calibration_status: record.calibration_status
-            },
-            metadata: {
-              payload_type: record.payload_type,
-              created_at: record.created_at,
-              status: record.status
-            }
-          });
-        }
-
-        // === GET /attribution/status/:actionId — 完整状态机进度查询 ===
-        if (path.startsWith('/attribution/status/') && method === 'GET') {
-          const actionId = path.split('/attribution/status/')[1];
-
-          const record = await env.FLY_D1.prepare(
-            "SELECT * FROM attribution_payloads WHERE action_id = ? ORDER BY created_at DESC LIMIT 1"
-          ).bind(actionId).first();
-          if (!record) return json({ error: 'not found', action_id: actionId }, 404);
-
-          return json({
-            action_id: actionId,
-            status: record.status || 'CREATED',
-            transaction_id: record.id,
-            payload_type: record.payload_type,
-            signature_verified: !!record.signature,
-            legacy_result: record.legacy_result ? JSON.parse(record.legacy_result as string) : null,
-            delta_score: record.delta_score ?? null,
-            calibration_status: record.calibration_status || 'PENDING',
-            shadow_result: record.shadow_result ? JSON.parse(record.shadow_result as string) : null,
-            verification_result: record.verification_result ? JSON.parse(record.verification_result as string) : null,
-            verification_id: record.verification_id || null,
-            settled_at: record.settled_at || null,
-            failure_reason: record.failure_reason || null,
-            created_at: record.created_at,
-            updated_at: record.created_at, // D1无自动updated_at，用created_at兜底
-          });
-        }
-
-        // === 查询所有 attribution 数据概览 ===
-        if (path === '/attribution/list' && method === 'GET') {
-          const limit = parseInt(url.searchParams.get('limit') || '20');
-          const results = await env.FLY_D1.prepare(
-            "SELECT id, action_id, payload_type, status, attribution_status, worker_status, verification_id, settled_at, created_at FROM attribution_payloads ORDER BY created_at DESC LIMIT ?"
-          ).bind(limit).all();
-          return json({ total: results.results.length, payloads: results.results });
-        }
-
         return json({ error: "not found", hint: "try /v1/health" }, 404);
       } catch (err: any) {
         // v2.8.0新增：D1/KV操作失败独立告警
@@ -1987,175 +1040,5 @@ export default {
     })());
 
     return response;
-  },
-
-  // ============================================================
-  // v2.9.0: Scheduled Handler — cron定时健康探针 + 指标持久化
-  // ============================================================
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
-    ctx.waitUntil((async () => {
-      try {
-        // === Pipeline Queue Consumer (job_queue) ===
-        await processJobQueue(env);
-        
-        // 0. v2.10.0: 触发GitHub repository_dispatch（替代GitHub Scheduler）
-        if (env.GITHUB_TOKEN) {
-          try {
-            const resp = await fetch(
-              'https://api.github.com/repos/fly-marketing-agent/fly-agent.xyz/dispatches',
-              {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${env.GITHUB_TOKEN}`,
-                  'Accept': 'application/vnd.github+json',
-                  'User-Agent': 'fly-api-worker',
-                },
-                body: JSON.stringify({ event_type: 'cf_cron_trigger', client_payload: { source: 'cloudflare-cron', ts: Date.now() } }),
-              },
-            );
-            if (!resp.ok && resp.status !== 204) {
-              const body = await resp.text();
-              if (!(await isAlertDeduped(env, 'gh_dispatch'))) {
-                await markAlertSent(env, 'gh_dispatch');
-                await alertTrigger(env, 'P1', `GitHub repository_dispatch触发失败`, {
-                  status: resp.status,
-                  error: body.slice(0, 200),
-                });
-              }
-            }
-          } catch (e: any) {
-            if (!(await isAlertDeduped(env, 'gh_dispatch'))) {
-              await markAlertSent(env, 'gh_dispatch');
-              await alertTrigger(env, 'P1', `GitHub repository_dispatch请求异常`, { error: e.message });
-            }
-          }
-        }
-
-        // 1. D1探针
-        try {
-          await env.FLY_D1.prepare('SELECT 1 AS ok').first();
-        } catch (e: any) {
-          if (!(await isAlertDeduped(env, 'd1_probe'))) {
-            await markAlertSent(env, 'd1_probe');
-            await alertTrigger(env, 'P0', 'D1定时探针失败', { error: e.message });
-          }
-        }
-
-        // 2. KV探针
-        try {
-          const probeKey = `__scheduled_probe:${Date.now()}`;
-          await env.FLY_KV.put(probeKey, '1', { expirationTtl: 60 });
-          const val = await env.FLY_KV.get(probeKey);
-          if (val !== '1') throw new Error('KV read mismatch');
-        } catch (e: any) {
-          if (!(await isAlertDeduped(env, 'kv_probe'))) {
-            await markAlertSent(env, 'kv_probe');
-            await alertTrigger(env, 'P0', 'KV定时探针失败', { error: e.message });
-          }
-        }
-
-        // 3. 慢查询检测
-        const metrics = await getAggregatedMetrics(env, 5);
-        if (metrics && metrics.avg_ms > 2000) {
-          if (!(await isAlertDeduped(env, 'slow_query'))) {
-            await markAlertSent(env, 'slow_query');
-            await alertTrigger(env, 'P1', `查询延迟偏高: avg=${metrics.avg_ms}ms`, {
-              avg_ms: metrics.avg_ms, p95_ms: metrics.p95_ms, threshold: '>2000ms', window: '5min'
-            });
-          }
-        }
-
-        // 4. 每日指标持久化（每天0点附近执行一次）
-        try {
-          const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-          const dailyDoneKey = `daily_metrics:done:${today}`;
-          const alreadyDone = await env.FLY_KV.get(dailyDoneKey);
-          if (!alreadyDone) {
-            // 确保daily_metrics表存在
-            await env.FLY_D1.prepare(`
-              CREATE TABLE IF NOT EXISTS daily_metrics (
-                date TEXT PRIMARY KEY,
-                total_requests INTEGER,
-                total_5xx INTEGER,
-                avg_latency_ms INTEGER,
-                p95_latency_ms INTEGER,
-                created_at TEXT DEFAULT (datetime('now'))
-              )
-            `).run();
-
-            // 聚合最近5分钟指标作为当日的采样（首次运行时写入）
-            const m = await getAggregatedMetrics(env, 5);
-            if (m && m.total > 0) {
-              await env.FLY_D1.prepare(
-                `INSERT OR REPLACE INTO daily_metrics (date, total_requests, total_5xx, avg_latency_ms, p95_latency_ms) VALUES (?, ?, ?, ?, ?)`
-              ).bind(today, m.total, m.s5xx, Math.round(m.avg_ms), Math.round(m.p95_ms)).run();
-            }
-            // 标记今日已完成（TTL 25小时，确保跨天重置）
-            await env.FLY_KV.put(dailyDoneKey, '1', { expirationTtl: 90000 });
-          }
-        } catch (e: any) {
-          // 持久化失败不影响探针
-        }
-
-        // 5. D1容量检查（CF D1免费版5GB限额，>80%告警）
-        try {
-          // 通过PRAGMA查询D1页面数估算大小（D1不直接暴露file_size给Worker）
-          // 使用KV缓存的容量数据（由GA trend-check写入）
-          const capacityRaw = await env.FLY_KV.get('capacity:d1');
-          if (capacityRaw) {
-            const cap = JSON.parse(capacityRaw);
-            // CF D1免费版限额5GB = 5368709120字节
-            const limitBytes = 5368709120;
-            const usagePercent = (cap.file_size / limitBytes) * 100;
-            if (usagePercent > 80) {
-              if (!(await isAlertDeduped(env, 'd1_capacity'))) {
-                await markAlertSent(env, 'd1_capacity');
-                await alertTrigger(env, 'P1', `D1容量接近限额: ${usagePercent.toFixed(1)}%`, {
-                  file_size_mb: `${(cap.file_size / 1048576).toFixed(1)}MB`,
-                  limit_gb: '5GB',
-                  usage_percent: `${usagePercent.toFixed(1)}%`,
-                  threshold: '>80%'
-                });
-              }
-            }
-          }
-        } catch (e: any) {
-          // 容量检查失败不影响探针
-        }
-
-        // 6. KV容量检查（CF KV免费版：100k reads/day, 1k writes/day）
-        try {
-          const kvCapRaw = await env.FLY_KV.get('capacity:kv');
-          if (kvCapRaw) {
-            const kvCap = JSON.parse(kvCapRaw);
-            // 读写量 > 80%限额告警
-            const readLimit = 100000;
-            const writeLimit = 1000;
-            const readPercent = (kvCap.reads / readLimit) * 100;
-            const writePercent = (kvCap.writes / writeLimit) * 100;
-            if (readPercent > 80 || writePercent > 80) {
-              if (!(await isAlertDeduped(env, 'kv_capacity'))) {
-                await markAlertSent(env, 'kv_capacity');
-                const reasons: string[] = [];
-                if (readPercent > 80) reasons.push(`读${kvCap.reads}/${readLimit}(${readPercent.toFixed(1)}%)`);
-                if (writePercent > 80) reasons.push(`写${kvCap.writes}/${writeLimit}(${writePercent.toFixed(1)}%)`);
-                await alertTrigger(env, 'P1', `KV容量接近限额: ${reasons.join(', ')}`, {
-                  reads: kvCap.reads,
-                  writes: kvCap.writes,
-                  read_limit: readLimit,
-                  write_limit: writeLimit,
-                  threshold: '>80%'
-                });
-              }
-            }
-          }
-        } catch (e: any) {
-          // 容量检查失败不影响探针
-        }
-
-      } catch (e) {
-        // scheduled失败静默
-      }
-    })());
   },
 };
