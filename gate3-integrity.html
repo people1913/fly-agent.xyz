@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gate 3 归因链验证 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
+.gate-hero{text-align:center;padding:40px 24px 32px}
+.gate-hero .gate-num{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--deep-green);margin-bottom:8px}
+.gate-hero .gate-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.gate-hero .gate-zh{font-size:16px;color:var(--text3);margin-bottom:16px}
+.gate-hero .gate-oneliner{font-size:15px;color:var(--deep-green);font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:20px;margin-bottom:24px}
+.def-box .def-label{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:2px;margin-bottom:8px}
+.def-box .def-text{font-size:14px;font-weight:700;color:var(--deep-green);line-height:1.7}
+.vs-row{display:flex;gap:16px;margin-bottom:24px}
+.vs-col{flex:1;border-radius:8px;padding:16px}
+.vs-col.before{background:var(--bg3);border:1px solid var(--border)}
+.vs-col.after{background:var(--mint);border:1px solid var(--mint-border)}
+.vs-col .vs-title{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.vs-col.before .vs-title{color:var(--text4)}
+.vs-col.after .vs-title{color:var(--deep-green)}
+.vs-col .vs-item{font-size:13px;line-height:2}
+.vs-col.before .vs-item{color:var(--text3)}
+.vs-col.after .vs-item{color:var(--deep-green);font-weight:600}
+.step-row{display:flex;gap:12px;margin-bottom:24px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.next-box .next-label{font-size:10px;font-weight:700;color:var(--text4);letter-spacing:2px;margin-bottom:8px}
+.next-box .next-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
+.hash-demo{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:24px;font-family:monospace;font-size:12px;line-height:2;color:var(--text2)}
+.hash-demo .hash-ok{color:#059669;font-weight:700}
+.hash-demo .hash-fail{color:#DC2626;font-weight:700}
+.hash-demo .hash-arrow{color:var(--text4)}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Gate 3 · 归因链验证</h1><span class="tag">验证体系</span></div>
+<div class="content">
+
+<div class="gate-hero">
+<div class="gate-num">GATE 3 / 6</div>
+<div class="gate-title">归因链验证</div>
+<div class="gate-zh">Attribution Chain Integrity Verification</div>
+<div class="gate-oneliner">从推荐到成交的归因链完整吗？哈希链有没有断裂？</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">为什么需要归因链验证</div>
+<div class="section-body">
+数据完整、来源真实，还不够。<strong>如果从推荐到成交的中间环节被篡改、删除或插入虚假事件，整条归因链的因果关系就不成立。</strong>归因链验证通过 SHA-256 哈希链确保每一个事件节点不可篡改、链式连续、全程可追溯。
+</div>
+
+<div class="vs-row">
+<div class="vs-col before">
+<div class="vs-title">没有归因链验证</div>
+<div class="vs-item">中间事件可被悄悄删除</div>
+<div class="vs-item">虚假事件可被插入归因链</div>
+<div class="vs-item">时间戳可被回改伪造</div>
+<div class="vs-item">归因因果关系无法自证</div>
+</div>
+<div class="vs-col after">
+<div class="vs-title">经过归因链验证</div>
+<div class="vs-item">哈希链连续，任意删除 = 链断裂</div>
+<div class="vs-item">任意篡改 = 后续哈希全部失效</div>
+<div class="vs-item">Ed25519 签名防伪造</div>
+<div class="vs-item">因果关系可独立验证</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">归因链验证做了什么</div>
+<div class="def-box">
+<div class="def-label">核心动作</div>
+<div class="def-text">Fly 为归因链上的每一个事件生成 SHA-256 哈希节点：hashₙ = SHA256(事件数据 + hashₙ₋₁)。从 CREATED 到当前状态，每个新哈希包含前一哈希，形成不可篡改的链式结构。任意修改一个字段 → 该哈希变化 → 后续所有哈希全部失效 → 链断裂。</div>
+</div>
+
+<div class="hash-demo">
+<div><span class="hash-ok">✓</span> hash₁ = SHA256(CREATED 事件) <span class="hash-arrow">→ e3b0c4...</span></div>
+<div><span class="hash-ok">✓</span> hash₂ = SHA256(REFERRED 事件 + hash₁) <span class="hash-arrow">→ 7a8b9c...</span></div>
+<div><span class="hash-ok">✓</span> hash₃ = SHA256(CONVERTED 事件 + hash₂) <span class="hash-arrow">→ 1d2e3f...</span></div>
+<div><span class="hash-ok">✓</span> hash₄ = SHA256(SETTLED 事件 + hash₃) <span class="hash-arrow">→ 4a5b6c...</span></div>
+<div style="margin-top:8px"><span class="hash-fail">✗</span> 篡改 REFERRED 事件 → hash₂ 变化 → hash₃ hash₄ 全部失效 <span class="hash-fail">链断裂</span></div>
+</div>
+
+<div class="step-row">
+<div class="step-card">
+<div class="step-num">STEP 1</div>
+<div class="step-title">哈希链连续性校验</div>
+<div class="step-desc">验证从 CREATED 到当前状态，每个哈希节点的链接关系完整无断裂</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 2</div>
+<div class="step-title">事件完整性验证</div>
+<div class="step-desc">重新计算每个事件的哈希值，与链上记录对比，确认无字段被篡改</div>
+</div>
+<div class="step-card">
+<div class="step-num">STEP 3</div>
+<div class="step-title">数字签名验证</div>
+<div class="step-desc">验证每个事件的 Ed25519 签名，确认事件由声称的 Agent 签发，不可伪造</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="next-box">
+<div class="next-label">下一关</div>
+<div class="next-text">归因链验证确保了「因果关系完整且不可篡改」，接下来需要验证「事件时序是否合理」</div>
+<a href="/dashboard.html" class="next-link">Gate 4 部署验证 →</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>
