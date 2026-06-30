@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
 <link rel="canonical" href="https://fly-agent.xyz/verify">
-<meta name="description" content="Fly — Track AI Revenue Attribution, issue verifiable records for every AI-generated revenue">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fly — Track AI Revenue Attribution</title>
+<title>Fly — Commercial Trust Report</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
---bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;
---deep-green:#1A3D2E;--mint:#E8F5EC;--mint-border:#B8DCC5;
---dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;
---mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
---border:#E2E8F0;
+  --bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;
+  --deep-green:#1A3D2E;--mint:#E8F5EC;--mint-border:#B8DCC5;
+  --gold:#B8860B;--gold-bg:#FFF8E7;--gold-border:#E6D5A0;
+  --dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+  --border:#E2E8F0;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:1.7;font-size:15px;display:flex;min-height:100vh}
@@ -25,79 +25,106 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 .topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
 .content{padding:32px 40px 60px 48px;max-width:900px;overflow-y:auto}
 
-/* Hero */
-.hero{text-align:center;padding:48px 0 24px}
-.hero h2{font-size:32px;font-weight:800;color:var(--dark);letter-spacing:-.5px;margin-bottom:8px;line-height:1.2}
-.hero .subtitle{font-size:18px;font-weight:600;color:var(--deep-green);margin-bottom:12px}
-.hero .desc{font-size:14px;color:var(--text3);max-width:520px;margin:0 auto}
+/* Fly Statement */
+.fly-statement{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 28px;margin-bottom:32px;text-align:center}
+.fly-statement p{font-size:14px;color:var(--text3);line-height:1.8}
+.fly-statement strong{color:var(--deep-green);font-weight:600}
 
-/* Value Proposition */
-.value-prop{text-align:center;padding:0 0 32px;font-size:15px;font-weight:500;color:var(--text3);font-style:italic}
+/* Settlement Hero */
+.settlement-hero{background:linear-gradient(135deg,#1A3D2E 0%,#2D5A3F 100%);border-radius:16px;padding:40px;margin-bottom:32px;color:#fff;text-align:center;position:relative;overflow:hidden}
+.settlement-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:rgba(255,255,255,0.03);border-radius:50%}
+.settlement-status{display:inline-flex;align-items:center;gap:8px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:#4ADE80;margin-bottom:16px;letter-spacing:0.5px;text-transform:uppercase}
+.settlement-status::before{content:'';width:8px;height:8px;background:#4ADE80;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.settlement-title{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px}
+.settlement-subtitle{font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:24px}
+.settlement-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:20px}
+.settlement-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:16px}
+.settlement-item .label{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.settlement-item .value{font-size:22px;font-weight:700;font-family:var(--mono)}
+.settlement-item .note{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px}
 
-/* Verify Input */
-.verify-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:40px}
-.verify-field{margin-bottom:16px}
-.verify-field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
-.verify-field textarea{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;min-height:100px;resize:vertical;line-height:1.6}
-.verify-field textarea:focus{outline:none;border-color:var(--deep-green)}
-.verify-actions{display:flex;gap:12px;align-items:center;margin-top:16px}
-.btn-verify{padding:14px 36px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans)}
-.btn-verify:hover{opacity:.9;transform:translateY(-1px)}
-.btn-verify:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-upload{padding:14px 24px;background:#fff;color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s;font-family:var(--sans)}
-.btn-upload:hover{border-color:var(--deep-green)}
+/* Section */
+.section{margin-bottom:32px}
+.section-header{font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section-header .icon{width:24px;height:24px;background:var(--mint);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.section-header .icon svg{width:14px;height:14px;stroke:var(--deep-green);fill:none;stroke-width:2}
 
-/* Example Records */
-.section-title{font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.record-list{display:flex;flex-direction:column;gap:8px;margin-bottom:48px}
+/* Attribution Conclusion */
+.attribution-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px}
+.attribution-conclusion{font-size:15px;font-weight:600;color:var(--deep-green);margin-bottom:16px;line-height:1.6}
+.attribution-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.attribution-detail .item{padding:12px;background:#fff;border:1px solid var(--border);border-radius:8px}
+.attribution-detail .item .label{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px}
+.attribution-detail .item .value{font-size:14px;font-weight:600;color:var(--dark)}
+
+/* Evidence */
+.evidence-list{display:flex;flex-direction:column;gap:8px}
+.evidence-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.evidence-item .check{width:20px;height:20px;background:var(--mint);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.evidence-item .check svg{width:12px;height:12px;stroke:var(--deep-green);fill:none;stroke-width:2.5}
+.evidence-item .text{font-size:13px;color:var(--text2)}
+
+/* Trust Score */
+.trust-bar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.trust-score{font-size:28px;font-weight:800;color:var(--deep-green);font-family:var(--mono)}
+.trust-meta{flex:1}
+.trust-meta .label{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px}
+.trust-meta .desc{font-size:13px;color:var(--text3)}
+
+/* Records List */
+.record-list{display:flex;flex-direction:column;gap:8px}
 .record-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .2s;cursor:pointer;text-decoration:none;color:var(--dark)}
 .record-item:hover{border-color:var(--deep-green)}
 .record-id{font-family:var(--mono);font-size:13px;font-weight:600}
+.record-claim{font-size:12px;color:var(--text3);margin-top:2px}
 .record-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
-.status-pending{background:#FEF3C7;color:#92400E}
 .status-verified{background:var(--mint);color:var(--deep-green)}
+.status-pending{background:#FEF3C7;color:#92400E}
 .status-eligible{background:#DBEAFE;color:#1E40AF}
 
-/* How it works */
-.how-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:48px}
-.how-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:20px}
-.how-steps{display:flex;gap:16px}
-.how-step{flex:1;text-align:center}
-.how-step-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--mint);border:1px solid var(--mint-border);border-radius:50%;display:flex;align-items:center;justify-content:center}
-.how-step-icon svg{width:20px;height:20px;stroke:var(--deep-green);fill:none;stroke-width:1.8}
-.how-step-label{font-size:12px;font-weight:600;color:var(--text2)}
-.how-step-desc{font-size:11px;color:var(--text4);margin-top:4px;line-height:1.5}
-.how-arrow{display:flex;align-items:center;color:var(--text4);font-size:18px;padding-top:12px}
+/* Issue Form */
+.issue-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px}
+.issue-field{margin-bottom:16px}
+.issue-field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.issue-field input,.issue-field textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s}
+.issue-field input:focus,.issue-field textarea:focus{outline:none;border-color:var(--deep-green)}
+.issue-field textarea{min-height:80px;resize:vertical;line-height:1.6}
+.issue-actions{display:flex;gap:12px;align-items:center}
+.btn-issue{padding:12px 28px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.btn-issue:hover{opacity:.9;transform:translateY(-1px)}
+.btn-issue:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
 /* Loading */
-.loading{display:none;text-align:center;padding:24px;margin-bottom:24px}
+.loading{display:none;text-align:center;padding:20px;margin-bottom:16px}
 .loading.show{display:block}
-.loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--deep-green);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--deep-green);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:14px;color:var(--text3);font-weight:500}
+.loading-text{font-size:13px;color:var(--text3);font-weight:500}
 
 /* Success */
-.success-box{display:none;text-align:center;padding:32px 24px;margin-bottom:24px;background:var(--mint);border:1px solid var(--mint-border);border-radius:12px}
+.success-box{display:none;text-align:center;padding:24px;margin-bottom:16px;background:var(--mint);border:1px solid var(--mint-border);border-radius:12px}
 .success-box.show{display:block}
-.success-icon{width:48px;height:48px;background:var(--deep-green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.success-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2.5}
-.success-title{font-size:18px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
-.success-record{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px}
-.success-hint{font-size:12px;color:var(--text4)}
+.success-icon{width:40px;height:40px;background:var(--deep-green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.success-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.5}
+.success-title{font-size:16px;font-weight:700;color:var(--deep-green);margin-bottom:6px}
+.success-record{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--dark)}
 
 /* Error */
-.error-box{display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px;margin-bottom:16px}
+.error-box{display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:14px 16px;margin-bottom:16px}
 .error-box.show{display:block}
 .error-text{font-size:13px;color:#991B1B}
 
+/* Empty State */
+.empty-state{text-align:center;padding:32px;color:var(--text4);font-size:13px}
+
 @media(max-width:768px){
-.content{padding:24px 16px}
-.hero{padding:32px 0 20px}
-.hero h2{font-size:24px}
-.hero .subtitle{font-size:16px}
-.how-steps{flex-direction:column}
-.how-arrow{display:none}
-.verify-actions{flex-direction:column}
+  .content{padding:20px 16px}
+  .settlement-hero{padding:24px}
+  .settlement-title{font-size:22px}
+  .settlement-grid{grid-template-columns:1fr;gap:12px}
+  .attribution-detail{grid-template-columns:1fr}
+  .issue-actions{flex-direction:column}
 }
 </style>
 </head>
@@ -105,52 +132,121 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <script src="/nav-shared.js?v=20260629"></script>
 <div class="main">
 <div class="topbar">
-<h1>Fly — Attribution</h1>
-
+<h1>Fly — Commercial Trust Report</h1>
+<span class="tag">Attribution Verified</span>
 </div>
 <div class="content">
 
-<!-- Hero -->
-<div class="hero">
-<h2>Track AI Revenue Attribution <span style="font-size:16px;color:var(--text3);font-weight:400">追踪 AI 收入归因</span></h2>
-<p class="subtitle">Issue an Attribution Record <span style="font-size:14px;color:var(--text4);font-weight:400">签发归因记录</span></p>
-<p class="desc">Generate an Attribution Record with traceable evidence and revenue allocation.<br>生成一份归因记录，包含可追溯的证据和收入分配。</p>
+<!-- Fly Statement -->
+<div class="fly-statement">
+<p><strong>Fly 证明的不是 AI 是否存在。</strong><br>
+Fly 证明的是：<strong>该商业贡献符合协议定义的商业归因要求，因此具备商业结算资格。</strong></p>
+<p style="margin-top:8px;font-size:12px;color:var(--text4)">
+Fly does not prove that AI exists. Fly proves that this commercial contribution satisfies the protocol-defined attribution requirements and is eligible for business settlement.</p>
 </div>
 
-<!-- Value Proposition -->
-<div class="value-prop">Every AI action that generates revenue deserves a verifiable Attribution Record.<br>每一条产生收入的 AI 行为，都值得拥有一份可验证的归因记录。</div>
+<!-- Settlement Hero (最大视觉中心) -->
+<div class="settlement-hero">
+<div class="settlement-status"><span>Commission Eligible</span></div>
+<h2 class="settlement-title">Settlement Ready 可结算</h2>
+<p class="settlement-subtitle">该商业贡献已通过归因验证，具备结算资格</p>
+<div class="settlement-grid">
+  <div class="settlement-item">
+    <div class="label">Revenue 收入</div>
+    <div class="value">¥1,000</div>
+    <div class="note">Confirmed Order</div>
+  </div>
+  <div class="settlement-item">
+    <div class="label">Commission 佣金</div>
+    <div class="value">¥150</div>
+    <div class="note">15% Attribution Rate</div>
+  </div>
+  <div class="settlement-item">
+    <div class="label">Basis 依据</div>
+    <div class="value">15%</div>
+    <div class="note">Protocol Rule v1</div>
+  </div>
+</div>
+</div>
 
-<!-- Verify Input -->
-<div class="verify-box">
-<div class="verify-field">
-<label>What AI action generated revenue? 什么 AI 行为产生了收入？</label>
-<input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers, user signed up&#10;例如: Gemini suggested React, project generated $500" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;margin-bottom:12px">
+<!-- Attribution Conclusion -->
+<div class="section">
+<div class="section-header">
+  <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+  Attribution 归因结论
 </div>
-<div class="verify-field">
-<label>Evidence 证据（可选）</label>
-<textarea id="evidenceInput" placeholder="Paste a URL, describe an AI recommendation, or upload a screenshot...&#10;粘贴链接、描述 AI 推荐内容，或上传截图..."></textarea>
+<div class="attribution-card">
+  <div class="attribution-conclusion">
+    ✓ 该商业转化归属于 Fly Agent #1504<br>
+    <span style="font-weight:400;font-size:13px;color:var(--text3)">This commercial conversion is attributed to Fly Agent #1504</span>
+  </div>
+  <div class="attribution-detail">
+    <div class="item">
+      <div class="label">Agent 归属 Agent</div>
+      <div class="value">Fly Agent #1504</div>
+    </div>
+    <div class="item">
+      <div class="label">Confidence 置信度</div>
+      <div class="value">85%</div>
+    </div>
+    <div class="item">
+      <div class="label">Basis 归因依据</div>
+      <div class="value">3 verified signals</div>
+    </div>
+    <div class="item">
+      <div class="label">Conversion 转化</div>
+      <div class="value">Confirmed ¥1,000</div>
+    </div>
+  </div>
 </div>
-<div class="verify-actions">
-<button class="btn-verify" id="btnVerify" onclick="doVerify()">Issue Attribution Record 签发归因记录</button>
-<button class="btn-upload" onclick="document.getElementById('fileInput').click()">Upload Screenshot 上传截图</button>
-<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(this)">
+</div>
+
+<!-- Evidence & Trust -->
+<div class="section">
+<div class="section-header">
+  <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+  Evidence & Trust 证据与信任
+</div>
+
+<div style="margin-bottom:16px">
+  <div class="evidence-list">
+    <div class="evidence-item">
+      <div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="text"><strong>推荐记录已捕获</strong> — ChatGPT 在对话中推荐了该产品，时间戳已验证<br><span style="color:var(--text4);font-size:12px">Recommendation recorded — timestamp verified</span></div>
+    </div>
+    <div class="evidence-item">
+      <div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="text"><strong>对话引用已关联</strong> — 用户行为链：抖音曝光 → 小红书点击 → 微信咨询 → 预订<br><span style="color:var(--text4);font-size:12px">Conversation reference linked — multi-channel journey verified</span></div>
+    </div>
+    <div class="evidence-item">
+      <div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="text"><strong>转化已确认</strong> — 订单 ¥1,000 已支付，归因链完整<br><span style="color:var(--text4);font-size:12px">Conversion confirmed — order paid, attribution chain complete</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <div class="trust-score">85</div>
+  <div class="trust-meta">
+    <div class="label">Trust Score 信任评分</div>
+    <div class="desc">基于 3 个已验证信号的加权计算 · Weighted from 3 verified signals</div>
+  </div>
 </div>
 </div>
 
 <!-- Loading -->
 <div class="loading" id="loading">
 <div class="loading-spinner"></div>
-<div class="loading-text" id="loadingText">Issuing Attribution Record... 正在签发归因记录...</div>
+<div class="loading-text" id="loadingText">签发归因记录中...</div>
 </div>
 
 <!-- Success -->
 <div class="success-box" id="successBox">
 <div class="success-icon">
-<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
 </div>
-<div class="success-title">Attribution Record Issued 归因记录已签发</div>
+<div class="success-title">归因记录已签发</div>
 <div class="success-record" id="successRecordId">-</div>
-<div class="success-hint">Redirecting to Attribution Record... 正在跳转到归因记录...</div>
 </div>
 
 <!-- Error -->
@@ -158,47 +254,35 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 <div class="error-text" id="errorText"></div>
 </div>
 
-<!-- Example Records -->
-<div class="section-title">Example Attribution Records 示例归因记录</div>
+<!-- Issued Records -->
+<div class="section">
+<div class="section-header">
+  <div class="icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+  Issued Records 已签发记录
+</div>
 <div class="record-list" id="recordList">
-<!-- 动态加载 -->
+  <div class="empty-state">加载中...</div>
+</div>
 </div>
 
-<!-- How it works -->
-<div class="how-box">
-<div class="how-title">How Verification Works 验证流程</div>
-<div class="how-steps">
-<div class="how-step">
-<div class="how-step-icon">
-<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+<!-- Issue New Record -->
+<div class="section">
+<div class="section-header">
+  <div class="icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+  Issue New Record 签发新记录
 </div>
-<div class="how-step-label">Evidence 证据</div>
-<div class="how-step-desc">Submit proof of the AI recommendation<br>提交 AI 推荐的证据</div>
-</div>
-<div class="how-arrow">→</div>
-<div class="how-step">
-<div class="how-step-icon">
-<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>
-</div>
-<div class="how-step-label">Verification 验证</div>
-<div class="how-step-desc">Validate evidence integrity<br>验证证据完整性</div>
-</div>
-<div class="how-arrow">→</div>
-<div class="how-step">
-<div class="how-step-icon">
-<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-</div>
-<div class="how-step-label">Trust 信任</div>
-<div class="how-step-desc">Compute trust score<br>计算信任评分</div>
-</div>
-<div class="how-arrow">→</div>
-<div class="how-step">
-<div class="how-step-icon">
-<svg viewBox="0 0 24 24"><path d="M12 1v22m-4-4l4 4 4-4"/><path d="M5 12h14"/></svg>
-</div>
-<div class="how-step-label">Ledger 账本</div>
-<div class="how-step-desc">On-chain attestation, immutable<br>链上存证，不可篡改</div>
-</div>
+<div class="issue-box">
+  <div class="issue-field">
+    <label>什么 AI 行为产生了收入？What AI action generated revenue?</label>
+    <input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers, user signed up">
+  </div>
+  <div class="issue-field">
+    <label>证据 Evidence（可选）</label>
+    <textarea id="evidenceInput" placeholder="粘贴链接、描述 AI 推荐内容，或上传截图...&#10;Paste a URL, describe an AI recommendation, or upload a screenshot..."></textarea>
+  </div>
+  <div class="issue-actions">
+    <button class="btn-issue" id="btnIssue" onclick="doIssue()">签发归因记录 Issue Record</button>
+  </div>
 </div>
 </div>
 
@@ -209,30 +293,21 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 const API_BASE = 'https://api.fly-agent.xyz';
 const API_KEY = 'fly_demo_key_2026';
 
-async function doVerify() {
-  const claimInput = document.getElementById('claimInput').value.trim();
-  const evidenceInput = document.getElementById('evidenceInput').value.trim();
+async function doIssue() {
+  const claim = document.getElementById('claimInput').value.trim();
+  const evidence = document.getElementById('evidenceInput').value.trim();
 
-  // Claim 必填（Fly 是归因验证，不是断言存储）
-  if (!claimInput) {
-    showError('Please describe the AI action that generated revenue.');
+  if (!claim) {
+    showError('请描述产生收入的 AI 行为 / Please describe the AI action that generated revenue.');
     return;
   }
 
-  // 使用用户输入的 claim
-  const claim = claimInput;
-
-  // 隐藏之前的错误和成功状态
   hideError();
-  hideSuccess();
-  document.getElementById('btnVerify').disabled = true;
+  document.getElementById('successBox').classList.remove('show');
+  document.getElementById('btnIssue').disabled = true;
+  showLoading(true, '签发归因记录中... Issuing Attribution Record...');
 
-  // Step 1: 显示 loading
-  const loadingMsg = evidenceInput ? 'Issuing Attribution Record...' : 'Issuing Attribution Record (Pending Evidence status)...';
-  showLoading(true, loadingMsg);
-
-  // Auto-detect source from input content
-  const isUrl = /^https?:\/\//i.test(evidenceInput || claimInput);
+  const isUrl = /^https?:\/\//i.test(evidence || claim);
   const sourceName = isUrl ? 'Web Source' : 'AI Recommendation';
 
   try {
@@ -243,18 +318,12 @@ async function doVerify() {
         'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        source: {
-          type: 'user-verify',
-          name: sourceName
-        },
-        evidence: evidenceInput ? [{
+        source: { type: 'user-verify', name: sourceName },
+        evidence: evidence ? [{
           evidence_id: 'evi_user_001',
           type: isUrl ? 'url' : 'user_input',
-          description: evidenceInput.substring(0, 200),
-          data: {
-            content: evidenceInput,
-            timestamp: new Date().toISOString()
-          }
+          description: evidence.substring(0, 200),
+          data: { content: evidence, timestamp: new Date().toISOString() }
         }] : [],
         claim: claim,
         attestation: {
@@ -266,31 +335,27 @@ async function doVerify() {
     });
 
     const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '签发失败，请检查输入后重试');
 
-    if (!response.ok) {
-      throw new Error(data.error || 'Unable to issue Attribution Record. Please check your input and try again.');
-    }
-
-    // Step 2: 显示成功状态
     showLoading(false);
-    showSuccess(data.record_id);
+    document.getElementById('successRecordId').textContent = data.record_id;
+    document.getElementById('successBox').classList.add('show');
+    document.getElementById('claimInput').value = '';
+    document.getElementById('evidenceInput').value = '';
 
-    // Step 3: 800ms 后自动跳转
-    setTimeout(() => {
-      window.location.href = `/trust-record/${data.record_id}`;
-    }, 800);
+    // 刷新记录列表
+    setTimeout(() => loadRecords(), 500);
 
   } catch (err) {
     showLoading(false);
-    document.getElementById('btnVerify').disabled = false;
+    document.getElementById('btnIssue').disabled = false;
     showError(err.message);
   }
 }
 
 function showError(msg) {
-  const box = document.getElementById('errorBox');
   document.getElementById('errorText').textContent = msg;
-  box.classList.add('show');
+  document.getElementById('errorBox').classList.add('show');
 }
 
 function hideError() {
@@ -303,26 +368,9 @@ function showLoading(show, text) {
   if (text) document.getElementById('loadingText').textContent = text;
 }
 
-function showSuccess(recordId) {
-  document.getElementById('successRecordId').textContent = recordId;
-  document.getElementById('successBox').classList.add('show');
-}
-
-function hideSuccess() {
-  document.getElementById('successBox').classList.remove('show');
-}
-
-function handleUpload(input) {
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
-    document.getElementById('evidenceInput').value = `[Screenshot: ${file.name}]`;
-  }
-}
-
-// Load example records
 async function loadRecords() {
   try {
-    const response = await fetch(`${API_BASE}/v1/records/recent?limit=5`);
+    const response = await fetch(`${API_BASE}/v1/records/recent?limit=10`);
     if (response.ok) {
       const data = await response.json();
       if (data.records && data.records.length > 0) {
@@ -332,18 +380,13 @@ async function loadRecords() {
     }
   } catch (e) {}
 
-  // Fallback: show demo data
-  renderRecords([
-    { record_id: 'FLY-20260628-00001', status: 'verified', created_at: '2026-06-28T12:35:34Z' },
-    { record_id: 'FLY-20260628-00002', status: 'verified', created_at: '2026-06-28T14:22:10Z' },
-    { record_id: 'FLY-20260629-00001', status: 'pending', created_at: '2026-06-29T09:15:00Z' }
-  ]);
+  document.getElementById('recordList').innerHTML = '<div class="empty-state">暂无已签发记录 / No issued records yet</div>';
 }
 
 function renderRecords(records) {
   const list = document.getElementById('recordList');
   if (!records.length) {
-    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text4)">No records yet</div>';
+    list.innerHTML = '<div class="empty-state">暂无已签发记录</div>';
     return;
   }
 
@@ -354,10 +397,13 @@ function renderRecords(records) {
                        r.status === 'eligible' ? 'Eligible' : 'Pending';
 
     return `
-      <a class="record-item" href="/trust-record/${r.record_id}">
-        <span class="record-id">${r.record_id}</span>
+      <div class="record-item">
+        <div>
+          <div class="record-id">${r.record_id}</div>
+          <div class="record-claim">${r.claim || 'AI Commercial Contribution'}</div>
+        </div>
         <span class="record-status ${statusClass}">${statusText}</span>
-      </a>
+      </div>
     `;
   }).join('');
 }
