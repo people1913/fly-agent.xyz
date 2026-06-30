@@ -1063,6 +1063,8 @@ export default {
           history.push({ ...metadata, type: 'd1-sql' });
           if (history.length > 30) history.splice(0, history.length - 30);
           await env.FLY_KV.put(historyKey, JSON.stringify(history));
+          // 写入审计链
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'backup', entity_id: backupId, action: 'created', actor_type: 'system', actor_id: 'sys_backup', actor_name: 'd1-backup-service', source: 'backup', reason: 'd1_backup_stored', before: '{}', after: JSON.stringify({ backup_hash: backupHash, sql_size: sqlContent.length, storage: 'kv' }) });
           return json({ success: true, backup: { id: backupId, backup_hash: backupHash, sql_size: sqlContent.length, created_at: timestamp } });
         }
 
@@ -1087,6 +1089,8 @@ export default {
           const hashArray = Array.from(new Uint8Array(hashBuffer));
           const currentHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
           const hashMatch = currentHash === latest.backup_hash;
+          // 写入审计链
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'backup', entity_id: latest.backup_id, action: 'verified', actor_type: 'system', actor_id: 'sys_backup', actor_name: 'd1-backup-service', source: 'backup', reason: 'd1_backup_verified', before: JSON.stringify({ stored_hash: latest.backup_hash }), after: JSON.stringify({ verified: hashMatch, computed_hash: currentHash }) });
           return json({
             success: true,
             verified: hashMatch,
