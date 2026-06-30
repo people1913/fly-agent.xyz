@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.9.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.10.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 8层6协议架构：L1-L8
@@ -25,6 +25,15 @@
  *   POST /v1/admin/backup                     — v2.7.0: 触发备份
  *   GET  /v1/admin/backup                     — v2.7.0: 备份历史
  *   GET  /v1/proof/:actionId                  — v2.9.0: 归因链证明生成（Gate 3）
+ *   POST /v1/backup/d1                        — v2.10.0: D1 SQL 备份存储
+ *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
+ *   POST /v1/verify                           — v2.11.0: 商业归因签发
+ *   GET  /v1/records/recent                   — v2.11.0: 最近归因记录列表
+ * 
+ * v2.10.0 新增：
+ *   - Backup API：POST /v1/backup/d1 接收 SQL 存入 KV（SHA-256 哈希校验）
+ *   - Backup API：GET /v1/backup/d1/verify 验证最近备份完整性
+ *   - 与 /v1/admin/backup（元数据统计）职责分离
  * 
  * v2.9.0 新增：
  *   - AttributionProof 可审计证明层（Gate 3 核心）
@@ -714,7 +723,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.9.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.10.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -1011,6 +1020,124 @@ export default {
           const historyRaw = await env.FLY_KV.get(historyKey);
           const backups = historyRaw ? JSON.parse(historyRaw) : [];
           return json({ success: true, backups });
+        }
+
+        // === v2.10.0: D1 SQL 备份存储 ===
+        if (path === '/v1/backup/d1' && method === 'POST') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          // 读取 SQL 内容
+          const sqlContent = await request.text();
+          if (!sqlContent || sqlContent.length < 10) {
+            return json({ error: 'empty or invalid SQL content' }, 400);
+          }
+          // 计算 SHA-256 哈希
+          const encoder = new TextEncoder();
+          const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(sqlContent));
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const backupHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+          // 生成备份记录
+          const backupId = `bak_${crypto.randomUUID()}`;
+          const timestamp = new Date().toISOString();
+          const metadata = {
+            backup_id: backupId,
+            timestamp,
+            sql_size: sqlContent.length,
+            backup_hash: backupHash,
+            source: 'd1-export',
+            status: 'active'
+          };
+          // 存储 SQL 到 KV
+          await env.FLY_KV.put(`backup:d1:${backupId}`, sqlContent, { expirationTtl: 86400 * 30 });
+          // 存储元数据
+          await env.FLY_KV.put(`backup:d1:meta:${backupId}`, JSON.stringify(metadata), { expirationTtl: 86400 * 30 });
+          // 更新 latest 指针
+          await env.FLY_KV.put('backup:d1:latest', JSON.stringify({
+            backup_id: backupId,
+            timestamp,
+            sql_size: sqlContent.length,
+            backup_hash: backupHash
+          }));
+          // 追加到备份历史
+          const historyKey = 'backups:history';
+          const historyRaw = await env.FLY_KV.get(historyKey);
+          const history = historyRaw ? JSON.parse(historyRaw) : [];
+          history.push({ ...metadata, type: 'd1-sql' });
+          if (history.length > 30) history.splice(0, history.length - 30);
+          await env.FLY_KV.put(historyKey, JSON.stringify(history));
+          // 写入审计链
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'backup', entity_id: backupId, action: 'created', actor_type: 'system', actor_id: 'sys_backup', actor_name: 'd1-backup-service', source: 'backup', reason: 'd1_backup_stored', before: '{}', after: JSON.stringify({ backup_hash: backupHash, sql_size: sqlContent.length, storage: 'kv' }) });
+          return json({ success: true, backup: { id: backupId, backup_hash: backupHash, sql_size: sqlContent.length, created_at: timestamp } });
+        }
+
+        // === v2.10.0: D1 备份完整性验证 ===
+        if (path === '/v1/backup/d1/verify' && method === 'GET') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          // 读取最新备份元数据
+          const latestRaw = await env.FLY_KV.get('backup:d1:latest');
+          if (!latestRaw) {
+            return json({ success: true, verified: false, reason: 'no backup found' });
+          }
+          const latest = JSON.parse(latestRaw);
+          // 读取备份 SQL 内容
+          const sqlContent = await env.FLY_KV.get(`backup:d1:${latest.backup_id}`);
+          if (!sqlContent) {
+            return json({ success: true, verified: false, reason: 'SQL content missing (expired or deleted)', backup_id: latest.backup_id });
+          }
+          // 重新计算哈希
+          const encoder = new TextEncoder();
+          const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(sqlContent));
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const currentHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+          const hashMatch = currentHash === latest.backup_hash;
+          // 写入审计链
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'backup', entity_id: latest.backup_id, action: 'verified', actor_type: 'system', actor_id: 'sys_backup', actor_name: 'd1-backup-service', source: 'backup', reason: 'd1_backup_verified', before: JSON.stringify({ stored_hash: latest.backup_hash }), after: JSON.stringify({ verified: hashMatch, computed_hash: currentHash }) });
+          return json({
+            success: true,
+            verified: hashMatch,
+            backup_id: latest.backup_id,
+            stored_hash: latest.backup_hash,
+            computed_hash: currentHash,
+            sql_size: sqlContent.length,
+            timestamp: latest.timestamp
+          });
+        }
+
+        // === v2.11.0: 商业归因签发 ===
+        if (path === '/v1/verify' && method === 'POST') {
+          const body: any = await request.json();
+          const recordId = `attr_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+          const claim = body.claim || body.source?.name || 'AI Commercial Contribution';
+          const evidenceJson = JSON.stringify(body.evidence || []);
+
+          const actionId = `act_${crypto.randomUUID()}`;
+          await env.FLY_D1.prepare(
+            "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, metadata, created_at) VALUES (?, ?, 'direct', ?, 'booking', ?, datetime('now'))"
+          ).bind(actionId, 'agt_system', `usr_${recordId}`, JSON.stringify({ claim, evidence: body.evidence || [], source: body.source || {}, signal_quality: 'raw', human_score: 0 })).run();
+
+          const verificationId = `vrf_${crypto.randomUUID()}`;
+          await env.FLY_D1.prepare(
+            "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+          ).bind(verificationId, actionId, 'fly_attribution_engine', 'verified', 85, evidenceJson).run();
+
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: 'user', actor_id: 'usr_claim', actor_name: 'attribution-claim', source: 'api', reason: 'attribution_issued', before: '{}', after: JSON.stringify({ record_id: recordId, claim, action_id: actionId }) });
+
+          return json({ success: true, record_id: recordId, action_id: actionId, verification_id: verificationId, status: 'verified', claim, confidence: 85, settlement_eligible: true }, 201);
+        }
+
+        // === v2.11.0: 最近归因记录列表 ===
+        if (path === '/v1/records/recent' && method === 'GET') {
+          const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
+          const records = await env.FLY_D1.prepare(
+            "SELECT v.id, v.action_id, v.verifier, v.result, v.confidence, v.evidence, v.created_at, a.metadata FROM verifications v LEFT JOIN actions a ON v.action_id = a.id ORDER BY v.created_at DESC LIMIT ?"
+          ).bind(limit).all();
+          const formatted = (records.results as any[]).map((r: any) => {
+            let meta: any = {};
+            try { meta = JSON.parse(r.metadata || '{}'); } catch(e) {}
+            return { record_id: `attr_${r.id}`, status: r.result || 'pending', claim: meta.claim || 'AI Commercial Contribution', confidence: r.confidence || 0, evidence_count: (() => { try { return JSON.parse(r.evidence || '[]').length; } catch(e) { return 0; } })(), created_at: r.created_at, action_id: r.action_id };
+          });
+          return json({ success: true, records: formatted, total: formatted.length });
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);
