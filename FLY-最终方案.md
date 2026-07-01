@@ -286,22 +286,23 @@ Commercial Trust Report (CTRS)
 | reasoning | string | 归因逻辑链 |
 | attributed_at | timestamp | 归因时间 |
 
-> Evidence + Rule = Attribution。归因结果可以追溯到具体规则和具体证据。
+> **Attribution 只能引用 rule_hash，不允许引用 rule text。** 归因结果必须可追溯到具体规则指纹和具体证据。
 
-#### Rules（归因规则，引用但独立管理）
+#### Rules（归因规则，v1.1 升级为 First-Class Object）
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | rule_id | string | 规则唯一标识 |
-| name | string | 规则名称 |
-| version | string | 规则版本 |
-| description | string | 规则说明 |
-| type | enum | attribution / settlement / hybrid |
-| parameters | object | 规则参数（比例、权重、阈值等） |
-| hash | string | 规则指纹 |
-| visibility | enum | public / private / shared |
+| issuer | string | 规则发布者标识（DID / agent_id / org_id） |
+| version | string | 规则版本（semver） |
+| hash | string | 规则指纹 SHA-256(definition) |
+| definition | object | 规则定义（名称、方法、参数等） |
+| created_at | timestamp | 创建时间 |
 
-> Rules 是 Fly 最大资产。任何人拿到 Report，都能通过 Rules 知道为什么这样分钱。
+> **v1.1 核心变更：Rule 从字符串升级为 First-Class Object。**
+> Rule 不再是 generator 传入的临时字符串，而是带身份（issuer）、版本（version）、指纹（hash）的可追溯对象。
+> 验证时：`hash(rule.definition) == rule.hash` 必须成立。
+> 这解决的是"规则不可伪造"，不是"谁有权定义规则"——后者属于治理层，不在 v1.1 范围。
 
 #### Layer 6: Settlement（结算）
 
@@ -350,23 +351,52 @@ Fly 最后的输出不是 "Verified"，而是：
 
 ---
 
-## 九、执行优先级
+## 九、CTRS 版本演进与协议边界
 
-### ① 冻结 CTRS v2（最高优先）
-基于以上 Schema v2 提案，确认字段完整性。
-产出：CTRS 规范文档 + JSON Schema 文件。
+### 版本定性
 
-### ② 定义 Report 生成链路
+| 版本 | 目标 | 状态 |
+|------|------|------|
+| **v1.0** | 能跑（Execution Complete）| ✅ 已完成 |
+| **v1.1** | 不可篡改（Trust Complete）| ✅ 已完成 |
+| **v1.2+** | 可治理（Ecosystem Complete）| ⏳ 待定 |
+
+### 三层协议结构
+
 ```
-Claim → Evidence → Verification → Attribution → Settlement → Trust Record
+Layer 1: Execution Truth    → 证据是否真实（v1.0 已解决）
+Layer 2: Structural Identity → Rule 是什么 / 从哪来（v1.1 补全）
+Layer 3: Social Authority    → 谁被信任（v1.2+ / 生态层）
 ```
-先定义数据怎么流，再写代码。
 
-### ③ 做 Demo
-围绕 Report 的生成和使用，设计一个完整的 Agent Economy 商业价值流场景。
+### v1.0 已完成的协议成立条件
 
-### ④ 开发者文档
-最后做。讲协议层。报告产品成型后，文档围绕 CTRS 展开。
+1. **Generate** — Claim + Evidence + Rule → Report ✅
+2. **Hash** — SHA-256 证据指纹，不可篡改 ✅
+3. **Version** — Report 可演化，历史可追溯 ✅
+4. **Store** — 持久化存储，第三方可访问 ✅
+5. **Verify** — 独立验证，结果一致 ✅
+
+### v1.1 新增（Rule 身份层）
+
+1. **Rule Schema 升级（Identity Layer）**
+   Rule 从字符串升级为带 `rule_id + issuer + version + hash + definition` 的结构体
+
+2. **Attribution 绑定 rule_hash（Referential Integrity Layer）**
+   Attribution 只能引用 rule_hash，不允许引用 rule text
+
+3. **Verify 增加 rule integrity（Cryptographic Consistency Layer）**
+   `hash(rule.definition) == rule.hash` 必须成立
+
+### v1.1 不做的（明确排除）
+
+- Rule registry governance
+- Issuer reputation / whitelist
+- 联盟治理结构
+- "谁有权发布 Rule"的定义
+
+> **核心判断：Identity 可以标准化，Authority 不能在早期协议里标准化。**
+> v1.1 只做"Rule 的身份可追溯性"，不做"Rule 的权威性定义"。
 
 ### 暂不做
 - Logo / 动画 / UI 微调

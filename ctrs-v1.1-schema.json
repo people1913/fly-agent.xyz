@@ -1,0 +1,204 @@
+{
+  "_principles": {
+    "1": "Report is Verifiable - 所有报告必须可验证",
+    "2": "Evidence is Immutable - 所有证据不可篡改",
+    "3": "Rules are Transparent - 归因规则必须引用且可追溯（v1.1: Rule is First-Class Object）",
+    "4": "Settlement is Reproducible - 相同输入得到相同输出",
+    "5": "Trust Records are Versioned - 任何更新形成新版本"
+  },
+  "_v1.1_changes": {
+    "rule_identity": "Rule 从字符串升级为 First-Class Object（rule_id + issuer + version + hash + definition）",
+    "attribution_binding": "Attribution 只能引用 rule_hash，不允许引用 rule text",
+    "verify_integrity": "Verify 增加 rule integrity 检查：hash(rule.definition) == rule.hash"
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Commercial Trust Report Specification v1.1",
+  "description": "Fly Protocol - CTRS v1.1: Rule as First-Class Object. Attribution binds to rule_hash, not rule text.",
+  "type": "object",
+  "required": ["report_id", "schema_version", "type", "created_at", "status", "issuer", "claim", "evidence", "rule", "attribution", "settlement"],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Report unique identifier (UUID)"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "CTRS-v1.1",
+      "description": "Schema version identifier"
+    },
+    "type": {
+      "type": "string",
+      "const": "CommercialTrustReport",
+      "description": "Report type identifier"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of report creation"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "verified", "disputed", "settled"],
+      "description": "Current status of the report"
+    },
+    "issuer": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "description": "Issuer identifier" },
+        "name": { "type": "string", "description": "Issuer display name" }
+      },
+      "additionalProperties": true
+    },
+    "claim": {
+      "type": "object",
+      "description": "Layer 1: Claim — What Fly is proving (who did what)",
+      "required": ["claim_id", "type", "subject", "description", "timestamp", "parties"],
+      "properties": {
+        "claim_id": { "type": "string" },
+        "type": { "type": "string" },
+        "subject": { "type": "string" },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "parties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "role"],
+            "properties": {
+              "id": { "type": "string" },
+              "role": { "type": "string" },
+              "name": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Layer 2: Evidence — Supporting data for the claim",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "claim_ref", "type", "source", "timestamp", "data", "hash"],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "claim_ref": { "type": "string" },
+          "type": { "type": "string", "enum": ["webhook", "conversation", "mcp", "payment", "crm", "stripe", "custom"] },
+          "source": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "data": { "type": "object", "additionalProperties": true },
+          "hash": { "type": "string", "description": "SHA-256 hash of evidence data" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "rule": {
+      "type": "object",
+      "description": "Layer 3: Rule — First-Class Object (v1.1). Identity layer: who defined the rule, what version, what hash.",
+      "required": ["rule_id", "issuer", "version", "hash", "definition", "created_at"],
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "description": "Rule unique identifier"
+        },
+        "issuer": {
+          "type": "string",
+          "description": "Rule issuer identifier (DID / agent_id / org_id)"
+        },
+        "version": {
+          "type": "string",
+          "description": "Rule version (semver)"
+        },
+        "hash": {
+          "type": "string",
+          "description": "SHA-256 hash of rule definition: SHA-256(JSON.stringify(definition))"
+        },
+        "definition": {
+          "type": "object",
+          "description": "The actual rule content — parameters, splits, methods",
+          "required": ["name", "method", "parameters"],
+          "properties": {
+            "name": { "type": "string", "description": "Human-readable rule name" },
+            "method": { "type": "string", "description": "Attribution method (e.g., proportional, weighted)" },
+            "parameters": {
+              "type": "object",
+              "description": "Rule parameters (splits, weights, thresholds, etc.)",
+              "additionalProperties": true
+            },
+            "description": { "type": "string", "description": "Human-readable rule description" },
+            "visibility": { "type": "string", "enum": ["public", "private", "shared"] }
+          },
+          "additionalProperties": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the rule was created"
+        }
+      },
+      "additionalProperties": true
+    },
+    "attribution": {
+      "type": "object",
+      "description": "Layer 4: Attribution — Evidence + rule_hash = Attribution. Binds to rule_hash, not rule text.",
+      "required": ["attribution_id", "claim_ref", "rule_hash", "method", "confidence", "result", "reasoning", "attributed_at"],
+      "properties": {
+        "attribution_id": { "type": "string" },
+        "claim_ref": { "type": "string" },
+        "rule_hash": {
+          "type": "string",
+          "description": "SHA-256 hash of the rule definition. Attribution binds to this hash, not to rule text."
+        },
+        "method": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "result": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["party_id", "contribution_pct", "attributed_value"],
+            "properties": {
+              "party_id": { "type": "string" },
+              "contribution_pct": { "type": "string" },
+              "attributed_value": { "type": "string" }
+            }
+          }
+        },
+        "reasoning": { "type": "string" },
+        "attributed_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": true
+    },
+    "settlement": {
+      "type": "object",
+      "description": "Layer 5: Settlement — Payment recommendation based on attribution",
+      "required": ["settlement_id", "attribution_ref", "status", "amount", "currency", "split", "eligible_parties"],
+      "properties": {
+        "settlement_id": { "type": "string" },
+        "attribution_ref": { "type": "string" },
+        "status": { "type": "string", "enum": ["eligible", "pending", "settled", "disputed"] },
+        "amount": { "type": "string" },
+        "currency": { "type": "string" },
+        "split": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["party_id", "share_pct", "share_amount"],
+            "properties": {
+              "party_id": { "type": "string" },
+              "share_pct": { "type": "string" },
+              "share_amount": { "type": "string" }
+            }
+          }
+        },
+        "eligible_parties": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
