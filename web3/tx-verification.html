@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/web3/tx-verification.html">
-<meta name="description" content="Onchain Verification · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Onchain Verification · Fly</title>
@@ -10,10 +8,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:1100px}
+.main{margin-left:280px;padding:48px 64px;max-width:960px}
 @media(max-width:900px){.main{margin-left:0;padding:24px}}
 h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#475569,#22C55E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
-h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
 .features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
 .feat{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px}
@@ -22,307 +19,52 @@ h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
 .status-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.problem-box{background:linear-gradient(135deg,rgba(234,179,8,0.1),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);border-radius:12px;padding:24px;margin-bottom:32px}
-.problem-title{color:#EAB308;font-size:16px;font-weight:600;margin-bottom:12px}
-.problem-list{list-style:none;padding:0}
-.problem-list li{color:#e2e8f0;font-size:14px;line-height:1.8;padding-left:24px;position:relative}
-.problem-list li::before{content:"⚠";position:absolute;left:0}
-.chain-flow{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px;margin:24px 0}
-.chain-steps{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.chain-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:100px}
-.chain-step-num{width:36px;height:36px;border-radius:50%;background:#475569;color:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
-.chain-step-label{font-size:13px;color:#94a3b8}
-.chain-step-value{font-size:12px;color:#475569;margin-top:4px;font-family:monospace}
-.chain-arrow{color:#475569;font-size:20px}
-.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:24px 0}
-.gate-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px}
-.gate-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.gate-num{width:24px;height:24px;border-radius:50%;background:#22C55E;color:#0F172A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.gate-title{color:#e2e8f0;font-size:14px;font-weight:600}
-.gate-desc{color:#94a3b8;font-size:13px;line-height:1.6}
-.use-case{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:16px 0}
-.use-case-title{color:#e2e8f0;font-size:16px;font-weight:600;margin-bottom:12px}
-.use-case-flow{font-family:monospace;font-size:13px;color:#94a3b8;line-height:1.8;background:#0F172A;padding:16px;border-radius:8px}
-.code-block{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:16px;margin:16px 0;font-family:monospace;font-size:13px;color:#e2e8f0;overflow-x:auto}
 .api-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-top:24px}
 .api-title{font-family:monospace;font-size:13px;color:#475569;margin-bottom:8px}
 .api-endpoint{font-family:monospace;font-size:14px;color:#e2e8f0;padding:8px 12px;background:#0F172A;border-radius:6px;margin-bottom:8px}
 .api-desc{font-size:13px;color:#94a3b8}
-.compare-table{width:100%;border-collapse:collapse;margin:24px 0}
-.compare-table th,.compare-table td{border:1px solid #334155;padding:12px;text-align:left;font-size:13px}
-.compare-table th{background:#1e293b;color:#e2e8f0;font-weight:600}
-.compare-table td{color:#94a3b8}
-.compare-table tr:nth-child(even){background:rgba(30,41,59,0.5)}
 </style>
-  <meta name="description" content="链上交易验证。确保每笔区块链交易的真实性、完整性和可追溯性，防止虚假交易和刷量。">
+<meta name="description" content="Onchain Verification 将 AI Agent 商业行为写入链上，实现不可篡改的交易级归因验证。">
+<link rel="canonical" href="https://fly-agent.xyz/web3/tx-verification.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
 <h1>Onchain Verification</h1>
 <p class="desc">链上交易验证——将链上交易与 AI 归因行为关联，验证"AI推荐→链上交易"的完整链路</p>
+<div class="features">
+<div class="feat"><div class="feat-label">🔗 交易归因</div><div class="feat-text">tx_hash → Action ID → Behavior ID</div></div>
+<div class="feat"><div class="feat-label">✅ 链上验证</div><div class="feat-text">链上数据与 Fly 审计链交叉验证</div></div>
+<div class="feat"><div class="feat-label">🏦 交易所关联</div><div class="feat-text">CEX 充提与链上交易双向归因</div></div>
+<div class="feat"><div class="feat-label">📊 价值追踪</div><div class="feat-text">从 AI 推荐到链上结算全链路可查</div></div>
+</div>
+<div class="status"><span class="status-dot"></span>API 已上线 · 可调用</div>
 
-<div class="problem-box">
-<div class="problem-title">核心问题：链上交易无法归因</div>
-<ul class="problem-list">
-<li>链上交易只有 from/to/value，没有"来源"信息——AI推荐的价值无法被证明</li>
-<li>DeFi 协议无法知道用户是从哪里来的——KOL/广告/AI Agent 的 ROI 无法计算</li>
-<li>NFT 项目方做了营销活动，但链上无法区分"自然流量"和"营销带来的流量"</li>
-<li>交易所充提是链下→链上的桥梁，但归因信号在这里断裂</li>
-<li>没有标准化的"交易归因"协议，每个项目自己造轮子</li>
-</ul>
+<div style="margin-top:40px;margin-bottom:32px">
+<div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:16px">支持的公链</div>
+<div style="display:flex;flex-wrap:wrap;gap:12px">
+<a href="/web3/ethereum.html" style="display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 20px;text-decoration:none;color:#e2e8f0;font-size:14px;font-weight:600;transition:border-color .2s" onmouseover="this.style.borderColor='#22C55E'" onmouseout="this.style.borderColor='#334155'">
+<span style="color:#627EEA">◆</span> Ethereum
+</a>
+<a href="/web3/solana.html" style="display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 20px;text-decoration:none;color:#e2e8f0;font-size:14px;font-weight:600;transition:border-color .2s" onmouseover="this.style.borderColor='#22C55E'" onmouseout="this.style.borderColor='#334155'">
+<span style="color:#9945FF">◆</span> Solana
+</a>
+<a href="/web3/base.html" style="display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 20px;text-decoration:none;color:#e2e8f0;font-size:14px;font-weight:600;transition:border-color .2s" onmouseover="this.style.borderColor='#22C55E'" onmouseout="this.style.borderColor='#334155'">
+<span style="color:#0052FF">◆</span> Base
+</a>
 </div>
-
-<h2>完整归因链路</h2>
-<div class="chain-flow">
-<div class="chain-steps">
-<div class="chain-step">
-<div class="chain-step-num">1</div>
-<div class="chain-step-label">AI 推荐</div>
-<div class="chain-step-value">Agent → 用户</div>
+<div style="font-size:12px;color:#64748B;margin-top:8px">更多链支持持续扩展中</div>
 </div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">2</div>
-<div class="chain-step-label">行为追踪</div>
-<div class="chain-step-value">bhv_xxx</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">3</div>
-<div class="chain-step-label">动作生成</div>
-<div class="chain-step-value">ACT_xxx</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">4</div>
-<div class="chain-step-label">链上交易</div>
-<div class="chain-step-value">tx_hash</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">5</div>
-<div class="chain-step-label">归因绑定</div>
-<div class="chain-step-value">ACT_xxx ↔ tx_hash</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">6</div>
-<div class="chain-step-label">可验证证明</div>
-<div class="chain-step-value">✅ Verified</div>
-</div>
-</div>
-</div>
-
-<h2>两种归因模式</h2>
-<table class="compare-table">
-<tr>
-<th>维度</th>
-<th>链上归因 (Onchain Attributionution)</th>
-<th>交易所归因 (Exchange Attribution)</th>
-</tr>
-<tr>
-<td>适用场景</td>
-<td>DEX 交易、NFT 铸造、DeFi 交互</td>
-<td>CEX 充值后交易、交易所 Launchpad</td>
-</tr>
-<tr>
-<td>数据来源</td>
-<td>链上交易哈希 (tx_hash)</td>
-<td>交易所 API + 链上充值交易</td>
-</tr>
-<tr>
-<td>验证方式</td>
-<td>直接链上验证，无需第三方</td>
-<td>交易所数据 + 链上充值关联</td>
-</tr>
-<tr>
-<td>可信度</td>
-<td>高（链上数据不可篡改）</td>
-<td>中（依赖交易所数据真实性）</td>
-</tr>
-<tr>
-<td>典型用例</td>
-<td>Uniswap swap、OpenSea 购买</td>
-<td>Binance 充值后购买新币</td>
-</tr>
-</table>
-
-<h2>Fly 六层验证在链上交易的应用</h2>
-<div class="gate-grid">
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">1</div>
-<div class="gate-title">Gate 1: 交易存在性</div>
-</div>
-<div class="gate-desc">验证 tx_hash 在链上真实存在，防止伪造交易记录</div>
-</div>
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">2</div>
-<div class="gate-title">Gate 2: 钱包归属</div>
-</div>
-<div class="gate-desc">验证交易发起者钱包已注册到 Fly，且有有效签名</div>
-</div>
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">3</div>
-<div class="gate-title">Gate 3: 时间关联</div>
-</div>
-<div class="gate-desc">验证交易时间与 AI 推荐时间在合理窗口内（如 72 小时）</div>
-</div>
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">4</div>
-<div class="gate-title">Gate 4: 价值关联</div>
-</div>
-<div class="gate-desc">验证交易金额与 AI 推荐内容相关（如推荐的 NFT 系列）</div>
-</div>
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">5</div>
-<div class="gate-title">Gate 5: 链上存证</div>
-</div>
-<div class="gate-desc">归因结果上链存证，任何人可验证"这笔交易来自 AI 推荐"</div>
-</div>
-<div class="gate-card">
-<div class="gate-header">
-<div class="gate-num">6</div>
-<div class="gate-title">Gate 6: 可审计</div>
-</div>
-<div class="gate-desc">完整的审计链：AI Agent → Behavior → Action → Transaction</div>
-</div>
-</div>
-
-<h2>使用场景</h2>
-
-<div class="use-case">
-<div class="use-case-title">场景 1: DEX 交易归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了某代币，用户点击链接查看详情
-    ↓
-用户在 Uniswap 上 swap 了 1 ETH → TOKEN
-    ↓
-Fly 捕获: tx_hash = 0xtx_abc123, wallet = wlt_xxx
-    ↓
-Fly 验证: 该钱包在 48 小时前收到 AI 推荐
-    ↓
-归因结果: "这笔 $3,000 的交易来自 AI Agent 推荐"
-    ↓
-项目方可以向 AI Agent 支付佣金
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">场景 2: NFT 铸造归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了一个 NFT 项目，用户感兴趣
-    ↓
-用户在铸造页面连接钱包，Fly 记录行为
-    ↓
-用户 mint 了 2 个 NFT，tx_hash = 0xtx_xyz789
-    ↓
-Fly 验证: 铸造行为与 AI 推荐关联
-    ↓
-项目方看到: "这 2 个 NFT 来自 AI 渠道，占总量 5%"
-    ↓
-项目方给 AI Agent 分配白名单或佣金
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">场景 3: DeFi 收益归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了某 DeFi 协议的高收益池
-    ↓
-用户在 Aave 存入 10,000 USDC
-    ↓
-Fly 记录: wallet_id = wlt_xxx, action = ACT_xxx
-    ↓
-30 天后，用户获得 500 USDC 收益
-    ↓
-Fly 追踪: 收益来自 AI 推荐的资金
-    ↓
-协议方向 AI Agent 支付推荐费（基于 TVL 或收益分成）
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">场景 4: 交易所归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了某交易所的 Launchpad 项目
-    ↓
-用户在 Binance 充值 5,000 USDT
-    ↓
-用户参与 Launchpad，获得新代币
-    ↓
-Fly 验证: 充值 tx_hash + 用户 wallet_id + AI 推荐
-    ↓
-归因结果: "这个用户通过 AI 推荐，在交易所投入 $5,000"
-    ↓
-交易所/项目方向 AI Agent 支付佣金
-</div>
-</div>
-
-<h2>技术实现</h2>
-<div class="code-block">
-// 1. 创建链上交易归因<br>
-POST /v1/web3/transaction-attributions<br>
-{<br>
-&nbsp;&nbsp;"tx_hash": "0xtx_abc123",<br>
-&nbsp;&nbsp;"chain": "ethereum",<br>
-&nbsp;&nbsp;"action_id": "ACT_xxx"<br>
-}<br>
-→ Fly 自动验证 tx 存在性 + 时间关联 + 钱包归属<br><br>
-
-// 2. 创建交易所归因<br>
-POST /v1/web3/exchange-attributions<br>
-{<br>
-&nbsp;&nbsp;"exchange": "binance",<br>
-&nbsp;&nbsp;"deposit_tx_hash": "0xtx_deposit",<br>
-&nbsp;&nbsp;"wallet_id": "wlt_xxx",<br>
-&nbsp;&nbsp;"action_id": "ACT_xxx"<br>
-}<br>
-→ Fly 关联充值 tx 与后续交易<br><br>
-
-// 3. 查询归因状态<br>
-GET /v1/web3/transaction-attributions/:attribution_id<br>
-→ 返回: status, verified_at, trust_score, audit_trail
-</div>
-
-<h2>API 接口</h2>
-
 <div class="api-box">
 <div class="api-title">POST /v1/web3/transaction-attributions</div>
 <div class="api-endpoint">{"tx_hash": "0xtx_abc123", "chain": "ethereum", "action_id": "ACT_xxx"}</div>
-<div class="api-desc">创建链上交易归因记录，自动验证交易存在性和归因有效性</div>
+<div class="api-desc">创建链上交易归因记录</div>
 </div>
-
 <div class="api-box">
 <div class="api-title">POST /v1/web3/exchange-attributions</div>
 <div class="api-endpoint">{"exchange": "binance", "tx_hash": "0xtx_abc123", "wallet_id": "wlt_xxx"}</div>
-<div class="api-desc">创建交易所归因记录，关联 CEX 充值与链上行为</div>
+<div class="api-desc">创建交易所归因记录</div>
 </div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/transaction-attributions/:attribution_id</div>
-<div class="api-endpoint">attr_xxx</div>
-<div class="api-desc">查询归因详情，包括验证状态、Trust Score、审计链</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/wallets/:wallet_id/transactions</div>
-<div class="api-endpoint">?chain=ethereum&limit=20</div>
-<div class="api-desc">查询钱包的所有已归因交易</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">POST /v1/web3/transaction-attributions/verify</div>
-<div class="api-endpoint">{"attribution_id": "attr_xxx"}</div>
-<div class="api-desc">手动触发重新验证（用于 tx 确认后补验证）</div>
-</div>
-
-<div class="status"><span class="status-dot"></span>API 已上线 · 可调用</div>
 </div>
 </body>
 </html>

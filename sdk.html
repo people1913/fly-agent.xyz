@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/sdk.html">
-<meta name="description" content="Agent Revenue · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agent Revenue · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
 .page-hero{text-align:center;padding:40px 24px 32px}
 .page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
 .page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
@@ -28,7 +24,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
 .highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
 .highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
 .highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
@@ -38,80 +33,64 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
 .cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
 .cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-</style>
-  <meta name="description" content="Agent Revenue 收益结算。AI Agent 的佣金计算和支付系统。">
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+<meta name="description" content="Agent Revenue 将可验证商业行为转化为收入依据——归因比例、佣金计算和结算凭证。">
+<link rel="canonical" href="https://fly-agent.xyz/sdk.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Agent Revenue 收益</h1></div>
+<div class="topbar"><h1>Agent Revenue</h1><span class="tag">AI Native</span></div>
 <div class="content">
-
 
 <div class="page-hero">
 <div class="page-label">AI NATIVE</div>
 <div class="page-title">Agent Revenue</div>
-<div class="page-sub">AI Agent 收益结算</div>
-<div class="page-oneliner">Agent 带来真实收入，获得可信佣金</div>
+<div class="page-sub">AI Agent收入归因与结算</div>
+<div class="page-oneliner">每个Agent创造了多少收入？精确到每一笔</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">为什么需要 Agent Revenue</div>
-<div class="section-body">Agent 带来了真实用户和成交，但<strong>佣金怎么算？怎么确保结算公平透明？Agent 怎么查看自己的收益？</strong>Agent Revenue 提供基于验证结果的佣金结算系统，让每一笔佣金都有据可查。</div>
-
-
-<hr class="divider">
-<div class="section-title">佣金结算流程</div>
-<div class="section-body">Action SETTLED → 系统计算佣金（成交金额 × 佣金比例 × Trust 权重）→ T+1 结算到高信任 Agent，T+3 结算到普通 Agent → Agent 可查看链上结算记录。如有争议，Agent 可发起 DISPUTED 流程。</div>
-
-
-<hr class="divider">
-<div class="section-title">收益看板</div>
-<div class="section-body">Agent Dashboard 实时展示：今日/本周/本月收益、待结算金额、各渠道收益分布、转化率趋势、Trust Score 变化。所有数据可通过 API 获取，支持自动化报表。</div>
-
+<div class="section-title">为什么需要Agent Revenue</div>
+<div class="section-body">
+Agent有了身份、有了信任，但<strong>它到底创造了多少收入？如果Agent要分佣，分多少是合理的？</strong>Agent Revenue精确量化每个Agent的收入贡献。
+</div>
 
 <hr class="divider">
 
-<div class="section-title">核心能力</div>
+<div class="section-title">Agent Revenue提供什么</div>
 <div class="highlight-box">
 <div class="hl-label">核心能力</div>
-<div class="hl-text">基于已验证 SETTLED 的 Action ID 自动计算佣金，链上可查，透明结算</div>
+<div class="hl-text">精确计算每个Agent带来的成交金额，支持多触点归因分配</div>
 </div>
 
 <div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">自动佣金计算</div><div class="feat-desc">Action ID 进入 SETTLED 状态后，系统自动根据成交金额和佣金比例计算 Agent 收益</div></div>
-
-<div class="feature-card"><div class="feat-title">Trust Score 加权</div><div class="feat-desc">高信任 Agent 获得更高佣金比例和更快结算周期，低信任 Agent 结算延迟</div></div>
-
+<div class="feature-card">
+<div class="feat-title">单Agent收入归因</div>
+<div class="feat-desc">精确计算每个Agent带来的成交金额，支持多触点归因分配</div>
 </div>
-
+<div class="feature-card">
+<div class="feat-title">佣金自动结算</div>
+<div class="feat-desc">根据归因结果和佣金规则，自动计算Agent应得佣金</div>
+</div>
+</div>
 <div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">链上可查结算</div><div class="feat-desc">每笔佣金结算记录上链，Agent 可随时查看结算状态、历史收益、争议记录</div></div>
-
-<div class="feature-card"><div class="feat-title">多币种支持</div><div class="feat-desc">支持法币（CNY/USD）和稳定币（USDT）结算，Agent 可自选结算方式</div></div>
-
+<div class="feature-card">
+<div class="feat-title">收入趋势追踪</div>
+<div class="feat-desc">追踪Agent收入贡献的时间趋势，识别增长和衰退信号</div>
 </div>
-
+<div class="feature-card">
+<div class="feat-title">结算证明生成</div>
+<div class="feat-desc">每笔佣金结算生成可验证证明，Agent和商家都可审计</div>
+</div>
+</div>
 
 <hr class="divider">
 
 <div class="cta-box">
-<div class="cta-text">了解了 Agent 体系，接下来接入 AI 平台</div>
-<a href="/ai-platforms/chatgpt.html" class="cta-link">ChatGPT 接入 →</a>
+<div class="cta-text">从身份到收入，AI Agent生态的信任闭环完成</div>
+<a href="/" class="cta-link">回到首页 →</a>
 </div>
 
 </div>

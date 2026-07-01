@@ -1,115 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/api-reference.html">
-<meta name="description" content="API Reference · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>API Reference · Fly</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
-*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
-.page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
-.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
-.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
-.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
-.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
-.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
-.section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
-.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
-.feature-row{display:flex;gap:12px;margin-bottom:24px}
-.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
-.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
+.main{margin-left:280px;padding:48px 64px;max-width:960px}
+@media(max-width:900px){.main{margin-left:0;padding:24px}}
+h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#EA580C,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
+.features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
+.status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#EA580C;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 </style>
-  <meta name="description" content="Fly API 参考文档。开发者接入指南、接口说明和示例代码。">
+<meta name="description" content="API 参考文档：Agent 注册、Action 创建、Signal 验证、Trust 评分、Audit 日志等全部端点。">
+<link rel="canonical" href="https://fly-agent.xyz/api-reference.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>API Reference API参考</h1></div>
-<div class="content">
-
-
-<div class="page-hero">
-<div class="page-label">DEVELOPER</div>
-<div class="page-title">API Reference</div>
-<div class="page-sub">Fly Attribution API 参考文档</div>
-<div class="page-oneliner">完整的 REST API 接口文档，快速集成归因验证</div>
-</div>
-
-<hr class="divider">
-
-<div class="section-title">API 概览</div>
-<div class="section-body">Fly 提供 RESTful API，覆盖<strong>归因创建、验证查询、审计追溯、结算管理</strong>全流程。所有 API 返回 JSON 格式，支持 TypeScript/Python SDK。</div>
-
-
-<hr class="divider">
-<div class="section-title">认证方式</div>
-<div class="section-body">所有 API 请求需要在 Header 中携带 <code>Authorization: Bearer YOUR_API_KEY</code>。API Key 在 Dashboard 创建，支持多 Key 管理和权限分级。沙盒环境和生产环境使用不同的 API Key。</div>
-
-
-<hr class="divider">
-
-<div class="section-title">基础信息</div>
-<div class="highlight-box">
-<div class="hl-label">基础信息</div>
-<div class="hl-text">Base URL: https://api.fly-agent.xyz | 认证: Bearer Token | 格式: JSON | 版本: v1</div>
-</div>
-
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">归因管理</div><div class="feat-desc">POST /v1/action 创建归因 | GET /v1/action/:id 查询状态 | GET /v1/action/:id/lifecycle 生命周期</div></div>
-
-<div class="feature-card"><div class="feat-title">验证查询</div><div class="feat-desc">POST /v1/audit/verify-chain 验证归因链 | GET /v1/audit/trail/:id 审计追踪</div></div>
-
-</div>
-
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">Behavior 追踪</div><div class="feat-desc">POST /v1/behavior 上报行为 | GET /v1/behavior/:id 查询行为详情</div></div>
-
-<div class="feature-card"><div class="feat-title">Agent 管理</div><div class="feat-desc">POST /v1/agent/register 注册 | GET /v1/agent/:id 查询 | POST /v1/agent/verify 验证身份</div></div>
-
-</div>
-
-
-<hr class="divider">
-
-<div class="cta-box">
-<div class="cta-text">API 参考查看完成，接下来查看 SDK 文档</div>
-<a href="/dev-sdk.html" class="cta-link">SDK →</a>
-</div>
-
-</div>
+<h1>API Reference</h1>
+<p class="desc">完整的接口文档与示例代码</p>
+<div class="features"><div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#EA580C;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">RESTful API 全端点</div></div>
+<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#EA580C;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">实时Schema验证</div></div>
+<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#EA580C;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">交互式Playground</div></div>
+<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px"><div style="color:#EA580C;font-size:14px;font-weight:600;margin-bottom:8px">⚡</div><div style="color:#e2e8f0;font-size:14px">SDK代码生成</div></div></div>
+<div class="status"><span class="status-dot"></span>Coming Soon · 即将上线</div>
 </div>
 </body>
 </html>

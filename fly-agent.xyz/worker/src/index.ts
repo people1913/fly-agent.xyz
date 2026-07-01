@@ -27,6 +27,8 @@
  *   GET  /v1/proof/:actionId                  — v2.9.0: 归因链证明生成（Gate 3）
  *   POST /v1/backup/d1                        — v2.10.0: D1 SQL 备份存储
  *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
+ *   POST /v1/verify                           — v2.11.0: 商业归因签发
+ *   GET  /v1/records/recent                   — v2.11.0: 最近归因记录列表
  * 
  * v2.10.0 新增：
  *   - Backup API：POST /v1/backup/d1 接收 SQL 存入 KV（SHA-256 哈希校验）
@@ -1100,6 +1102,42 @@ export default {
             sql_size: sqlContent.length,
             timestamp: latest.timestamp
           });
+        }
+
+        // === v2.11.0: 商业归因签发 ===
+        if (path === '/v1/verify' && method === 'POST') {
+          const body: any = await request.json();
+          const recordId = `attr_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+          const claim = body.claim || body.source?.name || 'AI Commercial Contribution';
+          const evidenceJson = JSON.stringify(body.evidence || []);
+
+          const actionId = `act_${crypto.randomUUID()}`;
+          await env.FLY_D1.prepare(
+            "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, metadata, created_at) VALUES (?, ?, 'direct', ?, 'booking', ?, datetime('now'))"
+          ).bind(actionId, 'agt_system', `usr_${recordId}`, JSON.stringify({ claim, evidence: body.evidence || [], source: body.source || {}, signal_quality: 'raw', human_score: 0 })).run();
+
+          const verificationId = `vrf_${crypto.randomUUID()}`;
+          await env.FLY_D1.prepare(
+            "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+          ).bind(verificationId, actionId, 'fly_attribution_engine', 'verified', 85, evidenceJson).run();
+
+          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: 'user', actor_id: 'usr_claim', actor_name: 'attribution-claim', source: 'api', reason: 'attribution_issued', before: '{}', after: JSON.stringify({ record_id: recordId, claim, action_id: actionId }) });
+
+          return json({ success: true, record_id: recordId, action_id: actionId, verification_id: verificationId, status: 'verified', claim, confidence: 85, settlement_eligible: true }, 201);
+        }
+
+        // === v2.11.0: 最近归因记录列表 ===
+        if (path === '/v1/records/recent' && method === 'GET') {
+          const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
+          const records = await env.FLY_D1.prepare(
+            "SELECT v.id, v.action_id, v.verifier, v.result, v.confidence, v.evidence, v.created_at, a.metadata FROM verifications v LEFT JOIN actions a ON v.action_id = a.id ORDER BY v.created_at DESC LIMIT ?"
+          ).bind(limit).all();
+          const formatted = (records.results as any[]).map((r: any) => {
+            let meta: any = {};
+            try { meta = JSON.parse(r.metadata || '{}'); } catch(e) {}
+            return { record_id: `attr_${r.id}`, status: r.result || 'pending', claim: meta.claim || 'AI Commercial Contribution', confidence: r.confidence || 0, evidence_count: (() => { try { return JSON.parse(r.evidence || '[]').length; } catch(e) { return 0; } })(), created_at: r.created_at, action_id: r.action_id };
+          });
+          return json({ success: true, records: formatted, total: formatted.length });
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);

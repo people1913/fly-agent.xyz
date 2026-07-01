@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="canonical" href="https://fly-agent.xyz/verify">
+<meta name="description" content="Fly Verify — Issue a verifiable Trust Record for any AI recommendation">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fly Verify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;
+--deep-green:#1A3D2E;--mint:#E8F5EC;--mint-border:#B8DCC5;
+--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;
+--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+--border:#E2E8F0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:1.7;font-size:15px;display:flex;min-height:100vh}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{padding:32px 40px 60px 48px;max-width:900px;overflow-y:auto}
+
+/* Hero */
+.hero{text-align:center;padding:48px 0 24px}
+.hero h2{font-size:32px;font-weight:800;color:var(--dark);letter-spacing:-.5px;margin-bottom:8px;line-height:1.2}
+.hero .subtitle{font-size:18px;font-weight:600;color:var(--deep-green);margin-bottom:12px}
+.hero .desc{font-size:14px;color:var(--text3);max-width:520px;margin:0 auto}
+
+/* Value Proposition */
+.value-prop{text-align:center;padding:0 0 32px;font-size:15px;font-weight:500;color:var(--text3);font-style:italic}
+
+/* Verify Input */
+.verify-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:40px}
+.verify-field{margin-bottom:16px}
+.verify-field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.verify-field textarea{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;min-height:100px;resize:vertical;line-height:1.6}
+.verify-field textarea:focus{outline:none;border-color:var(--deep-green)}
+.verify-actions{display:flex;gap:12px;align-items:center;margin-top:16px}
+.btn-verify{padding:14px 36px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.btn-verify:hover{opacity:.9;transform:translateY(-1px)}
+.btn-verify:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-upload{padding:14px 24px;background:#fff;color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s;font-family:var(--sans)}
+.btn-upload:hover{border-color:var(--deep-green)}
+
+/* Example Records */
+.section-title{font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.record-list{display:flex;flex-direction:column;gap:8px;margin-bottom:48px}
+.record-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .2s;cursor:pointer;text-decoration:none;color:var(--dark)}
+.record-item:hover{border-color:var(--deep-green)}
+.record-id{font-family:var(--mono);font-size:13px;font-weight:600}
+.record-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+.status-pending{background:#FEF3C7;color:#92400E}
+.status-verified{background:var(--mint);color:var(--deep-green)}
+.status-eligible{background:#DBEAFE;color:#1E40AF}
+
+/* How it works */
+.how-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:48px}
+.how-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:20px}
+.how-steps{display:flex;gap:16px}
+.how-step{flex:1;text-align:center}
+.how-step-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--mint);border:1px solid var(--mint-border);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.how-step-icon svg{width:20px;height:20px;stroke:var(--deep-green);fill:none;stroke-width:1.8}
+.how-step-label{font-size:12px;font-weight:600;color:var(--text2)}
+.how-step-desc{font-size:11px;color:var(--text4);margin-top:4px;line-height:1.5}
+.how-arrow{display:flex;align-items:center;color:var(--text4);font-size:18px;padding-top:12px}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:24px;margin-bottom:24px}
+.loading.show{display:block}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--deep-green);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--text3);font-weight:500}
+
+/* Success */
+.success-box{display:none;text-align:center;padding:32px 24px;margin-bottom:24px;background:var(--mint);border:1px solid var(--mint-border);border-radius:12px}
+.success-box.show{display:block}
+.success-icon{width:48px;height:48px;background:var(--deep-green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.success-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2.5}
+.success-title{font-size:18px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
+.success-record{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.success-hint{font-size:12px;color:var(--text4)}
+
+/* Error */
+.error-box{display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px;margin-bottom:16px}
+.error-box.show{display:block}
+.error-text{font-size:13px;color:#991B1B}
+
+@media(max-width:768px){
+.content{padding:24px 16px}
+.hero{padding:32px 0 20px}
+.hero h2{font-size:24px}
+.hero .subtitle{font-size:16px}
+.how-steps{flex-direction:column}
+.how-arrow{display:none}
+.verify-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<script src="/nav-shared.js?v=20260629"></script>
+<div class="main">
+<div class="topbar">
+<h1>Fly Verify</h1>
+
+</div>
+<div class="content">
+
+<!-- Hero -->
+<div class="hero">
+<h2>Track AI Revenue Attribution <span style="font-size:16px;color:var(--text3);font-weight:400">追踪 AI 收入归因</span></h2>
+<p class="subtitle">Issue an Attribution Record <span style="font-size:14px;color:var(--text4);font-weight:400">签发归因记录</span></p>
+<p class="desc">Generate an Attribution Record with traceable evidence and revenue allocation.<br>生成一份归因记录，包含可追溯的证据和收入分配。</p>
+</div>
+
+<!-- Value Proposition -->
+<div class="value-prop">Every AI recommendation deserves a verifiable Trust Record.<br>每一条 AI 推荐，都值得拥有一份可验证的信任记录。</div>
+
+<!-- Verify Input -->
+<div class="verify-box">
+<div class="verify-field">
+<label>What AI action generated revenue? 什么 AI 行为产生了收入？</label>
+<input type="text" id="claimInput" placeholder="例如: ChatGPT recommended Cloudflare Workers, user signed up&#10;例如: Gemini suggested React, project generated $500" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);background:#fff;transition:border-color .2s;margin-bottom:12px">
+</div>
+<div class="verify-field">
+<label>Evidence 证据（可选）</label>
+<textarea id="evidenceInput" placeholder="Paste a URL, describe an AI recommendation, or upload a screenshot...&#10;粘贴链接、描述 AI 推荐内容，或上传截图..."></textarea>
+</div>
+<div class="verify-actions">
+<button class="btn-verify" id="btnVerify" onclick="doVerify()">Issue Trust Record 签发信任记录</button>
+<button class="btn-upload" onclick="document.getElementById('fileInput').click()">Upload Screenshot 上传截图</button>
+<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(this)">
+</div>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+<div class="loading-spinner"></div>
+<div class="loading-text" id="loadingText">Issuing Attribution Record... 正在签发归因记录...</div>
+</div>
+
+<!-- Success -->
+<div class="success-box" id="successBox">
+<div class="success-icon">
+<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+</div>
+<div class="success-title">Trust Record Issued 信任记录已签发</div>
+<div class="success-record" id="successRecordId">-</div>
+<div class="success-hint">Redirecting to Trust Record... 正在跳转到信任记录...</div>
+</div>
+
+<!-- Error -->
+<div class="error-box" id="errorBox">
+<div class="error-text" id="errorText"></div>
+</div>
+
+<!-- Example Records -->
+<div class="section-title">Example Attribution Records 示例归因记录</div>
+<div class="record-list" id="recordList">
+<!-- 动态加载 -->
+</div>
+
+<!-- How it works -->
+<div class="how-box">
+<div class="how-title">How Verification Works 验证流程</div>
+<div class="how-steps">
+<div class="how-step">
+<div class="how-step-icon">
+<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+</div>
+<div class="how-step-label">Evidence 证据</div>
+<div class="how-step-desc">Submit proof of the AI recommendation<br>提交 AI 推荐的证据</div>
+</div>
+<div class="how-arrow">→</div>
+<div class="how-step">
+<div class="how-step-icon">
+<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12 10 15 17 8"/></svg>
+</div>
+<div class="how-step-label">Verification 验证</div>
+<div class="how-step-desc">Validate evidence integrity<br>验证证据完整性</div>
+</div>
+<div class="how-arrow">→</div>
+<div class="how-step">
+<div class="how-step-icon">
+<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+</div>
+<div class="how-step-label">Trust 信任</div>
+<div class="how-step-desc">Compute trust score<br>计算信任评分</div>
+</div>
+<div class="how-arrow">→</div>
+<div class="how-step">
+<div class="how-step-icon">
+<svg viewBox="0 0 24 24"><path d="M12 1v22m-4-4l4 4 4-4"/><path d="M5 12h14"/></svg>
+</div>
+<div class="how-step-label">Ledger 账本</div>
+<div class="how-step-desc">On-chain attestation, immutable<br>链上存证，不可篡改</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+const API_BASE = 'https://api.fly-agent.xyz';
+const API_KEY = 'fly_demo_key_2026';
+
+async function doVerify() {
+  const claimInput = document.getElementById('claimInput').value.trim();
+  const evidenceInput = document.getElementById('evidenceInput').value.trim();
+
+  // Claim 必填（Fly 是归因验证，不是断言存储）
+  if (!claimInput) {
+    showError('Please describe the AI action that generated revenue.');
+    return;
+  }
+
+  // 使用用户输入的 claim
+  const claim = claimInput;
+
+  // 隐藏之前的错误和成功状态
+  hideError();
+  hideSuccess();
+  document.getElementById('btnVerify').disabled = true;
+
+  // Step 1: 显示 loading
+  const loadingMsg = evidenceInput ? 'Issuing Attribution Record...' : 'Issuing Attribution Record (Pending Evidence status)...';
+  showLoading(true, loadingMsg);
+
+  // Auto-detect source from input content
+  const isUrl = /^https?:\/\//i.test(evidenceInput || claimInput);
+  const sourceName = isUrl ? 'Web Source' : 'AI Recommendation';
+
+  try {
+    const response = await fetch(`${API_BASE}/v1/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        source: {
+          type: 'user-verify',
+          name: sourceName
+        },
+        evidence: evidenceInput ? [{
+          evidence_id: 'evi_user_001',
+          type: isUrl ? 'url' : 'user_input',
+          description: evidenceInput.substring(0, 200),
+          data: {
+            content: evidenceInput,
+            timestamp: new Date().toISOString()
+          }
+        }] : [],
+        claim: claim,
+        attestation: {
+          attestor: '郭满满',
+          type: 'user-confirm',
+          statement: 'I confirm this AI recommendation was made'
+        }
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Unable to issue Trust Record. Please check your input and try again.');
+    }
+
+    // Step 2: 显示成功状态
+    showLoading(false);
+    showSuccess(data.record_id);
+
+    // Step 3: 800ms 后自动跳转
+    setTimeout(() => {
+      window.location.href = `/trust-record/${data.record_id}`;
+    }, 800);
+
+  } catch (err) {
+    showLoading(false);
+    document.getElementById('btnVerify').disabled = false;
+    showError(err.message);
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  document.getElementById('errorText').textContent = msg;
+  box.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('show');
+}
+
+function showLoading(show, text) {
+  const el = document.getElementById('loading');
+  el.classList.toggle('show', show);
+  if (text) document.getElementById('loadingText').textContent = text;
+}
+
+function showSuccess(recordId) {
+  document.getElementById('successRecordId').textContent = recordId;
+  document.getElementById('successBox').classList.add('show');
+}
+
+function hideSuccess() {
+  document.getElementById('successBox').classList.remove('show');
+}
+
+function handleUpload(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    document.getElementById('evidenceInput').value = `[Screenshot: ${file.name}]`;
+  }
+}
+
+// Load example records
+async function loadRecords() {
+  try {
+    const response = await fetch(`${API_BASE}/v1/records/recent?limit=5`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.records && data.records.length > 0) {
+        renderRecords(data.records);
+        return;
+      }
+    }
+  } catch (e) {}
+
+  // Fallback: show demo data
+  renderRecords([
+    { record_id: 'FLY-20260628-00001', status: 'verified', created_at: '2026-06-28T12:35:34Z' },
+    { record_id: 'FLY-20260628-00002', status: 'verified', created_at: '2026-06-28T14:22:10Z' },
+    { record_id: 'FLY-20260629-00001', status: 'pending', created_at: '2026-06-29T09:15:00Z' }
+  ]);
+}
+
+function renderRecords(records) {
+  const list = document.getElementById('recordList');
+  if (!records.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text4)">No records yet</div>';
+    return;
+  }
+
+  list.innerHTML = records.map(r => {
+    const statusClass = r.status === 'verified' ? 'status-verified' :
+                        r.status === 'eligible' ? 'status-eligible' : 'status-pending';
+    const statusText = r.status === 'verified' ? 'Verified' :
+                       r.status === 'eligible' ? 'Eligible' : 'Pending';
+
+    return `
+      <a class="record-item" href="/trust-record/${r.record_id}">
+        <span class="record-id">${r.record_id}</span>
+        <span class="record-status ${statusClass}">${statusText}</span>
+      </a>
+    `;
+  }).join('');
+}
+
+// Init
+loadRecords();
+</script>
+</body>
+</html>

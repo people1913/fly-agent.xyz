@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/enterprise-revenue-attribution.html">
-<meta name="description" content="Revenue Attribution · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Revenue Attribution · Fly</title>
@@ -13,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:#0891B2;background:#ECFEFF;padding:2px 10px;border-radius:10px}
 .content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
@@ -45,23 +43,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .metric-card .metric-label{font-size:11px;color:var(--text4);margin-top:4px}
 .cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
 .cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#0891B2;font-weight:600;text-decoration:none;border-bottom:1px dashed #0891B2}
-.scenario-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0}
-.scenario-box .sc-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:8px}
-.scenario-box .sc-body{font-size:13px;color:var(--text2);line-height:1.7}
-.calculation-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin:16px 0}
-.calculation-box .calc-title{font-size:12px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
-.calculation-box .calc-formula{font-size:13px;font-weight:600;color:var(--deep-green);line-height:1.8;font-family:var(--mono)}
-.feature-list{margin:16px 0;padding-left:0;list-style:none}
-.feature-list li{position:relative;padding:12px 0 12px 28px;border-bottom:1px solid var(--border)}
-.feature-list li:before{content:"✓";position:absolute;left:0;color:var(--deep-green);font-weight:700}
-.feature-list li:last-child{border-bottom:none}</style>
-  <meta name="description" content="收入归因系统。追踪 AI 推荐从点击到付款的完整路径，精准计算每个 Agent 的贡献和佣金。">
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#0891B2;font-weight:600;text-decoration:none;border-bottom:1px dashed #0891B2}</style>
+<meta name="description" content="Revenue Attribution 收入归因：精确计算每个 AI Agent 对商业收入的贡献比例。">
+<link rel="canonical" href="https://fly-agent.xyz/enterprise-revenue-attribution.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Revenue Attribution 收入归因</h1></div>
+<div class="topbar"><h1>Revenue Attribution</h1><span class="tag">企业</span></div>
 <div class="content">
 
 <div class="page-hero">
@@ -75,16 +64,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 
 <div class="section-title">为什么需要收入归因</div>
 <div class="section-body">
-<p>你在AI渠道上花了钱——ChatGPT推荐、Claude引流、Coze Agent推广。但<strong>哪笔收入是哪个AI带来的？如果不知道，你就在盲目投入。</strong></p>
-
-<p style="margin-top:12px">更复杂的是，用户可能：</p>
-<ul style="margin-top:12px;padding-left:20px;line-height:2">
-<li>先在 ChatGPT 看到推荐</li>
-<li>再去 Claude 确认产品信息</li>
-<li>最后通过 Coze Agent 完成购买</li>
-</ul>
-
-<p style="margin-top:12px">这笔收入应该归给谁？每个环节贡献了多少？没有收入归因，这些问题没有答案。</p>
+你在AI渠道上花了钱——ChatGPT推荐、Claude引流、Coze Agent推广。但<strong>哪笔收入是哪个AI带来的？如果不知道，你就在盲目投入。</strong>
 </div>
 
 <div class="vs-row">
@@ -93,14 +73,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="vs-item">AI推广预算花出去，不知效果</div>
 <div class="vs-item">多渠道推荐，收入无法分配</div>
 <div class="vs-item">佣金结算凭感觉，不是凭证据</div>
-<div class="vs-item">争议发生时，无法自证清白</div>
 </div>
 <div class="vs-col after">
 <div class="vs-title">有了收入归因</div>
 <div class="vs-item">每笔收入追溯到具体AI推荐</div>
 <div class="vs-item">多触点归因按贡献分配权重</div>
 <div class="vs-item">佣金结算有完整证据链支撑</div>
-<div class="vs-item">争议发生时，审计链清晰可查</div>
 </div>
 </div>
 
@@ -133,135 +111,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 
 <div class="section-title">归因模式</div>
 <div class="section-body">
-<p>根据你的业务场景，选择合适的归因模式：</p>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">首次推荐归因</div>
-<div class="sc-body">
-收入归给第一次带来用户的AI推荐。适合品牌认知类场景。<br>
-<strong>适用场景</strong>：用户第一次接触品牌后立即购买，决策路径短。<br>
-<strong>优点</strong>：简单清晰，激励AI Agent带来新用户。<br>
-<strong>缺点</strong>：忽略后续转化的贡献。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">末次推荐归因</div>
-<div class="sc-body">
-收入归给最后促成成交的AI推荐。适合转化驱动类场景。<br>
-<strong>适用场景</strong>：用户多次对比后购买，最后一次推荐是关键推动力。<br>
-<strong>优点</strong>：聚焦转化效果，适合追求ROI的品牌。<br>
-<strong>缺点</strong>：忽略前期种草的贡献。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">多触点归因（推荐）</div>
-<div class="sc-body">
-收入按贡献分配给路径上的所有AI推荐。适合多渠道协同场景。<br>
-<strong>适用场景</strong>：用户在多个AI平台反复确认后购买，每个环节都有贡献。<br>
-<strong>优点</strong>：最公平，反映真实的用户决策路径。<br>
-<strong>缺点</strong>：计算复杂，需要完整的行为链数据。
-</div>
-</div>
-
-<hr class="divider">
-
-<div class="section-title">佣金结算机制</div>
-<div class="section-body">
-<p>收入归因完成后，下一步是佣金结算。Fly 提供透明、可信的结算依据：</p>
-</div>
-
-<div class="calculation-box">
-<div class="calc-title">佣金计算公式</div>
-<div class="calc-formula">
-佣金 = 归因收入 × 佣金比例 × Trust Score 权重<br>
-<br>
-其中：<br>
-- 归因收入：通过归因模型分配到该Agent的收入<br>
-- 佣金比例：品牌方设定的佣金比例（如10%）<br>
-- Trust Score 权重：Agent信任度调整系数（0.8-1.2）
-</div>
-</div>
-
-<div class="section-body">
-<p><strong>Trust Score 权重的作用：</strong></p>
-
-<ul class="feature-list">
-<li><strong>高信任度 Agent（Trust Score ≥ 0.9）</strong>：权重1.2，获得更高佣金，激励优质推荐</li>
-<li><strong>中等信任度（0.7 ≤ Trust Score < 0.9）</strong>：权重1.0，标准佣金</li>
-<li><strong>低信任度（Trust Score < 0.7）</strong>：权重0.8，佣金打折，风险惩罚</li>
-</ul>
-
-<p style="margin-top:12px">这个机制确保：<strong>真正带来高质量转化的Agent获得更高回报</strong>，而不是刷量或虚假推荐的Agent。</p>
-</div>
-
-<div class="section-title">争议处理与仲裁</div>
-<div class="section-body">
-<p>当品牌方和推荐者对归因结果有争议时，Fly 提供完整的仲裁依据：</p>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">争议场景 1：品牌方质疑"这笔收入不是AI带来的"</div>
-<div class="sc-body">
-<strong>仲裁依据</strong>：查看归因链是否完整——Behavior ID → Action ID → 成交记录是否连贯，是否有时间戳和行为证据。<br>
-<strong>解决方案</strong>：如果归因链完整且验证通过，认定AI推荐贡献成立。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">争议场景 2：多个Agent声称"是我带来的"</div>
-<div class="sc-body">
-<strong>仲裁依据</strong>：查看用户行为路径——哪些Agent参与了推荐，每个推荐的时间点和内容是什么。<br>
-<strong>解决方案</strong>：按多触点归因模型分配收入，每个Agent按贡献比例获得佣金。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">争议场景 3：Agent质疑"佣金计算不对"</div>
-<div class="sc-body">
-<strong>仲裁依据</strong>：查看完整的计算过程——归因收入、佣金比例、Trust Score权重的具体数值和计算逻辑。<br>
-<strong>解决方案</strong>：审计链公开透明，每一笔佣金的计算过程都可追溯。
-</div>
-</div>
-
-<div class="section-body">
-<p style="margin-top:24px">所有争议处理过程都有记录，形成<strong>可审计的仲裁历史</strong>，为未来的类似争议提供参考。</p>
-</div>
-
-<hr class="divider">
-
-<div class="section-title">多渠道归因的实际场景</div>
-<div class="section-body">
-<p>以下是一个典型的AI推荐归因案例：</p>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">案例：医美机构获客</div>
-<div class="sc-body">
-<strong>用户路径</strong>：<br>
-1. 用户在ChatGPT询问"北京哪家医美机构靠谱"，ChatGPT推荐了"美丽说"（某医美机构）<br>
-2. 用户访问官网，浏览了项目页面，但没有预约<br>
-3. 3天后，用户在Claude再次询问"美丽说的口碑怎么样"，Claude确认了正面评价<br>
-4. 用户通过Coze Agent完成预约并到店消费，订单金额 ¥12,000<br>
-<br>
-<strong>归因结果</strong>（多触点模式）：<br>
-- ChatGPT（首次推荐）：贡献40%，归因收入 ¥4,800<br>
-- Claude（确认信息）：贡献20%，归因收入 ¥2,400<br>
-- Coze Agent（促成转化）：贡献40%，归因收入 ¥4,800<br>
-<br>
-<strong>佣金结算</strong>（假设佣金比例10%）：<br>
-- ChatGPT：¥4,800 × 10% × 1.0（Trust Score 0.85）= ¥480<br>
-- Claude：¥2,400 × 10% × 1.0（Trust Score 0.80）= ¥240<br>
-- Coze Agent：¥4,800 × 10% × 1.2（Trust Score 0.95）= ¥576<br>
-<br>
-<strong>总佣金</strong>：¥1,296（占订单金额10.8%）
-</div>
-</div>
-
-<div class="section-body">
-<p>这个案例展示了 Fly 收入归因的完整价值：<strong>每个环节的贡献都被准确记录和公平分配</strong>。</p>
+<strong>首次推荐归因</strong>：收入归给第一次带来用户的AI推荐。适合品牌认知类场景。<br>
+<strong>末次推荐归因</strong>：收入归给最后促成成交的AI推荐。适合转化驱动类场景。<br>
+<strong>多触点归因</strong>：收入按贡献分配给路径上的所有AI推荐。适合多渠道协同场景。
 </div>
 
 <hr class="divider">

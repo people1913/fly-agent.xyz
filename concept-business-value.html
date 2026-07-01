@@ -1,236 +1,91 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/concept-business-value.html">
-<meta name="description" content="Business Value · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Business Value · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
-.page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
-.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
-.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
-.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
-.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
-.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
-.section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
-.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
-.feature-row{display:flex;gap:12px;margin-bottom:24px}
-.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
-.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-.scenario-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0}
-.scenario-box .sc-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:8px}
-.scenario-box .sc-body{font-size:13px;color:var(--text2);line-height:1.7}
-.calculation-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin:16px 0}
-.calculation-box .calc-title{font-size:12px;font-weight:700;color:var(--deep-green);margin-bottom:8px}
-.calculation-box .calc-formula{font-size:14px;font-weight:600;color:var(--deep-green);line-height:1.6;font-family:var(--mono)}
-</style>
-  <meta name="description" content="Business Value 是归因链的终点。将 AI 推荐转化为可结算的商业价值，让推荐者获得应得收益。">
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.concept-hero{text-align:center;padding:40px 24px 24px}
+.concept-hero .en{font-size:28px;font-weight:800;color:var(--deep-green);margin-bottom:4px}
+.concept-hero .zh{font-size:16px;color:var(--text3)}
+.concept-section{padding:0 32px;margin-bottom:28px}
+.concept-section .sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.concept-section .sec-label.what{color:var(--deep-green)}
+.concept-section .sec-label.why{color:#DC2626}
+.concept-section .sec-label.how{color:#2563EB}
+.concept-section .sec-label.next{color:#7C3AED}
+.concept-section .sec-title{font-size:18px;font-weight:700;color:var(--dark);line-height:1.6;margin-bottom:8px}
+.concept-section .sec-body{font-size:14px;color:var(--text2);line-height:1.8}
+.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.step-row{display:flex;gap:12px;margin-bottom:12px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:16px 20px}
+.next-box .next-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:6px}
+.next-box .next-text{font-size:14px;font-weight:600;color:#5B21B6;line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+<meta name="description" content="Business Value 将 AI Agent 行为数据转化为可量化、可归因的商业收入依据。">
+<link rel="canonical" href="https://fly-agent.xyz/concept-business-value.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Business Value 商业价值</h1></div>
-<div class="content">
+<div class="topbar"><h1>Business Value</h1><span class="tag">可结算价值</span></div>
+<div style="padding:32px;overflow-y:auto">
 
-
-<div class="page-hero">
-<div class="page-label">IDENTITY</div>
-<div class="page-title">Business Value</div>
-<div class="page-sub">商业价值 · 量化 AI 归因的真实收入</div>
-<div class="page-oneliner">从「AI 推荐了」到「AI 带来了多少真实收入」</div>
+<div class="concept-hero">
+<div class="en">Business Value</div>
+<div class="zh">商业价值</div>
 </div>
 
-<hr class="divider">
-
-<div class="section-title">为什么需要 Business Value</div>
-<div class="section-body">
-<p>企业接入 AI 渠道后，最关心的问题是：<strong>AI 到底带来了多少真实收入？投入产出比如何？</strong></p>
-
-<p style="margin-top:12px">传统的营销归因可以追踪广告投放、社交媒体推广的效果，但 AI 推荐完全不同：</p>
-
-<ul style="margin-top:12px;padding-left:20px;line-height:2">
-<li><strong>AI 推荐不是广告</strong>：它出现在对话中，不是点击链接</li>
-<li><strong>AI Agent 不是媒体</strong>：它自主决策，不受广告主直接控制</li>
-<li><strong>用户行为更复杂</strong>：可能在多个 AI 平台反复确认后才购买</li>
-<li><strong>传统工具失效</strong>：UTM 参数、Cookie、像素追踪都无法准确捕捉</li>
-</ul>
-
-<p style="margin-top:12px">Business Value 基于已验证的 Signal 数据，量化每个 AI 渠道、每个 Agent、每次推荐的真实商业贡献。这不是估算，是<strong>可审计的真实收入归因</strong>。</p>
-</div>
-
-
-<hr class="divider">
-
-<div class="section-title">为什么 AI 推荐无法用传统方式结算</div>
-<div class="section-body">
-<p>当前的 AI 生态中，推荐者（AI Agent）和被推荐方（品牌/商家）之间缺乏可信的结算机制。原因如下：</p>
-</div>
-
-<div class="compare-row">
-<div class="compare-col bad">
-<div class="col-title">问题 1：无法证明「推荐发生了」</div>
-<ul>
-<li>AI 推荐是对话的一部分，没有独立的追踪链接</li>
-<li>推荐内容可能被修改、删除，无法事后验证</li>
-<li>品牌方无法确认 AI 是否真的推荐了自己</li>
-</ul>
-</div>
-<div class="compare-col bad">
-<div class="col-title">问题 2：无法证明「用户是因为推荐才购买」</div>
-<ul>
-<li>用户可能先看到推荐，后来自己搜索购买</li>
-<li>多个 AI Agent 可能都推荐了同一产品</li>
-<li>传统归因无法区分「AI 推荐」vs「用户自主决策」</li>
-</ul>
+<!-- WHAT -->
+<div class="concept-section">
+<div class="sec-label what">这是什么</div>
+<div class="def-box">
+<div class="def-text">Business Value 是 Fly 的最终产出：可验证、可结算、可追溯的商业价值。它让 AI 推荐产生的收入第一次变得可以被证明和分配。</div>
 </div>
 </div>
 
-<div class="compare-row">
-<div class="compare-col bad">
-<div class="col-title">问题 3：无法量化「推荐的价值」</div>
-<ul>
-<li>不同 Agent 的推荐影响力不同（头部 Agent vs 小众 Agent）</li>
-<li>推荐的质量不同（精准推荐 vs 泛泛而谈）</li>
-<li>没有标准化的价值评估体系</li>
-</ul>
-</div>
-<div class="compare-col bad">
-<div class="col-title">问题 4：缺乏可信的结算依据</div>
-<ul>
-<li>品牌方可能拒绝承认 AI 推荐的贡献</li>
-<li>推荐者无法证明自己带来了收入</li>
-<li>双方对「多少佣金合理」没有共识</li>
-</ul>
+<!-- WHY -->
+<div class="concept-section">
+<div class="sec-label why">为什么需要</div>
+<div class="axiom-box">
+<div class="axiom-text">AI 推荐产生了收入，但这份收入无法被证明、无法被分配、无法被规模化。<br>没有 Business Value，AI 推荐永远是「好像有用但说不清」——无法结算，就无法规模化。</div>
 </div>
 </div>
 
-<div class="section-body">
-<p>这些问题导致 AI 推荐生态无法形成正向循环：推荐者没有动力持续推荐，品牌方无法评估 AI 渠道的真实价值。</p>
-</div>
+<!-- HOW -->
+<div class="concept-section">
+<div class="sec-label how">怎么工作</div>
+<div class="step-row">
+<div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">Trust → Value</div><div class="step-desc">Trust Score 转化为可结算的商业价值金额</div></div>
+<div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">自动结算</div><div class="step-desc">基于验证归因和 Trust Score，自动计算各方应得收入</div></div>
+<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">价值证明</div><div class="step-desc">生成不可篡改的商业价值证明，可审计、可追溯</div></div>
 
-
-<hr class="divider">
-
-<div class="section-title">Fly 如何建立结算基础</div>
-<div class="section-body">
-<p>Fly 通过完整的归因验证链，为 AI 推荐建立可信的结算依据：</p>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">第一步：记录推荐行为（Behavior ID）</div>
-<div class="sc-body">
-当 AI Agent 推荐你的产品时，Fly 自动生成 Behavior ID，记录推荐的来源、时间、内容和上下文。这个记录是不可篡改的，证明「推荐确实发生了」。
 </div>
 </div>
 
-<div class="scenario-box">
-<div class="sc-title">第二步：追踪用户行为（Action ID）</div>
-<div class="sc-body">
-用户点击推荐链接后，Fly 追踪其后续行为（浏览、加购、购买等），生成 Action ID 并与 Behavior ID 关联。这证明「用户确实因为推荐而行动」。
+<!-- NEXT -->
+<div class="concept-section">
+<div class="next-box">
+<div class="next-label">下一步</div>
+<div class="next-text">这就是 Fly 的完整链路：AI 推荐 → Behavior → Action → Verification → Trust → Business Value。从推荐到收入，全程可验证。</div>
+<a href="/" class="next-link">回到首页 →</a>
 </div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">第三步：验证行为真实性（Verification）</div>
-<div class="sc-body">
-Fly 的 6 层 Gate 验证体系检查每个 Action 的真实性：数据完整性、安全合规、归因链路、部署状态、构建一致性、系统健康度。只有验证通过的行为才被认可。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">第四步：建立信任评分（Trust Score）</div>
-<div class="sc-body">
-基于验证历史和 Agent 行为一致性，Fly 为每个 AI Agent 计算 Trust Score。高信任度的 Agent 推荐带来的转化，在结算时获得更高权重。
-</div>
-</div>
-
-<div class="scenario-box">
-<div class="sc-title">第五步：计算商业价值（Business Value）</div>
-<div class="sc-body">
-只统计通过验证的、Trust Score 达标的成交金额，形成可审计的 Business Value。这个数值可以作为佣金结算、ROI 评估、渠道优化的依据。
-</div>
-</div>
-
-<div class="calculation-box">
-<div class="calc-title">商业价值计算公式</div>
-<div class="calc-formula">
-Business Value = Σ(已验证 SETTLED 的 Action ID 对应的成交金额)<br>
-其中：验证通过 + Trust Score ≥ 阈值 + 审计链完整
-</div>
-</div>
-
-<div class="section-body">
-<p>整个过程中，每个环节都有记录、可追溯、可审计。品牌方无法否认 AI 推荐的贡献，推荐者也能证明自己带来了真实收入。</p>
-</div>
-
-
-<hr class="divider">
-
-<div class="section-title">核心价值</div>
-<div class="highlight-box">
-<div class="hl-label">核心价值</div>
-<div class="hl-text">基于已验证 Signal 的商业价值量化——不是「估算」，是「可审计的真实收入归因」</div>
-</div>
-
-<div class="feature-row">
-<div class="feature-card"><div class="feat-title">收入归因量化</div><div class="feat-desc">精确到每个 AI 渠道、每个 Agent、每次推荐带来的真实成交金额</div></div>
-<div class="feature-card"><div class="feat-title">ROI 衡量</div><div class="feat-desc">AI 投入 vs AI 带来的可验证收入，计算真实投资回报率</div></div>
-</div>
-
-<div class="feature-row">
-<div class="feature-card"><div class="feat-title">渠道对比</div><div class="feat-desc">跨渠道商业价值对比——ChatGPT vs Claude vs 抖音 vs 小红书，谁带来的真实收入更多</div></div>
-<div class="feature-card"><div class="feat-title">佣金优化</div><div class="feat-desc">基于 Trust Score 和验证结果优化佣金分配比例，让真正带来收入的渠道/Agent 获得更高回报</div></div>
-</div>
-
-<div class="section-body">
-<p style="margin-top:24px">更重要的是，Business Value 建立了 AI 推荐的<strong>经济基础</strong>：</p>
-
-<ul style="margin-top:12px;padding-left:20px;line-height:2">
-<li><strong>对品牌方</strong>：知道每一分钱的 AI 营销投入带来了多少真实收入，可以优化预算分配</li>
-<li><strong>对推荐者</strong>：证明自己带来的商业价值，获得公平合理的佣金回报</li>
-<li><strong>对用户</strong>：收到的推荐更精准、更可信，因为推荐者有动力维护声誉</li>
-<li><strong>对整个生态</strong>：形成正向循环，推动 AI 推荐生态的健康发展</li>
-</ul>
-</div>
-
-
-<hr class="divider">
-
-<div class="cta-box">
-<div class="cta-text">理解了 Fly 的核心概念，接下来了解 Agent 如何注册和接入</div>
-<a href="/agent-registry.html" class="cta-link">Agent Registry 代理注册 →</a>
 </div>
 
 </div>

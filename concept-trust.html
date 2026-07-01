@@ -1,117 +1,91 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/concept-trust.html">
-<meta name="description" content="Trust · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust · Fly</title>
+<title>Trust Score · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
-.page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
-.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
-.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
-.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
-.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
-.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
-.section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
-.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
-.feature-row{display:flex;gap:12px;margin-bottom:24px}
-.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
-.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-</style>
-  <meta name="description" content="Trust 信任层建立在验证之上。为 AI Agent 建立可量化的信任评分，让推荐者的声誉可积累、可变现。">
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.concept-hero{text-align:center;padding:40px 24px 24px}
+.concept-hero .en{font-size:28px;font-weight:800;color:var(--deep-green);margin-bottom:4px}
+.concept-hero .zh{font-size:16px;color:var(--text3)}
+.concept-section{padding:0 32px;margin-bottom:28px}
+.concept-section .sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.concept-section .sec-label.what{color:var(--deep-green)}
+.concept-section .sec-label.why{color:#DC2626}
+.concept-section .sec-label.how{color:#2563EB}
+.concept-section .sec-label.next{color:#7C3AED}
+.concept-section .sec-title{font-size:18px;font-weight:700;color:var(--dark);line-height:1.6;margin-bottom:8px}
+.concept-section .sec-body{font-size:14px;color:var(--text2);line-height:1.8}
+.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.step-row{display:flex;gap:12px;margin-bottom:12px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:16px 20px}
+.next-box .next-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:6px}
+.next-box .next-text{font-size:14px;font-weight:600;color:#5B21B6;line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+<meta name="description" content="Trust Score 基于验证历史、行为完整性和归因链可信度，为 AI Agent 生成动态信任评分。">
+<link rel="canonical" href="https://fly-agent.xyz/concept-trust.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Trust 信任</h1></div>
-<div class="content">
+<div class="topbar"><h1>Trust</h1><span class="tag">可信评分</span></div>
+<div style="padding:32px;overflow-y:auto">
 
-
-<div class="page-hero">
-<div class="page-label">IDENTITY</div>
-<div class="page-title">Trust</div>
-<div class="page-sub">信任评级 · 从数据到 Signal 的跃迁</div>
-<div class="page-oneliner">通过验证的数据才能成为 Signal，Trust 决定结算权重</div>
+<div class="concept-hero">
+<div class="en">Trust</div>
+<div class="zh">信任层</div>
 </div>
 
-<hr class="divider">
-
-<div class="section-title">为什么需要 Trust</div>
-<div class="section-body">Verification 确保了数据是真实的，但<strong>不是所有真实数据都有相同的可信度。</strong>一个通过所有 Gate 的 Action ID 和一个刚创建就通过验证的 Action ID，可信度不同。Trust 根据验证历史、渠道质量、Agent 信誉综合评定信任等级。</div>
-
-
-<hr class="divider">
-<div class="section-title">Trust Score 如何计算</div>
-<div class="section-body">Trust Score = 渠道基础分(30%) + Agent信誉分(25%) + 验证通过率(25%) + 历史异常率(20%)。初始分数60分，每次成功验证+0.5分，每次异常-5分，每次REJECTED-10分。分数≥80为高信任，<40触发风险预警。</div>
-
-
-<hr class="divider">
-<div class="section-title">Data → Signal 跃迁</div>
-<div class="section-body">Fly 的核心哲学区分 Data 和 Signal：<strong>Data 是未经验证的原始数据，Signal 是经过验证的状态跃迁</strong>。只有通过 Verification 且 Trust Score 达标的 Action ID，其数据才能从 Data 跃迁为 Signal，进入结算流程。</div>
-
-
-<hr class="divider">
-
-<div class="section-title">核心机制</div>
-<div class="highlight-box">
-<div class="hl-label">核心机制</div>
-<div class="hl-text">Trust Score 0-100 分，综合评估渠道质量、Agent 信誉、历史验证通过率、异常率</div>
+<!-- WHAT -->
+<div class="concept-section">
+<div class="sec-label what">这是什么</div>
+<div class="def-box">
+<div class="def-text">Trust 是 Fly 的信任评分体系。它把验证结果转化为可量化的信任分数，让每一笔归因都有「可信度」。</div>
+</div>
 </div>
 
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">Trust Score 评分</div><div class="feat-desc">0-100分，综合渠道历史表现、Agent 信誉分、验证通过率、异常率四个维度</div></div>
-
-<div class="feature-card"><div class="feat-title">动态调整</div><div class="feat-desc">Trust Score 不是固定的——每次验证事件都会更新评分，持续表现好则分数上升</div></div>
-
+<!-- WHY -->
+<div class="concept-section">
+<div class="sec-label why">为什么需要</div>
+<div class="axiom-box">
+<div class="axiom-text">「这个归因验证通过了」——但有多可信？<br>没有 Trust Score，你只能回答「真或假」。但商业世界不是非黑即白，你需要知道「有多可信」，才能决定「分多少钱」。</div>
+</div>
 </div>
 
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">结算权重</div><div class="feat-desc">Trust Score 直接影响佣金结算权重，高信任渠道/Agent 获得更快结算和更高比例</div></div>
-
-<div class="feature-card"><div class="feat-title">风险预警</div><div class="feat-desc">Trust Score 下降到阈值以下自动触发风险预警，冻结相关结算直到人工审核</div></div>
+<!-- HOW -->
+<div class="concept-section">
+<div class="sec-label how">怎么工作</div>
+<div class="step-row">
+<div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">验证结果聚合</div><div class="step-desc">汇总所有 Gate 的验证结果，计算综合可信度</div></div>
+<div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">评分计算</div><div class="step-desc">基于验证深度、行为质量、历史信誉，生成 0-100 的 Trust Score</div></div>
+<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">可信证明</div><div class="step-desc">Trust Score 作为可审计的可信证明，支撑后续结算</div></div>
 
 </div>
+</div>
 
-
-<hr class="divider">
-
-<div class="cta-box">
-<div class="cta-text">Trust 建立了信任评级，接下来衡量 Fly 带来的商业价值</div>
-<a href="/concept-business-value.html" class="cta-link">Business Value 商业价值 →</a>
+<!-- NEXT -->
+<div class="concept-section">
+<div class="next-box">
+<div class="next-label">下一步</div>
+<div class="next-text">有了可信评分，就可以把「可信度」转化为「可结算价值」——这就是 Business Value。</div>
+<a href="/concept-business-value.html" class="next-link">Business Value →</a>
+</div>
 </div>
 
 </div>

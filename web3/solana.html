@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/web3/solana.html">
-<meta name="description" content="Solana · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Solana · Fly</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟣</text></svg>">
+<title>Solana Attribution · Fly</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛓</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:1100px}
+.main{margin-left:280px;padding:48px 64px;max-width:960px}
 @media(max-width:900px){.main{margin-left:0;padding:24px}}
-h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#9945FF,#14F195);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
-h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
+h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#9945FF,#94A3B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
 .desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
 .features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
 .feat{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px}
@@ -22,226 +19,21 @@ h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
 .status-dot{width:8px;height:8px;border-radius:50%;background:#9945FF;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.problem-box{background:linear-gradient(135deg,rgba(234,179,8,0.1),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);border-radius:12px;padding:24px;margin-bottom:32px}
-.problem-title{color:#EAB308;font-size:16px;font-weight:600;margin-bottom:12px}
-.problem-list{list-style:none;padding:0}
-.problem-list li{color:#e2e8f0;font-size:14px;line-height:1.8;padding-left:24px;position:relative}
-.problem-list li::before{content:"⚠";position:absolute;left:0}
-.chain-flow{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px;margin:24px 0}
-.chain-steps{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.chain-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:100px}
-.chain-step-num{width:36px;height:36px;border-radius:50%;background:#9945FF;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
-.chain-step-label{font-size:13px;color:#94a3b8}
-.chain-step-value{font-size:12px;color:#9945FF;margin-top:4px;font-family:monospace}
-.chain-arrow{color:#475569;font-size:20px}
-.use-case{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:16px 0}
-.use-case-title{color:#e2e8f0;font-size:16px;font-weight:600;margin-bottom:12px}
-.use-case-flow{font-family:monospace;font-size:13px;color:#94a3b8;line-height:1.8;background:#0F172A;padding:16px;border-radius:8px}
-.code-block{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:16px;margin:16px 0;font-family:monospace;font-size:13px;color:#e2e8f0;overflow-x:auto}
-.api-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-top:24px}
-.api-title{font-family:monospace;font-size:13px;color:#475569;margin-bottom:8px}
-.api-endpoint{font-family:monospace;font-size:14px;color:#e2e8f0;padding:8px 12px;background:#0F172A;border-radius:6px;margin-bottom:8px}
-.api-desc{font-size:13px;color:#94a3b8}
-.spec-table{width:100%;border-collapse:collapse;margin:24px 0}
-.spec-table th,.spec-table td{border:1px solid #334155;padding:12px;text-align:left;font-size:13px}
-.spec-table th{background:#1e293b;color:#e2e8f0;font-weight:600}
-.spec-table td{color:#94a3b8}
 </style>
-  <meta name="description" content="Solana 归因支持。高速 DEX 交易、Meme 币、NFT、跨链桥的实时验证和归因追踪。">
+<meta name="description" content="Solana 归因验证：在 Solana 上验证 AI Agent 商业行为，亚秒级确认。">
+<link rel="canonical" href="https://fly-agent.xyz/web3/solana.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
 <h1>Solana</h1>
 <p class="desc">Solana 链上归因——高性能链的 AI 归因验证，支持 SPL Token 归因与 DeFi 行为追踪</p>
-
-<div class="problem-box">
-<div class="problem-title">Solana 归因的特殊场景</div>
-<ul class="problem-list">
-<li>Solana  TPS 高（4000+），交易确认快（400ms），适合实时归因</li>
-<li>Gas 极低（~$0.00025），可以追踪每一笔小额交互</li>
-<li>Solana 生态以 Meme 币、NFT、DeFi 为主，交易频繁</li>
-<li>跨链桥场景多（Wormhole），需要追踪资产流入流出</li>
-<li>钱包（Phantom/Solflare）用户体验好，用户活跃度高</li>
-</ul>
+<div class="features">
+<div class="feat"><div class="feat-label">⚡ 高速归因</div><div class="feat-text">Solana 低延迟确认，实时归因</div></div>
+<div class="feat"><div class="feat-label">🪙 SPL Token</div><div class="feat-text">代币转账与 AI 推荐关联</div></div>
+<div class="feat"><div class="feat-label">📊 DeFi 追踪</div><div class="feat-text">Raydium / Jupiter 等协议归因</div></div>
+<div class="feat"><div class="feat-label">🔗 跨链桥</div><div class="feat-text">Wormhole 等桥接场景归因</div></div>
 </div>
-
-<h2>链规格与 Fly 适配</h2>
-<table class="spec-table">
-<tr>
-<th>规格</th>
-<th>Solana</th>
-<th>Fly 适配方式</th>
-</tr>
-<tr>
-<td>共识机制</td>
-<td>Proof of History + PoS</td>
-<td>近实时确认，低延迟归因</td>
-</tr>
-<tr>
-<td>TPS</td>
-<td>4000+</td>
-<td>高并发归因处理</td>
-</tr>
-<tr>
-<td>区块时间</td>
-<td>~400ms</td>
-<td>实时归因确认</td>
-</tr>
-<tr>
-<td>Gas 费用</td>
-<td>~$0.00025/笔</td>
-<td>支持每笔交易归因</td>
-</tr>
-<tr>
-<td>代币标准</td>
-<td>SPL Token</td>
-<td>转账/铸造/销毁归因</td>
-</tr>
-</table>
-
-<h2>完整归因链路</h2>
-<div class="chain-flow">
-<div class="chain-steps">
-<div class="chain-step">
-<div class="chain-step-num">1</div>
-<div class="chain-step-label">钱包连接</div>
-<div class="chain-step-value">Phantom → wlt_xxx</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">2</div>
-<div class="chain-step-label">交易签名</div>
-<div class="chain-step-value">sign(transaction)</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">3</div>
-<div class="chain-step-label">快速确认</div>
-<div class="chain-step-value">~400ms</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">4</div>
-<div class="chain-step-label">归因绑定</div>
-<div class="chain-step-value">ACT_xxx ↔ sig</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">5</div>
-<div class="chain-step-label">价值追踪</div>
-<div class="chain-step-value">SPL Token flow</div>
-</div>
-</div>
-</div>
-
-<h2>支持场景</h2>
-
-<div class="use-case">
-<div class="use-case-title">DEX 交易归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了某 SPL Token
-    ↓
-用户在 Jupiter/Raydium 上 swap
-    ↓
-Fly 捕获: swap 指令 + signature + 用户钱包
-    ↓
-归因: "这笔 swap 来自 AI 推荐，贡献了 $X 交易量"
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">Meme 币归因</div>
-<div class="use-case-flow">
-AI Agent 发现早期 Meme 币机会
-    ↓
-用户购买/铸造 Meme 币
-    ↓
-Fly 追踪: 买入 → 持有 → 卖出全链路
-    ↓
-归因: "这个用户通过 AI 推荐，获利 $X"
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">NFT 归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了 Solana NFT 项目
-    ↓
-用户在 Magic Eden/Tensor 购买
-    ↓
-Fly 捕获: 购买指令 + mint address + signature
-    ↓
-归因: "这个 NFT 来自 AI 渠道"
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">跨链桥归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了跨链机会
-    ↓
-用户通过 Wormhole 从 Ethereum 桥接到 Solana
-    ↓
-用户在 Solana 上交易
-    ↓
-Fly 追踪: 跨链 → 交易完整链路
-    ↓
-归因: "这笔跨链资金来自 AI 推荐"
-</div>
-</div>
-
-<h2>技术实现</h2>
-<div class="code-block">
-// 使用 @solana/web3.js 监听交易<br>
-import { Connection, PublicKey } from '@solana/web3.js';<br><br>
-const connection = new Connection('https://api.mainnet-beta.solana.com');<br><br>
-// 监听钱包的交易<br>
-connection.onLogs(<br>
-&nbsp;&nbsp;new PublicKey('wallet_address'),<br>
-&nbsp;&nbsp;async (logs, context) => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;// 解析交易指令<br>
-&nbsp;&nbsp;&nbsp;&nbsp;const tx = await connection.getParsedTransaction(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logs.signature,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ maxSupportedTransactionVersion: 0 }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;// 创建归因记录<br>
-&nbsp;&nbsp;&nbsp;&nbsp;await flySDK.attributeTransaction({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signature: logs.signature,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chain: 'solana',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instructions: tx.transaction.message.instructions<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;}<br>
-);
-</div>
-
-<h2>API 接口</h2>
-
-<div class="api-box">
-<div class="api-title">POST /v1/web3/solana/attributions</div>
-<div class="api-endpoint">{"signature": "5KtP...", "instruction_type": "swap"}</div>
-<div class="api-desc">创建 Solana 链上交易归因记录</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/solana/transactions</div>
-<div class="api-endpoint">?wallet_id=wlt_xxx&instruction_type=swap</div>
-<div class="api-desc">查询钱包的 Solana 交易归因列表</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/solana/stats</div>
-<div class="api-endpoint">?period=7d</div>
-<div class="api-desc">查询 Solana 链归因统计（交易量、用户数、SPL Token 流动）</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">POST /v1/web3/solana/bridge-attributions</div>
-<div class="api-endpoint">{"source_chain": "ethereum", "target_tx": "5KtP..."}</div>
-<div class="api-desc">创建跨链桥归因记录（Wormhole 等）</div>
-</div>
-
 <div class="status"><span class="status-dot"></span>规划中 · 等待需求确认</div>
 </div>
 </body>

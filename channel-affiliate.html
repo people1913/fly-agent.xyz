@@ -1,107 +1,80 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/channel-affiliate.html">
-<meta name="description" content="Affiliate · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Affiliate · Fly</title>
+<title>Affiliate 分销归因 · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
+.topbar .tag{font-size:11px;font-weight:600;color:#D97706;background:#FFFBEB;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
 .page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#D97706;margin-bottom:8px}
 .page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
 .page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
+.page-hero .page-oneliner{font-size:15px;color:#D97706;font-weight:600;line-height:1.6}
 .divider{border:none;border-top:1px solid var(--border);margin:32px 0}
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
-.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
+.highlight-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#D97706;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#D97706;line-height:1.7}
 .feature-row{display:flex;gap:12px;margin-bottom:24px}
 .feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
 .feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-</style>
-  <meta name="description" content="Affiliate 联盟营销归因。追踪联盟合作伙伴的推荐效果和佣金结算。">
+.coming-soon{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-top:24px}
+.coming-soon .cs-text{font-size:14px;font-weight:600;color:var(--text3);line-height:1.6}
+.coming-soon .cs-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#D97706;background:#FFFBEB;padding:4px 12px;border-radius:12px;letter-spacing:1px}</style>
+<meta name="description" content="Affiliate 分销归因：验证 AI Agent 分销推荐产生的真实转化，提供可审计的分佣依据。">
+<link rel="canonical" href="https://fly-agent.xyz/channel-affiliate.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Affiliate 分销</h1></div>
+<div class="topbar"><h1>Affiliate</h1><span class="tag">渠道</span></div>
 <div class="content">
-
 
 <div class="page-hero">
 <div class="page-label">CHANNEL</div>
 <div class="page-title">Affiliate</div>
-<div class="page-sub">Affiliate 联盟营销归因验证</div>
-<div class="page-oneliner">验证联盟营销推荐流量的真实性，确保佣金结算可信</div>
+<div class="page-sub">推荐分成计划</div>
+<div class="page-oneliner">推荐Fly，赚取持续佣金</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">为什么需要 Affiliate 归因验证</div>
-<div class="section-body">联盟营销是成熟的商业模式，但<strong>Cookie  stuffing、强制跳转、虚假点击等作弊手段泛滥</strong>。Fly 独立验证联盟推荐的真实性，让佣金结算有据可依。</div>
-
-
-<hr class="divider">
-
-<div class="section-title">核心能力</div>
+<div class="section-title">Affiliate是什么</div>
 <div class="highlight-box">
-<div class="hl-label">核心能力</div>
-<div class="hl-text">独立验证联盟推荐流量的真实性——不依赖联盟平台数据，Fly 自己验证</div>
+<div class="hl-label">核心定位</div>
+<div class="hl-text">推荐新用户注册Fly，获得首月订阅佣金</div>
 </div>
+<div class="feature-row"><div class="feature-card">
+<div class="feat-title">推荐注册</div>
+<div class="feat-desc">推荐新用户注册Fly，获得首月订阅佣金</div>
+</div><div class="feature-card">
+<div class="feat-title">持续分成</div>
+<div class="feat-desc">被推荐用户持续付费，你持续获得分成</div>
+</div></div>
+<div class="feature-row"><div class="feature-card">
+<div class="feat-title">专属追踪链接</div>
+<div class="feat-desc">每个Affiliate获得专属追踪链接，推荐来源自动归因</div>
+</div><div class="feature-card">
+<div class="feat-title">实时数据面板</div>
+<div class="feat-desc">查看推荐数量、注册转化、佣金收入等实时数据</div>
+</div></div>
 
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">Cookie 安全</div><div class="feat-desc">验证推荐 Cookie 的真实性——区分真实用户点击和 Cookie stuffing</div></div>
-
-<div class="feature-card"><div class="feat-title">跳转链验证</div><div class="feat-desc">验证联盟跳转链路的完整性——推荐→中间页→落地页→成交，每一步可追溯</div></div>
-
-</div>
-
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">防强制跳转</div><div class="feat-desc">识别强制跳转、弹窗劫持等作弊行为，保障用户真实意愿</div></div>
-
-<div class="feature-card"><div class="feat-title">跨联盟统一</div><div class="feat-desc">支持多个联盟平台（CJ、ShareASale、Impact）的统一归因验证</div></div>
-
-</div>
-
-
-<hr class="divider">
-
-<div class="cta-box">
-<div class="cta-text">Affiliate 接入完成，查看 Partner 方案</div>
-<a href="/channel-partner.html" class="cta-link">Partner →</a>
+<div class="coming-soon">
+<div class="cs-text">详细方案即将上线，欢迎提前联系</div>
+<div class="cs-badge">COMING SOON</div>
 </div>
 
 </div>

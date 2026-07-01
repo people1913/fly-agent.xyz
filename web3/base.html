@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/web3/base.html">
-<meta name="description" content="Base · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Base · Fly</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔵</text></svg>">
+<title>Base Chain Attribution · Fly</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛓</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0F172A;color:#e2e8f0;min-height:100vh}
-.main{margin-left:280px;padding:48px 64px;max-width:1100px}
+.main{margin-left:280px;padding:48px 64px;max-width:960px}
 @media(max-width:900px){.main{margin-left:0;padding:24px}}
 h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#0052FF,#94A3B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
-h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .desc{font-size:18px;color:#94a3b8;line-height:1.6;margin-bottom:40px}
 .features{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:48px}
 .feat{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;flex:1;min-width:240px}
@@ -22,216 +19,21 @@ h2{font-size:24px;font-weight:700;color:#e2e8f0;margin:48px 0 24px}
 .status{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;font-size:13px;color:#94a3b8}
 .status-dot{width:8px;height:8px;border-radius:50%;background:#0052FF;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.problem-box{background:linear-gradient(135deg,rgba(234,179,8,0.1),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);border-radius:12px;padding:24px;margin-bottom:32px}
-.problem-title{color:#EAB308;font-size:16px;font-weight:600;margin-bottom:12px}
-.problem-list{list-style:none;padding:0}
-.problem-list li{color:#e2e8f0;font-size:14px;line-height:1.8;padding-left:24px;position:relative}
-.problem-list li::before{content:"⚠";position:absolute;left:0}
-.chain-flow{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px;margin:24px 0}
-.chain-steps{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.chain-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:100px}
-.chain-step-num{width:36px;height:36px;border-radius:50%;background:#0052FF;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
-.chain-step-label{font-size:13px;color:#94a3b8}
-.chain-step-value{font-size:12px;color:#0052FF;margin-top:4px;font-family:monospace}
-.chain-arrow{color:#475569;font-size:20px}
-.use-case{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:16px 0}
-.use-case-title{color:#e2e8f0;font-size:16px;font-weight:600;margin-bottom:12px}
-.use-case-flow{font-family:monospace;font-size:13px;color:#94a3b8;line-height:1.8;background:#0F172A;padding:16px;border-radius:8px}
-.code-block{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:16px;margin:16px 0;font-family:monospace;font-size:13px;color:#e2e8f0;overflow-x:auto}
-.api-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-top:24px}
-.api-title{font-family:monospace;font-size:13px;color:#475569;margin-bottom:8px}
-.api-endpoint{font-family:monospace;font-size:14px;color:#e2e8f0;padding:8px 12px;background:#0F172A;border-radius:6px;margin-bottom:8px}
-.api-desc{font-size:13px;color:#94a3b8}
-.spec-table{width:100%;border-collapse:collapse;margin:24px 0}
-.spec-table th,.spec-table td{border:1px solid #334155;padding:12px;text-align:left;font-size:13px}
-.spec-table th{background:#1e293b;color:#e2e8f0;font-weight:600}
-.spec-table td{color:#94a3b8}
 </style>
-  <meta name="description" content="Base 链归因支持。Coinbase 用户、SocialFi、Creator Economy 的行为验证和佣金结算。">
+<meta name="description" content="Base 链归因验证：在 Base L2 上验证 AI Agent 商业行为，低成本高吞吐。">
+<link rel="canonical" href="https://fly-agent.xyz/web3/base.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
 <h1>Base</h1>
 <p class="desc">Base L2 链上归因——Coinbase 生态的 AI 归因验证，连接 Coinbase 钱包与 AI 推荐链路</p>
-
-<div class="problem-box">
-<div class="problem-title">Base 归因的独特价值</div>
-<ul class="problem-list">
-<li>Coinbase 拥有 1 亿+ 用户，但大部分用户行为无法被外部归因追踪</li>
-<li>Base 作为 L2，Gas 极低（&lt;$0.01），可以高频归因而不担心成本</li>
-<li>Coinbase Wallet + Onchain Kit 提供了原生的链上身份入口</li>
-<li>Base 生态快速增长，SocialFi（Farcaster）和 Creator Economy 场景丰富</li>
-<li>Coinbase 用户从法币入金，是"Web2 → Web3"的关键桥梁</li>
-</ul>
+<div class="features">
+<div class="feat"><div class="feat-label">🔵 L2 低成本</div><div class="feat-text">Base L2 Gas 优化，归因成本极低</div></div>
+<div class="feat"><div class="feat-label"> Coinbase 生态</div><div class="feat-text">Coinbase Wallet → Onchain Kit 集成</div></div>
+<div class="feat"><div class="feat-label">🏪 Onchain 归因</div><div class="feat-text">Base 上的 NFT / Social 归因</div></div>
+<div class="feat"><div class="feat-label">🔗 EVM 兼容</div><div class="feat-text">与 Ethereum 共享安全模型</div></div>
 </div>
-
-<h2>链规格与 Fly 适配</h2>
-<table class="spec-table">
-<tr>
-<th>规格</th>
-<th>Base</th>
-<th>Fly 适配方式</th>
-</tr>
-<tr>
-<td>技术架构</td>
-<td>OP Stack L2</td>
-<td>继承 Ethereum 安全，低成本归因</td>
-</tr>
-<tr>
-<td>区块时间</td>
-<td>~2秒</td>
-<td>近实时归因确认</td>
-</tr>
-<tr>
-<td>Gas 费用</td>
-<td>&lt;$0.01/笔</td>
-<td>支持高频归因场景</td>
-</tr>
-<tr>
-<td>钱包集成</td>
-<td>Coinbase Wallet</td>
-<td>Onchain Kit 原生集成</td>
-</tr>
-<tr>
-<td>特色生态</td>
-<td>SocialFi / Creator</td>
-<td>Farcaster 社交行为归因</td>
-</tr>
-</table>
-
-<h2>完整归因链路</h2>
-<div class="chain-flow">
-<div class="chain-steps">
-<div class="chain-step">
-<div class="chain-step-num">1</div>
-<div class="chain-step-label">法币入金</div>
-<div class="chain-step-value">Coinbase → Base</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">2</div>
-<div class="chain-step-label">钱包连接</div>
-<div class="chain-step-value">Coinbase Wallet</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">3</div>
-<div class="chain-step-label">DApp 交互</div>
-<div class="chain-step-value">swap/nft/social</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">4</div>
-<div class="chain-step-label">低成本确认</div>
-<div class="chain-step-value">&lt;$0.01</div>
-</div>
-<div class="chain-arrow">→</div>
-<div class="chain-step">
-<div class="chain-step-num">5</div>
-<div class="chain-step-label">归因绑定</div>
-<div class="chain-step-value">ACT_xxx ↔ tx</div>
-</div>
-</div>
-</div>
-
-<h2>支持场景</h2>
-
-<div class="use-case">
-<div class="use-case-title">Coinbase 用户归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了 Base 上的项目
-    ↓
-用户从 Coinbase 直接桥接到 Base
-    ↓
-用户在 Base DApp 上交互
-    ↓
-Fly 归因: "这个用户从 Coinbase 入金，来自 AI 推荐"
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">SocialFi 归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了 Farcaster 上的内容
-    ↓
-用户在 Base 上 mint 相关 NFT
-    ↓
-用户打赏/购买社交代币
-    ↓
-Fly 归因: "这笔社交互动来自 AI 推荐"
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">Creator Economy 归因</div>
-<div class="use-case-flow">
-AI Agent 推荐了某创作者的订阅
-    ↓
-用户在 Base 上购买创作者 NFT/代币
-    ↓
-Fly 归因: "这个订阅来自 AI 推荐"
-    ↓
-创作者可以向 AI Agent 支付佣金
-</div>
-</div>
-
-<div class="use-case">
-<div class="use-case-title">高频小额归因</div>
-<div class="use-case-flow">
-Base Gas &lt;$0.01，支持：
-    ↓
-社交点赞 → 归因
-    ↓
-评论打赏 → 归因
-    ↓
-小额 NFT 购买 → 归因
-    ↓
-在 Ethereum 上成本太高的场景，Base 可以做
-</div>
-</div>
-
-<h2>Coinbase 集成</h2>
-<div class="code-block">
-// 使用 Onchain Kit 集成 Coinbase Wallet<br>
-import { useCoinbaseWallet } from '@coinbase/onchainkit/wallet';<br><br>
-// 连接钱包时，同步注册到 Fly<br>
-const { connect } = useCoinbaseWallet();<br>
-const { address } = await connect();<br><br>
-// 注册到 Fly<br>
-await flySDK.registerWallet({<br>
-&nbsp;&nbsp;chain: 'base',<br>
-&nbsp;&nbsp;address: address,<br>
-&nbsp;&nbsp;provider: 'coinbase_wallet'<br>
-});<br><br>
-// 后续交易自动归因<br>
-const tx = await contract.swap(...);<br>
-await flySDK.attributeTransaction({<br>
-&nbsp;&nbsp;tx_hash: tx.hash,<br>
-&nbsp;&nbsp;chain: 'base'<br>
-});
-</div>
-
-<h2>API 接口</h2>
-
-<div class="api-box">
-<div class="api-title">POST /v1/web3/base/attributions</div>
-<div class="api-endpoint">{"tx_hash": "0xtx_abc", "event_type": "swap", "provider": "coinbase"}</div>
-<div class="api-desc">创建 Base 链上交易归因记录</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/base/transactions</div>
-<div class="api-endpoint">?wallet_id=wlt_xxx&event_type=swap</div>
-<div class="api-desc">查询钱包的 Base 交易归因列表</div>
-</div>
-
-<div class="api-box">
-<div class="api-title">GET /v1/web3/base/stats</div>
-<div class="api-endpoint">?period=7d</div>
-<div class="api-desc">查询 Base 链归因统计（交易量、用户数、Gas 消耗）</div>
-</div>
-
 <div class="status"><span class="status-dot"></span>规划中 · 等待需求确认</div>
 </div>
 </body>

@@ -26,9 +26,9 @@
  *   GET  /v1/admin/backup                     — v2.7.0: 备份历史
  *   GET  /v1/proof/:actionId                  — v2.9.0: 归因链证明生成（Gate 3）
  *   POST /v1/backup/d1                        — v2.10.0: D1 SQL 备份存储
+ *   GET  /v1/backup/d1/list                   — v2.11.0: 备份历史记录列表
+ *   GET  /v1/backup/d1/{backup_id}            — v2.11.0: 下载指定备份 SQL
  *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
- *   POST /v1/verify                           — v2.11.0: 商业归因签发
- *   GET  /v1/records/recent                   — v2.11.0: 最近归因记录列表
  * 
  * v2.10.0 新增：
  *   - Backup API：POST /v1/backup/d1 接收 SQL 存入 KV（SHA-256 哈希校验）
@@ -723,7 +723,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.10.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.11.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -854,7 +854,6 @@ export default {
         // === 漏洞6：信号质量升级 ===
         if (path === '/v1/signal/verify' && method === 'POST') {
           const body: any = await request.json();
-          if (!body?.action_id) return json({ error: "action_id is required" }, 400);
           const action = await env.FLY_D1.prepare("SELECT * FROM actions WHERE id = ?").bind(body.action_id).first();
           if (!action) return json({ error: "not found" }, 404);
           let hs = 0;
@@ -1105,40 +1104,163 @@ export default {
           });
         }
 
-        // === v2.11.0: 商业归因签发 ===
-        if (path === '/v1/verify' && method === 'POST') {
-          const body: any = await request.json();
-          const recordId = `attr_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-          const claim = body.claim || body.source?.name || 'AI Commercial Contribution';
-          const evidenceJson = JSON.stringify(body.evidence || []);
-
-          const actionId = `act_${crypto.randomUUID()}`;
-          await env.FLY_D1.prepare(
-            "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, metadata, created_at) VALUES (?, ?, 'direct', ?, 'booking', ?, datetime('now'))"
-          ).bind(actionId, 'agt_system', `usr_${recordId}`, JSON.stringify({ claim, evidence: body.evidence || [], source: body.source || {}, signal_quality: 'raw', human_score: 0 })).run();
-
-          const verificationId = `vrf_${crypto.randomUUID()}`;
-          await env.FLY_D1.prepare(
-            "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
-          ).bind(verificationId, actionId, 'fly_attribution_engine', 'verified', 85, evidenceJson).run();
-
-          await writeAuditEvent(env, { request_id: `req_${crypto.randomUUID()}`, entity_type: 'verification', entity_id: verificationId, action: 'created', actor_type: 'user', actor_id: 'usr_claim', actor_name: 'attribution-claim', source: 'api', reason: 'attribution_issued', before: '{}', after: JSON.stringify({ record_id: recordId, claim, action_id: actionId }) });
-
-          return json({ success: true, record_id: recordId, action_id: actionId, verification_id: verificationId, status: 'verified', claim, confidence: 85, settlement_eligible: true }, 201);
+        // === v2.11.0: 备份列表 ===
+        if (path === '/v1/backup/d1/list' && method === 'GET') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          const historyRaw = await env.FLY_KV.get('backups:history');
+          const history = historyRaw ? JSON.parse(historyRaw) : [];
+          const backups = history.reverse().map((h: any) => ({
+            id: h.backup_id,
+            timestamp: h.timestamp,
+            sql_size: h.sql_size,
+            backup_hash: h.backup_hash,
+            status: h.status || 'active'
+          }));
+          return json({ success: true, total: backups.length, backups });
         }
 
-        // === v2.11.0: 最近归因记录列表 ===
-        if (path === '/v1/records/recent' && method === 'GET') {
-          const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
-          const records = await env.FLY_D1.prepare(
-            "SELECT v.id, v.action_id, v.verifier, v.result, v.confidence, v.evidence, v.created_at, a.metadata FROM verifications v LEFT JOIN actions a ON v.action_id = a.id ORDER BY v.created_at DESC LIMIT ?"
-          ).bind(limit).all();
-          const formatted = (records.results as any[]).map((r: any) => {
-            let meta: any = {};
-            try { meta = JSON.parse(r.metadata || '{}'); } catch(e) {}
-            return { record_id: `attr_${r.id}`, status: r.result || 'pending', claim: meta.claim || 'AI Commercial Contribution', confidence: r.confidence || 0, evidence_count: (() => { try { return JSON.parse(r.evidence || '[]').length; } catch(e) { return 0; } })(), created_at: r.created_at, action_id: r.action_id };
+        // === v2.11.0: 下载指定备份 SQL ===
+        if (path.startsWith('/v1/backup/d1/bak_') && method === 'GET') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          const backupId = path.split('/').pop();
+          const sqlContent = await env.FLY_KV.get(`backup:d1:${backupId}`);
+          if (!sqlContent) {
+            return json({ error: 'backup not found or expired' }, 404);
+          }
+          return new Response(sqlContent, {
+            headers: { 'Content-Type': 'application/sql', 'Content-Length': String(new TextEncoder().encode(sqlContent).length) }
           });
-          return json({ success: true, records: formatted, total: formatted.length });
+        }
+
+        // ── v2.11.0: POST /v1/verify ── 创建商业归因记录
+        if (method === "POST" && path === "/v1/verify") {
+          const body = await request.json().catch(() => null);
+          if (!body || !body.agent_id) return json({ error: "agent_id required" }, 400);
+          const { agent_id, channel, user_id, signal_type, claim, evidence, amount } = body;
+
+          // ── 归因推理引擎 ──
+          const evidenceLabels: Record<string, string> = {
+            "recommendation_recorded": "AI 推荐已记录",
+            "conversation_verified": "对话链路已验证",
+            "conversion_confirmed": "商业转化已确认",
+            "user_id_verified": "用户身份已验证",
+            "channel_tracked": "渠道来源已追踪",
+            "timestamp_verified": "时间戳已验证"
+          };
+          const evidenceArr = Array.isArray(evidence) ? evidence : [];
+          const attributionReasons = evidenceArr.map((e: string) => evidenceLabels[e] || e);
+          const confidence = Math.min(95, 70 + evidenceArr.length * 5);
+
+          const attribution_basis = {
+            conclusion: `该商业转化归属于 ${agent_id}`,
+            reasons: attributionReasons,
+            confidence_score: confidence,
+            confidence_calculation: `基础分 70 + 已验证证据(${evidenceArr.length}) × 5 = ${confidence}`,
+            conversion_path: `${channel || "unknown"} → ${signal_type || "conversion"}`
+          };
+
+          // ── 结算规则引擎 ──
+          const SETTLEMENT_RULES = {
+            min_evidence: 2,
+            base_rate: 0.10,
+            evidence_bonus: 0.02,
+            max_rate: 0.20
+          };
+          const eligible = evidenceArr.length >= SETTLEMENT_RULES.min_evidence;
+          const calculatedRate = Math.min(SETTLEMENT_RULES.max_rate, 
+            SETTLEMENT_RULES.base_rate + (evidenceArr.length * SETTLEMENT_RULES.evidence_bonus));
+          const commission = Math.round(((amount || 0) * calculatedRate) * 100) / 100;
+
+          const settlement_basis = {
+            eligible,
+            eligibility_reason: eligible
+              ? `已验证证据(${evidenceArr.length}) ≥ 最低要求(${SETTLEMENT_RULES.min_evidence})`
+              : `已验证证据(${evidenceArr.length}) < 最低要求(${SETTLEMENT_RULES.min_evidence})`,
+            rate_calculation: `基础费率 ${SETTLEMENT_RULES.base_rate * 100}% + 证据加成(${evidenceArr.length} × ${SETTLEMENT_RULES.evidence_bonus * 100}%) = ${(calculatedRate * 100).toFixed(1)}%`,
+            rate_applied: calculatedRate,
+            revenue: amount || 0,
+            commission
+          };
+
+          // 1. 创建 action 记录
+          const actionId = `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          const shortId = actionId.slice(-6);
+          const metadata = JSON.stringify({
+            claim: claim || attribution_basis.conclusion,
+            evidence: evidenceArr,
+            attribution_basis,
+            settlement_basis,
+            amount: amount || 0
+          });
+          await env.FLY_D1.prepare(
+            "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?,?,?,?,?,?,?,datetime('now'))"
+          ).bind(actionId, agent_id, channel || "unknown", user_id || "anonymous", signal_type || "conversion", shortId, metadata).run();
+
+          // 2. 创建 verification 记录
+          const verifId = `ver_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          await env.FLY_D1.prepare(
+            "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?,?,?,?,?,?,datetime('now'))"
+          ).bind(verifId, actionId, "fly_attribution_engine", eligible ? "pass" : "insufficient_evidence", confidence, JSON.stringify(evidenceArr)).run();
+
+          // 3. 写入审计链
+          await writeAuditEvent(env, {
+            request_id: `req_${crypto.randomUUID()}`,
+            entity_type: "attribution",
+            entity_id: actionId,
+            action: "created",
+            actor_type: "api",
+            actor_id: agent_id,
+            actor_name: "attribution_api",
+            source: "verify",
+            reason: "commercial_attribution_issued",
+            before: "{}",
+            after: JSON.stringify({ confidence, eligible, commission, amount: amount || 0 })
+          });
+
+          return json({
+            record_id: actionId,
+            verification_id: verifId,
+            status: eligible ? "verified" : "insufficient_evidence",
+            claim: attribution_basis.conclusion,
+            confidence,
+            settlement_eligible: eligible,
+            commission_eligible: commission,
+            revenue: amount || 0,
+            attribution_basis,
+            settlement_basis,
+            timestamp: new Date().toISOString()
+          }, 201);
+        }
+
+        // ── v2.11.0: GET /v1/records/recent ── 查询最近归因记录
+        if (method === "GET" && path === "/v1/records/recent") {
+          const limit = parseInt(url.searchParams.get("limit") || "20");
+          const result = await env.FLY_D1.prepare(
+            "SELECT v.id as verification_id, v.action_id, v.result, v.confidence, v.evidence, v.created_at, a.agent_id, a.channel, a.signal_type, a.metadata FROM verifications v LEFT JOIN actions a ON v.action_id = a.id ORDER BY v.created_at DESC LIMIT ?"
+          ).bind(limit).all();
+          const records = (result.results || []).map((r: any) => {
+            let meta: any = {};
+            try { meta = JSON.parse(r.metadata || "{}"); } catch {}
+            const amount = meta.amount || 0;
+            return {
+              record_id: r.action_id,
+              verification_id: r.verification_id,
+              agent_id: r.agent_id,
+              channel: r.channel,
+              signal_type: r.signal_type,
+              claim: meta.claim || `Attributed to ${r.agent_id}`,
+              confidence: r.confidence,
+              revenue: amount,
+              commission_eligible: meta.settlement_basis?.commission || amount * (meta.commission_rate || 0.15),
+              status: r.result,
+              attribution_basis: meta.attribution_basis || null,
+              settlement_basis: meta.settlement_basis || null,
+              created_at: r.created_at
+            };
+          });
+          return json({ total: records.length, records });
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);

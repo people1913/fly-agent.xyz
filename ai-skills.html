@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/ai-skills.html">
-<meta name="description" content="Agent Trust · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agent Trust · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
 .topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
 .page-hero{text-align:center;padding:40px 24px 32px}
 .page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
 .page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
@@ -28,7 +24,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
 .section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
 .section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
 .highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
 .highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
 .highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
@@ -38,74 +33,63 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
 .cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
 .cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-</style>
-  <meta name="description" content="Agent Trust 评分。AI Agent 的信任等级基于验证历史、行为一致性和社区反馈。">
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+<meta name="description" content="Agent Trust 基于验证链生成动态信任评分，帮助品牌方筛选高可信度 AI Agent。">
+<link rel="canonical" href="https://fly-agent.xyz/ai-skills.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Agent Trust 信任</h1></div>
+<div class="topbar"><h1>Agent Trust</h1><span class="tag">AI Native</span></div>
 <div class="content">
-
 
 <div class="page-hero">
 <div class="page-label">AI NATIVE</div>
 <div class="page-title">Agent Trust</div>
-<div class="page-sub">AI Agent 行为信任评估</div>
-<div class="page-oneliner">Agent 身份可信不够，行为也必须可信赖</div>
+<div class="page-sub">AI Agent信任评估体系</div>
+<div class="page-oneliner">这个Agent值得信任吗？信任评级告诉你</div>
 </div>
 
 <hr class="divider">
 
-<div class="section-title">为什么需要 Agent Trust</div>
-<div class="section-body">Agent Identity 确认了「这个 Agent 是谁」，但<strong>这个 Agent 的行为可靠吗？它推荐的商品是真实的吗？它带来的用户是真实的还是刷量的？</strong>Agent Trust 评估 Agent 的行为质量，建立行为信任。</div>
-
-
-<hr class="divider">
-<div class="section-title">信任评级标准</div>
-<div class="section-body">A级（优秀）：转化率>行业均值，异常率<1%，历史无违规 → 归因权重1.2x。B级（良好）：转化率≈行业均值，异常率<3% → 权重1.0x。C级（观察）：转化率偏低或异常率偏高 → 权重0.8x，触发额外验证。D级（冻结）：严重异常或违规 → 暂停归因资格，人工审核。</div>
-
+<div class="section-title">为什么需要Agent Trust</div>
+<div class="section-body">
+身份验证了，但<strong>这个Agent的历史表现如何？有没有刷单记录？推荐质量高不高？</strong>Agent Trust为每个Agent建立动态信任评级。
+</div>
 
 <hr class="divider">
 
-<div class="section-title">核心能力</div>
+<div class="section-title">Agent Trust提供什么</div>
 <div class="highlight-box">
 <div class="hl-label">核心能力</div>
-<div class="hl-text">基于 Agent 历史行为数据，评估推荐质量、用户转化率、异常率，生成行为信任评级</div>
+<div class="hl-text">基于Agent历史推荐数据，计算推荐质量、转化率、真实性评分</div>
 </div>
 
 <div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">行为质量评估</div><div class="feat-desc">分析 Agent 历史推荐的用户转化率、留存率、投诉率，评估推荐质量</div></div>
-
-<div class="feature-card"><div class="feat-title">异常行为检测</div><div class="feat-desc">识别批量推荐、模式化行为、虚假互动等异常模式，自动标记可疑 Agent</div></div>
-
+<div class="feature-card">
+<div class="feat-title">行为质量评分</div>
+<div class="feat-desc">基于Agent历史推荐数据，计算推荐质量、转化率、真实性评分</div>
 </div>
-
+<div class="feature-card">
+<div class="feat-title">信任等级分层</div>
+<div class="feat-desc">Agent分为不同信任等级，高信任Agent享受更多归因权重</div>
+</div>
+</div>
 <div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">信任评级</div><div class="feat-desc">A/B/C/D 四级信任评级，基于行为历史动态调整，直接影响 Agent 的归因权重</div></div>
-
-<div class="feature-card"><div class="feat-title">行为审计</div><div class="feat-desc">所有 Agent 行为记录完整留存，支持事后审计和争议追溯</div></div>
-
+<div class="feature-card">
+<div class="feat-title">异常行为检测</div>
+<div class="feat-desc">自动检测刷单、虚假推荐等异常行为，降低信任等级</div>
 </div>
-
+<div class="feature-card">
+<div class="feat-title">信任证明可导出</div>
+<div class="feat-desc">Agent的信任评级和依据可导出为可验证证明，用于商务合作</div>
+</div>
+</div>
 
 <hr class="divider">
 
 <div class="cta-box">
-<div class="cta-text">Agent 行为可信赖，接下来了解 Agent 如何获得收益</div>
+<div class="cta-text">Agent信任建立了，接下来量化Agent创造的收入</div>
 <a href="/sdk.html" class="cta-link">Agent Revenue →</a>
 </div>
 

@@ -1,0 +1,17 @@
+name = "fly-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "FLY_D1"
+database_name = "fly-db"
+database_id = "71a75dc8-76c5-4563-bf6f-0aa47f76ff95"
+
+[vars]
+IP_SALT = "fly-salt-c520a69081ff1a4cd1971196"
+API_KEYS = "fly_d7939ae0cfe1003a72239094bf40b6b8509c47d7980ab16e"
+
+routes = [
+  { pattern = "api.fly-agent.xyz/*", zone_name = "fly-agent.xyz" }
+]

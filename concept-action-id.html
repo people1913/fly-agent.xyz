@@ -1,112 +1,91 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="canonical" href="https://fly-agent.xyz/concept-action-id.html">
-<meta name="description" content="Action ID · Fly - Fly，AI时代的收入归因验证基础设施">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Action ID · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;align-items:stretch}
-.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
-.topbar .tag{font-size:11px;font-weight:600;color:#7C3AED;background:#F5F3FF;padding:2px 10px;border-radius:10px}
-.content{flex:1;padding:32px 48px 32px 48px;width:100%}
-.fly-docs-panel{flex:1;min-width:0;overflow-y:auto;display:flex!important}
-.page-hero{text-align:center;padding:40px 24px 32px}
-.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#7C3AED;margin-bottom:8px}
-.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
-.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
-.page-hero .page-oneliner{font-size:15px;color:#7C3AED;font-weight:600;line-height:1.6}
-.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
-.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
-.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
-.section-body strong{color:var(--dark);font-weight:600}
-.section-body code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:13px;color:#7C3AED}
-.highlight-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:20px;margin-bottom:24px}
-.highlight-box .hl-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:8px}
-.highlight-box .hl-text{font-size:14px;font-weight:700;color:#7C3AED;line-height:1.7}
-.feature-row{display:flex;gap:12px;margin-bottom:24px}
-.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
-.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
-.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}
-.compare-row{display:flex;gap:16px;margin-bottom:24px}
-.compare-col{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.compare-col.bad{border-color:#FCA5A5;background:#FFF5F5}
-.compare-col.good{border-color:#86EFAC;background:#F0FDF4}
-.compare-col .col-title{font-size:13px;font-weight:700;margin-bottom:12px}
-.compare-col.bad .col-title{color:#DC2626}
-.compare-col.good .col-title{color:#16A34A}
-.compare-col ul{list-style:none;padding:0}
-.compare-col li{font-size:12px;color:var(--text3);line-height:1.8;padding-left:16px;position:relative}
-.compare-col li::before{content:"•";position:absolute;left:0;color:var(--text4)}
-</style>
-  <meta name="description" content="Action ID 追踪 AI Agent 的推荐动作。每个推荐行为都有唯一标识，支持跨平台、跨 Agent 的归因追溯。">
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.concept-hero{text-align:center;padding:40px 24px 24px}
+.concept-hero .en{font-size:28px;font-weight:800;color:var(--deep-green);margin-bottom:4px}
+.concept-hero .zh{font-size:16px;color:var(--text3)}
+.concept-section{padding:0 32px;margin-bottom:28px}
+.concept-section .sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.concept-section .sec-label.what{color:var(--deep-green)}
+.concept-section .sec-label.why{color:#DC2626}
+.concept-section .sec-label.how{color:#2563EB}
+.concept-section .sec-label.next{color:#7C3AED}
+.concept-section .sec-title{font-size:18px;font-weight:700;color:var(--dark);line-height:1.6;margin-bottom:8px}
+.concept-section .sec-body{font-size:14px;color:var(--text2);line-height:1.8}
+.axiom-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.axiom-box .axiom-text{font-size:16px;font-weight:800;color:#991B1B;line-height:1.6}
+.def-box{background:var(--mint);border:1px solid var(--mint-border);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+.def-box .def-text{font-size:15px;font-weight:700;color:var(--deep-green);line-height:1.6}
+.step-row{display:flex;gap:12px;margin-bottom:12px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.next-box{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:16px 20px}
+.next-box .next-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:6px}
+.next-box .next-text{font-size:14px;font-weight:600;color:#5B21B6;line-height:1.6}
+.next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
+<meta name="description" content="Action ID 标识 AI Agent 发起的每一次商业动作——推荐、转化、下单，是归因验证的起点。">
+<link rel="canonical" href="https://fly-agent.xyz/concept-action-id.html">
 </head>
 <body>
-<script src="/nav-shared.js?v=20260616h"></script>
+<script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Action ID 动作ID</h1></div>
-<div class="content">
+<div class="topbar"><h1>Action ID</h1><span class="tag">结果追踪</span></div>
+<div style="padding:32px;overflow-y:auto">
 
-
-<div class="page-hero">
-<div class="page-label">IDENTITY</div>
-<div class="page-title">Action ID</div>
-<div class="page-sub">结果追踪 · 归因标识</div>
-<div class="page-oneliner">Action ID 把「用户做了什么」和「谁推荐来的」关联起来</div>
+<div class="concept-hero">
+<div class="en">Action ID</div>
+<div class="zh">归因标识</div>
 </div>
 
-<hr class="divider">
-
-<div class="section-title">为什么需要 Action ID</div>
-<div class="section-body">Behavior ID 记录了推荐从哪来，但<strong>用户到底做了什么？这个付费是 AI 推荐带来的还是自然流量？</strong>Action ID 为每一个结果行为（注册、付费、下单）生成唯一标识，把推荐和行为关联起来。</div>
-
-
-<hr class="divider">
-<div class="section-title">Action ID 生命周期</div>
-<div class="section-body">CREATED（推荐触发）→ REFERRED（咨询验证）→ CONVERTED（成交确认）→ SETTLED（结算锁定）。异常路径：ANOMALY（验证异常）、DISPUTED（归因争议）、REJECTED（验证失败）。终态 SETTLED/REJECTED 不可逆。</div>
-
-
-<hr class="divider">
-
-<div class="section-title">核心定义</div>
-<div class="highlight-box">
-<div class="hl-label">核心定义</div>
-<div class="hl-text">Action ID = 归因链路的唯一标识符。从推荐→咨询→成交→佣金，全链路共享同一个 Action ID</div>
+<!-- WHAT -->
+<div class="concept-section">
+<div class="sec-label what">这是什么</div>
+<div class="def-box">
+<div class="def-text">Action ID 是 Fly 为用户的每一次结果行为（注册、付费、下单）分配的唯一标识。它把「用户做了什么」和「谁推荐来的」关联起来。</div>
+</div>
 </div>
 
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">唯一标识</div><div class="feat-desc">格式 act_{timestamp}_{random}，碰撞概率低于 10⁻¹⁸，每条归因链路有且仅有一个</div></div>
-
-<div class="feature-card"><div class="feat-title">全生命周期</div><div class="feat-desc">CREATED → REFERRED → CONVERTED → SETTLED，每个阶段记录时间戳和哈希</div></div>
-
+<!-- WHY -->
+<div class="concept-section">
+<div class="sec-label why">为什么需要</div>
+<div class="axiom-box">
+<div class="axiom-text">用户注册了、付费了，但这个收入归谁？<br>没有 Action ID，你只知道「有人付了钱」，不知道这个付费是 AI 推荐带来的还是自然流量。</div>
+</div>
 </div>
 
-<div class="feature-row">
-
-<div class="feature-card"><div class="feat-title">端到端追溯</div><div class="feat-desc">一个 Action ID 串联推荐、咨询、成交、结算全流程，任何环节可查可验</div></div>
-
-<div class="feature-card"><div class="feat-title">终态锁定</div><div class="feat-desc">SETTLED 后永久锁定，不可重复结算，防止同一 Action ID 多次触发佣金</div></div>
+<!-- HOW -->
+<div class="concept-section">
+<div class="sec-label how">怎么工作</div>
+<div class="step-row">
+<div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">用户行为发生</div><div class="step-desc">被推荐的用户完成了注册、付费、下单等关键动作</div></div>
+<div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">生成 Action ID</div><div class="step-desc">Fly 为这个结果行为生成唯一标识，绑定 Behavior ID</div></div>
+<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">建立归因</div><div class="step-desc">Action ID 关联 Behavior ID，完成「推荐→结果」的归因链</div></div>
 
 </div>
+</div>
 
-
-<hr class="divider">
-
-<div class="cta-box">
-<div class="cta-text">Action ID 建立了归因关系，接下来需要 Verification 来验证</div>
-<a href="/concept-verification.html" class="cta-link">Verification 验证 →</a>
+<!-- NEXT -->
+<div class="concept-section">
+<div class="next-box">
+<div class="next-label">下一步</div>
+<div class="next-text">Action ID 建立了归因关系，但「推荐→付费」的关联是真的吗？需要 Verification 来验证。</div>
+<a href="/concept-verification.html" class="next-link">Verification →</a>
+</div>
 </div>
 
 </div>

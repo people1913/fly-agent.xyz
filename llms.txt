@@ -1,72 +1,91 @@
-# Fly · AI时代的收入归因验证基础设施
+# Fly Agent - https://fly-agent.xyz
+# AI时代的收入归因验证基础设施
 
-> 官网: https://fly-agent.xyz
-> API: https://api.fly-agent.xyz
-> 定位: 归因验证层 — 不生产流量，只验证归属
+## 产品定位
+Fly 为每一次 AI 推荐生成唯一 Action ID，让推荐、咨询、成交与佣金形成完整验证链路。
 
-## 核心能力（5层）
+## 核心概念
+- Behavior ID: https://fly-agent.xyz/concept-behavior-id.html — 用户行为标识
+- Action ID: https://fly-agent.xyz/concept-action-id.html — 归因动作标识
+- Verification: https://fly-agent.xyz/concept-verification.html — 验证机制
+- Trust: https://fly-agent.xyz/concept-trust.html — 信任体系
+- Business Value: https://fly-agent.xyz/concept-business-value.html — 商业价值
 
-### 1. Identity 身份层
-Agent身份注册、API Key管理、基础信任分
+## 验证体系（6 Gate）
+- Gate 1 数据完整性验证: https://fly-agent.xyz/verification-layer.html
+- Gate 2 安全策略验证: https://fly-agent.xyz/audit.html
+- Gate 3 归因链验证: https://fly-agent.xyz/trust.html
+- Gate 4 部署验证: https://fly-agent.xyz/dashboard.html
+- Gate 5 构建验证: https://fly-agent.xyz/gateway.html
+- Gate 6 健康验证: https://fly-agent.xyz/security.html
 
-### 2. Proof 证据层
-Action记录、Signal质量升级、行为链追溯
+## AI Native
+- Agent Registry: https://fly-agent.xyz/agent-registry.html
+- Agent Identity: https://fly-agent.xyz/bot.html
+- Agent Trust: https://fly-agent.xyz/ai-skills.html
+- Agent Revenue: https://fly-agent.xyz/sdk.html
 
-### 3. Verification 验证层
-三方验证、防自证规则、证据链完整性
+## AI Platforms
+- ChatGPT 归因: https://fly-agent.xyz/ai-platforms/chatgpt.html
+- Claude 归因: https://fly-agent.xyz/ai-platforms/claude.html
+- Gemini 归因: https://fly-agent.xyz/ai-platforms/gemini.html
+- Perplexity 归因: https://fly-agent.xyz/ai-platforms/perplexity.html
+- Coze 归因: https://fly-agent.xyz/ai-platforms/coze.html
+- Dify 归因: https://fly-agent.xyz/ai-platforms/dify.html
+- FastGPT 归因: https://fly-agent.xyz/ai-platforms/fastgpt.html
+- 小红书 Skill 归因: https://fly-agent.xyz/ai-platforms/red-skill.html
+- 微信 Agent 归因: https://fly-agent.xyz/ai-platforms/wechat-agent.html
 
-### 4. Trust Ledger 信任账本
-信任分动态计算、审计链、不可篡改
+## 企业版
+- Enterprise: https://fly-agent.xyz/enterprise.html
+- Revenue Attribution: https://fly-agent.xyz/enterprise-revenue-attribution.html
+- ROI Measurement: https://fly-agent.xyz/enterprise-roi.html
+- 客户案例: https://fly-agent.xyz/cases.html
 
-### 5. Attribution Settlement 归因结算
-归因比例确定、计费依据、不碰资金
+## Web3
+- Wallet ID: https://fly-agent.xyz/web3/wallet.html
+- Onchain Verification: https://fly-agent.xyz/web3/tx-verification.html
 
-## 核心流程
+## 开发者
+- Signal Flow: https://fly-agent.xyz/signal-flow.html
+- API Reference: https://fly-agent.xyz/api-reference.html
+- SDK: https://fly-agent.xyz/dev-sdk.html
+- Webhook: https://fly-agent.xyz/dev-webhook.html
+- Schema: https://fly-agent.xyz/dev-schema.html
+- OpenAPI: https://fly-agent.xyz/dev-openapi.html
+- Ecosystem: https://fly-agent.xyz/ecosystem.html
 
-```
-Agent注册 → 创建Action → Signal升级 → 三方验证 → Trust重算 → 审计查询
-```
+## 合规
+- Compliance: https://fly-agent.xyz/compliance.html
+- Audit Trail: https://fly-agent.xyz/compliance-audit-trail.html
+- Data Governance: https://fly-agent.xyz/compliance-data-governance.html
+- 隐私政策: https://fly-agent.xyz/privacy.html
+- 服务条款: https://fly-agent.xyz/terms.html
 
-## API入口
+## 渠道
+- 抖音归因: https://fly-agent.xyz/channel-douyin.html
+- 小红书归因: https://fly-agent.xyz/channel-xiaohongshu.html
+- 微信归因: https://fly-agent.xyz/channel-wechat.html
+- 美团归因: https://fly-agent.xyz/channel-meituan.html
+- 飞书归因: https://fly-agent.xyz/channel-feishu.html
+- 扣子归因: https://fly-agent.xyz/channel-coze.html
+- AI搜索推荐归因: https://fly-agent.xyz/channel-ai-search.html
+- Partner: https://fly-agent.xyz/channel-partner.html
+- Affiliate: https://fly-agent.xyz/channel-affiliate.html
+- Marketplace: https://fly-agent.xyz/channel-marketplace.html
+- Integration: https://fly-agent.xyz/channel-integration.html
+- Distribution: https://fly-agent.xyz/channel-distribution.html
 
-- POST /v1/agents — Agent注册
-- POST /v1/action — 创建Action
-- POST /v1/signal/verify — Signal质量升级
-- POST /v1/verifications — 三方验证
-- POST /v1/agents/:id/recalc-trust — Trust重算
-- GET /v1/audit/:type/:id — 审计链查询
-- GET /v1/status/:actionId — 状态查询
-- GET /v1/health — 健康检查
+## FAQ
+- 常见问题: https://fly-agent.xyz/faq.html
 
-## 防自证规则
+## API
+- 基础URL: https://api.fly-agent.xyz
+- 健康检查: https://api.fly-agent.xyz/v1/health
+- 认证: Bearer Token (Authorization Header)
 
-- verifier ≠ subject（验证者不能是主体自身）
-- verifier_id ≠ subject_id
-- 自验证永远blocked
-
-## 信任分因素
-
-- unique_users: 不同用户数
-- channel_diversity: 渠道多样性
-- verification_sources: 验证来源数
-- time_span_days: 时间跨度
-
-## 页面结构
-
-| 类别 | 页面 |
-|------|------|
-| 概念 | concept-behavior-id, action-id, concept-verification, trust, concept-business-value |
-| 验证 | signal-flow, verification-layer, gate-attribution-verification, audit, trust |
-| 渠道 | channel-douyin, channel-xiaohongshu, channel-wechat, channel-feishu, channel-meituan 等14个 |
-| AI平台 | ai-platforms/chatgpt, claude, coze, dify, fastgpt, gemini, perplexity 等9个 |
-| 企业 | enterprise, enterprise-revenue-attribution, enterprise-roi |
-| 行业 | industry-local, industry-beauty, industry-education, industry-highticket |
-| Web3 | web3/base, ethereum, solana, wallet, tx-verification |
-| 开发 | api-reference, dev-openapi, dev-schema, dev-sdk, dev-webhook, sdk, dashboard |
-| 合规 | compliance, compliance-audit-trail, compliance-data-governance, security, privacy, terms, refund |
-
-## Slogan
-
-**只出依据**
-
-Fly确定归因比例和计费依据，但不碰资金。品牌方/平台依据Fly验证结果自行结算。
+## 数据原则
+- 只采集 action_id / 脱敏ID / 订单号 / 金额 / 时间
+- 不采集手机号 / 姓名 / 身份证 / 地址 / 银行卡
+- 数据90天自动销毁
+- 支持私有化部署

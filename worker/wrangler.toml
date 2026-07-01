@@ -12,9 +12,10 @@ database_id = "71a75dc8-76c5-4563-bf6f-0aa47f76ff95"
 binding = "FLY_KV"
 id = "fea93561708c4272886554d83e546922"
 
-[[routes]]
-pattern = "api.fly-agent.xyz/*"
-zone_name = "fly-agent.xyz"
+[vars]
+IP_SALT = "fly-salt-c520a69081ff1a4cd1971196"
+API_KEYS = "fly_d7939ae0cfe1003a72239094bf40b6b8509c47d7980ab16e"
 
-[triggers]
-crons = ["*/5 * * * *"]
+routes = [
+  { pattern = "api.fly-agent.xyz/*", zone_name = "fly-agent.xyz" }
+]
