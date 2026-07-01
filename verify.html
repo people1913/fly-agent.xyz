@@ -72,6 +72,27 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 .trust-meta .label{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px}
 .trust-meta .desc{font-size:13px;color:var(--text3)}
 
+/* Reasoning Chain */
+.reasoning-chain{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:24px 16px;background:linear-gradient(135deg,var(--bg2) 0%,#fff 100%);border:1px solid var(--border);border-radius:12px;overflow-x:auto}
+.chain-item{flex:1;min-width:100px;text-align:center;padding:16px 8px;background:#fff;border:1px solid var(--border);border-radius:10px;position:relative}
+.chain-item.chain-conclusion{background:var(--mint);border-color:var(--mint-border)}
+.chain-label{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.chain-value{font-size:16px;font-weight:700;color:var(--deep-green);font-family:var(--mono);margin-bottom:2px}
+.chain-desc{font-size:10px;color:var(--text3)}
+.chain-arrow{font-size:20px;color:var(--text4);font-weight:700;flex-shrink:0}
+
+/* Why Button */
+.why-btn{margin-left:auto;padding:4px 12px;font-size:11px;font-weight:700;color:var(--deep-green);background:var(--mint);border:1px solid var(--mint-border);border-radius:12px;cursor:pointer;transition:all .2s}
+.why-btn:hover{background:var(--deep-green);color:#fff}
+.why-btn-light{display:inline-block;padding:3px 10px;font-size:11px;font-weight:700;color:var(--deep-green);background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);border-radius:10px;cursor:pointer;transition:all .2s;vertical-align:middle}
+.why-btn-light:hover{background:#fff}
+
+/* Basis Panel Content */
+.basis-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.basis-row:last-child{border-bottom:none}
+.basis-label{color:var(--text3);font-weight:500}
+.basis-value{color:var(--deep-green);font-weight:600;font-family:var(--mono)}
+
 /* Records List */
 .record-list{display:flex;flex-direction:column;gap:8px}
 .record-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .2s;cursor:pointer;text-decoration:none;color:var(--dark)}
@@ -137,19 +158,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);line-height:
 </div>
 <div class="content">
 
-<!-- Fly Statement -->
+<!-- Fly Statement (裁定声明) -->
 <div class="fly-statement">
-<p><strong>Fly 证明的不是 AI 是否存在。</strong><br>
-Fly 证明的是：<strong>该商业贡献符合协议定义的商业归因要求，因此具备商业结算资格。</strong></p>
-<p style="margin-top:8px;font-size:12px;color:var(--text4)">
-Fly does not prove that AI exists. Fly proves that this commercial contribution satisfies the protocol-defined attribution requirements and is eligible for business settlement.</p>
+<p style="font-size:15px;font-weight:600;color:var(--deep-green);line-height:1.8;margin-bottom:12px">
+Fly Concludes: This Commercial Contribution Is Eligible for Settlement
+</p>
+<p style="font-size:13px;color:var(--text3);line-height:1.8">
+Fly certifies that this commercial contribution satisfies the attribution requirements defined by the Fly Attribution Protocol and is eligible for business settlement under the terms herein.</p>
+<p style="margin-top:12px;font-size:11px;color:var(--text4)">
+Fly 证明：该商业贡献符合 Fly 归因协议定义的归因要求，具备商业结算资格。</p>
 </div>
 
 <!-- Settlement Hero (最大视觉中心) -->
 <div class="settlement-hero">
 <div class="settlement-status"><span>Commission Eligible</span></div>
 <h2 class="settlement-title">Settlement Ready 可结算</h2>
-<p class="settlement-subtitle">该商业贡献已通过归因验证，具备结算资格</p>
+<p class="settlement-subtitle">该商业贡献已通过归因验证，具备结算资格 <button class="why-btn-light" onclick="toggleBasis('settlement')">Why?</button></p>
 <div class="settlement-grid">
   <div class="settlement-item">
     <div class="label">Revenue 收入</div>
@@ -167,6 +191,51 @@ Fly does not prove that AI exists. Fly proves that this commercial contribution 
     <div class="note">Protocol Rule v1</div>
   </div>
 </div>
+
+<!-- Settlement Basis (折叠面板) -->
+<div class="basis-panel-light" id="settlement-basis" style="display:none;margin-top:24px;padding:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:12px">
+  <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">📋 Settlement Basis 结算依据</div>
+  <div id="settlement-basis-content" style="color:rgba(255,255,255,0.9)">加载中...</div>
+</div>
+</div>
+
+<!-- 推理链可视化：5个字段串联 -->
+<div class="section">
+<div class="section-header">
+  <div class="icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+  Commercial Reasoning Chain 商业推理链
+</div>
+<div class="reasoning-chain">
+  <div class="chain-item">
+    <div class="chain-label">Source</div>
+    <div class="chain-value">ChatGPT</div>
+    <div class="chain-desc">谁创造价值</div>
+  </div>
+  <div class="chain-arrow">→</div>
+  <div class="chain-item">
+    <div class="chain-label">Evidence</div>
+    <div class="chain-value">3 signals</div>
+    <div class="chain-desc">为什么相信</div>
+  </div>
+  <div class="chain-arrow">→</div>
+  <div class="chain-item">
+    <div class="chain-label">Trust</div>
+    <div class="chain-value">85%</div>
+    <div class="chain-desc">可信程度</div>
+  </div>
+  <div class="chain-arrow">→</div>
+  <div class="chain-item">
+    <div class="chain-label">∴ Attribution</div>
+    <div class="chain-value">Agent #1504</div>
+    <div class="chain-desc">为什么归给它</div>
+  </div>
+  <div class="chain-arrow">→</div>
+  <div class="chain-item chain-conclusion">
+    <div class="chain-label">∴ Settlement</div>
+    <div class="chain-value">¥150</div>
+    <div class="chain-desc">应该给多少</div>
+  </div>
+</div>
 </div>
 
 <!-- Attribution Conclusion -->
@@ -174,6 +243,7 @@ Fly does not prove that AI exists. Fly proves that this commercial contribution 
 <div class="section-header">
   <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
   Attribution 归因结论
+  <button class="why-btn" onclick="toggleBasis('attribution')">Why?</button>
 </div>
 <div class="attribution-card">
   <div class="attribution-conclusion">
@@ -197,6 +267,12 @@ Fly does not prove that AI exists. Fly proves that this commercial contribution 
       <div class="label">Conversion 转化</div>
       <div class="value">Confirmed ¥1,000</div>
     </div>
+  </div>
+  
+  <!-- Attribution Basis (折叠面板) -->
+  <div class="basis-panel" id="attribution-basis" style="display:none;margin-top:20px;padding:20px;background:#fff;border:1px solid var(--mint-border);border-radius:10px">
+    <div style="font-size:14px;font-weight:700;color:var(--deep-green);margin-bottom:12px">📋 Attribution Basis 归因依据</div>
+    <div id="attribution-basis-content">加载中...</div>
   </div>
 </div>
 </div>
@@ -291,7 +367,89 @@ Fly does not prove that AI exists. Fly proves that this commercial contribution 
 
 <script>
 const API_BASE = 'https://api.fly-agent.xyz';
-const API_KEY = 'fly_demo_key_2026';
+const API_KEY = 'fly_d7939ae0cfe1003a72239094bf40b6b8509c47d7980ab16e';
+
+// Toggle basis panel
+async function toggleBasis(type) {
+  const panel = document.getElementById(`${type}-basis`);
+  const contentEl = document.getElementById(`${type}-basis-content`);
+  
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    
+    // Fetch data if not loaded yet
+    if (contentEl.textContent === '加载中...') {
+      try {
+        const response = await fetch(`${API_BASE}/v1/records/recent?limit=1`, {
+          headers: { 'Authorization': `Bearer ${API_KEY}` }
+        });
+        const data = await response.json();
+        
+        if (data.records && data.records.length > 0) {
+          const record = data.records[0];
+          
+          if (type === 'attribution' && record.attribution_basis) {
+            const basis = record.attribution_basis;
+            contentEl.innerHTML = `
+              <div class="basis-row">
+                <span class="basis-label">结论 Conclusion</span>
+                <span class="basis-value">${basis.conclusion || '-'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">理由 Reasons</span>
+                <span class="basis-value">${(basis.reasons || []).join(', ') || '-'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">置信度 Confidence</span>
+                <span class="basis-value">${basis.confidence_score || 0}%</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">计算公式 Calculation</span>
+                <span class="basis-value" style="font-size:11px">${basis.confidence_calculation || '-'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">转化路径 Path</span>
+                <span class="basis-value">${basis.conversion_path || '-'}</span>
+              </div>
+            `;
+          } else if (type === 'settlement' && record.settlement_basis) {
+            const basis = record.settlement_basis;
+            contentEl.innerHTML = `
+              <div class="basis-row">
+                <span class="basis-label">结算资格 Eligible</span>
+                <span class="basis-value">${basis.eligible ? '✓ Yes' : '✗ No'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">资格理由 Reason</span>
+                <span class="basis-value" style="font-size:11px">${basis.eligibility_reason || '-'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">收入 Revenue</span>
+                <span class="basis-value">¥${basis.revenue || 0}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">费率 Rate</span>
+                <span class="basis-value">${(basis.rate_applied * 100).toFixed(1)}%</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">费率计算 Calculation</span>
+                <span class="basis-value" style="font-size:11px">${basis.rate_calculation || '-'}</span>
+              </div>
+              <div class="basis-row">
+                <span class="basis-label">佣金 Commission</span>
+                <span class="basis-value">¥${basis.commission || 0}</span>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {
+        contentEl.innerHTML = '<div style="color:#991B1B">加载失败，请稍后重试</div>';
+      }
+    }
+  } else {
+    panel.style.display = 'none';
+  }
+}
 
 async function doIssue() {
   const claim = document.getElementById('claimInput').value.trim();
