@@ -1,6 +1,6 @@
 {
   "version": "1.2",
-  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。每个向量包含完整的 expected 结构（report + verify_result + settlement），并标注对应的 compliance_level。",
+  "description": "CTRS v1.2 互操作测试向量 — Agent Economy 商业行为验证场景。每个向量描述一个完整的商业行为链路：Agent 行为 → 证据采集 → 归因计算 → 结算分润。供不同语言实现验证其 Report 生成和验证逻辑的正确性。每个向量包含完整的 expected 结构（report + verify_result + settlement），并标注对应的 compliance_level。",
   "test_vectors": [
     {
       "id": "tv-001",
@@ -328,15 +328,15 @@
     },
     {
       "id": "tv-004",
-      "description": "Webhook 证据类型场景",
+      "description": "外部系统回调验证商业转化场景：Agent 推荐后通过 Webhook 确认成交",
       "compliance_level": "ctrs-core",
       "compliance_level_notes": "此向量仅涉及 Core 级别验证规则（VR-101~VR-402），测试 webhook 类型 Evidence",
       "input": {
         "claim": {
           "claim_id": "c-tv004",
           "type": "webhook_conversion",
-          "subject": "通过 Webhook 回调确认转化",
-          "description": "外部系统通过 Webhook 通知转化事件。交易金额 $75。",
+          "subject": "Agent 推荐产品，外部系统通过 Webhook 回调确认商业转化",
+          "description": "Agent A 推荐产品，外部电商平台通过 Webhook 回调确认订单完成。交易金额 $75。",
           "timestamp": "2026-07-01T16:00:00+00:00",
           "parties": [
             {"id": "agent-a", "role": "recommender", "name": "Agent A"},
@@ -420,7 +420,7 @@
     },
     {
       "id": "tv-005",
-      "description": "争议场景：Settlement 为 disputed 状态",
+      "description": "商业归因争议场景：两个 Agent 均声称促成了同一笔交易，Settlement 为 disputed 状态",
       "compliance_level": "ctrs-enterprise",
       "compliance_level_notes": "此向量涉及 disputed 状态，需要 Enterprise Extension 的争议工作流支持。Core/Governance 验证器可验证数据结构，但争议流程处理需要 Enterprise",
       "input": {

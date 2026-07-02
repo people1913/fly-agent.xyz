@@ -1,10 +1,44 @@
-# CTRS — Commercial Trust Report Specification
+# CTRS — Agent Economy 的商业信任协议
 
-> Agent 商业场景的可验证、可追溯、可审计信任记录标准
+> 解决 Agent 经济中的商业归因失真问题：商业行为 → 证据 → 商业事实 → 归因 → 结算
+
+## 为什么需要 CTRS
+
+Agent Economy 正在成形。当多个 Agent 协作促成一笔商业交易——推荐、讲解、支付——谁来证明谁贡献了多少？没有可验证的信任链，商业归因就会失真，结算就缺乏依据，Agent 经济的商业模式就无法闭环。
+
+CTRS（Commercial Trust Report Specification）不是又一个数据交换格式。它是 **Agent 经济的商业行为验证协议**，确保每一笔 Agent 协作的商业行为都能被：
+
+- **验证** — 证据可追溯到原始商业行为，Hash 绑定防止篡改
+- **归因** — 基于注册规则计算每个 Agent 的贡献比例，机器可验证
+- **结算** — 从归因结果直接生成可执行的结算方案
+
+核心验证链路：
+
+```
+商业行为 → 证据采集 → 商业事实确认 → 规则归因 → 结算分润
+```
+
+而不是：
+
+```
+JSON → Schema → Parser
+```
+
+## Agent Economy 中的定位
+
+CTRS 在 Agent Economy 栈中的位置：
+
+| 层级 | 解决的问题 | CTRS 的角色 |
+|------|-----------|------------|
+| 商业行为 | Agent 做了什么？ | Claim 层记录"谁做了什么" |
+| 证据 | 怎么证明？ | Evidence 层采集对话、支付、CRM 等商业证据 |
+| 规则 | 按什么标准归因？ | Rule 层定义归因方法，一等对象可注册可审计 |
+| 归因 | 各方贡献多少？ | Attribution 层基于证据和规则计算贡献 |
+| 结算 | 谁该收多少钱？ | Settlement 层生成可执行的分润方案 |
 
 ## 概述
 
-CTRS（Commercial Trust Report Specification）定义了一种用于 Agent 商业协作的价值归因与结算协议。它通过分层结构、Hash 绑定和注册表验证，确保信任记录的完整性和可审计性。
+CTRS 定义了一种用于 Agent 商业协作的价值归因与结算协议。它通过分层结构、Hash 绑定和注册表验证，确保 Agent 经济中的商业信任记录具有完整的可验证性、可追溯性和可审计性。
 
 ## 目录结构
 
@@ -25,8 +59,8 @@ ctrs/
 ├── interop/                     # 互操作测试
 │   └── test_vectors/
 │       └── v1.2.json            # 互操作测试向量
-├── examples/                    # 参考示例
-│   └── v1.2-demo-report.json   # 完整 Report 示例
+├── examples/                    # Agent Commerce Scenario
+│   └── v1.2-commerce-scenario.json   # 三Agent协作归因示例
 └── README.md                    # 本文件
 ```
 
@@ -34,15 +68,15 @@ ctrs/
 
 ### 七层结构
 
-| 层级 | 名称 | 职责 |
-|------|------|------|
-| L0 | 元数据 | Report 标识、版本、时间戳、状态 |
-| L1 | 声明 (Claim) | 描述"谁做了什么" |
-| L2 | 证据 (Evidence) | 可验证的数据支撑 |
-| L3 | 规则 (Rule) | 归因方法与参数（一等对象） |
-| L4 | 归因 (Attribution) | 基于 Rule 和 Evidence 的贡献计算 |
-| L5 | 结算 (Settlement) | 分润方案 |
-| L6 | 注册表 (Registry) | Rule/Issuer 合法性验证 |
+| 层级 | 名称 | 职责 | Agent Economy 语义 |
+|------|------|------|-------------------|
+| L0 | 元数据 | Report 标识、版本、时间戳、状态 | 商业交易身份 |
+| L1 | 声明 (Claim) | 描述"谁做了什么" | 商业行为事实 |
+| L2 | 证据 (Evidence) | 可验证的数据支撑 | 商业行为证据 |
+| L3 | 规则 (Rule) | 归因方法与参数（一等对象） | 归因规则 |
+| L4 | 归因 (Attribution) | 基于 Rule 和 Evidence 的贡献计算 | 商业贡献量化 |
+| L5 | 结算 (Settlement) | 分润方案 | 商业结算执行 |
+| L6 | 注册表 (Registry) | Rule/Issuer 合法性验证 | 信任基础设施 |
 
 ### 验证层级
 
@@ -51,6 +85,20 @@ ctrs/
 | L1 | Schema 完整性 | `tests/v1.2/core/schema-completeness.json` |
 | L2 | Hash 完整性 + 引用一致性 | `tests/v1.2/core/hash-and-reference.json` |
 | L3 | 注册表验证 | `tests/v1.2/optional/registry-verification.json` |
+
+### 商业行为验证流程
+
+```
+1. Agent A 推荐产品（商业行为）
+   ↓ 证据采集
+2. 对话记录 + 支付凭证（Evidence）
+   ↓ 事实确认
+3. 多 Agent 协作促成交易（Claim）
+   ↓ 规则归因
+4. 推荐45% / 讲解35% / 支付渠道20%（Attribution）
+   ↓ 结算分润
+5. 各方结算方案（Settlement）
+```
 
 ## 规范版本
 
@@ -86,7 +134,7 @@ cat ctrs/versions/v1.2/specification.md
 python3 -c "
 import json, jsonschema
 schema = json.load(open('ctrs/versions/v1.2/schema.json'))
-report = json.load(open('ctrs/examples/v1.2-demo-report.json'))
+report = json.load(open('ctrs/examples/v1.2-commerce-scenario.json'))
 jsonschema.validate(report, schema)
 print('Schema 验证通过')
 "
