@@ -1,23 +1,29 @@
-# CTRS — Fly 的技术规范
+# CTRS — Layer 2：Fly 的协议规范
 
 > **CTRS = Commercial Trust Report Specification**
-> 这是 [Fly](../) 协议的技术规范。CTRS 不是独立协议——它是 Fly 的 Specification，就像 ACME 是 Let's Encrypt 的协议一样。
+> 这是 [Fly](../)（Layer 1）协议的技术规范。CTRS 不是独立协议——它是 Fly 的 Specification，就像 ACME 是 Let's Encrypt 的协议一样。
 
 ---
 
-## CTRS 是什么
+## 四层叙事中的定位
 
-CTRS 是 Fly 的技术规范层，定义了 Agent 经济中商业行为验证的数据格式、验证规则和交互协议。Fly 在市场层解决"谁创造了商业价值"的认知问题，CTRS 在规范层解决"如何形成共同认可的商业事实"的信任问题。
+CTRS 在 Fly 四层叙事中处于 **Layer 2**：
+
+| Layer | 名称 | 回答的问题 | 指向 |
+|-------|------|-----------|------|
+| Layer 0 | Agent Economy | 为什么今天需要新的协议？ | [../README.md](../) 开头 |
+| **Layer 1** | **Fly** | **解决什么商业问题？** | **[../README.md](../)** |
+| **→ Layer 2** | **CTRS** | **协议规范是什么？** | **← 你在这里** |
+| Layer 3 | Fly Report | 协议运行后的实例是什么？ | [./examples/](./examples/) |
 
 **层级关系：**
 
 ```
-Fly（品牌）→ CTRS（规范）→ Report（实例）
+Layer 0: Agent Economy（为什么需要）
+  → Layer 1: Fly（解决什么问题）[../]
+    → Layer 2: CTRS（协议规范是什么）← 你在这里
+      → Layer 3: Fly Report（运行实例是什么）[./examples/]
 ```
-
-- **Fly** — 市场层：商业信任协议的品牌和认知入口
-- **CTRS** — 规范层：Fly 的技术规范，定义如何验证、归因、结算
-- **Report** — 实例层：按照 CTRS 规范生成的具体商业信任报告
 
 ## 为什么需要 CTRS
 
