@@ -1,12 +1,29 @@
-# CTRS — Agent Economy 的商业信任协议
+# CTRS — Fly 的技术规范
 
-> 解决 Agent 经济中的商业归因失真问题：商业行为 → 证据 → 商业事实 → 归因 → 结算
+> **CTRS = Commercial Trust Report Specification**
+> 这是 [Fly](../) 协议的技术规范。CTRS 不是独立协议——它是 Fly 的 Specification，就像 ACME 是 Let's Encrypt 的协议一样。
+
+---
+
+## CTRS 是什么
+
+CTRS 是 Fly 的技术规范层，定义了 Agent 经济中商业行为验证的数据格式、验证规则和交互协议。Fly 在市场层解决"谁创造了商业价值"的认知问题，CTRS 在规范层解决"如何形成共同认可的商业事实"的信任问题。
+
+**层级关系：**
+
+```
+Fly（品牌）→ CTRS（规范）→ Report（实例）
+```
+
+- **Fly** — 市场层：商业信任协议的品牌和认知入口
+- **CTRS** — 规范层：Fly 的技术规范，定义如何验证、归因、结算
+- **Report** — 实例层：按照 CTRS 规范生成的具体商业信任报告
 
 ## 为什么需要 CTRS
 
 Agent Economy 正在成形。当多个 Agent 协作促成一笔商业交易——推荐、讲解、支付——谁来证明谁贡献了多少？没有可验证的信任链，商业归因就会失真，结算就缺乏依据，Agent 经济的商业模式就无法闭环。
 
-CTRS（Commercial Trust Report Specification）不是又一个数据交换格式。它是 **Agent 经济的商业行为验证协议**，确保每一笔 Agent 协作的商业行为都能被：
+CTRS 确保 Fly 的每一份 Report 都能被：
 
 - **验证** — 证据可追溯到原始商业行为，Hash 绑定防止篡改
 - **归因** — 基于注册规则计算每个 Agent 的贡献比例，机器可验证
@@ -35,10 +52,6 @@ CTRS 在 Agent Economy 栈中的位置：
 | 规则 | 按什么标准归因？ | Rule 层定义归因方法，一等对象可注册可审计 |
 | 归因 | 各方贡献多少？ | Attribution 层基于证据和规则计算贡献 |
 | 结算 | 谁该收多少钱？ | Settlement 层生成可执行的分润方案 |
-
-## 概述
-
-CTRS 定义了一种用于 Agent 商业协作的价值归因与结算协议。它通过分层结构、Hash 绑定和注册表验证，确保 Agent 经济中的商业信任记录具有完整的可验证性、可追溯性和可审计性。
 
 ## 目录结构
 
@@ -155,10 +168,6 @@ cat ctrs/interop/test_vectors/v1.2.json | python3 -m json.tool
 4. **注册 Rule**: 在 Rule Registry 中注册规则，确保 L3 验证可通过
 5. **信任评估**: 在 Issuer Registry 中维护签发者信任等级
 
-## 贡献
+---
 
-本仓库遵循成熟协议的组织模式（参考 HTML Spec / JSON Schema 的版本分离和测试组织方式）。
-
-- 规范变更需更新 `specification.md` 和 `schema.json`
-- 新增测试用例需可追溯到规范章节
-- 互操作测试向量需包含完整的输入和预期输出
+*CTRS 是 Fly 的 Specification。返回 [Fly 主页](../) 了解全貌。*
