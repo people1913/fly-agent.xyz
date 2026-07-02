@@ -1,7 +1,7 @@
 {
   "version": "1.2",
   "generated_at": "2026-07-02",
-  "description": "CTRS v1.2 验证规则追溯矩阵：VR → Section → Fields → Test Cases",
+  "description": "CTRS v1.2 验证规则追溯矩阵：VR → Section → Fields → Test Cases → Compliance Level",
   "rules": [
     {
       "rule_id": "VR-101",
@@ -11,6 +11,7 @@
       "section_title": "Report 对象",
       "fields": ["report_id", "schema_version", "type", "created_at", "claim", "evidence", "attribution", "settlement"],
       "test_cases": ["tests/v1.2/core/schema-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -21,6 +22,7 @@
       "section_title": "Claim 对象",
       "fields": ["claim_id", "type", "subject", "description", "timestamp", "parties"],
       "test_cases": ["tests/v1.2/core/claim-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -31,6 +33,7 @@
       "section_title": "Evidence 对象",
       "fields": ["evidence_id", "claim_ref", "type", "source", "timestamp", "data", "hash"],
       "test_cases": ["tests/v1.2/core/evidence-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -41,6 +44,7 @@
       "section_title": "Evidence 对象",
       "fields": ["evidence[].type"],
       "test_cases": ["tests/v1.2/core/evidence-type-enum.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -51,6 +55,7 @@
       "section_title": "Rule 对象",
       "fields": ["rule_id", "issuer", "version", "hash", "definition", "created_at"],
       "test_cases": ["tests/v1.2/core/rule-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -61,6 +66,7 @@
       "section_title": "Attribution 对象",
       "fields": ["attribution_id", "claim_ref", "rule_hash", "method", "confidence", "result", "reasoning", "attributed_at"],
       "test_cases": ["tests/v1.2/core/attribution-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -71,6 +77,7 @@
       "section_title": "Settlement 对象",
       "fields": ["settlement_id", "attribution_ref", "status", "amount", "currency", "split", "eligible_parties"],
       "test_cases": ["tests/v1.2/core/settlement-completeness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -81,6 +88,7 @@
       "section_title": "Report 对象",
       "fields": ["schema_version"],
       "test_cases": ["tests/v1.2/core/schema-version-check.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -91,6 +99,7 @@
       "section_title": "Report 对象",
       "fields": ["type"],
       "test_cases": ["tests/v1.2/core/type-constant-check.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -101,6 +110,7 @@
       "section_title": "Attribution 对象",
       "fields": ["attribution.confidence"],
       "test_cases": ["tests/v1.2/core/confidence-range.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -111,6 +121,7 @@
       "section_title": "Settlement 对象",
       "fields": ["settlement.status"],
       "test_cases": ["tests/v1.2/core/settlement-status-enum.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -121,6 +132,7 @@
       "section_title": "Report 对象",
       "fields": ["status"],
       "test_cases": ["tests/v1.2/core/report-status-enum.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -131,6 +143,7 @@
       "section_title": "Evidence 对象",
       "fields": ["evidence[].hash", "evidence[].data"],
       "test_cases": ["tests/v1.2/integrity/evidence-hash-integrity.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -141,6 +154,7 @@
       "section_title": "Rule 对象",
       "fields": ["rule.hash", "rule.definition"],
       "test_cases": ["tests/v1.2/integrity/rule-hash-integrity.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -151,6 +165,7 @@
       "section_title": "Evidence → Claim 引用",
       "fields": ["evidence[].claim_ref", "claim.claim_id"],
       "test_cases": ["tests/v1.2/consistency/evidence-claim-ref.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -161,6 +176,7 @@
       "section_title": "Attribution → Claim 引用",
       "fields": ["attribution.claim_ref", "claim.claim_id"],
       "test_cases": ["tests/v1.2/consistency/attribution-claim-ref.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -171,6 +187,7 @@
       "section_title": "Attribution → Rule Hash 绑定",
       "fields": ["attribution.rule_hash", "rule.hash"],
       "test_cases": ["tests/v1.2/consistency/attribution-rule-binding.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -181,6 +198,7 @@
       "section_title": "Settlement → Attribution 引用",
       "fields": ["settlement.attribution_ref", "attribution.attribution_id"],
       "test_cases": ["tests/v1.2/consistency/settlement-attribution-ref.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -191,6 +209,7 @@
       "section_title": "Settlement 对象",
       "fields": ["settlement.split[].share_amount", "settlement.amount"],
       "test_cases": ["tests/v1.2/settlement/settlement-amount-correctness.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -201,6 +220,7 @@
       "section_title": "Settlement → Attribution 参与方一致性",
       "fields": ["settlement.eligible_parties", "attribution.result[].party_id"],
       "test_cases": ["tests/v1.2/settlement/settlement-party-consistency.json#test-001"],
+      "compliance_level": "ctrs-core",
       "status": "implemented"
     },
     {
@@ -211,6 +231,7 @@
       "section_title": "L3 注册表验证",
       "fields": ["rule.rule_id", "rule.hash"],
       "test_cases": ["tests/v1.2/registry/rule-registration.json#test-001"],
+      "compliance_level": "ctrs-governance",
       "status": "implemented"
     },
     {
@@ -221,6 +242,7 @@
       "section_title": "L3 注册表验证",
       "fields": ["rule.issuer"],
       "test_cases": ["tests/v1.2/registry/issuer-trust.json#test-001"],
+      "compliance_level": "ctrs-governance",
       "status": "implemented"
     }
   ],
@@ -240,6 +262,11 @@
       "3.6": 4,
       "4.6": 2,
       "cross_section": 4
+    },
+    "by_compliance_level": {
+      "ctrs-core": 20,
+      "ctrs-governance": 2,
+      "ctrs-enterprise": 0
     }
   }
 }

@@ -1,10 +1,12 @@
 {
   "version": "1.2",
-  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。每个向量包含完整的 expected 结构（report + verify_result + settlement）。",
+  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。每个向量包含完整的 expected 结构（report + verify_result + settlement），并标注对应的 compliance_level。",
   "test_vectors": [
     {
       "id": "tv-001",
       "description": "基础归因场景：单 Agent 推荐促成转化",
+      "compliance_level": "ctrs-core",
+      "compliance_level_notes": "此向量仅涉及 Core 级别验证规则（VR-101~VR-402），无需 Registry 即可完整验证",
       "input": {
         "claim": {
           "claim_id": "c-tv001",
@@ -63,6 +65,7 @@
         },
         "verify_result": {
           "status": "valid",
+          "compliance_level": "ctrs-core",
           "checks": {
             "schema_completeness": true,
             "claim_integrity": true,
@@ -94,6 +97,8 @@
     {
       "id": "tv-002",
       "description": "多 Agent 协作归因场景：推荐+讲解+支付",
+      "compliance_level": "ctrs-core",
+      "compliance_level_notes": "此向量仅涉及 Core 级别验证规则（VR-101~VR-402），无需 Registry 即可完整验证",
       "input": {
         "claim": {
           "claim_id": "c-tv002",
@@ -182,6 +187,7 @@
         },
         "verify_result": {
           "status": "valid",
+          "compliance_level": "ctrs-core",
           "checks": {
             "schema_completeness": true,
             "claim_integrity": true,
@@ -215,6 +221,8 @@
     {
       "id": "tv-003",
       "description": "带置信度的归因场景：部分归因",
+      "compliance_level": "ctrs-core",
+      "compliance_level_notes": "此向量仅涉及 Core 级别验证规则（VR-101~VR-402），包含 confidence 浮点数验证（VR-110）",
       "input": {
         "claim": {
           "claim_id": "c-tv003",
@@ -289,6 +297,7 @@
         },
         "verify_result": {
           "status": "valid",
+          "compliance_level": "ctrs-core",
           "checks": {
             "schema_completeness": true,
             "claim_integrity": true,
@@ -320,6 +329,8 @@
     {
       "id": "tv-004",
       "description": "Webhook 证据类型场景",
+      "compliance_level": "ctrs-core",
+      "compliance_level_notes": "此向量仅涉及 Core 级别验证规则（VR-101~VR-402），测试 webhook 类型 Evidence",
       "input": {
         "claim": {
           "claim_id": "c-tv004",
@@ -378,6 +389,7 @@
         },
         "verify_result": {
           "status": "valid",
+          "compliance_level": "ctrs-core",
           "checks": {
             "schema_completeness": true,
             "claim_integrity": true,
@@ -409,6 +421,8 @@
     {
       "id": "tv-005",
       "description": "争议场景：Settlement 为 disputed 状态",
+      "compliance_level": "ctrs-enterprise",
+      "compliance_level_notes": "此向量涉及 disputed 状态，需要 Enterprise Extension 的争议工作流支持。Core/Governance 验证器可验证数据结构，但争议流程处理需要 Enterprise",
       "input": {
         "claim": {
           "claim_id": "c-tv005",
@@ -473,6 +487,7 @@
         },
         "verify_result": {
           "status": "valid",
+          "compliance_level": "ctrs-enterprise",
           "checks": {
             "schema_completeness": true,
             "claim_integrity": true,

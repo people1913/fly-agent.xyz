@@ -689,6 +689,212 @@ CTRS v1.3 计划为 **GRACE** 级别：
 
 ---
 
+## 8. Compliance Levels（合规级别）
+
+### 8.1 设计理念
+
+CTRS 采用 **RFC 风格的 Compliance Levels 体系**，借鉴 OAuth 2.0（Core + Extensions）、JWT/JWS/JWE（分层规范）和 OpenAPI（compliance levels）等成熟协议的经验，遵循"稳定核心 + 多个扩展"模式。
+
+核心设计原则：
+
+1. **渐进式采用**：实现者可以从最小的 Core 级别起步，无需部署外部基础设施即可完成基础验证
+2. **可组合扩展**：每个 Extension 独立定义，实现者按需组合，不要求全有或全无
+3. **互操作保证**：同一 Compliance Level 的实现之间 MUST 具有完全的互操作性
+4. **向后兼容**：高 Level 实现 MUST 能正确处理低 Level 的 Report
+
+### 8.2 Level 定义
+
+#### CTRS Core
+
+**标识符**: `ctrs-core`
+
+CTRS Core 是最小可验证实现。Core 实现能够对一份 Report 的结构完整性和数学正确性进行端到端验证，**不依赖任何外部服务**。
+
+Core 实现者 MUST：
+
+- 实现所有 Core 层级的对象（Report、Claim、Evidence、Rule、Attribution、Settlement）及其 MUST 字段
+- 实现 VR-101 至 VR-402 的全部验证规则（共 20 条）
+- 正确处理 `draft`、`verified`、`eligible`、`settled` 状态转换
+- 支持 SHA-256 Hash 计算和验证
+- Report 中 `issuer` 字段为 SHOULD（推荐但非强制）
+- Report 中 `rule` 字段为 SHOULD（推荐但非强制），但若存在 MUST 满足 VR-105/VR-202/VR-303
+
+Core 实现者 MAY：
+
+- 忽略 Registry 相关验证（VR-501、VR-502）
+- 将 `disputed` 状态视为合法但不做争议流程处理
+
+#### CTRS Governance Extension
+
+**标识符**: `ctrs-governance`
+
+Governance Extension 在 Core 基础上增加注册表和信任基础设施，确保 Rule 和 Issuer 的合法性可通过外部 Registry 验证。
+
+Governance 实现者 MUST 满足 Core 的全部要求，并额外：
+
+- 实现 VR-501（Rule 注册验证）和 VR-502（Issuer 信任验证）
+- Report 中 `issuer` 字段升级为 MUST（不再仅是 SHOULD）
+- Report 中 `rule` 字段升级为 MUST（不再仅是 SHOULD）
+- 实现 Issuer 对象的完整验证（包括 `id` 和 `name` 的合法性检查）
+- 支持 Rule Registry 的查询接口（按 `rule_id` + `hash` 查询注册状态）
+- 支持 Issuer Registry 的查询接口（按 `issuer.id` 查询信任等级）
+- 信任等级 MUST 为 `trusted` 或 `verified` 才能通过验证
+- 实现 `eligible` 状态的完整语义：Report MUST 通过 VR-501 和 VR-502 才能进入 `eligible` 状态
+
+Governance 实现者 SHOULD：
+
+- 支持 Rule 的版本生命周期管理（注册、更新、废弃）
+- 支持 Issuer 信任等级的升降级审计日志
+- 实现 Trust Policy 配置（可配置哪些 `trust_level` 是可接受的）
+
+#### CTRS Enterprise Extension
+
+**标识符**: `ctrs-enterprise`
+
+Enterprise Extension 在 Governance 基础上增加企业级业务流程支持，覆盖争议处理、审计追踪和复杂结算场景。
+
+Enterprise 实现者 MUST 满足 Governance 的全部要求，并额外：
+
+- 实现 `disputed` 状态的完整争议工作流：
+  - 支持争议发起（任何参与方均可发起争议）
+  - 支持争议证据提交（dispute evidence 独立于原始 Evidence）
+  - 支持争议解决（人工裁决或仲裁规则判定）
+  - 争议解决后状态 MUST 转换为 `eligible` 或 `settled`
+- 实现 `proof` 字段（Report MAY 字段升级为 SHOULD）：
+  - 支持数字签名验证（Ed25519 或 ECDSA P-256）
+  - 签名对象 MUST 包含 `algorithm`、`value`、`issuer`
+  - 验证时 MUST 检查签名与 Report 内容的一致性
+- 实现 Multi-Settlement 支持：
+  - 单份 Report 可关联多个 Settlement（如分期结算、多币种结算）
+  - 每个 Settlement MUST 独立满足 VR-401 和 VR-402
+  - 多 Settlement 之间 MUST NOT 存在金额重叠
+
+Enterprise 实现者 SHOULD：
+
+- 实现审计追踪（Audit Trail）：
+  - 记录 Report 的每次状态变更及操作者
+  - 审计日志 MUST 不可篡改（使用 Hash 链或 Merkle Tree）
+  - 审计日志 SHOULD 可导出为标准格式
+- 实现合规监控面板：
+  - 聚合统计各 Level 的验证通过率
+  - 实时告警异常验证模式
+- 支持批量 Report 验证和批量结算
+
+### 8.3 验证规则与 Compliance Level 映射
+
+| 验证规则 | 规则名称 | 验证层级 | Compliance Level |
+|---------|---------|---------|-----------------|
+| VR-101 | Report 必填字段检查 | L1 | Core |
+| VR-102 | Claim 必填字段检查 | L1 | Core |
+| VR-103 | Evidence 必填字段检查 | L1 | Core |
+| VR-104 | Evidence type 枚举检查 | L1 | Core |
+| VR-105 | Rule 必填字段检查 | L1 | Core |
+| VR-106 | Attribution 必填字段检查 | L1 | Core |
+| VR-107 | Settlement 必填字段检查 | L1 | Core |
+| VR-108 | schema_version 常量检查 | L1 | Core |
+| VR-109 | type 常量检查 | L1 | Core |
+| VR-110 | confidence 范围检查 | L1 | Core |
+| VR-111 | Settlement status 枚举检查 | L1 | Core |
+| VR-112 | Report status 枚举检查 | L1 | Core |
+| VR-201 | Evidence Hash 完整性 | L2 | Core |
+| VR-202 | Rule Hash 完整性 | L2 | Core |
+| VR-301 | Evidence-Claim 引用一致性 | L3 | Core |
+| VR-302 | Attribution-Claim 引用一致性 | L3 | Core |
+| VR-303 | Attribution-Rule Hash 绑定 | L3 | Core |
+| VR-304 | Settlement-Attribution 引用一致性 | L3 | Core |
+| VR-401 | Settlement 分润金额正确性 | L3 | Core |
+| VR-402 | Settlement 参与方与 Attribution 一致 | L3 | Core |
+| VR-501 | Rule 注册验证 | L3 | Governance |
+| VR-502 | Issuer 信任验证 | L3 | Governance |
+
+**设计说明**：
+
+- **Core 包含 20 条规则**（VR-101 至 VR-402）：覆盖 Schema 完整性、Hash 完整性、引用一致性和金额正确性，这些规则仅依赖 Report 内部数据即可验证
+- **Governance 包含 2 条规则**（VR-501、VR-502）：涉及外部 Registry 依赖，需要部署基础设施
+- **Enterprise 不增加新的验证规则 ID**，而是在 Governance 基础上扩展业务流程（争议、签名、多结算），这些扩展的验证逻辑通过现有规则在不同业务上下文中应用
+
+### 8.4 Compliance Level 声明
+
+#### 声明格式
+
+实现者 MUST 通过 `compliance` 对象声明其符合的 Compliance Level：
+
+```json
+{
+  "compliance": {
+    "levels": ["ctrs-core"],
+    "extensions": []
+  }
+}
+```
+
+多 Level 声明示例：
+
+```json
+{
+  "compliance": {
+    "levels": ["ctrs-core", "ctrs-governance", "ctrs-enterprise"],
+    "extensions": ["dispute-workflow", "digital-signature", "multi-settlement"]
+  }
+}
+```
+
+#### 声明规则
+
+1. `levels` 数组 MUST 按顺序包含已实现的 Level（Core 始终在最前）
+2. 实现了高 Level 隐含实现了所有低 Level：声明 `ctrs-governance` 时 MUST 同时声明 `ctrs-core`
+3. `extensions` 数组列出 Enterprise 下已实现的具体扩展功能
+4. 实现 MAY 仅声明 Core，不实现任何 Extension
+
+#### 验证器行为
+
+验证器 MUST 根据 Report 的声明 Compliance Level 决定验证范围：
+
+| 声明 Level | 必须通过的验证规则 | 允许的状态 |
+|-----------|----------------|-----------|
+| `ctrs-core` | VR-101 至 VR-402 | draft, verified, eligible, settled |
+| `ctrs-governance` | VR-101 至 VR-502 | draft, verified, eligible, settled |
+| `ctrs-enterprise` | VR-101 至 VR-502 + 扩展验证 | draft, verified, eligible, settled, disputed |
+
+验证器遇到超出声明 Level 的验证需求时 SHOULD 发出警告而非失败。例如，Core 验证器遇到 `disputed` 状态 SHOULD 发出警告但 MAY 继续处理。
+
+#### Report 中的 Compliance Level 标注
+
+Report MAY 在 `metadata` 中标注其目标 Compliance Level：
+
+```json
+{
+  "metadata": {
+    "compliance_level": "ctrs-governance"
+  }
+}
+```
+
+此标注仅供信息目的，验证器 MUST NOT 仅凭此标注就跳过更高 Level 的验证。验证范围由验证器自身的 Compliance Level 声明决定。
+
+### 8.5 互操作矩阵
+
+| 验证器 ↓ / Report → | Core Report | Governance Report | Enterprise Report |
+|---------------------|-------------|-------------------|-------------------|
+| **Core 验证器** | 完全通过 | 跳过 VR-501/502，其余通过 | 跳过 VR-501/502 + 扩展，核心通过 |
+| **Governance 验证器** | 完全通过 | 完全通过 | 跳过扩展，核心 + 治理通过 |
+| **Enterprise 验证器** | 完全通过 | 完全通过 | 完全通过 |
+
+**说明**：高 Level 验证器 MUST 能正确处理低 Level Report。低 Level 验证器处理高 Level Report 时，仅验证其支持的规则，对超出范围的规则 SHOULD 发出警告。
+
+### 8.6 与成熟协议的对比
+
+| 协议 | 核心规范 | 扩展方式 | CTRS 借鉴点 |
+|------|---------|---------|------------|
+| **OAuth 2.0** | RFC 6749（Core） | 独立 RFC 定义各 Grant Type | "核心 + 多扩展"的发布模式 |
+| **JWT/JWS/JWE** | RFC 7519/7515/7516 分层 | 各层独立实现 | 对象能力分层（Core 只做基础验证） |
+| **OpenAPI** | 3.1 Core Spec | Format/Security/Webhooks 扩展 | Compliance Level 声明机制 |
+| **FIDO2** | Core + WebAuthn | 扩展认证方式 | 渐进式采用路径 |
+
+CTRS 的创新点在于：Compliance Level 同时绑定**验证规则集合**和**基础设施依赖**，使实现者可以清晰评估每个 Level 的部署成本和验证能力边界。
+
+---
+
 ## 附录
 
 ### 附录 A: 完整 JSON Schema
@@ -768,4 +974,4 @@ function validate_report(report, rule_registry, issuer_registry):
 |------|------|---------|
 | v1.0 | 2026-06 | 初始版本：五层结构、基础验证 |
 | v1.1 | 2026-06 | Rule 升级为一等对象，Attribution 绑定 rule_hash |
-| v1.2 | 2026-07 | 新增 eligible 状态，confidence 浮点化，Social Authority 层 |
+| v1.2 | 2026-07 | 新增 eligible 状态，confidence 浮点化，Social Authority 层，Compliance Levels（Core/Governance/Enterprise） |
