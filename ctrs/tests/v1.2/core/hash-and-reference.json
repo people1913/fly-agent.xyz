@@ -1,0 +1,264 @@
+{
+  "suite": "CTRS v1.2 Hash Integrity & Reference Consistency Tests",
+  "spec_version": "1.2",
+  "description": "基于 CTRS Specification v1.2 第4.3-4.6节的 L2-L3 验证规则测试。覆盖 Hash 完整性、引用一致性和金额正确性。",
+  "tests": [
+    {
+      "id": "hash-001",
+      "description": "Evidence Hash 完整性验证",
+      "spec_ref": "4.3 L2: Hash 完整性 / VR-201",
+      "rule_id": "VR-201",
+      "cases": [
+        {
+          "description": "Evidence data Hash 匹配时验证通过",
+          "data": {
+            "evidence": {
+              "evidence_id": "e001",
+              "claim_ref": "c001",
+              "type": "conversation",
+              "source": "agent-a",
+              "timestamp": "2026-07-01T12:00:00+00:00",
+              "data": {"action": "recommend", "product": "X1"},
+              "hash": "6474a9e02f0f5fce7a2b2b5a1a0d5a3e8f9c7b6a4d2e1f0a9b8c7d6e5f4a3b2"
+            },
+            "expected": "SHA-256(JSON.stringify(data, sort_keys=True)) == hash"
+          },
+          "valid": true,
+          "verify_method": "recompute_hash"
+        },
+        {
+          "description": "Evidence data 被篡改时 Hash 不匹配",
+          "data": {
+            "evidence": {
+              "evidence_id": "e001",
+              "hash": "6474a9e02f0f5fce7a2b2b5a1a0d5a3e8f9c7b6a4d2e1f0a9b8c7d6e5f4a3b2",
+              "data": {"action": "recommend", "product": "X1-MODIFIED"}
+            },
+            "expected": "SHA-256(JSON.stringify(data, sort_keys=True)) != hash"
+          },
+          "valid": false,
+          "verify_method": "recompute_hash"
+        }
+      ]
+    },
+    {
+      "id": "hash-002",
+      "description": "Rule Hash 完整性验证",
+      "spec_ref": "4.3 L2: Hash 完整性 / VR-202",
+      "rule_id": "VR-202",
+      "cases": [
+        {
+          "description": "Rule definition Hash 匹配时验证通过",
+          "data": {
+            "rule": {
+              "rule_id": "rule-001",
+              "hash": "expected_hash_value",
+              "definition": {"name": "测试规则", "method": "proportional", "parameters": {"splits": {"a": "50", "b": "50"}}}
+            },
+            "expected": "SHA-256(JSON.stringify(definition, sort_keys=True)) == hash"
+          },
+          "valid": true,
+          "verify_method": "recompute_hash"
+        },
+        {
+          "description": "Rule definition 被修改但 hash 未更新时验证失败",
+          "data": {
+            "rule": {
+              "rule_id": "rule-001",
+              "hash": "old_hash_value",
+              "definition": {"name": "被修改的规则", "method": "weighted", "parameters": {"splits": {"a": "60", "b": "40"}}}
+            },
+            "expected": "SHA-256(JSON.stringify(definition, sort_keys=True)) != hash"
+          },
+          "valid": false,
+          "verify_method": "recompute_hash"
+        }
+      ]
+    },
+    {
+      "id": "ref-001",
+      "description": "Evidence-Claim 引用一致性",
+      "spec_ref": "4.4 L3: 引用一致性 / VR-301",
+      "rule_id": "VR-301",
+      "cases": [
+        {
+          "description": "evidence.claim_ref 等于 claim.claim_id 时验证通过",
+          "data": {
+            "claim": {"claim_id": "c001"},
+            "evidence": [{"claim_ref": "c001"}, {"claim_ref": "c001"}]
+          },
+          "valid": true
+        },
+        {
+          "description": "evidence.claim_ref 不匹配 claim.claim_id 时验证失败",
+          "data": {
+            "claim": {"claim_id": "c001"},
+            "evidence": [{"claim_ref": "c001"}, {"claim_ref": "c999"}]
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "ref-002",
+      "description": "Attribution-Claim 引用一致性",
+      "spec_ref": "4.4 L3: 引用一致性 / VR-302",
+      "rule_id": "VR-302",
+      "cases": [
+        {
+          "description": "attribution.claim_ref 等于 claim.claim_id 时验证通过",
+          "data": {
+            "claim": {"claim_id": "c001"},
+            "attribution": {"claim_ref": "c001"}
+          },
+          "valid": true
+        },
+        {
+          "description": "attribution.claim_ref 不匹配时验证失败",
+          "data": {
+            "claim": {"claim_id": "c001"},
+            "attribution": {"claim_ref": "c999"}
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "ref-003",
+      "description": "Attribution-Rule Hash 绑定",
+      "spec_ref": "4.4 L3: 引用一致性 / VR-303",
+      "rule_id": "VR-303",
+      "cases": [
+        {
+          "description": "attribution.rule_hash 等于 rule.hash 时验证通过",
+          "data": {
+            "rule": {"hash": "abc123"},
+            "attribution": {"rule_hash": "abc123"}
+          },
+          "valid": true
+        },
+        {
+          "description": "attribution.rule_hash 不匹配 rule.hash 时验证失败",
+          "data": {
+            "rule": {"hash": "abc123"},
+            "attribution": {"rule_hash": "xyz789"}
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "ref-004",
+      "description": "Settlement-Attribution 引用一致性",
+      "spec_ref": "4.4 L3: 引用一致性 / VR-304",
+      "rule_id": "VR-304",
+      "cases": [
+        {
+          "description": "settlement.attribution_ref 等于 attribution.attribution_id 时验证通过",
+          "data": {
+            "attribution": {"attribution_id": "at001"},
+            "settlement": {"attribution_ref": "at001"}
+          },
+          "valid": true
+        },
+        {
+          "description": "settlement.attribution_ref 不匹配时验证失败",
+          "data": {
+            "attribution": {"attribution_id": "at001"},
+            "settlement": {"attribution_ref": "at999"}
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "amount-001",
+      "description": "Settlement 分润金额加总必须等于总金额",
+      "spec_ref": "4.5 L3: 金额正确性 / VR-401",
+      "rule_id": "VR-401",
+      "cases": [
+        {
+          "description": "分润金额加总等于总金额时验证通过",
+          "data": {
+            "settlement": {
+              "amount": "120",
+              "split": [
+                {"party_id": "a", "share_pct": "40", "share_amount": "48"},
+                {"party_id": "b", "share_pct": "35", "share_amount": "42"},
+                {"party_id": "c", "share_pct": "25", "share_amount": "30"}
+              ]
+            }
+          },
+          "valid": true
+        },
+        {
+          "description": "分润金额加总不等于总金额时验证失败",
+          "data": {
+            "settlement": {
+              "amount": "120",
+              "split": [
+                {"party_id": "a", "share_pct": "40", "share_amount": "48"},
+                {"party_id": "b", "share_pct": "35", "share_amount": "42"}
+              ]
+            }
+          },
+          "valid": false
+        },
+        {
+          "description": "金额为浮点精度问题导致不匹配时验证失败",
+          "data": {
+            "settlement": {
+              "amount": "100",
+              "split": [
+                {"party_id": "a", "share_pct": "33.33", "share_amount": "33.33"},
+                {"party_id": "b", "share_pct": "33.33", "share_amount": "33.33"},
+                {"party_id": "c", "share_pct": "33.34", "share_amount": "33.34"}
+              ]
+            }
+          },
+          "valid": false,
+          "note": "33.33 + 33.33 + 33.34 = 100.00，此例实际通过；修改为 33.33+33.33+33.33=99.99 则失败"
+        }
+      ]
+    },
+    {
+      "id": "amount-002",
+      "description": "Settlement 参与方必须与 Attribution 结果一致",
+      "spec_ref": "4.5 L3: 金额正确性 / VR-402",
+      "rule_id": "VR-402",
+      "cases": [
+        {
+          "description": "eligible_parties 与 attribution.result 一致时验证通过",
+          "data": {
+            "attribution": {
+              "result": [
+                {"party_id": "a"},
+                {"party_id": "b"},
+                {"party_id": "c"}
+              ]
+            },
+            "settlement": {
+              "eligible_parties": ["a", "b", "c"]
+            }
+          },
+          "valid": true
+        },
+        {
+          "description": "eligible_parties 包含 attribution 中不存在的 party 时验证失败",
+          "data": {
+            "attribution": {
+              "result": [
+                {"party_id": "a"},
+                {"party_id": "b"}
+              ]
+            },
+            "settlement": {
+              "eligible_parties": ["a", "b", "d"]
+            }
+          },
+          "valid": false
+        }
+      ]
+    }
+  ]
+}

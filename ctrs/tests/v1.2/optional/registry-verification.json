@@ -1,0 +1,100 @@
+{
+  "suite": "CTRS v1.2 Optional Tests — Registry Verification",
+  "spec_version": "1.2",
+  "description": "基于 CTRS Specification v1.2 第4.6节的 L3 注册表验证测试。这些测试依赖外部 Registry 数据，属于可选测试。",
+  "tests": [
+    {
+      "id": "registry-001",
+      "description": "Rule 注册验证",
+      "spec_ref": "4.6 L3: 注册表验证 / VR-501",
+      "rule_id": "VR-501",
+      "prerequisite": "需要 Rule Registry 数据",
+      "cases": [
+        {
+          "description": "Rule 在 Registry 中已注册且 Hash 匹配时验证通过",
+          "data": {
+            "rule": {
+              "rule_id": "rule-001",
+              "hash": "abc123"
+            },
+            "registry": {
+              "rule-001": [{"rule_hash": "abc123", "status": "active"}]
+            }
+          },
+          "valid": true
+        },
+        {
+          "description": "Rule 未在 Registry 中注册时验证失败",
+          "data": {
+            "rule": {
+              "rule_id": "rule-999",
+              "hash": "xyz789"
+            },
+            "registry": {}
+          },
+          "valid": false
+        },
+        {
+          "description": "Rule 已注册但 Hash 不匹配时验证失败",
+          "data": {
+            "rule": {
+              "rule_id": "rule-001",
+              "hash": "modified_hash"
+            },
+            "registry": {
+              "rule-001": [{"rule_hash": "abc123", "status": "active"}]
+            }
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "registry-002",
+      "description": "Issuer 信任验证",
+      "spec_ref": "4.6 L3: 注册表验证 / VR-502",
+      "rule_id": "VR-502",
+      "prerequisite": "需要 Issuer Registry 数据",
+      "cases": [
+        {
+          "description": "Issuer trust_level 为 trusted 时验证通过",
+          "data": {
+            "rule": {"issuer": "did:fly:platform-x"},
+            "issuer_registry": {
+              "did:fly:platform-x": {"trust_level": "trusted"}
+            }
+          },
+          "valid": true
+        },
+        {
+          "description": "Issuer trust_level 为 verified 时验证通过",
+          "data": {
+            "rule": {"issuer": "did:fly:platform-y"},
+            "issuer_registry": {
+              "did:fly:platform-y": {"trust_level": "verified"}
+            }
+          },
+          "valid": true
+        },
+        {
+          "description": "Issuer trust_level 为 unverified 时验证失败",
+          "data": {
+            "rule": {"issuer": "did:fly:platform-z"},
+            "issuer_registry": {
+              "did:fly:platform-z": {"trust_level": "unverified"}
+            }
+          },
+          "valid": false
+        },
+        {
+          "description": "Issuer 不在 Registry 中时验证失败",
+          "data": {
+            "rule": {"issuer": "did:fly:unknown"},
+            "issuer_registry": {}
+          },
+          "valid": false
+        }
+      ]
+    }
+  ]
+}

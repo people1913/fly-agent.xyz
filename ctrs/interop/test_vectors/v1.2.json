@@ -1,0 +1,421 @@
+{
+  "version": "1.2",
+  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。",
+  "test_vectors": [
+    {
+      "id": "tv-001",
+      "description": "基础归因场景：单 Agent 推荐促成转化",
+      "input": {
+        "claim": {
+          "claim_id": "c-tv001",
+          "type": "single_agent_conversion",
+          "subject": "用户购买产品，由单一 Agent 推荐",
+          "description": "Agent A 推荐产品，用户直接购买。交易金额 $100。",
+          "timestamp": "2026-07-01T10:00:00+00:00",
+          "parties": [
+            {"id": "agent-a", "role": "recommender", "name": "Agent A"},
+            {"id": "user-1", "role": "buyer", "name": "User"}
+          ]
+        },
+        "evidence": [
+          {
+            "evidence_id": "e-tv001-1",
+            "claim_ref": "c-tv001",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T10:00:10+00:00",
+            "data": {
+              "action": "recommend_product",
+              "product_id": "prod-001",
+              "message": "推荐产品 A，售价 $100"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          }
+        ],
+        "rule": {
+          "rule_id": "rule-single-agent-v1",
+          "issuer": "did:fly:test-platform",
+          "version": "1.0.0",
+          "hash": "PLACEHOLDER_COMPUTE_SHA256",
+          "definition": {
+            "name": "单Agent归因规则",
+            "method": "proportional",
+            "description": "推荐Agent获得100%归因",
+            "parameters": {
+              "total_value": "100",
+              "currency": "USD",
+              "splits": {"agent-a": "100"}
+            }
+          },
+          "created_at": "2026-07-01T10:00:00+00:00"
+        }
+      },
+      "expected_output": {
+        "report_constraints": {
+          "schema_version": "CTRS-v1.2",
+          "type": "CommercialTrustReport",
+          "attribution.confidence": "0 <= value <= 1",
+          "attribution.rule_hash": "MUST equal rule.hash",
+          "attribution.claim_ref": "MUST equal claim.claim_id",
+          "settlement.attribution_ref": "MUST equal attribution.attribution_id"
+        },
+        "settlement_constraints": {
+          "amount": "100",
+          "currency": "USD",
+          "split_sum": "100",
+          "split": [
+            {"party_id": "agent-a", "share_pct": "100", "share_amount": "100"}
+          ],
+          "eligible_parties": ["agent-a"]
+        },
+        "verification_checks": {
+          "VR-101": "PASS — 所有 MUST 字段存在",
+          "VR-201": "PASS — Evidence Hash 匹配",
+          "VR-202": "PASS — Rule Hash 匹配",
+          "VR-301": "PASS — Evidence claim_ref == claim.claim_id",
+          "VR-302": "PASS — Attribution claim_ref == claim.claim_id",
+          "VR-303": "PASS — Attribution rule_hash == rule.hash",
+          "VR-304": "PASS — Settlement attribution_ref == attribution.attribution_id",
+          "VR-401": "PASS — split sum (100) == amount (100)",
+          "VR-402": "PASS — eligible_parties ⊆ attribution.result.party_ids"
+        }
+      }
+    },
+    {
+      "id": "tv-002",
+      "description": "多 Agent 协作归因场景：推荐+讲解+支付",
+      "input": {
+        "claim": {
+          "claim_id": "c-tv002",
+          "type": "multi_agent_conversion",
+          "subject": "用户购买高级产品，由三个 Agent 协作促成",
+          "description": "Agent A 推荐 → Agent B 讲解 → Agent C 完成支付。交易金额 $2400。",
+          "timestamp": "2026-07-01T12:00:00+00:00",
+          "parties": [
+            {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+            {"id": "agent-b", "role": "explainer", "name": "讲解 Agent"},
+            {"id": "agent-c", "role": "payment_agent", "name": "支付 Agent"},
+            {"id": "user-1", "role": "buyer", "name": "User"}
+          ]
+        },
+        "evidence": [
+          {
+            "evidence_id": "e-tv002-1",
+            "claim_ref": "c-tv002",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T12:00:10+00:00",
+            "data": {
+              "action": "recommend_product",
+              "product_id": "prod-premium",
+              "message": "推荐 Premium 产品，售价 $2400"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          },
+          {
+            "evidence_id": "e-tv002-2",
+            "claim_ref": "c-tv002",
+            "type": "conversation",
+            "source": "agent-b",
+            "timestamp": "2026-07-01T12:00:20+00:00",
+            "data": {
+              "action": "explain_product",
+              "product_id": "prod-premium",
+              "details": "高端做工，五年质保"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          },
+          {
+            "evidence_id": "e-tv002-3",
+            "claim_ref": "c-tv002",
+            "type": "payment",
+            "source": "agent-c",
+            "timestamp": "2026-07-01T12:00:30+00:00",
+            "data": {
+              "action": "process_payment",
+              "transaction_id": "TXN-001",
+              "amount": 2400,
+              "currency": "USD",
+              "status": "completed"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          }
+        ],
+        "rule": {
+          "rule_id": "rule-multi-agent-v1",
+          "issuer": "did:fly:test-platform",
+          "version": "1.0.0",
+          "hash": "PLACEHOLDER_COMPUTE_SHA256",
+          "definition": {
+            "name": "三Agent协作归因规则",
+            "method": "proportional",
+            "description": "推荐45% / 讲解35% / 支付渠道20%",
+            "parameters": {
+              "total_value": "2400",
+              "currency": "USD",
+              "splits": {"agent-a": "45", "agent-b": "35", "agent-c": "20"}
+            }
+          },
+          "created_at": "2026-07-01T12:00:00+00:00"
+        }
+      },
+      "expected_output": {
+        "report_constraints": {
+          "schema_version": "CTRS-v1.2",
+          "type": "CommercialTrustReport",
+          "attribution.confidence": "0 <= value <= 1",
+          "attribution.rule_hash": "MUST equal rule.hash",
+          "attribution.claim_ref": "MUST equal claim.claim_id",
+          "settlement.attribution_ref": "MUST equal attribution.attribution_id"
+        },
+        "attribution_result": [
+          {"party_id": "agent-a", "contribution_pct": "45", "attributed_value": "1080"},
+          {"party_id": "agent-b", "contribution_pct": "35", "attributed_value": "840"},
+          {"party_id": "agent-c", "contribution_pct": "20", "attributed_value": "480"}
+        ],
+        "settlement_constraints": {
+          "amount": "2400",
+          "currency": "USD",
+          "split_sum": "2400",
+          "split": [
+            {"party_id": "agent-a", "share_pct": "45", "share_amount": "1080"},
+            {"party_id": "agent-b", "share_pct": "35", "share_amount": "840"},
+            {"party_id": "agent-c", "share_pct": "20", "share_amount": "480"}
+          ],
+          "eligible_parties": ["agent-a", "agent-b", "agent-c"]
+        },
+        "verification_checks": {
+          "VR-101": "PASS — 所有 MUST 字段存在",
+          "VR-102": "PASS — Claim MUST 字段完整",
+          "VR-103": "PASS — Evidence MUST 字段完整",
+          "VR-104": "PASS — Evidence type 枚举合法",
+          "VR-201": "PASS — Evidence Hash 匹配",
+          "VR-202": "PASS — Rule Hash 匹配",
+          "VR-301": "PASS — Evidence claim_ref 一致",
+          "VR-302": "PASS — Attribution claim_ref 一致",
+          "VR-303": "PASS — Attribution rule_hash 一致",
+          "VR-304": "PASS — Settlement attribution_ref 一致",
+          "VR-401": "PASS — split sum (1080+840+480=2400) == amount (2400)",
+          "VR-402": "PASS — eligible_parties ⊆ attribution.result.party_ids"
+        }
+      }
+    },
+    {
+      "id": "tv-003",
+      "description": "带置信度的归因场景：部分归因",
+      "input": {
+        "claim": {
+          "claim_id": "c-tv003",
+          "type": "partial_attribution",
+          "subject": "用户购买产品，Agent 推荐但用户已有购买意向",
+          "description": "Agent A 提供了产品推荐，但用户此前已浏览过该产品。交易金额 $500。",
+          "timestamp": "2026-07-01T14:00:00+00:00",
+          "parties": [
+            {"id": "agent-a", "role": "recommender", "name": "Agent A"},
+            {"id": "user-1", "role": "buyer", "name": "User"}
+          ]
+        },
+        "evidence": [
+          {
+            "evidence_id": "e-tv003-1",
+            "claim_ref": "c-tv003",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T14:00:10+00:00",
+            "data": {
+              "action": "recommend_product",
+              "product_id": "prod-002",
+              "message": "推荐产品 B"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          },
+          {
+            "evidence_id": "e-tv003-2",
+            "claim_ref": "c-tv003",
+            "type": "crm",
+            "source": "crm-system",
+            "timestamp": "2026-07-01T13:30:00+00:00",
+            "data": {
+              "action": "page_view",
+              "product_id": "prod-002",
+              "user_id": "user-1",
+              "note": "用户此前已浏览该产品页面"
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          }
+        ],
+        "rule": {
+          "rule_id": "rule-partial-attribution-v1",
+          "issuer": "did:fly:test-platform",
+          "version": "1.0.0",
+          "hash": "PLACEHOLDER_COMPUTE_SHA256",
+          "definition": {
+            "name": "部分归因规则",
+            "method": "weighted",
+            "description": "推荐贡献60%，用户自发40%",
+            "parameters": {
+              "total_value": "500",
+              "currency": "USD",
+              "splits": {"agent-a": "60"},
+              "confidence_override": 0.7
+            }
+          },
+          "created_at": "2026-07-01T14:00:00+00:00"
+        }
+      },
+      "expected_output": {
+        "report_constraints": {
+          "schema_version": "CTRS-v1.2",
+          "type": "CommercialTrustReport",
+          "attribution.confidence": "0.7 (来自 rule confidence_override)",
+          "attribution.rule_hash": "MUST equal rule.hash"
+        },
+        "attribution_result": [
+          {"party_id": "agent-a", "contribution_pct": "60", "attributed_value": "300"}
+        ],
+        "settlement_constraints": {
+          "amount": "300",
+          "currency": "USD",
+          "split_sum": "300",
+          "split": [
+            {"party_id": "agent-a", "share_pct": "60", "share_amount": "300"}
+          ],
+          "eligible_parties": ["agent-a"]
+        }
+      }
+    },
+    {
+      "id": "tv-004",
+      "description": "Webhook 证据类型场景",
+      "input": {
+        "claim": {
+          "claim_id": "c-tv004",
+          "type": "webhook_conversion",
+          "subject": "通过 Webhook 回调确认转化",
+          "description": "外部系统通过 Webhook 通知转化事件。交易金额 $75。",
+          "timestamp": "2026-07-01T16:00:00+00:00",
+          "parties": [
+            {"id": "agent-a", "role": "recommender", "name": "Agent A"},
+            {"id": "user-1", "role": "buyer", "name": "User"}
+          ]
+        },
+        "evidence": [
+          {
+            "evidence_id": "e-tv004-1",
+            "claim_ref": "c-tv004",
+            "type": "webhook",
+            "source": "external-system",
+            "timestamp": "2026-07-01T16:00:05+00:00",
+            "data": {
+              "webhook_id": "wh-001",
+              "event": "conversion.completed",
+              "payload": {"order_id": "ORD-001", "amount": 75, "currency": "USD"}
+            },
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          }
+        ],
+        "rule": {
+          "rule_id": "rule-webhook-v1",
+          "issuer": "did:fly:test-platform",
+          "version": "1.0.0",
+          "hash": "PLACEHOLDER_COMPUTE_SHA256",
+          "definition": {
+            "name": "Webhook归因规则",
+            "method": "proportional",
+            "parameters": {
+              "total_value": "75",
+              "currency": "USD",
+              "splits": {"agent-a": "100"}
+            }
+          },
+          "created_at": "2026-07-01T16:00:00+00:00"
+        }
+      },
+      "expected_output": {
+        "report_constraints": {
+          "schema_version": "CTRS-v1.2",
+          "attribution.confidence": "1.0 (确定性转化)",
+          "evidence[0].type": "webhook (枚举合法)"
+        },
+        "settlement_constraints": {
+          "amount": "75",
+          "currency": "USD",
+          "split_sum": "75",
+          "eligible_parties": ["agent-a"]
+        }
+      }
+    },
+    {
+      "id": "tv-005",
+      "description": "争议场景：Settlement 为 disputed 状态",
+      "input": {
+        "claim": {
+          "claim_id": "c-tv005",
+          "type": "disputed_conversion",
+          "subject": "存在争议的转化归因",
+          "description": "Agent A 和 Agent B 都声称促成了转化。交易金额 $200。",
+          "timestamp": "2026-07-01T18:00:00+00:00",
+          "parties": [
+            {"id": "agent-a", "role": "recommender", "name": "Agent A"},
+            {"id": "agent-b", "role": "recommender", "name": "Agent B"},
+            {"id": "user-1", "role": "buyer", "name": "User"}
+          ]
+        },
+        "evidence": [
+          {
+            "evidence_id": "e-tv005-1",
+            "claim_ref": "c-tv005",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T18:00:10+00:00",
+            "data": {"action": "recommend", "product_id": "prod-003"},
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          },
+          {
+            "evidence_id": "e-tv005-2",
+            "claim_ref": "c-tv005",
+            "type": "conversation",
+            "source": "agent-b",
+            "timestamp": "2026-07-01T18:00:15+00:00",
+            "data": {"action": "recommend", "product_id": "prod-003"},
+            "hash": "PLACEHOLDER_COMPUTE_SHA256"
+          }
+        ],
+        "rule": {
+          "rule_id": "rule-disputed-v1",
+          "issuer": "did:fly:test-platform",
+          "version": "1.0.0",
+          "hash": "PLACEHOLDER_COMPUTE_SHA256",
+          "definition": {
+            "name": "争议归因规则",
+            "method": "proportional",
+            "description": "暂时50/50分，等待争议解决",
+            "parameters": {
+              "total_value": "200",
+              "currency": "USD",
+              "splits": {"agent-a": "50", "agent-b": "50"}
+            }
+          },
+          "created_at": "2026-07-01T18:00:00+00:00"
+        }
+      },
+      "expected_output": {
+        "report_constraints": {
+          "schema_version": "CTRS-v1.2",
+          "status": "disputed",
+          "settlement.status": "disputed"
+        },
+        "attribution_result": [
+          {"party_id": "agent-a", "contribution_pct": "50", "attributed_value": "100"},
+          {"party_id": "agent-b", "contribution_pct": "50", "attributed_value": "100"}
+        ],
+        "settlement_constraints": {
+          "amount": "200",
+          "currency": "USD",
+          "split_sum": "200",
+          "status": "disputed"
+        }
+      }
+    }
+  ]
+}

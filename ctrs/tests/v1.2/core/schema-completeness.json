@@ -1,0 +1,526 @@
+{
+  "suite": "CTRS v1.2 Core Conformance Tests",
+  "spec_version": "1.2",
+  "description": "基于 CTRS Specification v1.2 第3-4章的强制测试用例。覆盖所有 MUST 字段和 L1-L2 验证规则。",
+  "tests": [
+    {
+      "id": "core-001",
+      "description": "Report 必须包含所有 MUST 字段",
+      "spec_ref": "3.1 Report 对象 — MUST 字段",
+      "rule_id": "VR-101",
+      "schema": {
+        "type": "object",
+        "required": ["report_id", "schema_version", "type", "created_at", "claim", "evidence", "attribution", "settlement"]
+      },
+      "cases": [
+        {
+          "description": "有效 Report 包含所有 MUST 字段",
+          "data": {
+            "report_id": "550e8400-e29b-41d4-a716-446655440000",
+            "schema_version": "CTRS-v1.2",
+            "type": "CommercialTrustReport",
+            "created_at": "2026-07-01T12:00:00+00:00",
+            "claim": {"claim_id": "c001", "type": "conversion", "subject": "test", "description": "test", "timestamp": "2026-07-01T12:00:00+00:00", "parties": [{"id": "a1", "role": "recommender"}]},
+            "evidence": [{"evidence_id": "e001", "claim_ref": "c001", "type": "conversation", "source": "a1", "timestamp": "2026-07-01T12:00:00+00:00", "data": {"action": "test"}, "hash": "abc123"}],
+            "attribution": {"attribution_id": "at001", "claim_ref": "c001", "rule_hash": "rhash1", "method": "proportional", "confidence": 0.9, "result": [{"party_id": "a1", "contribution_pct": "100", "attributed_value": "100"}], "reasoning": "test", "attributed_at": "2026-07-01T12:00:00+00:00"},
+            "settlement": {"settlement_id": "s001", "attribution_ref": "at001", "status": "eligible", "amount": "100", "currency": "USD", "split": [{"party_id": "a1", "share_pct": "100", "share_amount": "100"}], "eligible_parties": ["a1"]}
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 report_id 应该失败",
+          "data": {
+            "schema_version": "CTRS-v1.2",
+            "type": "CommercialTrustReport",
+            "created_at": "2026-07-01T12:00:00+00:00",
+            "claim": {},
+            "evidence": [],
+            "attribution": {},
+            "settlement": {}
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 schema_version 应该失败",
+          "data": {
+            "report_id": "550e8400-e29b-41d4-a716-446655440000",
+            "type": "CommercialTrustReport",
+            "created_at": "2026-07-01T12:00:00+00:00",
+            "claim": {},
+            "evidence": [],
+            "attribution": {},
+            "settlement": {}
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 claim 应该失败",
+          "data": {
+            "report_id": "550e8400-e29b-41d4-a716-446655440000",
+            "schema_version": "CTRS-v1.2",
+            "type": "CommercialTrustReport",
+            "created_at": "2026-07-01T12:00:00+00:00",
+            "evidence": [],
+            "attribution": {},
+            "settlement": {}
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 evidence 应该失败",
+          "data": {
+            "report_id": "550e8400-e29b-41d4-a716-446655440000",
+            "schema_version": "CTRS-v1.2",
+            "type": "CommercialTrustReport",
+            "created_at": "2026-07-01T12:00:00+00:00",
+            "claim": {},
+            "attribution": {},
+            "settlement": {}
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-002",
+      "description": "schema_version 必须为 CTRS-v1.2",
+      "spec_ref": "3.1 Report 对象 — MUST 字段 / VR-108",
+      "rule_id": "VR-108",
+      "cases": [
+        {
+          "description": "schema_version 为 CTRS-v1.2 有效",
+          "data": {"schema_version": "CTRS-v1.2"},
+          "valid": true
+        },
+        {
+          "description": "schema_version 为 CTRS-v1.1 无效",
+          "data": {"schema_version": "CTRS-v1.1"},
+          "valid": false
+        },
+        {
+          "description": "schema_version 为 1.2 无效",
+          "data": {"schema_version": "1.2"},
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-003",
+      "description": "type 必须为 CommercialTrustReport",
+      "spec_ref": "3.1 Report 对象 — MUST 字段 / VR-109",
+      "rule_id": "VR-109",
+      "cases": [
+        {
+          "description": "type 为 CommercialTrustReport 有效",
+          "data": {"type": "CommercialTrustReport"},
+          "valid": true
+        },
+        {
+          "description": "type 为 TrustReport 无效",
+          "data": {"type": "TrustReport"},
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-004",
+      "description": "Claim 必须包含所有 MUST 字段",
+      "spec_ref": "3.2 Claim 对象 / VR-102",
+      "rule_id": "VR-102",
+      "cases": [
+        {
+          "description": "有效 Claim 包含所有 MUST 字段",
+          "data": {
+            "claim_id": "c001",
+            "type": "multi_agent_conversion",
+            "subject": "测试场景",
+            "description": "详细描述",
+            "timestamp": "2026-07-01T12:00:00+00:00",
+            "parties": [{"id": "a1", "role": "recommender", "name": "Agent A"}]
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 claim_id 应该失败",
+          "data": {
+            "type": "conversion",
+            "subject": "测试",
+            "description": "描述",
+            "timestamp": "2026-07-01T12:00:00+00:00",
+            "parties": [{"id": "a1", "role": "recommender"}]
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 parties 应该失败",
+          "data": {
+            "claim_id": "c001",
+            "type": "conversion",
+            "subject": "测试",
+            "description": "描述",
+            "timestamp": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-005",
+      "description": "Evidence 必须包含所有 MUST 字段",
+      "spec_ref": "3.3 Evidence 对象 / VR-103",
+      "rule_id": "VR-103",
+      "cases": [
+        {
+          "description": "有效 Evidence 包含所有 MUST 字段",
+          "data": {
+            "evidence_id": "e001",
+            "claim_ref": "c001",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T12:00:00+00:00",
+            "data": {"action": "recommend"},
+            "hash": "a1b2c3d4"
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 hash 应该失败",
+          "data": {
+            "evidence_id": "e001",
+            "claim_ref": "c001",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T12:00:00+00:00",
+            "data": {"action": "recommend"}
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 data 应该失败",
+          "data": {
+            "evidence_id": "e001",
+            "claim_ref": "c001",
+            "type": "conversation",
+            "source": "agent-a",
+            "timestamp": "2026-07-01T12:00:00+00:00",
+            "hash": "a1b2c3d4"
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-006",
+      "description": "Evidence type 必须在枚举范围内",
+      "spec_ref": "3.3 Evidence 对象 / VR-104",
+      "rule_id": "VR-104",
+      "cases": [
+        {
+          "description": "type 为 conversation 有效",
+          "data": {"type": "conversation"},
+          "valid": true
+        },
+        {
+          "description": "type 为 payment 有效",
+          "data": {"type": "payment"},
+          "valid": true
+        },
+        {
+          "description": "type 为 webhook 有效",
+          "data": {"type": "webhook"},
+          "valid": true
+        },
+        {
+          "description": "type 为 mcp 有效",
+          "data": {"type": "mcp"},
+          "valid": true
+        },
+        {
+          "description": "type 为 crm 有效",
+          "data": {"type": "crm"},
+          "valid": true
+        },
+        {
+          "description": "type 为 stripe 有效",
+          "data": {"type": "stripe"},
+          "valid": true
+        },
+        {
+          "description": "type 为 custom 有效",
+          "data": {"type": "custom"},
+          "valid": true
+        },
+        {
+          "description": "type 为 email 无效",
+          "data": {"type": "email"},
+          "valid": false
+        },
+        {
+          "description": "type 为 api_call 无效",
+          "data": {"type": "api_call"},
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-007",
+      "description": "Rule 必须包含所有 MUST 字段",
+      "spec_ref": "3.4 Rule 对象 / VR-105",
+      "rule_id": "VR-105",
+      "cases": [
+        {
+          "description": "有效 Rule 包含所有 MUST 字段",
+          "data": {
+            "rule_id": "rule-001",
+            "issuer": "did:fly:platform-x",
+            "version": "1.0.0",
+            "hash": "abc123def456",
+            "definition": {"name": "测试规则", "method": "proportional", "parameters": {"splits": {"a": "50", "b": "50"}}},
+            "created_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 rule_id 应该失败",
+          "data": {
+            "issuer": "did:fly:platform-x",
+            "version": "1.0.0",
+            "hash": "abc123",
+            "definition": {"name": "测试", "method": "proportional", "parameters": {}},
+            "created_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 hash 应该失败",
+          "data": {
+            "rule_id": "rule-001",
+            "issuer": "did:fly:platform-x",
+            "version": "1.0.0",
+            "definition": {"name": "测试", "method": "proportional", "parameters": {}},
+            "created_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 definition 应该失败",
+          "data": {
+            "rule_id": "rule-001",
+            "issuer": "did:fly:platform-x",
+            "version": "1.0.0",
+            "hash": "abc123",
+            "created_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-008",
+      "description": "Attribution 必须包含所有 MUST 字段",
+      "spec_ref": "3.5 Attribution 对象 / VR-106",
+      "rule_id": "VR-106",
+      "cases": [
+        {
+          "description": "有效 Attribution 包含所有 MUST 字段",
+          "data": {
+            "attribution_id": "at001",
+            "claim_ref": "c001",
+            "rule_hash": "rhash001",
+            "method": "proportional",
+            "confidence": 0.9,
+            "result": [{"party_id": "a1", "contribution_pct": "100", "attributed_value": "100"}],
+            "reasoning": "基于规则的归因",
+            "attributed_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 rule_hash 应该失败",
+          "data": {
+            "attribution_id": "at001",
+            "claim_ref": "c001",
+            "method": "proportional",
+            "confidence": 0.9,
+            "result": [{"party_id": "a1", "contribution_pct": "100", "attributed_value": "100"}],
+            "reasoning": "测试",
+            "attributed_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 confidence 应该失败",
+          "data": {
+            "attribution_id": "at001",
+            "claim_ref": "c001",
+            "rule_hash": "rhash001",
+            "method": "proportional",
+            "result": [{"party_id": "a1", "contribution_pct": "100", "attributed_value": "100"}],
+            "reasoning": "测试",
+            "attributed_at": "2026-07-01T12:00:00+00:00"
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-009",
+      "description": "confidence 必须为 0-1 浮点数",
+      "spec_ref": "3.5 Attribution 对象 / VR-110",
+      "rule_id": "VR-110",
+      "cases": [
+        {
+          "description": "confidence 为 0.85 有效",
+          "data": {"confidence": 0.85},
+          "valid": true
+        },
+        {
+          "description": "confidence 为 1.0 有效",
+          "data": {"confidence": 1.0},
+          "valid": true
+        },
+        {
+          "description": "confidence 为 0 有效",
+          "data": {"confidence": 0},
+          "valid": true
+        },
+        {
+          "description": "confidence 为 0.5 有效",
+          "data": {"confidence": 0.5},
+          "valid": true
+        },
+        {
+          "description": "confidence 为整数 85 无效（v1.2 不接受整数百分比）",
+          "data": {"confidence": 85},
+          "valid": false
+        },
+        {
+          "description": "confidence 为 1.5 超出范围无效",
+          "data": {"confidence": 1.5},
+          "valid": false
+        },
+        {
+          "description": "confidence 为 -0.1 超出范围无效",
+          "data": {"confidence": -0.1},
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-010",
+      "description": "Settlement 必须包含所有 MUST 字段",
+      "spec_ref": "3.6 Settlement 对象 / VR-107",
+      "rule_id": "VR-107",
+      "cases": [
+        {
+          "description": "有效 Settlement 包含所有 MUST 字段",
+          "data": {
+            "settlement_id": "s001",
+            "attribution_ref": "at001",
+            "status": "eligible",
+            "amount": "100",
+            "currency": "USD",
+            "split": [{"party_id": "a1", "share_pct": "100", "share_amount": "100"}],
+            "eligible_parties": ["a1"]
+          },
+          "valid": true
+        },
+        {
+          "description": "缺少 currency 应该失败",
+          "data": {
+            "settlement_id": "s001",
+            "attribution_ref": "at001",
+            "status": "eligible",
+            "amount": "100",
+            "split": [{"party_id": "a1", "share_pct": "100", "share_amount": "100"}],
+            "eligible_parties": ["a1"]
+          },
+          "valid": false
+        },
+        {
+          "description": "缺少 eligible_parties 应该失败",
+          "data": {
+            "settlement_id": "s001",
+            "attribution_ref": "at001",
+            "status": "eligible",
+            "amount": "100",
+            "currency": "USD",
+            "split": [{"party_id": "a1", "share_pct": "100", "share_amount": "100"}]
+          },
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-011",
+      "description": "Settlement status 必须在枚举范围内",
+      "spec_ref": "3.6 Settlement 对象 / VR-111",
+      "rule_id": "VR-111",
+      "cases": [
+        {
+          "description": "status 为 eligible 有效（v1.2 新增）",
+          "data": {"status": "eligible"},
+          "valid": true
+        },
+        {
+          "description": "status 为 pending 有效",
+          "data": {"status": "pending"},
+          "valid": true
+        },
+        {
+          "description": "status 为 settled 有效",
+          "data": {"status": "settled"},
+          "valid": true
+        },
+        {
+          "description": "status 为 disputed 有效",
+          "data": {"status": "disputed"},
+          "valid": true
+        },
+        {
+          "description": "status 为 approved 无效",
+          "data": {"status": "approved"},
+          "valid": false
+        }
+      ]
+    },
+    {
+      "id": "core-012",
+      "description": "Report status 必须在枚举范围内",
+      "spec_ref": "3.1 Report 对象 / VR-112",
+      "rule_id": "VR-112",
+      "cases": [
+        {
+          "description": "status 为 draft 有效",
+          "data": {"status": "draft"},
+          "valid": true
+        },
+        {
+          "description": "status 为 verified 有效",
+          "data": {"status": "verified"},
+          "valid": true
+        },
+        {
+          "description": "status 为 eligible 有效（v1.2 新增）",
+          "data": {"status": "eligible"},
+          "valid": true
+        },
+        {
+          "description": "status 为 settled 有效",
+          "data": {"status": "settled"},
+          "valid": true
+        },
+        {
+          "description": "status 为 disputed 有效",
+          "data": {"status": "disputed"},
+          "valid": true
+        },
+        {
+          "description": "status 为 approved 无效",
+          "data": {"status": "approved"},
+          "valid": false
+        }
+      ]
+    }
+  ]
+}
