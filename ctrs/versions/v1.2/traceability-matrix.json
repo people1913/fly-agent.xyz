@@ -1,0 +1,245 @@
+{
+  "version": "1.2",
+  "generated_at": "2026-07-02",
+  "description": "CTRS v1.2 验证规则追溯矩阵：VR → Section → Fields → Test Cases",
+  "rules": [
+    {
+      "rule_id": "VR-101",
+      "name": "Report 必填字段检查",
+      "layer": "L1",
+      "section": "3.1",
+      "section_title": "Report 对象",
+      "fields": ["report_id", "schema_version", "type", "created_at", "claim", "evidence", "attribution", "settlement"],
+      "test_cases": ["tests/v1.2/core/schema-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-102",
+      "name": "Claim 必填字段检查",
+      "layer": "L1",
+      "section": "3.2",
+      "section_title": "Claim 对象",
+      "fields": ["claim_id", "type", "subject", "description", "timestamp", "parties"],
+      "test_cases": ["tests/v1.2/core/claim-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-103",
+      "name": "Evidence 必填字段检查",
+      "layer": "L1",
+      "section": "3.3",
+      "section_title": "Evidence 对象",
+      "fields": ["evidence_id", "claim_ref", "type", "source", "timestamp", "data", "hash"],
+      "test_cases": ["tests/v1.2/core/evidence-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-104",
+      "name": "Evidence type 枚举检查",
+      "layer": "L1",
+      "section": "3.3",
+      "section_title": "Evidence 对象",
+      "fields": ["evidence[].type"],
+      "test_cases": ["tests/v1.2/core/evidence-type-enum.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-105",
+      "name": "Rule 必填字段检查",
+      "layer": "L1",
+      "section": "3.4",
+      "section_title": "Rule 对象",
+      "fields": ["rule_id", "issuer", "version", "hash", "definition", "created_at"],
+      "test_cases": ["tests/v1.2/core/rule-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-106",
+      "name": "Attribution 必填字段检查",
+      "layer": "L1",
+      "section": "3.5",
+      "section_title": "Attribution 对象",
+      "fields": ["attribution_id", "claim_ref", "rule_hash", "method", "confidence", "result", "reasoning", "attributed_at"],
+      "test_cases": ["tests/v1.2/core/attribution-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-107",
+      "name": "Settlement 必填字段检查",
+      "layer": "L1",
+      "section": "3.6",
+      "section_title": "Settlement 对象",
+      "fields": ["settlement_id", "attribution_ref", "status", "amount", "currency", "split", "eligible_parties"],
+      "test_cases": ["tests/v1.2/core/settlement-completeness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-108",
+      "name": "schema_version 常量检查",
+      "layer": "L1",
+      "section": "3.1",
+      "section_title": "Report 对象",
+      "fields": ["schema_version"],
+      "test_cases": ["tests/v1.2/core/schema-version-check.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-109",
+      "name": "type 常量检查",
+      "layer": "L1",
+      "section": "3.1",
+      "section_title": "Report 对象",
+      "fields": ["type"],
+      "test_cases": ["tests/v1.2/core/type-constant-check.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-110",
+      "name": "confidence 范围检查",
+      "layer": "L1",
+      "section": "3.5",
+      "section_title": "Attribution 对象",
+      "fields": ["attribution.confidence"],
+      "test_cases": ["tests/v1.2/core/confidence-range.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-111",
+      "name": "Settlement status 枚举检查",
+      "layer": "L1",
+      "section": "3.6",
+      "section_title": "Settlement 对象",
+      "fields": ["settlement.status"],
+      "test_cases": ["tests/v1.2/core/settlement-status-enum.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-112",
+      "name": "Report status 枚举检查",
+      "layer": "L1",
+      "section": "3.1",
+      "section_title": "Report 对象",
+      "fields": ["status"],
+      "test_cases": ["tests/v1.2/core/report-status-enum.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-201",
+      "name": "Evidence Hash 完整性",
+      "layer": "L2",
+      "section": "3.3",
+      "section_title": "Evidence 对象",
+      "fields": ["evidence[].hash", "evidence[].data"],
+      "test_cases": ["tests/v1.2/integrity/evidence-hash-integrity.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-202",
+      "name": "Rule Hash 完整性",
+      "layer": "L2",
+      "section": "3.4",
+      "section_title": "Rule 对象",
+      "fields": ["rule.hash", "rule.definition"],
+      "test_cases": ["tests/v1.2/integrity/rule-hash-integrity.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-301",
+      "name": "Evidence-Claim 引用一致性",
+      "layer": "L3",
+      "section": "3.3→3.2",
+      "section_title": "Evidence → Claim 引用",
+      "fields": ["evidence[].claim_ref", "claim.claim_id"],
+      "test_cases": ["tests/v1.2/consistency/evidence-claim-ref.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-302",
+      "name": "Attribution-Claim 引用一致性",
+      "layer": "L3",
+      "section": "3.5→3.2",
+      "section_title": "Attribution → Claim 引用",
+      "fields": ["attribution.claim_ref", "claim.claim_id"],
+      "test_cases": ["tests/v1.2/consistency/attribution-claim-ref.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-303",
+      "name": "Attribution-Rule Hash 绑定",
+      "layer": "L3",
+      "section": "3.5→3.4",
+      "section_title": "Attribution → Rule Hash 绑定",
+      "fields": ["attribution.rule_hash", "rule.hash"],
+      "test_cases": ["tests/v1.2/consistency/attribution-rule-binding.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-304",
+      "name": "Settlement-Attribution 引用一致性",
+      "layer": "L3",
+      "section": "3.6→3.5",
+      "section_title": "Settlement → Attribution 引用",
+      "fields": ["settlement.attribution_ref", "attribution.attribution_id"],
+      "test_cases": ["tests/v1.2/consistency/settlement-attribution-ref.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-401",
+      "name": "Settlement 分润金额正确性",
+      "layer": "L3",
+      "section": "3.6",
+      "section_title": "Settlement 对象",
+      "fields": ["settlement.split[].share_amount", "settlement.amount"],
+      "test_cases": ["tests/v1.2/settlement/settlement-amount-correctness.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-402",
+      "name": "Settlement 参与方与 Attribution 一致",
+      "layer": "L3",
+      "section": "3.6→3.5",
+      "section_title": "Settlement → Attribution 参与方一致性",
+      "fields": ["settlement.eligible_parties", "attribution.result[].party_id"],
+      "test_cases": ["tests/v1.2/settlement/settlement-party-consistency.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-501",
+      "name": "Rule 注册验证",
+      "layer": "L3",
+      "section": "4.6",
+      "section_title": "L3 注册表验证",
+      "fields": ["rule.rule_id", "rule.hash"],
+      "test_cases": ["tests/v1.2/registry/rule-registration.json#test-001"],
+      "status": "implemented"
+    },
+    {
+      "rule_id": "VR-502",
+      "name": "Issuer 信任验证",
+      "layer": "L3",
+      "section": "4.6",
+      "section_title": "L3 注册表验证",
+      "fields": ["rule.issuer"],
+      "test_cases": ["tests/v1.2/registry/issuer-trust.json#test-001"],
+      "status": "implemented"
+    }
+  ],
+  "coverage_summary": {
+    "total_rules": 22,
+    "by_layer": {
+      "L1_schema_completeness": 12,
+      "L2_hash_integrity": 2,
+      "L3_reference_and_business": 8
+    },
+    "by_section": {
+      "3.1": 5,
+      "3.2": 1,
+      "3.3": 3,
+      "3.4": 2,
+      "3.5": 3,
+      "3.6": 4,
+      "4.6": 2,
+      "cross_section": 4
+    }
+  }
+}

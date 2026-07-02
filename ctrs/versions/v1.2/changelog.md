@@ -1,5 +1,28 @@
 # CTRS v1.2 变更记录
 
+## v1.2-post-ff (2026-07-02) — Feature Freeze 后改进
+
+### 新增
+
+- **VR 追溯元数据**: 为所有验证规则（VR-101~VR-502）添加追溯元数据，包括对应的规范 Section、涉及字段和测试用例路径
+- **追溯矩阵**: 新增 `traceability-matrix.json`，提供 VR → Section → Fields → Test Cases 的结构化映射，共覆盖 22 条验证规则
+- **版本兼容策略章节**: 在规范中新增第 7 章"版本兼容策略"，包括：
+  - 7.1 版本号规范（SemVer 2.0.0）
+  - 7.2 兼容性分类（FULL/GRACE/BREAKING 三级声明）
+  - 7.3 Consumer 兼容性策略（strict/graceful/negotiated，默认 graceful）
+  - 7.4 版本协商机制
+  - 7.5 v1.3 兼容性预告（GRACE 级别）
+- **互操作测试向量扩展**: 将测试向量从 `expected_output` 扩展为完整的 `expected` 结构，包含：
+  - `report`: Report 级别约束
+  - `verify_result`: 验证结果（status + 10 项 checks + failed_checks + 统计）
+  - `settlement`: 结算期望（status + amount + split_sum + split 明细 + eligible_parties_count）
+
+### 变更
+
+- 测试向量 `expected_output` 字段重构为 `expected`，子结构从 `report_constraints`/`settlement_constraints`/`verification_checks` 统一为 `report`/`verify_result`/`settlement`
+
+---
+
 ## v1.2 (2026-07)
 
 ### 新增

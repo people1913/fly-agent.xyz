@@ -305,6 +305,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Report 对象 MUST 包含所有 MUST 字段（`report_id`, `schema_version`, `type`, `created_at`, `claim`, `evidence`, `attribution`, `settlement`）
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `report_id` → 验证失败
+- **追溯元数据**:
+  - Section: 3.1 Report 对象
+  - Fields: report_id, schema_version, type, created_at, claim, evidence, attribution, settlement
+  - Test Cases: tests/v1.2/core/schema-completeness.json#test-001
 
 #### VR-102: Claim 必填字段检查
 
@@ -312,6 +316,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Claim 对象 MUST 包含 `claim_id`, `type`, `subject`, `description`, `timestamp`, `parties`
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `claim_id` → 验证失败
+- **追溯元数据**:
+  - Section: 3.2 Claim 对象
+  - Fields: claim_id, type, subject, description, timestamp, parties
+  - Test Cases: tests/v1.2/core/claim-completeness.json#test-001
 
 #### VR-103: Evidence 必填字段检查
 
@@ -319,6 +327,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: 每个 Evidence 对象 MUST 包含 `evidence_id`, `claim_ref`, `type`, `source`, `timestamp`, `data`, `hash`
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `hash` → 验证失败
+- **追溯元数据**:
+  - Section: 3.3 Evidence 对象
+  - Fields: evidence_id, claim_ref, type, source, timestamp, data, hash
+  - Test Cases: tests/v1.2/core/evidence-completeness.json#test-001
 
 #### VR-104: Evidence type 枚举检查
 
@@ -326,6 +338,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `evidence[].type` MUST 为以下枚举值之一: `webhook`, `conversation`, `mcp`, `payment`, `crm`, `stripe`, `custom`
 - **失败条件**: `type` 值不在枚举范围内
 - **示例**: `type: "email"` → 验证失败
+- **追溯元数据**:
+  - Section: 3.3 Evidence 对象
+  - Fields: evidence[].type
+  - Test Cases: tests/v1.2/core/evidence-type-enum.json#test-001
 
 #### VR-105: Rule 必填字段检查
 
@@ -333,6 +349,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Rule 对象 MUST 包含 `rule_id`, `issuer`, `version`, `hash`, `definition`, `created_at`
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `rule_id` → 验证失败
+- **追溯元数据**:
+  - Section: 3.4 Rule 对象
+  - Fields: rule_id, issuer, version, hash, definition, created_at
+  - Test Cases: tests/v1.2/core/rule-completeness.json#test-001
 
 #### VR-106: Attribution 必填字段检查
 
@@ -340,6 +360,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Attribution 对象 MUST 包含 `attribution_id`, `claim_ref`, `rule_hash`, `method`, `confidence`, `result`, `reasoning`, `attributed_at`
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `rule_hash` → 验证失败
+- **追溯元数据**:
+  - Section: 3.5 Attribution 对象
+  - Fields: attribution_id, claim_ref, rule_hash, method, confidence, result, reasoning, attributed_at
+  - Test Cases: tests/v1.2/core/attribution-completeness.json#test-001
 
 #### VR-107: Settlement 必填字段检查
 
@@ -347,6 +371,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Settlement 对象 MUST 包含 `settlement_id`, `attribution_ref`, `status`, `amount`, `currency`, `split`, `eligible_parties`
 - **失败条件**: 任一 MUST 字段缺失
 - **示例**: 缺少 `currency` → 验证失败
+- **追溯元数据**:
+  - Section: 3.6 Settlement 对象
+  - Fields: settlement_id, attribution_ref, status, amount, currency, split, eligible_parties
+  - Test Cases: tests/v1.2/core/settlement-completeness.json#test-001
 
 #### VR-108: schema_version 常量检查
 
@@ -354,6 +382,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `schema_version` MUST 为 `"CTRS-v1.2"`
 - **失败条件**: 值不等于 `"CTRS-v1.2"`
 - **示例**: `schema_version: "1.2"` → 验证失败
+- **追溯元数据**:
+  - Section: 3.1 Report 对象
+  - Fields: schema_version
+  - Test Cases: tests/v1.2/core/schema-version-check.json#test-001
 
 #### VR-109: type 常量检查
 
@@ -361,6 +393,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `type` MUST 为 `"CommercialTrustReport"`
 - **失败条件**: 值不等于 `"CommercialTrustReport"`
 - **示例**: `type: "TrustReport"` → 验证失败
+- **追溯元数据**:
+  - Section: 3.1 Report 对象
+  - Fields: type
+  - Test Cases: tests/v1.2/core/type-constant-check.json#test-001
 
 #### VR-110: confidence 范围检查
 
@@ -368,6 +404,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `attribution.confidence` MUST 为 0 到 1 之间的浮点数
 - **失败条件**: 值 < 0 或 > 1，或非数值类型
 - **示例**: `confidence: 95` → 验证失败（v1.2 不再接受整数百分比）
+- **追溯元数据**:
+  - Section: 3.5 Attribution 对象
+  - Fields: attribution.confidence
+  - Test Cases: tests/v1.2/core/confidence-range.json#test-001
 
 #### VR-111: Settlement status 枚举检查
 
@@ -375,6 +415,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `settlement.status` MUST 为以下枚举值之一: `eligible`, `pending`, `settled`, `disputed`
 - **失败条件**: 值不在枚举范围内
 - **示例**: `status: "approved"` → 验证失败
+- **追溯元数据**:
+  - Section: 3.6 Settlement 对象
+  - Fields: settlement.status
+  - Test Cases: tests/v1.2/core/settlement-status-enum.json#test-001
 
 #### VR-112: Report status 枚举检查
 
@@ -382,6 +426,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `status`（如存在）MUST 为以下枚举值之一: `draft`, `verified`, `disputed`, `settled`, `eligible`
 - **失败条件**: 值不在枚举范围内
 - **示例**: `status: "approved"` → 验证失败
+- **追溯元数据**:
+  - Section: 3.1 Report 对象
+  - Fields: status
+  - Test Cases: tests/v1.2/core/report-status-enum.json#test-001
 
 ### 4.3 L2: Hash 完整性
 
@@ -391,6 +439,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: 对每个 Evidence，重新计算 `SHA-256(JSON.stringify(evidence.data, sort_keys=True))`，与 `evidence.hash` 比对
 - **失败条件**: 任一 Evidence 的 Hash 不匹配
 - **示例**: 数据被篡改导致 Hash 不一致 → 验证失败
+- **追溯元数据**:
+  - Section: 3.3 Evidence 对象
+  - Fields: evidence[].hash, evidence[].data
+  - Test Cases: tests/v1.2/integrity/evidence-hash-integrity.json#test-001
 
 #### VR-202: Rule Hash 完整性
 
@@ -398,6 +450,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: 重新计算 `SHA-256(JSON.stringify(rule.definition, sort_keys=True))`，与 `rule.hash` 比对
 - **失败条件**: Hash 不匹配
 - **示例**: Rule definition 被修改但 hash 未更新 → 验证失败
+- **追溯元数据**:
+  - Section: 3.4 Rule 对象
+  - Fields: rule.hash, rule.definition
+  - Test Cases: tests/v1.2/integrity/rule-hash-integrity.json#test-001
 
 ### 4.4 L3: 引用一致性
 
@@ -407,6 +463,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: 每个 `evidence[].claim_ref` MUST 等于 `claim.claim_id`
 - **失败条件**: 任一 `claim_ref` 不匹配
 - **示例**: `claim_ref` 指向不存在的 Claim → 验证失败
+- **追溯元数据**:
+  - Section: 3.3 Evidence 对象 → 3.2 Claim 对象
+  - Fields: evidence[].claim_ref, claim.claim_id
+  - Test Cases: tests/v1.2/consistency/evidence-claim-ref.json#test-001
 
 #### VR-302: Attribution-Claim 引用一致性
 
@@ -414,6 +474,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `attribution.claim_ref` MUST 等于 `claim.claim_id`
 - **失败条件**: `claim_ref` 不匹配
 - **示例**: Attribution 引用了不同的 Claim → 验证失败
+- **追溯元数据**:
+  - Section: 3.5 Attribution 对象 → 3.2 Claim 对象
+  - Fields: attribution.claim_ref, claim.claim_id
+  - Test Cases: tests/v1.2/consistency/attribution-claim-ref.json#test-001
 
 #### VR-303: Attribution-Rule Hash 绑定
 
@@ -421,6 +485,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `attribution.rule_hash` MUST 等于 `rule.hash`
 - **失败条件**: `rule_hash` 不匹配
 - **示例**: Rule 被修改但 Attribution 仍引用旧 Hash → 验证失败
+- **追溯元数据**:
+  - Section: 3.5 Attribution 对象 → 3.4 Rule 对象
+  - Fields: attribution.rule_hash, rule.hash
+  - Test Cases: tests/v1.2/consistency/attribution-rule-binding.json#test-001
 
 #### VR-304: Settlement-Attribution 引用一致性
 
@@ -428,6 +496,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `settlement.attribution_ref` MUST 等于 `attribution.attribution_id`
 - **失败条件**: `attribution_ref` 不匹配
 - **示例**: Settlement 引用了不同的 Attribution → 验证失败
+- **追溯元数据**:
+  - Section: 3.6 Settlement 对象 → 3.5 Attribution 对象
+  - Fields: settlement.attribution_ref, attribution.attribution_id
+  - Test Cases: tests/v1.2/consistency/settlement-attribution-ref.json#test-001
 
 ### 4.5 L3: 金额正确性
 
@@ -437,6 +509,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `sum(settlement.split[].share_amount)` MUST 等于 `settlement.amount`
 - **失败条件**: 分润金额加总不等于总金额
 - **示例**: `amount: "120"`, splits 加总 = 119 → 验证失败
+- **追溯元数据**:
+  - Section: 3.6 Settlement 对象
+  - Fields: settlement.split[].share_amount, settlement.amount
+  - Test Cases: tests/v1.2/settlement/settlement-amount-correctness.json#test-001
 
 #### VR-402: Settlement 参与方与 Attribution 一致
 
@@ -444,6 +520,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `settlement.eligible_parties` 中的每个 `party_id` MUST 存在于 `attribution.result[].party_id`
 - **失败条件**: 存在不一致的 `party_id`
 - **示例**: Settlement 包含 `agent-d` 但 Attribution 中无此人 → 验证失败
+- **追溯元数据**:
+  - Section: 3.6 Settlement 对象 → 3.5 Attribution 对象
+  - Fields: settlement.eligible_parties, attribution.result[].party_id
+  - Test Cases: tests/v1.2/settlement/settlement-party-consistency.json#test-001
 
 ### 4.6 L3: 注册表验证
 
@@ -453,6 +533,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: `rule.rule_id` 和 `rule.hash` MUST 存在于 Rule Registry
 - **失败条件**: Rule 未注册或 Hash 不匹配
 - **示例**: Rule 未在 Registry 中注册 → 验证失败
+- **追溯元数据**:
+  - Section: 4.6 L3 注册表验证
+  - Fields: rule.rule_id, rule.hash
+  - Test Cases: tests/v1.2/registry/rule-registration.json#test-001
 
 #### VR-502: Issuer 信任验证
 
@@ -460,6 +544,10 @@ CTRS 验证分为三个层级：
 - **验证逻辑**: Rule 的 `issuer` 在 Issuer Registry 中的 `trust_level` MUST 为 `trusted` 或 `verified`
 - **失败条件**: Issuer 不存在或 `trust_level` 不符合要求
 - **示例**: Issuer 的 `trust_level` 为 `unverified` → 验证失败
+- **追溯元数据**:
+  - Section: 4.6 L3 注册表验证
+  - Fields: rule.issuer
+  - Test Cases: tests/v1.2/registry/issuer-trust.json#test-001
 
 ---
 
@@ -516,6 +604,88 @@ CTRS 允许在以下对象中添加自定义字段：
 - 版本间的主要差异：
   - v1.1 → v1.2: 新增 `eligible` 结算状态，`confidence` 改为浮点数，新增 Social Authority 层
   - v1.0 → v1.1: Rule 升级为一等对象，Attribution 绑定 `rule_hash`
+
+---
+
+## 7. 版本兼容策略
+
+### 7.1 版本号规范
+
+CTRS 遵循 Semantic Versioning 2.0.0（https://semver.org/）：
+
+- **MAJOR**（主版本）：不兼容的 API 变更
+- **MINOR**（次版本）：向后兼容的功能新增
+- **PATCH**（补丁版本）：向后兼容的问题修复
+
+版本号格式为 `<major>.<minor>.<patch>`，示例：`1.2.0`。
+
+Pre-release 版本格式：`1.3.0-alpha`, `1.3.0-beta.1`, `2.0.0-rc.1`。
+
+### 7.2 兼容性分类
+
+每个版本变更必须声明兼容性级别：
+
+| 级别 | 含义 | Consumer 行为 | 示例 |
+|------|------|--------------|------|
+| **FULL** | 完全兼容，Consumer 无需修改 | 正常处理 | 修复文档错误、PATCH 版本升级 |
+| **GRACE** | 可选字段新增，旧 Consumer 可忽略 | 警告后继续 | 新增 `metadata` 字段、新增枚举值 |
+| **BREAKING** | 不兼容，Consumer 必须升级 | 拒绝处理 | 删除 MUST 字段、修改字段语义 |
+
+**变更与兼容性级别的对应关系**：
+
+| 变更类型 | 版本递增 | 兼容性级别 |
+|---------|---------|-----------|
+| 新增可选字段 | MINOR | GRACE |
+| 新增枚举值 | MINOR | GRACE |
+| 新增 MUST 字段 | MAJOR | BREAKING |
+| 删除字段 | MAJOR | BREAKING |
+| 修改字段语义 | MAJOR | BREAKING |
+| 修复非语义问题 | PATCH | FULL |
+
+### 7.3 Consumer 兼容性策略
+
+Consumer 实现应支持以下三种策略：
+
+- **strict**: 只接受完全相同的 `schema_version`，遇到未知字段即拒绝。适用于对数据格式有严格要求的场景。
+- **graceful**: 接受相同 MAJOR 版本，忽略新增的未知字段。适用于需要向前兼容的通用场景。
+- **negotiated**: 通过协商确定兼容版本。Provider 在响应中声明支持的版本列表，Consumer 选择最佳版本。适用于多版本共存的复杂场景。
+
+**默认策略**: graceful
+
+**策略配置示例**：
+
+```json
+{
+  "compatibility": {
+    "mode": "graceful",
+    "accepted_versions": ["1.0.x", "1.1.x", "1.2.x"],
+    "on_unknown_field": "warn"
+  }
+}
+```
+
+### 7.4 版本协商机制
+
+Provider 可以在响应中声明支持的版本：
+
+```json
+{
+  "schema_version": "CTRS-v1.2",
+  "supported_versions": ["1.0.0", "1.1.0", "1.2.0"],
+  "deprecated_versions": ["1.0.0"],
+  "breaking_change_in": "2.0.0"
+}
+```
+
+Consumer SHOULD 优先使用响应的 `schema_version`，以支持滚动升级。
+
+### 7.5 v1.3 兼容性预告
+
+CTRS v1.3 计划为 **GRACE** 级别：
+
+- 新增可选字段（如 `proof`、`registry_refs`）
+- 不删除或修改现有 MUST 字段
+- 现有 Consumer 可继续工作，无需修改
 
 ---
 

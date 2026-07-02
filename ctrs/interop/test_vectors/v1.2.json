@@ -1,6 +1,6 @@
 {
   "version": "1.2",
-  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。",
+  "description": "CTRS v1.2 互操作测试向量。供不同语言实现验证其 Report 生成和验证逻辑的正确性。每个向量包含完整的 expected 结构（report + verify_result + settlement）。",
   "test_vectors": [
     {
       "id": "tv-001",
@@ -50,34 +50,44 @@
           "created_at": "2026-07-01T10:00:00+00:00"
         }
       },
-      "expected_output": {
-        "report_constraints": {
+      "expected": {
+        "report": {
           "schema_version": "CTRS-v1.2",
           "type": "CommercialTrustReport",
-          "attribution.confidence": "0 <= value <= 1",
-          "attribution.rule_hash": "MUST equal rule.hash",
-          "attribution.claim_ref": "MUST equal claim.claim_id",
-          "settlement.attribution_ref": "MUST equal attribution.attribution_id"
+          "claim.claim_id": "c-tv001",
+          "evidence_count": 1,
+          "attribution.rule_hash": "等于 rule.hash",
+          "attribution.claim_ref": "等于 claim.claim_id",
+          "settlement.attribution_ref": "等于 attribution.attribution_id",
+          "status": "eligible"
         },
-        "settlement_constraints": {
+        "verify_result": {
+          "status": "valid",
+          "checks": {
+            "schema_completeness": true,
+            "claim_integrity": true,
+            "evidence_hash_integrity": true,
+            "evidence_claim_ref": true,
+            "attribution_consistency": true,
+            "settlement_correctness": true,
+            "rule_integrity": true,
+            "attribution_rule_binding": true,
+            "rule_registration": true,
+            "issuer_trust": true
+          },
+          "failed_checks": [],
+          "total_passed": 10,
+          "total_failed": 0
+        },
+        "settlement": {
+          "status": "eligible",
           "amount": "100",
           "currency": "USD",
           "split_sum": "100",
           "split": [
             {"party_id": "agent-a", "share_pct": "100", "share_amount": "100"}
           ],
-          "eligible_parties": ["agent-a"]
-        },
-        "verification_checks": {
-          "VR-101": "PASS — 所有 MUST 字段存在",
-          "VR-201": "PASS — Evidence Hash 匹配",
-          "VR-202": "PASS — Rule Hash 匹配",
-          "VR-301": "PASS — Evidence claim_ref == claim.claim_id",
-          "VR-302": "PASS — Attribution claim_ref == claim.claim_id",
-          "VR-303": "PASS — Attribution rule_hash == rule.hash",
-          "VR-304": "PASS — Settlement attribution_ref == attribution.attribution_id",
-          "VR-401": "PASS — split sum (100) == amount (100)",
-          "VR-402": "PASS — eligible_parties ⊆ attribution.result.party_ids"
+          "eligible_parties_count": 1
         }
       }
     },
@@ -159,21 +169,37 @@
           "created_at": "2026-07-01T12:00:00+00:00"
         }
       },
-      "expected_output": {
-        "report_constraints": {
+      "expected": {
+        "report": {
           "schema_version": "CTRS-v1.2",
           "type": "CommercialTrustReport",
-          "attribution.confidence": "0 <= value <= 1",
-          "attribution.rule_hash": "MUST equal rule.hash",
-          "attribution.claim_ref": "MUST equal claim.claim_id",
-          "settlement.attribution_ref": "MUST equal attribution.attribution_id"
+          "claim.claim_id": "c-tv002",
+          "evidence_count": 3,
+          "attribution.rule_hash": "等于 rule.hash",
+          "attribution.claim_ref": "等于 claim.claim_id",
+          "settlement.attribution_ref": "等于 attribution.attribution_id",
+          "status": "eligible"
         },
-        "attribution_result": [
-          {"party_id": "agent-a", "contribution_pct": "45", "attributed_value": "1080"},
-          {"party_id": "agent-b", "contribution_pct": "35", "attributed_value": "840"},
-          {"party_id": "agent-c", "contribution_pct": "20", "attributed_value": "480"}
-        ],
-        "settlement_constraints": {
+        "verify_result": {
+          "status": "valid",
+          "checks": {
+            "schema_completeness": true,
+            "claim_integrity": true,
+            "evidence_hash_integrity": true,
+            "evidence_claim_ref": true,
+            "attribution_consistency": true,
+            "settlement_correctness": true,
+            "rule_integrity": true,
+            "attribution_rule_binding": true,
+            "rule_registration": true,
+            "issuer_trust": true
+          },
+          "failed_checks": [],
+          "total_passed": 10,
+          "total_failed": 0
+        },
+        "settlement": {
+          "status": "eligible",
           "amount": "2400",
           "currency": "USD",
           "split_sum": "2400",
@@ -182,21 +208,7 @@
             {"party_id": "agent-b", "share_pct": "35", "share_amount": "840"},
             {"party_id": "agent-c", "share_pct": "20", "share_amount": "480"}
           ],
-          "eligible_parties": ["agent-a", "agent-b", "agent-c"]
-        },
-        "verification_checks": {
-          "VR-101": "PASS — 所有 MUST 字段存在",
-          "VR-102": "PASS — Claim MUST 字段完整",
-          "VR-103": "PASS — Evidence MUST 字段完整",
-          "VR-104": "PASS — Evidence type 枚举合法",
-          "VR-201": "PASS — Evidence Hash 匹配",
-          "VR-202": "PASS — Rule Hash 匹配",
-          "VR-301": "PASS — Evidence claim_ref 一致",
-          "VR-302": "PASS — Attribution claim_ref 一致",
-          "VR-303": "PASS — Attribution rule_hash 一致",
-          "VR-304": "PASS — Settlement attribution_ref 一致",
-          "VR-401": "PASS — split sum (1080+840+480=2400) == amount (2400)",
-          "VR-402": "PASS — eligible_parties ⊆ attribution.result.party_ids"
+          "eligible_parties_count": 3
         }
       }
     },
@@ -263,24 +275,45 @@
           "created_at": "2026-07-01T14:00:00+00:00"
         }
       },
-      "expected_output": {
-        "report_constraints": {
+      "expected": {
+        "report": {
           "schema_version": "CTRS-v1.2",
           "type": "CommercialTrustReport",
-          "attribution.confidence": "0.7 (来自 rule confidence_override)",
-          "attribution.rule_hash": "MUST equal rule.hash"
+          "claim.claim_id": "c-tv003",
+          "evidence_count": 2,
+          "attribution.confidence": 0.7,
+          "attribution.rule_hash": "等于 rule.hash",
+          "attribution.claim_ref": "等于 claim.claim_id",
+          "settlement.attribution_ref": "等于 attribution.attribution_id",
+          "status": "eligible"
         },
-        "attribution_result": [
-          {"party_id": "agent-a", "contribution_pct": "60", "attributed_value": "300"}
-        ],
-        "settlement_constraints": {
+        "verify_result": {
+          "status": "valid",
+          "checks": {
+            "schema_completeness": true,
+            "claim_integrity": true,
+            "evidence_hash_integrity": true,
+            "evidence_claim_ref": true,
+            "attribution_consistency": true,
+            "settlement_correctness": true,
+            "rule_integrity": true,
+            "attribution_rule_binding": true,
+            "rule_registration": true,
+            "issuer_trust": true
+          },
+          "failed_checks": [],
+          "total_passed": 10,
+          "total_failed": 0
+        },
+        "settlement": {
+          "status": "eligible",
           "amount": "300",
           "currency": "USD",
           "split_sum": "300",
           "split": [
             {"party_id": "agent-a", "share_pct": "60", "share_amount": "300"}
           ],
-          "eligible_parties": ["agent-a"]
+          "eligible_parties_count": 1
         }
       }
     },
@@ -331,17 +364,45 @@
           "created_at": "2026-07-01T16:00:00+00:00"
         }
       },
-      "expected_output": {
-        "report_constraints": {
+      "expected": {
+        "report": {
           "schema_version": "CTRS-v1.2",
-          "attribution.confidence": "1.0 (确定性转化)",
-          "evidence[0].type": "webhook (枚举合法)"
+          "type": "CommercialTrustReport",
+          "claim.claim_id": "c-tv004",
+          "evidence_count": 1,
+          "evidence[0].type": "webhook",
+          "attribution.confidence": 1.0,
+          "attribution.rule_hash": "等于 rule.hash",
+          "settlement.attribution_ref": "等于 attribution.attribution_id",
+          "status": "eligible"
         },
-        "settlement_constraints": {
+        "verify_result": {
+          "status": "valid",
+          "checks": {
+            "schema_completeness": true,
+            "claim_integrity": true,
+            "evidence_hash_integrity": true,
+            "evidence_claim_ref": true,
+            "attribution_consistency": true,
+            "settlement_correctness": true,
+            "rule_integrity": true,
+            "attribution_rule_binding": true,
+            "rule_registration": true,
+            "issuer_trust": true
+          },
+          "failed_checks": [],
+          "total_passed": 10,
+          "total_failed": 0
+        },
+        "settlement": {
+          "status": "eligible",
           "amount": "75",
           "currency": "USD",
           "split_sum": "75",
-          "eligible_parties": ["agent-a"]
+          "split": [
+            {"party_id": "agent-a", "share_pct": "100", "share_amount": "75"}
+          ],
+          "eligible_parties_count": 1
         }
       }
     },
@@ -399,21 +460,47 @@
           "created_at": "2026-07-01T18:00:00+00:00"
         }
       },
-      "expected_output": {
-        "report_constraints": {
+      "expected": {
+        "report": {
           "schema_version": "CTRS-v1.2",
-          "status": "disputed",
-          "settlement.status": "disputed"
+          "type": "CommercialTrustReport",
+          "claim.claim_id": "c-tv005",
+          "evidence_count": 2,
+          "attribution.rule_hash": "等于 rule.hash",
+          "attribution.claim_ref": "等于 claim.claim_id",
+          "settlement.attribution_ref": "等于 attribution.attribution_id",
+          "status": "disputed"
         },
-        "attribution_result": [
-          {"party_id": "agent-a", "contribution_pct": "50", "attributed_value": "100"},
-          {"party_id": "agent-b", "contribution_pct": "50", "attributed_value": "100"}
-        ],
-        "settlement_constraints": {
+        "verify_result": {
+          "status": "valid",
+          "checks": {
+            "schema_completeness": true,
+            "claim_integrity": true,
+            "evidence_hash_integrity": true,
+            "evidence_claim_ref": true,
+            "attribution_consistency": true,
+            "settlement_correctness": true,
+            "rule_integrity": true,
+            "attribution_rule_binding": true,
+            "rule_registration": true,
+            "issuer_trust": true
+          },
+          "failed_checks": [],
+          "total_passed": 10,
+          "total_failed": 0,
+          "note": "数据结构本身验证通过，但业务状态为 disputed 需人工介入"
+        },
+        "settlement": {
+          "status": "disputed",
           "amount": "200",
           "currency": "USD",
           "split_sum": "200",
-          "status": "disputed"
+          "split": [
+            {"party_id": "agent-a", "share_pct": "50", "share_amount": "100"},
+            {"party_id": "agent-b", "share_pct": "50", "share_amount": "100"}
+          ],
+          "eligible_parties_count": 2,
+          "note": "争议状态下 split 金额仅供参考，需争议解决后方可结算"
         }
       }
     }
