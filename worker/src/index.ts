@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.10.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.12.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 8层6协议架构：L1-L8
@@ -723,7 +723,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.11.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.12.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -1134,104 +1134,361 @@ export default {
           });
         }
 
-        // ── v2.11.0: POST /v1/verify ── 创建商业归因记录
+        // ── v2.12.0: POST /v1/verify ── CTRS v1.2 商业归因报告生成
+        // 支持两种请求格式：
+        //   新格式（CTRS v1.2）：包含 claim, evidence, rule 结构化字段
+        //   旧格式（向后兼容）：只包含 agent_id, evidence: string[], amount
         if (method === "POST" && path === "/v1/verify") {
           const body = await request.json().catch(() => null);
           if (!body || !body.agent_id) return json({ error: "agent_id required" }, 400);
-          const { agent_id, channel, user_id, signal_type, claim, evidence, amount } = body;
+          const { agent_id, channel, user_id, signal_type, amount } = body;
+          const now = new Date().toISOString();
 
-          // ── 归因推理引擎 ──
-          const evidenceLabels: Record<string, string> = {
-            "recommendation_recorded": "AI 推荐已记录",
-            "conversation_verified": "对话链路已验证",
-            "conversion_confirmed": "商业转化已确认",
-            "user_id_verified": "用户身份已验证",
-            "channel_tracked": "渠道来源已追踪",
-            "timestamp_verified": "时间戳已验证"
-          };
-          const evidenceArr = Array.isArray(evidence) ? evidence : [];
-          const attributionReasons = evidenceArr.map((e: string) => evidenceLabels[e] || e);
-          const confidence = Math.min(95, 70 + evidenceArr.length * 5);
+          // ── 判断请求格式：新格式包含 rule 对象 ──
+          const isCtrsV12 = body.rule && typeof body.rule === "object" && body.rule.rule_id;
 
-          const attribution_basis = {
-            conclusion: `该商业转化归属于 ${agent_id}`,
-            reasons: attributionReasons,
-            confidence_score: confidence,
-            confidence_calculation: `基础分 70 + 已验证证据(${evidenceArr.length}) × 5 = ${confidence}`,
-            conversion_path: `${channel || "unknown"} → ${signal_type || "conversion"}`
-          };
+          if (isCtrsV12) {
+            // ══════════════════════════════════════════════════════
+            // CTRS v1.2 新格式处理
+            // ══════════════════════════════════════════════════════
 
-          // ── 结算规则引擎 ──
-          const SETTLEMENT_RULES = {
-            min_evidence: 2,
-            base_rate: 0.10,
-            evidence_bonus: 0.02,
-            max_rate: 0.20
-          };
-          const eligible = evidenceArr.length >= SETTLEMENT_RULES.min_evidence;
-          const calculatedRate = Math.min(SETTLEMENT_RULES.max_rate, 
-            SETTLEMENT_RULES.base_rate + (evidenceArr.length * SETTLEMENT_RULES.evidence_bonus));
-          const commission = Math.round(((amount || 0) * calculatedRate) * 100) / 100;
+            // ── 1. 解析结构化输入 ──
+            const claimInput = body.claim || {
+              claim_id: `clm_${crypto.randomUUID()}`,
+              type: signal_type || "conversion",
+              subject: `商业归因 - ${agent_id}`,
+              description: `Agent ${agent_id} 的商业转化`,
+              timestamp: now,
+              parties: [{ id: agent_id, role: "agent", name: agent_id }]
+            };
+            const evidenceInput = Array.isArray(body.evidence) ? body.evidence : [];
+            const ruleInput = body.rule;
+            const currency = body.currency || "USD";
 
-          const settlement_basis = {
-            eligible,
-            eligibility_reason: eligible
-              ? `已验证证据(${evidenceArr.length}) ≥ 最低要求(${SETTLEMENT_RULES.min_evidence})`
-              : `已验证证据(${evidenceArr.length}) < 最低要求(${SETTLEMENT_RULES.min_evidence})`,
-            rate_calculation: `基础费率 ${SETTLEMENT_RULES.base_rate * 100}% + 证据加成(${evidenceArr.length} × ${SETTLEMENT_RULES.evidence_bonus * 100}%) = ${(calculatedRate * 100).toFixed(1)}%`,
-            rate_applied: calculatedRate,
-            revenue: amount || 0,
-            commission
-          };
+            // ── 2. Rule 完整性校验 ──
+            // 计算 rule_hash = SHA-256(JSON.stringify(rule.definition))
+            const ruleDefCanonical = JSON.stringify(ruleInput.definition, Object.keys(ruleInput.definition).sort());
+            const ruleHashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ruleDefCanonical));
+            const computedRuleHash = Array.from(new Uint8Array(ruleHashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 
-          // 1. 创建 action 记录
-          const actionId = `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-          const shortId = actionId.slice(-6);
-          const metadata = JSON.stringify({
-            claim: claim || attribution_basis.conclusion,
-            evidence: evidenceArr,
-            attribution_basis,
-            settlement_basis,
-            amount: amount || 0
-          });
-          await env.FLY_D1.prepare(
-            "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?,?,?,?,?,?,?,datetime('now'))"
-          ).bind(actionId, agent_id, channel || "unknown", user_id || "anonymous", signal_type || "conversion", shortId, metadata).run();
+            // 验证 rule.hash == computedRuleHash（完整性检查）
+            if (ruleInput.hash && ruleInput.hash !== computedRuleHash) {
+              return json({
+                error: "rule_integrity_failed",
+                detail: `Rule hash 不匹配: 提交=${ruleInput.hash.slice(0, 16)}..., 计算=${computedRuleHash.slice(0, 16)}...`,
+                rule_id: ruleInput.rule_id
+              }, 400);
+            }
 
-          // 2. 创建 verification 记录
-          const verifId = `ver_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-          await env.FLY_D1.prepare(
-            "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?,?,?,?,?,?,datetime('now'))"
-          ).bind(verifId, actionId, "fly_attribution_engine", eligible ? "pass" : "insufficient_evidence", confidence, JSON.stringify(evidenceArr)).run();
+            // 如果 rule 没提供 hash，使用计算值
+            const ruleHash = ruleInput.hash || computedRuleHash;
 
-          // 3. 写入审计链
-          await writeAuditEvent(env, {
-            request_id: `req_${crypto.randomUUID()}`,
-            entity_type: "attribution",
-            entity_id: actionId,
-            action: "created",
-            actor_type: "api",
-            actor_id: agent_id,
-            actor_name: "attribution_api",
-            source: "verify",
-            reason: "commercial_attribution_issued",
-            before: "{}",
-            after: JSON.stringify({ confidence, eligible, commission, amount: amount || 0 })
-          });
+            // ── 3. Evidence Hash 校验 ──
+            for (const ev of evidenceInput) {
+              if (ev.hash && ev.data) {
+                const evDataCanonical = JSON.stringify(ev.data, Object.keys(ev.data).sort());
+                const evHashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(evDataCanonical));
+                const computedEvHash = Array.from(new Uint8Array(evHashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+                if (ev.hash !== computedEvHash) {
+                  return json({
+                    error: "evidence_integrity_failed",
+                    detail: `Evidence hash 不匹配: evidence_id=${ev.evidence_id}`,
+                    evidence_id: ev.evidence_id
+                  }, 400);
+                }
+              }
+            }
 
-          return json({
-            record_id: actionId,
-            verification_id: verifId,
-            status: eligible ? "verified" : "insufficient_evidence",
-            claim: attribution_basis.conclusion,
-            confidence,
-            settlement_eligible: eligible,
-            commission_eligible: commission,
-            revenue: amount || 0,
-            attribution_basis,
-            settlement_basis,
-            timestamp: new Date().toISOString()
-          }, 201);
+            // ── 4. 归因推理引擎 — 从 rule.definition.parameters.splits 计算 ──
+            const splits = ruleInput.definition?.parameters?.splits || {};
+            const totalValue = parseFloat(ruleInput.definition?.parameters?.total_value || String(amount || 0));
+            const splitEntries = Object.entries(splits); // [[party_id, pct_string], ...]
+
+            // 计算 attribution.result[]
+            const attributionResults = splitEntries.map(([partyId, pctStr]) => {
+              const pct = parseFloat(pctStr as string);
+              const attrValue = Math.round((totalValue * pct / 100) * 100) / 100;
+              return {
+                party_id: partyId,
+                contribution_pct: String(pct),
+                attributed_value: String(attrValue),
+              };
+            });
+
+            // confidence: 0-1 浮点（基于证据数量，不再用 70-95 整数）
+            const confidence = Math.min(1.0, 0.7 + (evidenceInput.length * 0.05));
+
+            // 归因推理文本
+            const method = ruleInput.definition?.method || "proportional";
+            const reasoningParts = attributionResults.map(r =>
+              `${r.party_id}: ${r.contribution_pct}% = ${currency} ${r.attributed_value}`
+            );
+            const reasoning = `基于规则 '${ruleInput.definition?.name || ruleInput.rule_id}' (rule_id=${ruleInput.rule_id}, rule_hash=${ruleHash.slice(0, 16)}...): ${reasoningParts.join(', ')}`;
+
+            // ── 5. 构建 Settlement ──
+            const settlementSplits = attributionResults.map(r => ({
+              party_id: r.party_id,
+              share_pct: r.contribution_pct,
+              share_amount: r.attributed_value,
+            }));
+            const eligibleParties = attributionResults.map(r => r.party_id);
+            const settlementStatus = evidenceInput.length >= 2 ? "eligible" : "pending";
+
+            // ── 6. 构建 Rule 一等对象（确保 hash 正确） ──
+            const ruleObj = {
+              rule_id: ruleInput.rule_id,
+              issuer: ruleInput.issuer || agent_id,
+              version: ruleInput.version || "1.0.0",
+              hash: ruleHash,
+              definition: ruleInput.definition,
+              created_at: ruleInput.created_at || now,
+            };
+
+            // ── 7. 构建 Evidence 数组（补充缺失字段） ──
+            const evidenceArr = evidenceInput.map((ev: any, idx: number) => ({
+              evidence_id: ev.evidence_id || `ev_${crypto.randomUUID()}`,
+              claim_ref: ev.claim_ref || claimInput.claim_id,
+              type: ev.type || "custom",
+              source: ev.source || agent_id,
+              timestamp: ev.timestamp || now,
+              data: ev.data || {},
+              hash: ev.hash || "0",
+            }));
+
+            // ── 8. 构建 Attribution 对象 ──
+            const attributionId = `attr_${crypto.randomUUID()}`;
+            const attribution = {
+              attribution_id: attributionId,
+              claim_ref: claimInput.claim_id,
+              rule_hash: ruleHash,
+              method,
+              confidence,
+              result: attributionResults,
+              reasoning,
+              attributed_at: now,
+            };
+
+            // ── 9. 构建 Settlement 对象 ──
+            const settlementId = `stl_${crypto.randomUUID()}`;
+            const settlement = {
+              settlement_id: settlementId,
+              attribution_ref: attributionId,
+              status: settlementStatus,
+              amount: String(totalValue),
+              currency,
+              split: settlementSplits,
+              eligible_parties: eligibleParties,
+            };
+
+            // ── 10. 构建完整 CTRS Report ──
+            const reportId = `rpt_${crypto.randomUUID()}`;
+            const ctrsReport = {
+              report_id: reportId,
+              schema_version: "CTRS-v1.2",
+              type: "CommercialTrustReport",
+              created_at: now,
+              status: settlementStatus === "eligible" ? "verified" : "draft",
+              issuer: { id: "fly-protocol", name: "Fly Attribution Engine" },
+              claim: claimInput,
+              evidence: evidenceArr,
+              rule: ruleObj,
+              attribution,
+              settlement,
+            };
+
+            // ── 11. 写入 D1（兼容旧表结构） ──
+            const actionId = `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            const shortId = actionId.slice(-6);
+            // 旧 metadata 格式保留兼容
+            const legacyMetadata = JSON.stringify({
+              claim: claimInput.subject || claimInput.description,
+              evidence: evidenceArr.map((e: any) => e.type),
+              attribution_basis: {
+                conclusion: reasoning,
+                reasons: evidenceArr.map((e: any) => e.type),
+                confidence_score: Math.round(confidence * 100),
+                conversion_path: `${channel || "unknown"} → ${signal_type || "conversion"}`
+              },
+              settlement_basis: {
+                eligible: settlementStatus === "eligible",
+                revenue: totalValue,
+                commission: settlementSplits.reduce((sum, s) => sum + parseFloat(s.share_amount), 0),
+              },
+              amount: totalValue,
+              // 新增：完整 CTRS Report 引用
+              ctrs_report_id: reportId,
+            });
+            await env.FLY_D1.prepare(
+              "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?,?,?,?,?,?,?,datetime('now'))"
+            ).bind(actionId, agent_id, channel || "unknown", user_id || "anonymous", signal_type || "conversion", shortId, legacyMetadata).run();
+
+            // ── 12. 创建 verification 记录 ──
+            const verifId = `ver_${crypto.randomUUID()}`;
+            await env.FLY_D1.prepare(
+              "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?,?,?,?,?,?,datetime('now'))"
+            ).bind(verifId, actionId, "fly_attribution_engine", settlementStatus === "eligible" ? "pass" : "pending", Math.round(confidence * 100), JSON.stringify(evidenceArr.map((e: any) => e.type))).run();
+
+            // ── 13. 写入 fly-store（KV 存储） ──
+            // 存储 CTRS Report 到 KV，key = report_id
+            const reportCanonical = JSON.stringify(ctrsReport, Object.keys(ctrsReport).sort());
+            const storageHashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(reportCanonical));
+            const storageHash = Array.from(new Uint8Array(storageHashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            await env.FLY_KV.put(`ctrs:report:${reportId}`, JSON.stringify({
+              ...ctrsReport,
+              _store_meta: { storage_hash: storageHash, version: 1, stored_at: now }
+            }));
+
+            // ── 14. 写入 rule-registry（KV 存储） ──
+            const regKey = `ctrs:registry:rules:${ruleObj.rule_id}`;
+            const existingRegRaw = await env.FLY_KV.get(regKey);
+            const existingReg: any[] = existingRegRaw ? JSON.parse(existingRegRaw) : [];
+            // 检查是否已有相同 hash 的注册
+            const alreadyRegistered = existingReg.some((r: any) => r.rule_hash === ruleObj.hash);
+            if (!alreadyRegistered) {
+              existingReg.push({
+                rule_id: ruleObj.rule_id,
+                rule_hash: ruleObj.hash,
+                issuer: ruleObj.issuer,
+                issuer_trust_at_registration: "trusted",
+                version: ruleObj.version,
+                rule: ruleObj,
+                registered_at: now,
+                status: "active",
+              });
+              await env.FLY_KV.put(regKey, JSON.stringify(existingReg));
+            }
+
+            // ── 15. 写入审计链 ──
+            await writeAuditEvent(env, {
+              request_id: `req_${crypto.randomUUID()}`,
+              entity_type: "attribution",
+              entity_id: actionId,
+              action: "created",
+              actor_type: "api",
+              actor_id: agent_id,
+              actor_name: "attribution_api",
+              source: "verify",
+              reason: "ctrs_v1.2_report_issued",
+              before: "{}",
+              after: JSON.stringify({
+                report_id: reportId,
+                schema_version: "CTRS-v1.2",
+                confidence,
+                settlement_status: settlementStatus,
+                amount: totalValue,
+                rule_id: ruleObj.rule_id,
+                rule_hash: ruleHash.slice(0, 16) + "...",
+                storage_hash: storageHash.slice(0, 16) + "...",
+              })
+            });
+
+            // ── 16. 返回完整 CTRS Report ──
+            return json({
+              ...ctrsReport,
+              // 兼容旧字段
+              verification_id: verifId,
+              timestamp: now,
+            }, 201);
+
+          } else {
+            // ══════════════════════════════════════════════════════
+            // 旧格式处理（向后兼容）
+            // ══════════════════════════════════════════════════════
+            const { claim, evidence } = body;
+
+            // ── 旧归因推理引擎 ──
+            const evidenceLabels: Record<string, string> = {
+              "recommendation_recorded": "AI 推荐已记录",
+              "conversation_verified": "对话链路已验证",
+              "conversion_confirmed": "商业转化已确认",
+              "user_id_verified": "用户身份已验证",
+              "channel_tracked": "渠道来源已追踪",
+              "timestamp_verified": "时间戳已验证"
+            };
+            const evidenceArr = Array.isArray(evidence) ? evidence : [];
+            const attributionReasons = evidenceArr.map((e: string) => evidenceLabels[e] || e);
+            const confidence = Math.min(95, 70 + evidenceArr.length * 5);
+
+            const attribution_basis = {
+              conclusion: `该商业转化归属于 ${agent_id}`,
+              reasons: attributionReasons,
+              confidence_score: confidence,
+              confidence_calculation: `基础分 70 + 已验证证据(${evidenceArr.length}) × 5 = ${confidence}`,
+              conversion_path: `${channel || "unknown"} → ${signal_type || "conversion"}`
+            };
+
+            // ── 旧结算规则引擎 ──
+            const SETTLEMENT_RULES = {
+              min_evidence: 2,
+              base_rate: 0.10,
+              evidence_bonus: 0.02,
+              max_rate: 0.20
+            };
+            const eligible = evidenceArr.length >= SETTLEMENT_RULES.min_evidence;
+            const calculatedRate = Math.min(SETTLEMENT_RULES.max_rate, 
+              SETTLEMENT_RULES.base_rate + (evidenceArr.length * SETTLEMENT_RULES.evidence_bonus));
+            const commission = Math.round(((amount || 0) * calculatedRate) * 100) / 100;
+
+            const settlement_basis = {
+              eligible,
+              eligibility_reason: eligible
+                ? `已验证证据(${evidenceArr.length}) ≥ 最低要求(${SETTLEMENT_RULES.min_evidence})`
+                : `已验证证据(${evidenceArr.length}) < 最低要求(${SETTLEMENT_RULES.min_evidence})`,
+              rate_calculation: `基础费率 ${SETTLEMENT_RULES.base_rate * 100}% + 证据加成(${evidenceArr.length} × ${SETTLEMENT_RULES.evidence_bonus * 100}%) = ${(calculatedRate * 100).toFixed(1)}%`,
+              rate_applied: calculatedRate,
+              revenue: amount || 0,
+              commission
+            };
+
+            // 1. 创建 action 记录
+            const actionId = `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            const shortId = actionId.slice(-6);
+            const metadata = JSON.stringify({
+              claim: claim || attribution_basis.conclusion,
+              evidence: evidenceArr,
+              attribution_basis,
+              settlement_basis,
+              amount: amount || 0
+            });
+            await env.FLY_D1.prepare(
+              "INSERT INTO actions (id, agent_id, channel, user_id, signal_type, short_id, metadata, created_at) VALUES (?,?,?,?,?,?,?,datetime('now'))"
+            ).bind(actionId, agent_id, channel || "unknown", user_id || "anonymous", signal_type || "conversion", shortId, metadata).run();
+
+            // 2. 创建 verification 记录
+            const verifId = `ver_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            await env.FLY_D1.prepare(
+              "INSERT INTO verifications (id, action_id, verifier, result, confidence, evidence, created_at) VALUES (?,?,?,?,?,?,datetime('now'))"
+            ).bind(verifId, actionId, "fly_attribution_engine", eligible ? "pass" : "insufficient_evidence", confidence, JSON.stringify(evidenceArr)).run();
+
+            // 3. 写入审计链
+            await writeAuditEvent(env, {
+              request_id: `req_${crypto.randomUUID()}`,
+              entity_type: "attribution",
+              entity_id: actionId,
+              action: "created",
+              actor_type: "api",
+              actor_id: agent_id,
+              actor_name: "attribution_api",
+              source: "verify",
+              reason: "commercial_attribution_issued",
+              before: "{}",
+              after: JSON.stringify({ confidence, eligible, commission, amount: amount || 0 })
+            });
+
+            return json({
+              record_id: actionId,
+              verification_id: verifId,
+              status: eligible ? "verified" : "insufficient_evidence",
+              claim: attribution_basis.conclusion,
+              confidence,
+              settlement_eligible: eligible,
+              commission_eligible: commission,
+              revenue: amount || 0,
+              attribution_basis,
+              settlement_basis,
+              timestamp: new Date().toISOString()
+            }, 201);
+          }
         }
 
         // ── v2.11.0: GET /v1/records/recent ── 查询最近归因记录
@@ -1261,6 +1518,74 @@ export default {
             };
           });
           return json({ total: records.length, records });
+        }
+
+        // ============================================================
+        // v2.12.0: CTRS v1.2 API 端点
+        // ============================================================
+
+        // ── GET /v1/ctrs/report/:reportId ── 获取 CTRS Report ──
+        if (path.startsWith('/v1/ctrs/report/') && method === 'GET') {
+          const reportId = path.split('/v1/ctrs/report/')[1];
+          const reportRaw = await env.FLY_KV.get(`ctrs:report:${reportId}`);
+          if (!reportRaw) return json({ error: "report not found", report_id: reportId }, 404);
+          const reportData = JSON.parse(reportRaw);
+          // 分离存储元信息
+          const storeMeta = reportData._store_meta || {};
+          // 验证 storage_hash
+          const { _store_meta, ...pureReport } = reportData;
+          const verifyCanonical = JSON.stringify(pureReport, Object.keys(pureReport).sort());
+          const verifyHashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifyCanonical));
+          const verifyHash = Array.from(new Uint8Array(verifyHashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+          const hashValid = verifyHash === storeMeta.storage_hash;
+          return json({
+            report: pureReport,
+            store_meta: { ...storeMeta, hash_valid: hashValid },
+          });
+        }
+
+        // ── GET /v1/ctrs/registry/rules ── 查询规则注册表 ──
+        if (path === '/v1/ctrs/registry/rules' && method === 'GET') {
+          // 列出 KV 中所有 ctrs:registry:rules:* 的条目
+          const list = await env.FLY_KV.list({ prefix: 'ctrs:registry:rules:' });
+          const rules: any[] = [];
+          for (const key of list.keys) {
+            const raw = await env.FLY_KV.get(key.name);
+            if (raw) {
+              try { rules.push(...JSON.parse(raw)); } catch {}
+            }
+          }
+          return json({ total: rules.length, rules });
+        }
+
+        // ── GET /v1/ctrs/registry/issuers ── 查询发行者注册表 ──
+        if (path === '/v1/ctrs/registry/issuers' && method === 'GET') {
+          const list = await env.FLY_KV.list({ prefix: 'ctrs:registry:issuers:' });
+          const issuers: any[] = [];
+          for (const key of list.keys) {
+            const raw = await env.FLY_KV.get(key.name);
+            if (raw) {
+              try { issuers.push(JSON.parse(raw)); } catch {}
+            }
+          }
+          return json({ total: issuers.length, issuers });
+        }
+
+        // ── POST /v1/ctrs/registry/issuers ── 注册发行者 ──
+        if (path === '/v1/ctrs/registry/issuers' && method === 'POST') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          const body: any = await request.json();
+          if (!body.issuer_id || !body.name) return json({ error: "issuer_id and name required" }, 400);
+          const issuerRecord = {
+            issuer_id: body.issuer_id,
+            name: body.name,
+            trust_level: body.trust_level || "trusted",
+            registered_at: new Date().toISOString(),
+            metadata: body.metadata || {},
+          };
+          await env.FLY_KV.put(`ctrs:registry:issuers:${body.issuer_id}`, JSON.stringify(issuerRecord));
+          return json({ success: true, ...issuerRecord }, 201);
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);
