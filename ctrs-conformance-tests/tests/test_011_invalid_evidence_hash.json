@@ -1,0 +1,188 @@
+{
+  "test_id": "test_011",
+  "name": "篡改 Evidence Hash（应 FAIL）",
+  "description": "故意篡改 evidence 的 hash 字段，验证系统能检测到数据篡改 — evidence_hash_integrity 检查应 FAIL",
+  "layer": 1,
+  "category": "negative",
+  "input": {
+    "claim": {
+      "claim_id": "claim-011-tamper",
+      "type": "single_agent_conversion",
+      "subject": "Evidence 被篡改的场景",
+      "description": "Evidence 的 hash 字段被故意篡改，与 data 内容不匹配",
+      "timestamp": "2026-07-01T20:00:00+00:00",
+      "parties": [
+        {
+          "id": "agent-a",
+          "role": "recommender",
+          "name": "推荐 Agent"
+        },
+        {
+          "id": "user-011",
+          "role": "buyer",
+          "name": "用户K"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-011-1",
+        "claim_ref": "claim-011-tamper",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T20:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-011",
+          "agent_id": "agent-a",
+          "user_id": "user-011",
+          "action": "recommend_product",
+          "product": "被篡改的产品",
+          "timestamp": "2026-07-01T20:00:00+00:00"
+        },
+        "hash": "deadbeef1632fa76c9fc9f1e9c6b6bae2e18a9248d59dce6b9dcd7dc2cf6ccbb"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "500",
+          "currency": "USD",
+          "splits": {
+            "agent-a": "100"
+          }
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "evidence_hash_integrity": false,
+    "evidence[0].hash": "不等于 SHA-256(evidence[0].data)"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_fail_checks": [
+    "evidence_hash_integrity"
+  ],
+  "expected_result": "FAIL",
+  "report": {
+    "report_id": "report-011-tampered",
+    "schema_version": "CTRS-v1.2",
+    "type": "CommercialTrustReport",
+    "created_at": "2026-07-01T20:00:00+00:00",
+    "status": "verified",
+    "issuer": {
+      "id": "did:fly:demo-platform",
+      "name": "Demo Platform — Agent Commerce"
+    },
+    "claim": {
+      "claim_id": "claim-011-tamper",
+      "type": "single_agent_conversion",
+      "subject": "Evidence 被篡改的场景",
+      "description": "Evidence 的 hash 字段被故意篡改，与 data 内容不匹配",
+      "timestamp": "2026-07-01T20:00:00+00:00",
+      "parties": [
+        {
+          "id": "agent-a",
+          "role": "recommender",
+          "name": "推荐 Agent"
+        },
+        {
+          "id": "user-011",
+          "role": "buyer",
+          "name": "用户K"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-011-1",
+        "claim_ref": "claim-011-tamper",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T20:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-011",
+          "agent_id": "agent-a",
+          "user_id": "user-011",
+          "action": "recommend_product",
+          "product": "被篡改的产品",
+          "timestamp": "2026-07-01T20:00:00+00:00"
+        },
+        "hash": "deadbeef1632fa76c9fc9f1e9c6b6bae2e18a9248d59dce6b9dcd7dc2cf6ccbb"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "2400",
+          "currency": "USD",
+          "splits": {
+            "agent-a": "45",
+            "agent-b": "35",
+            "agent-c": "20"
+          }
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    },
+    "attribution": {
+      "attribution_id": "attr-011",
+      "claim_ref": "claim-011-tamper",
+      "rule_hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "method": "proportional",
+      "confidence": 1.0,
+      "result": [
+        {
+          "party_id": "agent-a",
+          "contribution_pct": "100",
+          "attributed_value": "500"
+        }
+      ],
+      "reasoning": "篡改测试",
+      "attributed_at": "2026-07-01T20:00:00+00:00"
+    },
+    "settlement": {
+      "settlement_id": "settle-011",
+      "attribution_ref": "attr-011",
+      "status": "eligible",
+      "amount": "500",
+      "currency": "USD",
+      "split": [
+        {
+          "party_id": "agent-a",
+          "share_pct": "100",
+          "share_amount": "500"
+        }
+      ],
+      "eligible_parties": [
+        "agent-a"
+      ]
+    }
+  }
+}

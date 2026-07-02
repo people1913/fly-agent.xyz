@@ -1,0 +1,107 @@
+{
+  "test_id": "test_004",
+  "name": "Claim-Evidence 引用一致性",
+  "description": "验证所有 Evidence 的 claim_ref 与 Claim 的 claim_id 一致 — 确保证据链完整",
+  "layer": 1,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-004-ref",
+      "type": "multi_agent_conversion",
+      "subject": "多来源证据的归因场景",
+      "description": "来自对话、CRM、支付三个来源的证据，均引用同一 claim_id",
+      "timestamp": "2026-07-01T13:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+        {"id": "agent-b", "role": "closer", "name": "成交 Agent"},
+        {"id": "user-004", "role": "buyer", "name": "用户D"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-004-1",
+        "claim_ref": "claim-004-ref",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T13:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-004",
+          "agent_id": "agent-a",
+          "user_id": "user-004",
+          "action": "recommend",
+          "product": "企业版 SaaS",
+          "timestamp": "2026-07-01T13:00:00+00:00"
+        },
+        "hash": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+      },
+      {
+        "evidence_id": "ev-004-2",
+        "claim_ref": "claim-004-ref",
+        "type": "crm",
+        "source": "agent-b",
+        "timestamp": "2026-07-01T13:10:00+00:00",
+        "data": {
+          "crm_id": "crm-004",
+          "agent_id": "agent-b",
+          "user_id": "user-004",
+          "action": "close_deal",
+          "product": "企业版 SaaS",
+          "amount": 8000,
+          "timestamp": "2026-07-01T13:10:00+00:00"
+        },
+        "hash": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+      },
+      {
+        "evidence_id": "ev-004-3",
+        "claim_ref": "claim-004-ref",
+        "type": "stripe",
+        "source": "payment-system",
+        "timestamp": "2026-07-01T13:15:00+00:00",
+        "data": {
+          "stripe_id": "pay-004",
+          "user_id": "user-004",
+          "action": "payment_confirmed",
+          "amount": 8000,
+          "currency": "USD",
+          "timestamp": "2026-07-01T13:15:00+00:00"
+        },
+        "hash": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "8000",
+          "currency": "USD",
+          "splits": {"agent-a": "45", "agent-b": "35", "agent-c": "20"}
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "evidence_claim_ref": true,
+    "evidence[*].claim_ref": "等于 claim.claim_id"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

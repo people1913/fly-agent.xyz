@@ -1,0 +1,73 @@
+{
+  "test_id": "test_010",
+  "name": "Issuer 信任评估",
+  "description": "验证 Issuer 的 trust_level 必须是 trusted 或 verified — 确保报告由可信签发者生成",
+  "layer": 3,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-010-trust",
+      "type": "single_agent_conversion",
+      "subject": "可信 Issuer 签发的归因报告",
+      "description": "Issuer 是 trusted 级别，验证 issuer_trust 检查通过",
+      "timestamp": "2026-07-01T19:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "converter", "name": "转化 Agent"},
+        {"id": "user-010", "role": "buyer", "name": "用户J"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-010-1",
+        "claim_ref": "claim-010-trust",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T19:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-010",
+          "agent_id": "agent-a",
+          "user_id": "user-010",
+          "action": "convert",
+          "product": "数据分析工具",
+          "timestamp": "2026-07-01T19:00:00+00:00"
+        },
+        "hash": "d1d2d3d4d5d6d1d2d3d4d5d6d1d2d3d4d5d6d1d2d3d4d5d6d1d2d3d4d5d6d1d2"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "2000",
+          "currency": "USD",
+          "splits": {"agent-a": "100"}
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "issuer_trust": true,
+    "issuer trust_level": "trusted 或 verified"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

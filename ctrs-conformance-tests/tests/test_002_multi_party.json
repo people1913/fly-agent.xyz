@@ -1,0 +1,117 @@
+{
+  "test_id": "test_002",
+  "name": "多方参与归因",
+  "description": "验证 3+ Agent 协作归因场景 — 推荐、讲解、支付三个 Agent 共同促成交易",
+  "layer": 1,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-002-multi",
+      "type": "multi_agent_conversion",
+      "subject": "三个 Agent 协作促成交易",
+      "description": "Agent A 推荐 → Agent B 专业讲解 → Agent C 完成支付。交易金额 $2,400。",
+      "timestamp": "2026-07-01T11:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+        {"id": "agent-b", "role": "explainer", "name": "讲解 Agent"},
+        {"id": "agent-c", "role": "payment_agent", "name": "支付 Agent"},
+        {"id": "user-002", "role": "buyer", "name": "用户B"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-002-1",
+        "claim_ref": "claim-002-multi",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T11:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-002a",
+          "agent_id": "agent-a",
+          "user_id": "user-002",
+          "action": "recommend_product",
+          "product": "高级手表 Premium Watch X1",
+          "timestamp": "2026-07-01T11:00:00+00:00",
+          "message": "推荐 Premium Watch X1，售价 $2,400"
+        },
+        "hash": "a6d3a280d056cfb6d2be97cd952730ff047e1df7bfa48d68ed0b348172e9da3d"
+      },
+      {
+        "evidence_id": "ev-002-2",
+        "claim_ref": "claim-002-multi",
+        "type": "conversation",
+        "source": "agent-b",
+        "timestamp": "2026-07-01T11:05:00+00:00",
+        "data": {
+          "conversation_id": "conv-002b",
+          "agent_id": "agent-b",
+          "user_id": "user-002",
+          "action": "explain_product",
+          "product": "高级手表 Premium Watch X1",
+          "timestamp": "2026-07-01T11:05:00+00:00",
+          "details": "瑞士机芯，蓝宝石镜面，防水100米"
+        },
+        "hash": "056c3d94833134335453a4df684ef67c896e6e4d8b586bcc5c7e8a030185ce03"
+      },
+      {
+        "evidence_id": "ev-002-3",
+        "claim_ref": "claim-002-multi",
+        "type": "payment",
+        "source": "agent-c",
+        "timestamp": "2026-07-01T11:10:00+00:00",
+        "data": {
+          "transaction_id": "tx-002c",
+          "agent_id": "agent-c",
+          "user_id": "user-002",
+          "action": "process_payment",
+          "product": "高级手表 Premium Watch X1",
+          "amount": 2400,
+          "currency": "USD",
+          "status": "completed",
+          "timestamp": "2026-07-01T11:10:00+00:00"
+        },
+        "hash": "e72d1eb7634420a5cf1b72bb0ca8cdef48252ae83219217435439241ef9c6ae7"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "2400",
+          "currency": "USD",
+          "splits": {"agent-a": "45", "agent-b": "35", "agent-c": "20"}
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "type": "CommercialTrustReport",
+    "claim.claim_id": "存在",
+    "evidence_count": 3,
+    "rule.rule_id": "存在",
+    "attribution.result_count": 3,
+    "settlement.status": "eligible",
+    "settlement.split_sum": "等于 settlement.amount"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

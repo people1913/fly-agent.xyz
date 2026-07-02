@@ -1,0 +1,74 @@
+{
+  "test_id": "test_008",
+  "name": "Attribution-Rule Hash 绑定",
+  "description": "验证 Attribution 的 rule_hash 与 Rule 的 hash 一致 — 确保归因结果绑定了正确的规则版本",
+  "layer": 2,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-008-bind",
+      "type": "multi_agent_conversion",
+      "subject": "Attribution 必须绑定 Rule Hash",
+      "description": "验证 attribution.rule_hash == rule.hash，归因只能引用 hash 而非 rule text",
+      "timestamp": "2026-07-01T17:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+        {"id": "agent-b", "role": "explainer", "name": "讲解 Agent"},
+        {"id": "user-008", "role": "buyer", "name": "用户H"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-008-1",
+        "claim_ref": "claim-008-bind",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T17:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-008",
+          "agent_id": "agent-a",
+          "user_id": "user-008",
+          "action": "recommend",
+          "product": "营销自动化平台",
+          "timestamp": "2026-07-01T17:00:00+00:00"
+        },
+        "hash": "b1b2b3b4b5b6b1b2b3b4b5b6b1b2b3b4b5b6b1b2b3b4b5b6b1b2b3b4b5b6b1b2"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "3000",
+          "currency": "USD",
+          "splits": {"agent-a": "45", "agent-b": "35", "agent-c": "20"}
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "attribution_rule_binding": true,
+    "attribution.rule_hash": "等于 rule.hash"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

@@ -1,0 +1,75 @@
+{
+  "test_id": "test_003",
+  "name": "Evidence Hash 校验",
+  "description": "验证 Evidence 的 SHA-256 hash 与 data 内容一致 — 确保 evidence 数据未被篡改",
+  "layer": 1,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-003-hash",
+      "type": "webhook_conversion",
+      "subject": "Webhook 回调确认的转化事件",
+      "description": "通过 Webhook 回调确认的转化，验证 evidence hash 完整性",
+      "timestamp": "2026-07-01T12:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "converter", "name": "转化 Agent"},
+        {"id": "user-003", "role": "buyer", "name": "用户C"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-003-1",
+        "claim_ref": "claim-003-hash",
+        "type": "webhook",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T12:00:00+00:00",
+        "data": {
+          "webhook_id": "wh-003",
+          "agent_id": "agent-a",
+          "user_id": "user-003",
+          "action": "webhook_callback",
+          "event": "conversion_completed",
+          "product": "云服务 Pro",
+          "amount": 1200,
+          "timestamp": "2026-07-01T12:00:00+00:00"
+        },
+        "hash": "2325f7cb76ad04aab9da41ab5e2b0a5e312c1ab76fb16965fd1e8bafc128a4d6"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-single-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "4eeede5dee38e7cd466b6a21aed75b0e9883ac74783b7682b3ff99dfe3e8c1e5",
+      "definition": {
+        "name": "单Agent全额归因规则",
+        "method": "proportional",
+        "description": "单一 Agent 获得 100% 归因",
+        "parameters": {
+          "total_value": "1200",
+          "currency": "USD",
+          "splits": {"agent-a": "100"}
+        }
+      },
+      "created_at": "2026-07-01T09:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "evidence_hash_integrity": true,
+    "evidence[0].hash": "等于 SHA-256(evidence[0].data)"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

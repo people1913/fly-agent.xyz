@@ -1,0 +1,187 @@
+{
+  "test_id": "test_013",
+  "name": "不可信 Issuer（应 FAIL）",
+  "description": "使用 trust_level 不是 trusted 或 verified 的 Issuer，验证 issuer_trust 检查应 FAIL — 报告必须由可信签发者生成",
+  "layer": 3,
+  "category": "negative",
+  "input": {
+    "claim": {
+      "claim_id": "claim-013-untrust",
+      "type": "single_agent_conversion",
+      "subject": "不可信 Issuer 签发的归因报告",
+      "description": "Issuer 的 trust_level 为 unknown，验证 issuer_trust 检查失败",
+      "timestamp": "2026-07-01T22:00:00+00:00",
+      "parties": [
+        {
+          "id": "agent-a",
+          "role": "converter",
+          "name": "转化 Agent"
+        },
+        {
+          "id": "user-013",
+          "role": "buyer",
+          "name": "用户M"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-013-1",
+        "claim_ref": "claim-013-untrust",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T22:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-013",
+          "agent_id": "agent-a",
+          "user_id": "user-013",
+          "action": "convert",
+          "product": "低信任度产品",
+          "timestamp": "2026-07-01T22:00:00+00:00"
+        },
+        "hash": "f1f2f3f4f5f6f1f2f3f4f5f6f1f2f3f4f5f6f1f2f3f4f5f6f1f2f3f4f5f6f1f2"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:untrusted-issuer",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "1000",
+          "currency": "USD",
+          "splits": {
+            "agent-a": "100"
+          }
+        }
+      },
+      "created_at": "2026-07-01T22:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "issuer_trust": false,
+    "issuer trust_level": "不等于 trusted 或 verified"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_fail_checks": [
+    "issuer_trust",
+    "rule_registration"
+  ],
+  "expected_result": "FAIL",
+  "report": {
+    "report_id": "report-013-untrust",
+    "schema_version": "CTRS-v1.2",
+    "type": "CommercialTrustReport",
+    "created_at": "2026-07-01T22:00:00+00:00",
+    "status": "verified",
+    "issuer": {
+      "id": "did:fly:untrusted-issuer",
+      "name": "Untrusted Platform"
+    },
+    "claim": {
+      "claim_id": "claim-013-untrust",
+      "type": "single_agent_conversion",
+      "subject": "不可信 Issuer 签发的归因报告",
+      "description": "Issuer 的 trust_level 为 unknown，验证 issuer_trust 检查失败",
+      "timestamp": "2026-07-01T22:00:00+00:00",
+      "parties": [
+        {
+          "id": "agent-a",
+          "role": "converter",
+          "name": "转化 Agent"
+        },
+        {
+          "id": "user-013",
+          "role": "buyer",
+          "name": "用户M"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-013-1",
+        "claim_ref": "claim-013-untrust",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T22:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-013",
+          "agent_id": "agent-a",
+          "user_id": "user-013",
+          "action": "convert",
+          "product": "低信任度产品",
+          "timestamp": "2026-07-01T22:00:00+00:00"
+        },
+        "hash": "487078bc9406b3904d45283efc13339a90ec12fb00bebc4978418319cfd143b4"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-untrusted-issuer-v1",
+      "issuer": "did:fly:untrusted-issuer",
+      "version": "1.0.0",
+      "hash": "3c2cd2d6a28ce11432ef1a36d0cbdf2872736d2d2653731ade672b449f63fd1a",
+      "definition": {
+        "name": "不可信签发者归因规则",
+        "method": "proportional",
+        "description": "此规则的签发者不在可信列表中",
+        "parameters": {
+          "total_value": "1000",
+          "currency": "USD",
+          "splits": {
+            "agent-a": "100"
+          }
+        }
+      },
+      "created_at": "2026-07-01T22:00:00+00:00"
+    },
+    "attribution": {
+      "attribution_id": "attr-013",
+      "claim_ref": "claim-013-untrust",
+      "rule_hash": "3c2cd2d6a28ce11432ef1a36d0cbdf2872736d2d2653731ade672b449f63fd1a",
+      "method": "proportional",
+      "confidence": 1.0,
+      "result": [
+        {
+          "party_id": "agent-a",
+          "contribution_pct": "100",
+          "attributed_value": "1000"
+        }
+      ],
+      "reasoning": "不可信 issuer 100% 归因",
+      "attributed_at": "2026-07-01T22:00:00+00:00"
+    },
+    "settlement": {
+      "settlement_id": "settle-013",
+      "attribution_ref": "attr-013",
+      "status": "eligible",
+      "amount": "1000",
+      "currency": "USD",
+      "split": [
+        {
+          "party_id": "agent-a",
+          "share_pct": "100",
+          "share_amount": "1000"
+        }
+      ],
+      "eligible_parties": [
+        "agent-a"
+      ]
+    }
+  }
+}

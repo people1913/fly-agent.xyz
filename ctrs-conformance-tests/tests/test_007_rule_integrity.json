@@ -1,0 +1,74 @@
+{
+  "test_id": "test_007",
+  "name": "Rule Hash 完整性校验",
+  "description": "验证 Rule 的 hash 字段等于 SHA-256(JSON.stringify(definition)) — 确保 Rule 定义未被篡改",
+  "layer": 2,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-007-rule",
+      "type": "single_agent_conversion",
+      "subject": "Rule 定义完整性验证场景",
+      "description": "使用加权归因规则，验证 rule.hash == SHA-256(rule.definition)",
+      "timestamp": "2026-07-01T16:00:00+00:00",
+      "parties": [
+        {"id": "agent-x", "role": "primary", "name": "主要 Agent"},
+        {"id": "agent-y", "role": "secondary", "name": "辅助 Agent"},
+        {"id": "user-007", "role": "buyer", "name": "用户G"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-007-1",
+        "claim_ref": "claim-007-rule",
+        "type": "conversation",
+        "source": "agent-x",
+        "timestamp": "2026-07-01T16:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-007",
+          "agent_id": "agent-x",
+          "user_id": "user-007",
+          "action": "convert",
+          "product": "高级分析套件",
+          "timestamp": "2026-07-01T16:00:00+00:00"
+        },
+        "hash": "a1a2a3a4a5a6a1a2a3a4a5a6a1a2a3a4a5a6a1a2a3a4a5a6a1a2a3a4a5a6a1a2"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-weighted-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "be14fd61faed54c260155d1349cfc89ac3fdfd70fce1b72a40324419805f3486",
+      "definition": {
+        "name": "企业级归因规则",
+        "method": "weighted",
+        "description": "基于权重分配",
+        "parameters": {
+          "total_value": "5000",
+          "currency": "USD",
+          "weights": {"agent-x": 0.6, "agent-y": 0.4}
+        }
+      },
+      "created_at": "2026-07-01T09:30:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "rule_integrity": true,
+    "rule.hash": "等于 SHA-256(rule.definition)"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

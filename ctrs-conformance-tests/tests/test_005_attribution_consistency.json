@@ -1,0 +1,90 @@
+{
+  "test_id": "test_005",
+  "name": "Attribution Claim 引用一致性",
+  "description": "验证 Attribution 的 claim_ref 与 Claim 的 claim_id 一致 — 确保归因结果对应正确的声明",
+  "layer": 1,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-005-attr",
+      "type": "multi_agent_conversion",
+      "subject": "需要精确 attribution 绑定的归因场景",
+      "description": "验证 attribution 对象正确引用 claim_id",
+      "timestamp": "2026-07-01T14:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+        {"id": "agent-b", "role": "negotiator", "name": "谈判 Agent"},
+        {"id": "user-005", "role": "buyer", "name": "用户E"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-005-1",
+        "claim_ref": "claim-005-attr",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T14:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-005",
+          "agent_id": "agent-a",
+          "user_id": "user-005",
+          "action": "recommend",
+          "product": "AI 解决方案",
+          "timestamp": "2026-07-01T14:00:00+00:00"
+        },
+        "hash": "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f"
+      },
+      {
+        "evidence_id": "ev-005-2",
+        "claim_ref": "claim-005-attr",
+        "type": "conversation",
+        "source": "agent-b",
+        "timestamp": "2026-07-01T14:10:00+00:00",
+        "data": {
+          "conversation_id": "conv-005",
+          "agent_id": "agent-b",
+          "user_id": "user-005",
+          "action": "negotiate",
+          "product": "AI 解决方案",
+          "timestamp": "2026-07-01T14:10:00+00:00"
+        },
+        "hash": "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-demo-multi-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+      "definition": {
+        "name": "三Agent协作归因规则",
+        "method": "proportional",
+        "description": "推荐45% / 讲解35% / 支付渠道20%",
+        "parameters": {
+          "total_value": "5000",
+          "currency": "USD",
+          "splits": {"agent-a": "45", "agent-b": "35", "agent-c": "20"}
+        }
+      },
+      "created_at": "2026-07-01T10:00:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "attribution_consistency": true,
+    "attribution.claim_ref": "等于 claim.claim_id"
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}

@@ -1,0 +1,171 @@
+{
+  "report_id": "任何 UUID",
+  "schema_version": "CTRS-v1.2",
+  "type": "CommercialTrustReport",
+  "created_at": "任何 ISO 8601 时间戳",
+  "status": "eligible",
+  "issuer": {
+    "id": "任何 issuer id",
+    "name": "任何 issuer name"
+  },
+  "claim": {
+    "claim_id": "claim-002-multi",
+    "type": "multi_agent_conversion",
+    "subject": "三个 Agent 协作促成交易",
+    "description": "Agent A 推荐 → Agent B 专业讲解 → Agent C 完成支付。交易金额 $2,400。",
+    "timestamp": "2026-07-01T11:00:00+00:00",
+    "parties": [
+      {
+        "id": "agent-a",
+        "role": "recommender",
+        "name": "推荐 Agent"
+      },
+      {
+        "id": "agent-b",
+        "role": "explainer",
+        "name": "讲解 Agent"
+      },
+      {
+        "id": "agent-c",
+        "role": "payment_agent",
+        "name": "支付 Agent"
+      },
+      {
+        "id": "user-002",
+        "role": "buyer",
+        "name": "用户B"
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "evidence_id": "任何 UUID",
+      "claim_ref": "claim-002-multi",
+      "type": "conversation",
+      "source": "agent-a",
+      "timestamp": "2026-07-01T11:00:00+00:00",
+      "data": {
+        "conversation_id": "conv-002a",
+        "agent_id": "agent-a",
+        "user_id": "user-002",
+        "action": "recommend_product",
+        "product": "高级手表 Premium Watch X1",
+        "timestamp": "2026-07-01T11:00:00+00:00",
+        "message": "推荐 Premium Watch X1，售价 $2,400"
+      },
+      "hash": "a6d3a280d056cfb6d2be97cd952730ff047e1df7bfa48d68ed0b348172e9da3d"
+    },
+    {
+      "evidence_id": "任何 UUID",
+      "claim_ref": "claim-002-multi",
+      "type": "conversation",
+      "source": "agent-b",
+      "timestamp": "2026-07-01T11:05:00+00:00",
+      "data": {
+        "conversation_id": "conv-002b",
+        "agent_id": "agent-b",
+        "user_id": "user-002",
+        "action": "explain_product",
+        "product": "高级手表 Premium Watch X1",
+        "timestamp": "2026-07-01T11:05:00+00:00",
+        "details": "瑞士机芯，蓝宝石镜面，防水100米"
+      },
+      "hash": "056c3d94833134335453a4df684ef67c896e6e4d8b586bcc5c7e8a030185ce03"
+    },
+    {
+      "evidence_id": "任何 UUID",
+      "claim_ref": "claim-002-multi",
+      "type": "payment",
+      "source": "agent-c",
+      "timestamp": "2026-07-01T11:10:00+00:00",
+      "data": {
+        "transaction_id": "tx-002c",
+        "agent_id": "agent-c",
+        "user_id": "user-002",
+        "action": "process_payment",
+        "product": "高级手表 Premium Watch X1",
+        "amount": 2400,
+        "currency": "USD",
+        "status": "completed",
+        "timestamp": "2026-07-01T11:10:00+00:00"
+      },
+      "hash": "e72d1eb7634420a5cf1b72bb0ca8cdef48252ae83219217435439241ef9c6ae7"
+    }
+  ],
+  "rule": {
+    "rule_id": "rule-demo-multi-agent-v1",
+    "issuer": "did:fly:demo-platform",
+    "version": "1.0.0",
+    "hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+    "definition": {
+      "name": "三Agent协作归因规则",
+      "method": "proportional",
+      "description": "推荐45% / 讲解35% / 支付渠道20%",
+      "parameters": {
+        "total_value": "2400",
+        "currency": "USD",
+        "splits": {
+          "agent-a": "45",
+          "agent-b": "35",
+          "agent-c": "20"
+        }
+      }
+    },
+    "created_at": "2026-07-01T10:00:00+00:00"
+  },
+  "attribution": {
+    "attribution_id": "任何 UUID",
+    "claim_ref": "claim-002-multi",
+    "rule_hash": "b42f4225673cdf79e21526cdea3239535ebbfe8aa133c2676e48a322269687b8",
+    "method": "proportional",
+    "confidence": 1.0,
+    "result": [
+      {
+        "party_id": "agent-a",
+        "contribution_pct": "45",
+        "attributed_value": "1080"
+      },
+      {
+        "party_id": "agent-b",
+        "contribution_pct": "35",
+        "attributed_value": "840"
+      },
+      {
+        "party_id": "agent-c",
+        "contribution_pct": "20",
+        "attributed_value": "480"
+      }
+    ],
+    "reasoning": "推荐45%/讲解35%/支付20%",
+    "attributed_at": "任何 ISO 8601 时间戳"
+  },
+  "settlement": {
+    "settlement_id": "任何 UUID",
+    "attribution_ref": "等于 attribution.attribution_id",
+    "status": "eligible",
+    "amount": "2400",
+    "currency": "USD",
+    "split": [
+      {
+        "party_id": "agent-a",
+        "share_pct": "45",
+        "share_amount": "1080"
+      },
+      {
+        "party_id": "agent-b",
+        "share_pct": "35",
+        "share_amount": "840"
+      },
+      {
+        "party_id": "agent-c",
+        "share_pct": "20",
+        "share_amount": "480"
+      }
+    ],
+    "eligible_parties": [
+      "agent-a",
+      "agent-b",
+      "agent-c"
+    ]
+  }
+}

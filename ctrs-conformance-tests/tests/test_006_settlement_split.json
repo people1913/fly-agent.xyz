@@ -1,0 +1,102 @@
+{
+  "test_id": "test_006",
+  "name": "结算金额分配正确性",
+  "description": "验证 Settlement 中所有 split 的 share_amount 之和等于 amount — 确保结算金额无遗漏无溢出",
+  "layer": 1,
+  "category": "positive",
+  "input": {
+    "claim": {
+      "claim_id": "claim-006-settle",
+      "type": "multi_agent_conversion",
+      "subject": "四方协作的高额结算场景",
+      "description": "推荐、讲解、谈判、支付四个 Agent 协作促成 $10,000 交易，验证结算分账金额加总正确",
+      "timestamp": "2026-07-01T15:00:00+00:00",
+      "parties": [
+        {"id": "agent-a", "role": "recommender", "name": "推荐 Agent"},
+        {"id": "agent-b", "role": "explainer", "name": "讲解 Agent"},
+        {"id": "agent-c", "role": "negotiator", "name": "谈判 Agent"},
+        {"id": "agent-d", "role": "payment_agent", "name": "支付 Agent"},
+        {"id": "user-006", "role": "buyer", "name": "用户F"}
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-006-1",
+        "claim_ref": "claim-006-settle",
+        "type": "conversation",
+        "source": "agent-a",
+        "timestamp": "2026-07-01T15:00:00+00:00",
+        "data": {
+          "conversation_id": "conv-006",
+          "agent_id": "agent-a",
+          "user_id": "user-006",
+          "action": "recommend",
+          "product": "企业级数据分析平台",
+          "timestamp": "2026-07-01T15:00:00+00:00"
+        },
+        "hash": "f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2"
+      },
+      {
+        "evidence_id": "ev-006-2",
+        "claim_ref": "claim-006-settle",
+        "type": "payment",
+        "source": "agent-d",
+        "timestamp": "2026-07-01T15:30:00+00:00",
+        "data": {
+          "transaction_id": "tx-006",
+          "agent_id": "agent-d",
+          "user_id": "user-006",
+          "action": "process_payment",
+          "product": "企业级数据分析平台",
+          "amount": 10000,
+          "currency": "USD",
+          "status": "completed",
+          "timestamp": "2026-07-01T15:30:00+00:00"
+        },
+        "hash": "e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3"
+      }
+    ],
+    "rule": {
+      "rule_id": "rule-four-agent-v1",
+      "issuer": "did:fly:demo-platform",
+      "version": "1.0.0",
+      "hash": "50148ab92f661184c6681b15d1c13921463f8c68420c06046fe8a297e1718188",
+      "definition": {
+        "name": "四方协作归因规则",
+        "method": "proportional",
+        "description": "推荐30% / 讲解25% / 谈判20% / 支付25%",
+        "parameters": {
+          "total_value": "10000",
+          "currency": "USD",
+          "splits": {"agent-a": "30", "agent-b": "25", "agent-c": "20", "agent-d": "25"}
+        }
+      },
+      "created_at": "2026-07-01T09:30:00+00:00"
+    }
+  },
+  "expected_output": {
+    "schema_version": "CTRS-v1.2",
+    "settlement_correctness": true,
+    "settlement.amount": "10000",
+    "settlement.split_sum": "等于 settlement.amount",
+    "settlement.split": [
+      {"party_id": "agent-a", "share_pct": "30", "share_amount": "3000"},
+      {"party_id": "agent-b", "share_pct": "25", "share_amount": "2500"},
+      {"party_id": "agent-c", "share_pct": "20", "share_amount": "2000"},
+      {"party_id": "agent-d", "share_pct": "25", "share_amount": "2500"}
+    ]
+  },
+  "checks": [
+    "schema_completeness",
+    "claim_integrity",
+    "evidence_hash_integrity",
+    "evidence_claim_ref",
+    "attribution_consistency",
+    "settlement_correctness",
+    "rule_integrity",
+    "attribution_rule_binding",
+    "rule_registration",
+    "issuer_trust"
+  ],
+  "expected_result": "PASS"
+}
