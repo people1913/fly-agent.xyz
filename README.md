@@ -46,36 +46,28 @@ Fly 基于注册规则计算归因：
 
 每一分钱的分配都有证据支撑、规则可查、机器可验证。不是"我觉得"，而是"Fly 证明"。
 
-## 四层叙事
+## 从愿景到实例
 
-Fly 的设计遵循清晰的四层叙事，从"为什么需要"到"运行实例"：
-
-| Layer | 名称 | 回答的问题 | 仓库位置 |
-|-------|------|-----------|---------|
-| **Layer 0** | **Agent Economy** | 为什么今天需要新的协议？ | 本文档开头 |
-| **Layer 1** | **Fly** | 解决什么商业问题？ | 本文档 |
-| **Layer 2** | **CTRS** | 协议规范是什么？ | [`ctrs/`](./ctrs/) |
-| **Layer 3** | **Fly Report** | 协议运行后的实例是什么？ | [`ctrs/examples/`](./ctrs/examples/) |
+Fly 的设计遵循清晰的叙事线，从"为什么需要"到"运行实例"：
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│  Layer 0 · Agent Economy — 为什么需要？                    │
-│  多 Agent 协作已成现实，但商业归因失真，结算缺乏依据        │
-│  → 需要新的信任基础设施                                   │
-├──────────────────────────────────────────────────────────┤
-│  Layer 1 · Fly — 解决什么问题？                           │
-│  让每一份商业贡献都被证明                                  │
-│  → 商业信任协议：从行为到结算的完整信任链路                 │
-├──────────────────────────────────────────────────────────┤
-│  Layer 2 · CTRS — 协议规范是什么？                        │
-│  Commercial Trust Report Specification                    │
-│  → 数据格式、验证规则、交互协议的精确定义                   │
-├──────────────────────────────────────────────────────────┤
-│  Layer 3 · Fly Report — 运行实例是什么？                  │
-│  按照 CTRS 规范生成的具体商业信任报告                      │
-│  → 可验证、可追溯、可审计的商业事实实例                     │
-└──────────────────────────────────────────────────────────┘
+Agent Economy
+Today's commercial activities are created across multiple agents and platforms.
+↓
+Fly
+A Commercial Trust Protocol for Agent Economy.
+↓
+CTRS
+The specification that defines how commercial facts are constructed and verified.
+↓
+Fly Report
+A verifiable commercial attribution report.
 ```
+
+- **Agent Economy** — 为什么今天需要新的协议？多 Agent 协作已成现实，但商业归因失真，结算缺乏依据，需要新的信任基础设施。
+- **Fly** — 解决什么商业问题？让每一份商业贡献都被证明，建立从行为到结算的完整信任链路。
+- **CTRS** — 协议规范是什么？数据格式、验证规则、交互协议的精确定义。→ [`ctrs/`](./ctrs/)
+- **Fly Report** — 运行实例是什么？按照 CTRS 规范生成的具体商业信任报告，可验证、可追溯、可审计。→ [`ctrs/examples/`](./ctrs/examples/)
 
 **Fly 是品牌，CTRS 是规范。** 就像：
 
@@ -101,12 +93,12 @@ fly-agent.xyz/
 
 ## 了解更多
 
-按四层叙事逐层深入：
+沿叙事线逐层深入：
 
-- **Layer 0 — Agent Economy：** → 上文「核心问题」已阐述
-- **Layer 1 — Fly：** → 你正在阅读
-- **Layer 2 — CTRS 协议规范：** → [`ctrs/`](./ctrs/)
-- **Layer 3 — Fly Report 实例：** → [`ctrs/examples/`](./ctrs/examples/)
+- **Agent Economy：** → 上文「核心问题」已阐述
+- **Fly：** → 你正在阅读
+- **CTRS 协议规范：** → [`ctrs/`](./ctrs/)
+- **Fly Report 实例：** → [`ctrs/examples/`](./ctrs/examples/)
 - **想验证规范合规性？** → [`ctrs/tests/`](./ctrs/tests/)
 
 ---

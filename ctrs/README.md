@@ -1,28 +1,33 @@
-# CTRS — Layer 2：Fly 的协议规范
+# CTRS
 
-> **CTRS = Commercial Trust Report Specification**
-> 这是 [Fly](../)（Layer 1）协议的技术规范。CTRS 不是独立协议——它是 Fly 的 Specification，就像 ACME 是 Let's Encrypt 的协议一样。
+**Commercial Trust Report Specification**
+
+> CTRS is the technical specification of Fly.
+> Fly explains why the protocol exists.
+> CTRS defines how the protocol works.
+
+CTRS 不是独立协议——它是 Fly 的 Specification，就像 ACME 是 Let's Encrypt 的协议一样。返回 [Fly](../) 了解全貌。
 
 ---
 
-## 四层叙事中的定位
+## 在叙事中的定位
 
-CTRS 在 Fly 四层叙事中处于 **Layer 2**：
+CTRS 在 Fly 叙事线中处于规范层：
 
-| Layer | 名称 | 回答的问题 | 指向 |
-|-------|------|-----------|------|
-| Layer 0 | Agent Economy | 为什么今天需要新的协议？ | [../README.md](../) 开头 |
-| **Layer 1** | **Fly** | **解决什么商业问题？** | **[../README.md](../)** |
-| **→ Layer 2** | **CTRS** | **协议规范是什么？** | **← 你在这里** |
-| Layer 3 | Fly Report | 协议运行后的实例是什么？ | [./examples/](./examples/) |
+| 名称 | 回答的问题 | 指向 |
+|------|-----------|------|
+| Agent Economy | 为什么今天需要新的协议？ | [../README.md](../) 开头 |
+| Fly | 解决什么商业问题？ | [../README.md](../) |
+| **CTRS** | **协议规范是什么？** | **← 你在这里** |
+| Fly Report | 协议运行后的实例是什么？ | [./examples/](./examples/) |
 
-**层级关系：**
+**关系：**
 
 ```
-Layer 0: Agent Economy（为什么需要）
-  → Layer 1: Fly（解决什么问题）[../]
-    → Layer 2: CTRS（协议规范是什么）← 你在这里
-      → Layer 3: Fly Report（运行实例是什么）[./examples/]
+Agent Economy（为什么需要）
+  → Fly（解决什么问题）[../]
+    → CTRS（协议规范是什么）← 你在这里
+      → Fly Report（运行实例是什么）[./examples/]
 ```
 
 ## 为什么需要 CTRS
@@ -176,4 +181,4 @@ cat ctrs/interop/test_vectors/v1.2.json | python3 -m json.tool
 
 ---
 
-*CTRS 是 Fly 的 Specification。返回 [Fly 主页](../) 了解全貌。*
+*CTRS 是 Fly 的 Specification。返回 [Fly](../) 了解全貌。*
