@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.12.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.13.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 8层6协议架构：L1-L8
@@ -28,6 +28,7 @@
  *   POST /v1/backup/d1                        — v2.10.0: D1 SQL 备份存储
  *   GET  /v1/backup/d1/list                   — v2.11.0: 备份历史记录列表
  *   GET  /v1/backup/d1/{backup_id}            — v2.11.0: 下载指定备份 SQL
+ *   POST /v1/backup/d1/restore/{backup_id}    — v2.13.0: Dry-run 恢复计划
  *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
  * 
  * v2.10.0 新增：
@@ -1131,6 +1132,63 @@ export default {
           }
           return new Response(sqlContent, {
             headers: { 'Content-Type': 'application/sql', 'Content-Length': String(new TextEncoder().encode(sqlContent).length) }
+          });
+        }
+
+        // === v2.13.0: Dry-run 恢复计划 ===
+        if (path.startsWith('/v1/backup/d1/restore/bak_') && method === 'POST') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+          const backupId = path.split('/').pop()!;
+          // 读取备份 SQL
+          const sqlContent = await env.FLY_KV.get(`backup:d1:${backupId}`);
+          if (!sqlContent) {
+            return json({ error: 'backup not found or expired' }, 404);
+          }
+          // 解析请求体
+          const body: any = await request.json().catch(() => ({}));
+          const isDryRun = body.dry_run === true;
+          // 从备份 SQL 中提取表名
+          const backupTableMatches = [...sqlContent.matchAll(/create\s+table\s+(?:if\s+not\s+exists\s+)?[`"']?(\w+)[`"']?\s*\(/gi)];
+          const backupTables = backupTableMatches.map(m => m[1].toLowerCase());
+          // 查询 D1 当前表列表
+          const tablesResult = await env.FLY_D1.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'").all();
+          const currentTables = (tablesResult.results as any[]).map(r => (r.name as string).toLowerCase());
+          // 计算差异
+          const newTables = backupTables.filter(t => !currentTables.includes(t));
+          const existingTables = backupTables.filter(t => currentTables.includes(t));
+          const warnings: string[] = [];
+          for (const t of existingTables) {
+            warnings.push(`表 '${t}' 已存在，恢复将覆盖现有数据`);
+          }
+          if (!isDryRun) {
+            warnings.push('非 dry_run 模式暂不支持实际恢复（安全限制）');
+          }
+          // 写入审计链
+          await writeAuditEvent(env, {
+            request_id: `req_${crypto.randomUUID()}`,
+            entity_type: 'backup',
+            entity_id: backupId,
+            action: 'restored',
+            actor_type: 'system',
+            actor_id: 'sys_backup',
+            actor_name: 'd1-backup-service',
+            source: 'backup',
+            reason: isDryRun ? 'd1_backup_restore_dry_run' : 'd1_backup_restore_attempted',
+            before: JSON.stringify({ current_tables: currentTables }),
+            after: JSON.stringify({ backup_tables: backupTables, new_tables: newTables, warnings_count: warnings.length, dry_run: isDryRun })
+          });
+          return json({
+            dry_run: isDryRun,
+            plan: {
+              backup_tables: backupTables,
+              current_tables: currentTables,
+              new_tables: newTables,
+              existing_tables: existingTables,
+              warnings
+            },
+            backup_id: backupId,
+            sql_size: sqlContent.length
           });
         }
 
