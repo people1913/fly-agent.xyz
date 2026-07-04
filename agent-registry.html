@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Registry · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:#059669;background:#ECFDF5;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#059669;margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:#059669;font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.highlight-box{background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#059669;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#059669;line-height:1.7}
+.feature-row{display:flex;gap:12px;margin-bottom:24px}
+.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.step-row{display:flex;gap:12px;margin-bottom:12px}
+.step-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.step-card .step-num{font-size:10px;font-weight:700;color:var(--deep-green);letter-spacing:1px;margin-bottom:4px}
+.step-card .step-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.step-card .step-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#059669;font-weight:600;text-decoration:none;border-bottom:1px dashed #059669}
+</style>
+<meta name="description" content="Agent Registry 是 Fly 的 Agent 注册中心，为每个 AI Agent 建立唯一身份记录。">
+<link rel="canonical" href="https://fly-agent.xyz/agent-registry.html">
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Agent Registry</h1><span class="tag">Identity</span></div>
+<div class="content">
+
+<div class="page-hero">
+<div class="page-label">IDENTITY</div>
+<div class="page-title">Agent Registry</div>
+<div class="page-sub">Agent注册中心</div>
+<div class="page-oneliner">为每个AI Agent建立唯一身份记录</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">什么是 Agent Registry</div>
+<div class="section-body">
+Agent Registry 是 Fly 身份层的核心组件，<strong>为每个接入 Fly 网络的 AI Agent 建立唯一的身份记录</strong>。每个 Agent 注册后获得全局唯一的 Agent ID，记录其基本信息、能力声明和信任等级，作为后续身份验证和归因追踪的基础。
+</div>
+
+<hr class="divider">
+
+<div class="section-title">注册流程</div>
+<div class="highlight-box">
+<div class="hl-label">注册步骤</div>
+<div class="hl-text">从身份声明到完成注册，4步即可接入Fly网络</div>
+</div>
+
+<div class="step-row">
+<div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">身份声明</div><div class="step-desc">提交 Agent 的名称、描述、开发者信息和能力声明</div></div>
+<div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">ID 分配</div><div class="step-desc">系统为 Agent 分配全局唯一的 Agent ID 和身份凭证</div></div>
+</div>
+<div class="step-row">
+<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">验证初始化</div><div class="step-desc">Agent 通过初始验证流程，建立信任基线</div></div>
+<div class="step-card"><div class="step-num">STEP 4</div><div class="step-title">注册完成</div><div class="step-desc">Agent 正式进入 Fly 网络，可参与归因和收益分配</div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">Registry 提供什么</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">唯一身份标识</div>
+<div class="feat-desc">每个 Agent 获得全局唯一 ID，不可伪造、不可重复</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">能力声明记录</div>
+<div class="feat-desc">Agent 声明自身能力和服务范围，供消费者查询</div>
+</div>
+</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">信任等级追踪</div>
+<div class="feat-desc">根据历史行为动态调整 Agent 信任等级</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">注册信息可验证</div>
+<div class="feat-desc">所有注册信息均可通过 CTRS 协议验证真实性</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">注册完成后，如何确认Agent身份真实可靠？</div>
+<a href="/agent-identity.html" class="cta-link">Agent Identity →</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>

@@ -10,3 +10,4 @@ Thumbs.db
 # 环境变量
 .env
 .env.local
+__pycache__/

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--gold:#FFF8E1;--gold-border:#FFD54F;--blue:#E3F2FD;--blue-border:#90CAF9;--red:#FFEBEE;--red-border:#EF9A9A}
 *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
 .main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
@@ -33,6 +33,44 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .case-metric{text-align:center;flex:1}
 .case-metric .cm-num{font-size:20px;font-weight:800;color:var(--deep-green)}
 .case-metric .cm-label{font-size:10px;color:var(--text4);margin-top:2px}
+.verified-card{background:linear-gradient(135deg,#E8F5EC 0%,#F1F8E9 100%);border:2px solid var(--mint-border);border-radius:12px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.verified-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(26,61,46,0.06) 0%,transparent 70%);border-radius:50%}
+.verified-card .vc-badge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:2px;color:#fff;background:var(--deep-green);padding:3px 12px;border-radius:4px;margin-bottom:12px}
+.verified-card .vc-title{font-size:18px;font-weight:800;color:var(--dark);margin-bottom:6px}
+.verified-card .vc-subtitle{font-size:13px;color:var(--deep-green);font-weight:600;margin-bottom:16px}
+.verified-card .vc-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:20px}
+.timeline{margin-bottom:20px}
+.timeline-item{display:flex;gap:12px;margin-bottom:0;position:relative}
+.timeline-item:not(:last-child)::after{content:'';position:absolute;left:13px;top:28px;bottom:-8px;width:2px;background:var(--mint-border)}
+.timeline-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:#fff;margin-top:2px}
+.timeline-dot.green{background:#4CAF50}
+.timeline-dot.blue{background:#42A5F5}
+.timeline-dot.gold{background:#FF9800}
+.timeline-content{flex:1;padding-bottom:16px}
+.timeline-content .tc-label{font-size:12px;font-weight:700;color:var(--text3);margin-bottom:2px}
+.timeline-content .tc-value{font-size:13px;color:var(--dark);font-weight:600;line-height:1.6}
+.attribution-bar{display:flex;border-radius:6px;overflow:hidden;height:32px;margin-bottom:8px}
+.attr-segment{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.attr-segment.agent-a{background:#2E7D32;flex:0 0 45%}
+.attr-segment.agent-b{background:#43A047;flex:0 0 35%}
+.attr-segment.agent-c{background:#66BB6A;flex:0 0 20%}
+.attr-legend{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.attr-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.attr-legend-dot{width:10px;height:10px;border-radius:3px}
+.attr-legend-dot.a{background:#2E7D32}
+.attr-legend-dot.b{background:#43A047}
+.attr-legend-dot.c{background:#66BB6A}
+.verification-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.vg-item{background:rgba(255,255,255,0.7);border-radius:6px;padding:10px 12px;border:1px solid var(--mint-border)}
+.vg-item .vg-label{font-size:10px;color:var(--text4);font-weight:600;letter-spacing:1px;margin-bottom:2px}
+.vg-item .vg-value{font-size:14px;font-weight:700;color:var(--dark)}
+.vg-item .vg-value.pass{color:#2E7D32}
+.vg-item .vg-value.warn{color:#F57C00}
+.vg-item .vg-value.fail{color:#C62828}
+.settlement-status{display:inline-flex;align-items:center;gap:6px;background:#E8F5EC;border:1px solid var(--mint-border);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:var(--deep-green)}
+.settlement-status .dot{width:8px;height:8px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.report-id{font-size:11px;color:var(--text4);font-family:'Inter',monospace;margin-top:12px;word-break:break-all}
 .cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
 .cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
 .cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--deep-green);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--deep-green)}
@@ -51,6 +89,79 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="page-title">客户案例</div>
 <div class="page-sub">不同行业如何用 Fly 验证 AI 归因收入</div>
 <div class="page-oneliner">真实场景，真实数据，真实验证。</div>
+</div>
+
+<hr class="divider">
+
+<!-- ★★★ P3 真实验证案例 ★★★ -->
+<div class="verified-card">
+<div class="vc-badge">CTRS v1.2 VERIFIED</div>
+<div class="vc-title">三 Agent 协作购买高级手表 — 首个 CTRS v1.2 验证案例</div>
+<div class="vc-subtitle">Fly CTRS v1.2 规范的首个端到端验证案例 · 交易金额 $2,400</div>
+<div class="vc-desc">
+用户通过三个 AI Agent 协作完成高级手表（Premium Watch X1）购买：推荐 Agent 识别用户偏好并推荐产品，讲解 Agent 提供专业参数解读，支付 Agent 完成交易。Fly 为每个环节生成独立 Evidence，通过归因规则计算贡献度，最终输出可验证的结算方案。
+</div>
+
+<!-- Evidence 时间线 -->
+<div class="timeline">
+<div class="timeline-item">
+<div class="timeline-dot green">1</div>
+<div class="timeline-content">
+<div class="tc-label">EVIDENCE · 推荐</div>
+<div class="tc-value">Agent A（推荐 Agent）向用户推荐 Premium Watch X1，售价 $2,400<br>类型：conversation · 来源：agent-a</div>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot blue">2</div>
+<div class="timeline-content">
+<div class="tc-label">EVIDENCE · 讲解</div>
+<div class="tc-value">Agent B（讲解 Agent）提供专业解读：瑞士机芯，蓝宝石镜面，防水100米，5年保修<br>类型：conversation · 来源：agent-b</div>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot gold">3</div>
+<div class="timeline-content">
+<div class="tc-label">EVIDENCE · 支付</div>
+<div class="tc-value">Agent C（支付 Agent）完成支付处理，交易 $2,400 USD<br>类型：payment · 来源：agent-c · 状态：completed</div>
+</div>
+</div>
+</div>
+
+<!-- Attribution 分配 -->
+<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:6px;letter-spacing:1px">ATTRIBUTION 归因分配</div>
+<div class="attribution-bar">
+<div class="attr-segment agent-a">45%</div>
+<div class="attr-segment agent-b">35%</div>
+<div class="attr-segment agent-c">20%</div>
+</div>
+<div class="attr-legend">
+<div class="attr-legend-item"><div class="attr-legend-dot a"></div>推荐 Agent — 45% = $1,080</div>
+<div class="attr-legend-item"><div class="attr-legend-dot b"></div>讲解 Agent — 35% = $840</div>
+<div class="attr-legend-item"><div class="attr-legend-dot c"></div>支付 Agent — 20% = $480</div>
+</div>
+
+<!-- 验证结果网格 -->
+<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:6px;letter-spacing:1px">VERIFICATION RESULTS</div>
+<div class="verification-grid">
+<div class="vg-item"><div class="vg-label">Schema 完整性</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Claim 完整性</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Evidence→Claim 链路</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Rule 完整性</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Attribution→Rule 绑定</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Attribution 一致性</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Settlement 正确性</div><div class="vg-value pass">✓ 通过</div></div>
+<div class="vg-item"><div class="vg-label">Evidence Hash</div><div class="vg-value warn">⚠ 序列化差异</div></div>
+</div>
+
+<!-- Settlement 状态 -->
+<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:1px">SETTLEMENT 结算状态</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+<div class="settlement-status"><span class="dot"></span>eligible · 已验证可结算</div>
+<span style="font-size:14px;font-weight:800;color:var(--dark)">$2,400 USD</span>
+</div>
+<div style="font-size:11px;color:var(--text4);margin-bottom:12px">v1.2 新增 eligible 状态：已通过归因验证，可进入结算流程</div>
+
+<div class="report-id">Report ID: ed75c10a-6ab3-4015-9f17-d00d065efeef · Schema: CTRS-v1.2 · Rule: rule-commerce-multi-agent-v1</div>
 </div>
 
 <hr class="divider">

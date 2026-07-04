@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Flow · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:#D97706;background:#FEF3C7;padding:2px 10px;border-radius:10px}
+.content{flex:1;padding:32px 40px;max-width:860px;margin:0 auto}
+.page-hero{text-align:center;padding:40px 24px 32px}
+.page-hero .page-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#D97706;margin-bottom:8px}
+.page-hero .page-title{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.page-hero .page-sub{font-size:16px;color:var(--text3);margin-bottom:16px}
+.page-hero .page-oneliner{font-size:15px;color:#D97706;font-weight:600;line-height:1.6}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+.section-title{font-size:18px;font-weight:800;margin-bottom:12px;color:var(--dark)}
+.section-body{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px}
+.section-body strong{color:var(--dark);font-weight:600}
+.highlight-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:20px;margin-bottom:24px}
+.highlight-box .hl-label{font-size:10px;font-weight:700;color:#D97706;letter-spacing:2px;margin-bottom:8px}
+.highlight-box .hl-text{font-size:14px;font-weight:700;color:#D97706;line-height:1.7}
+.flow-container{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:24px}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;position:relative}
+.flow-step:last-child{margin-bottom:0}
+.flow-step .flow-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:#FEF3C7;color:#D97706;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
+.flow-step .flow-content{flex:1}
+.flow-step .flow-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.flow-step .flow-desc{font-size:13px;color:var(--text3);line-height:1.6}
+.flow-step .flow-code{font-family:var(--mono);font-size:12px;color:#D97706;background:#FFFBEB;padding:4px 8px;border-radius:4px;margin-top:4px;display:inline-block}
+.flow-connector{width:2px;height:16px;background:#FDE68A;margin-left:17px;margin-bottom:4px}
+.feature-row{display:flex;gap:12px;margin-bottom:24px}
+.feature-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.feature-card .feat-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feature-card .feat-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.cta-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+.cta-box .cta-text{font-size:14px;font-weight:600;color:var(--dark);line-height:1.6}
+.cta-box .cta-link{display:inline-block;margin-top:8px;font-size:13px;color:#D97706;font-weight:600;text-decoration:none;border-bottom:1px dashed #D97706}
+</style>
+<meta name="description" content="Signal Flow 展示 CTRS 信号如何在 Fly 验证层中流转，从行为采集到信任判定。">
+<link rel="canonical" href="https://fly-agent.xyz/signal-flow.html">
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Signal Flow</h1><span class="tag">Verification</span></div>
+<div class="content">
+
+<div class="page-hero">
+<div class="page-label">VERIFICATION</div>
+<div class="page-title">Signal Flow</div>
+<div class="page-sub">CTRS 信号流可视化</div>
+<div class="page-oneliner">追踪每一次验证信号从采集到判定的完整流转</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">什么是 Signal Flow</div>
+<div class="section-body">
+Signal Flow 是 Fly 验证层的信号流转路径。<strong>它展示了 Agent 行为数据如何从原始信号，经过6层 Gate 验证，最终产出可信的归因结果</strong>。理解信号流，就理解了 Fly 验证引擎的工作原理。
+</div>
+
+<hr class="divider">
+
+<div class="section-title">信号流转路径</div>
+<div class="highlight-box">
+<div class="hl-label">信号生命周期</div>
+<div class="hl-text">从行为发生到信任判定，信号经历采集、清洗、验证、归因四个阶段</div>
+</div>
+
+<div class="flow-container">
+<div class="flow-step">
+<div class="flow-num">1</div>
+<div class="flow-content">
+<div class="flow-title">行为采集 (Signal Collection)</div>
+<div class="flow-desc">Agent 行为触发后，系统采集原始信号：设备指纹、行为轨迹、时间戳</div>
+<div class="flow-code">signal_type: action | click | conversion</div>
+</div>
+</div>
+<div class="flow-connector"></div>
+<div class="flow-step">
+<div class="flow-num">2</div>
+<div class="flow-content">
+<div class="flow-title">信号清洗 (Signal Cleaning)</div>
+<div class="flow-desc">去重、去噪、标准化，过滤明显异常信号</div>
+<div class="flow-code">dedup → normalize → validate_schema</div>
+</div>
+</div>
+<div class="flow-connector"></div>
+<div class="flow-step">
+<div class="flow-num">3</div>
+<div class="flow-content">
+<div class="flow-title">Gate 验证 (Gate Verification)</div>
+<div class="flow-desc">通过 Gate 1-6 六层验证关卡，逐层过滤虚假行为</div>
+<div class="flow-code">G1→G2→G3→G4→G5→G6</div>
+</div>
+</div>
+<div class="flow-connector"></div>
+<div class="flow-step">
+<div class="flow-num">4</div>
+<div class="flow-content">
+<div class="flow-title">信任判定 (Trust Decision)</div>
+<div class="flow-desc">通过全部 Gate 的信号标记为 Verified，产出信任评分</div>
+<div class="flow-code">status: verified | rejected | pending</div>
+</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">6 层 Gate 验证详情</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">Gate 1 · 数据完整性</div>
+<div class="feat-desc">验证信号数据结构完整、字段合规、未被篡改</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">Gate 2 · 安全策略</div>
+<div class="feat-desc">检查来源安全、访问权限、无恶意行为特征</div>
+</div>
+</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">Gate 3 · 归因链</div>
+<div class="feat-desc">验证归因路径完整、因果关系可追溯、无断裂</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">Gate 4 · 部署验证</div>
+<div class="feat-desc">确认 Agent 部署环境合法、配置合规</div>
+</div>
+</div>
+<div class="feature-row">
+<div class="feature-card">
+<div class="feat-title">Gate 5 · 构建验证</div>
+<div class="feat-desc">验证 Agent 构建产物完整、无供应链风险</div>
+</div>
+<div class="feature-card">
+<div class="feat-title">Gate 6 · 健康验证</div>
+<div class="feat-desc">持续监控 Agent 运行健康状态、异常检测</div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="cta-box">
+<div class="cta-text">信号流是验证层的技术视图，想了解Fly整体概念框架？</div>
+<a href="/verification-center.html" class="cta-link">Fly 概念总览 →</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>
