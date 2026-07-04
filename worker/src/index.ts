@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.15.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.16.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 8层6协议架构：L1-L8
@@ -31,6 +31,15 @@
  *   POST /v1/backup/d1/restore/{backup_id}    — v2.13.0: Dry-run 恢复计划
  *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
  * 
+ * v2.16.0 新增（Attribution Graph + Conflict Resolution）:
+ *   POST /v1/attribution/graph                — 手动添加归因边（from_party → to_party）
+ *   GET  /v1/attribution/graph/:claim_ref     — 查询某 claim 的完整归因图
+ *   GET  /v1/attribution/path/:from/:to        — 查询两个 Agent 之间的贡献路径
+ *   GET  /v1/conflicts                        — 列出所有冲突（支持 ?status=open 过滤）
+ *   GET  /v1/conflicts/:id                    — 查看单个冲突详情
+ *   POST /v1/conflicts/:id/resolve            — 手动解决冲突
+ *   POST /v1/conflicts/detect                 — 主动触发冲突检测
+ *
  * v2.15.0 新增（Third-party Replay API）：
  *   POST /v1/replay                           — 事件流重放→CTRS Report（确定性、无状态、无需鉴权）
  *   POST /v1/replay/verify                    — 验证Report可通过重放重建（硬约束③）
@@ -793,10 +802,11 @@ function json(data: any, status = 200, headers: Record<string, string> = {}): Re
 // ============================================================
 
 /**
- * 初始化 external_events 表（幂等，IF NOT EXISTS）
- * 首次请求时调用，确保表结构就绪
+ * 初始化 P1 核心表（external_events + attribution_graph + conflicts）
+ * 幂等，IF NOT EXISTS，首次请求时调用
  */
-async function initExternalEventsTable(env: Env): Promise<void> {
+async function initP1Tables(env: Env): Promise<void> {
+  // v2.14.0: External Events
   await env.FLY_D1.prepare(`
     CREATE TABLE IF NOT EXISTS external_events (
       id TEXT PRIMARY KEY,
@@ -812,6 +822,37 @@ async function initExternalEventsTable(env: Env): Promise<void> {
       claim_ref TEXT,
       created_at TEXT NOT NULL,
       UNIQUE(source, source_event_id)
+    )
+  `).run();
+
+  // v2.16.0: Attribution Graph — 多 Agent 贡献路径
+  await env.FLY_D1.prepare(`
+    CREATE TABLE IF NOT EXISTS attribution_graph (
+      id TEXT PRIMARY KEY,
+      claim_ref TEXT NOT NULL,
+      from_party TEXT NOT NULL,
+      to_party TEXT NOT NULL,
+      relation_type TEXT NOT NULL,
+      weight REAL NOT NULL DEFAULT 1.0,
+      evidence_ref TEXT,
+      created_at TEXT NOT NULL
+    )
+  `).run();
+
+  // v2.16.0: Conflicts — 多方数据冲突检测与仲裁
+  await env.FLY_D1.prepare(`
+    CREATE TABLE IF NOT EXISTS conflicts (
+      id TEXT PRIMARY KEY,
+      claim_ref TEXT,
+      conflict_type TEXT NOT NULL,
+      severity TEXT NOT NULL DEFAULT 'medium',
+      parties TEXT NOT NULL,
+      description TEXT NOT NULL,
+      resolution_rule TEXT,
+      resolution TEXT,
+      status TEXT DEFAULT 'open',
+      created_at TEXT NOT NULL,
+      resolved_at TEXT
     )
   `).run();
 }
@@ -964,7 +1005,7 @@ async function storeExternalEvent(env: Env, params: {
   normalized_data?: string;
 }): Promise<{ id: string; status: string; dedup: boolean }> {
   // 确保 external_events 表存在
-  await initExternalEventsTable(env);
+  await initP1Tables(env);
 
   // 计算 SHA-256(raw_payload)
   const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(params.raw_payload));
@@ -1023,6 +1064,468 @@ async function storeExternalEvent(env: Env, params: {
   });
 
   return { id: eventId, status, dedup: false };
+}
+
+// ============================================================
+// v2.16.0: Attribution Graph — 多 Agent 贡献路径持久化
+// ============================================================
+
+/**
+ * 归因边类型
+ * influenced: 间接影响（如推荐）
+ * referred: 直接推荐（如链接跳转）
+ * executed: 执行转化（如完成交易）
+ * verified: 验证确认（如三方验证）
+ */
+type AttributionRelationType = "influenced" | "referred" | "executed" | "verified";
+
+/**
+ * 手动添加归因图边
+ * from_party → to_party 的贡献关系
+ */
+async function addAttributionEdge(env: Env, params: {
+  claim_ref: string;
+  from_party: string;
+  to_party: string;
+  relation_type: AttributionRelationType;
+  weight?: number;
+  evidence_ref?: string;
+}): Promise<{ id: string; created: boolean }> {
+  await initP1Tables(env);
+
+  const edgeId = `agr_${crypto.randomUUID()}`;
+  const timestamp = new Date().toISOString();
+
+  await env.FLY_D1.prepare(
+    `INSERT INTO attribution_graph (id, claim_ref, from_party, to_party, relation_type, weight, evidence_ref, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(
+    edgeId,
+    params.claim_ref,
+    params.from_party,
+    params.to_party,
+    params.relation_type,
+    params.weight ?? 1.0,
+    params.evidence_ref || null,
+    timestamp
+  ).run();
+
+  return { id: edgeId, created: true };
+}
+
+/**
+ * 查询某 claim 的完整归因图
+ * 返回所有边 + 节点列表
+ */
+async function queryAttributionGraph(env: Env, claimRef: string): Promise<{
+  claim_ref: string;
+  nodes: { id: string }[];
+  edges: any[];
+}> {
+  await initP1Tables(env);
+
+  const edgesResult = await env.FLY_D1.prepare(
+    "SELECT * FROM attribution_graph WHERE claim_ref = ? ORDER BY created_at ASC"
+  ).bind(claimRef).all();
+
+  const edges = edgesResult.results as any[];
+
+  // 提取唯一节点
+  const nodeSet = new Set<string>();
+  for (const edge of edges) {
+    nodeSet.add(edge.from_party as string);
+    nodeSet.add(edge.to_party as string);
+  }
+
+  return {
+    claim_ref: claimRef,
+    nodes: [...nodeSet].map(id => ({ id })),
+    edges,
+  };
+}
+
+/**
+ * 查询两个 Agent 之间的贡献路径（BFS 最短路径）
+ * 返回从 from 到 to 的所有路径边
+ */
+async function findAttributionPath(env: Env, fromParty: string, toParty: string): Promise<{
+  from: string;
+  to: string;
+  paths: { claim_ref: string; edges: any[] }[];
+  direct_edges: any[];
+}> {
+  await initP1Tables(env);
+
+  // 1. 先查找直接边
+  const directResult = await env.FLY_D1.prepare(
+    "SELECT * FROM attribution_graph WHERE from_party = ? AND to_party = ?"
+  ).bind(fromParty, toParty).all();
+  const directEdges = directResult.results as any[];
+
+  // 2. 构建邻接表，执行 BFS 查找间接路径
+  const allEdges = await env.FLY_D1.prepare(
+    "SELECT * FROM attribution_graph"
+  ).all();
+  const edgeList = allEdges.results as any[];
+
+  // Build adjacency list: claim_ref -> from -> to[]
+  const adjByClaim: Record<string, Record<string, { to: string; edge: any }[]>> = {};
+  for (const edge of edgeList) {
+    const cr = edge.claim_ref as string;
+    if (!adjByClaim[cr]) adjByClaim[cr] = {};
+    if (!adjByClaim[cr][edge.from_party as string]) adjByClaim[cr][edge.from_party as string] = [];
+    adjByClaim[cr][edge.from_party as string].push({ to: edge.to_party as string, edge });
+  }
+
+  // BFS per claim_ref
+  const paths: { claim_ref: string; edges: any[] }[] = [];
+
+  for (const [claimRef, adj] of Object.entries(adjByClaim)) {
+    // BFS from fromParty to toParty
+    const visited = new Set<string>();
+    const queue: { node: string; path: any[] }[] = [{ node: fromParty, path: [] }];
+    visited.add(fromParty);
+
+    while (queue.length > 0) {
+      const { node, path } = queue.shift()!;
+      const neighbors = adj[node] || [];
+
+      for (const { to, edge } of neighbors) {
+        const newPath = [...path, edge];
+        if (to === toParty) {
+          paths.push({ claim_ref: claimRef, edges: newPath });
+          // Don't stop — find all shortest paths at this level
+          continue;
+        }
+        if (!visited.has(to)) {
+          visited.add(to);
+          queue.push({ node: to, path: newPath });
+        }
+      }
+    }
+  }
+
+  return {
+    from: fromParty,
+    to: toParty,
+    paths,
+    direct_edges: directEdges,
+  };
+}
+
+/**
+ * 从 replay 事件流自动构建归因图边
+ * 每个 event source 作为节点，按时间顺序建立 influenced 关系
+ */
+async function buildAttributionGraphFromEvents(env: Env, claimRef: string, events: { source: string; timestamp: string; type: string }[]): Promise<{ edges_created: number }> {
+  await initP1Tables(env);
+
+  if (events.length < 2) return { edges_created: 0 };
+
+  // 按时间排序
+  const sorted = [...events].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+  // 提取唯一来源（保持时间顺序）
+  const seenSources = new Set<string>();
+  const orderedSources: string[] = [];
+  for (const ev of sorted) {
+    if (!seenSources.has(ev.source)) {
+      seenSources.add(ev.source);
+      orderedSources.push(ev.source);
+    }
+  }
+
+  let edgesCreated = 0;
+
+  // 按时间顺序，前一个 source → 后一个 source 建立 influenced 关系
+  for (let i = 1; i < orderedSources.length; i++) {
+    const from = orderedSources[i - 1];
+    const to = orderedSources[i];
+
+    // 检查是否已存在相同边（幂等）
+    const existing = await env.FLY_D1.prepare(
+      "SELECT id FROM attribution_graph WHERE claim_ref = ? AND from_party = ? AND to_party = ? AND relation_type = 'influenced'"
+    ).bind(claimRef, from, to).first();
+
+    if (!existing) {
+      const edgeId = `agr_${crypto.randomUUID()}`;
+      const timestamp = new Date().toISOString();
+      await env.FLY_D1.prepare(
+        `INSERT INTO attribution_graph (id, claim_ref, from_party, to_party, relation_type, weight, evidence_ref, created_at)
+         VALUES (?, ?, ?, ?, 'influenced', 1.0, NULL, ?)`
+      ).bind(edgeId, claimRef, from, to, timestamp).run();
+      edgesCreated++;
+    }
+  }
+
+  // 最后一个 source 标记为 executed（执行了转化）
+  if (orderedSources.length > 0) {
+    const lastSource = orderedSources[orderedSources.length - 1];
+    const existingExec = await env.FLY_D1.prepare(
+      "SELECT id FROM attribution_graph WHERE claim_ref = ? AND to_party = ? AND relation_type = 'executed'"
+    ).bind(claimRef, lastSource).first();
+
+    if (!existingExec) {
+      const edgeId = `agr_${crypto.randomUUID()}`;
+      const timestamp = new Date().toISOString();
+      await env.FLY_D1.prepare(
+        `INSERT INTO attribution_graph (id, claim_ref, from_party, to_party, relation_type, weight, evidence_ref, created_at)
+         VALUES (?, ?, ?, ?, 'executed', 1.0, NULL, ?)`
+      ).bind(edgeId, claimRef, lastSource, lastSource, timestamp).run();
+      edgesCreated++;
+    }
+  }
+
+  return { edges_created: edgesCreated };
+}
+
+// ============================================================
+// v2.16.0: Conflict Resolution — 多方数据冲突检测与仲裁
+// ============================================================
+
+/**
+ * 冲突类型
+ * evidence_mismatch: 证据数据不一致
+ * amount_dispute: 金额争议
+ * attribution_conflict: 归因冲突（多方声明不同归因结果）
+ */
+type ConflictType = "evidence_mismatch" | "amount_dispute" | "attribution_conflict";
+type ConflictSeverity = "low" | "medium" | "high";
+type ConflictResolutionRule = "highest_trust" | "majority_evidence" | "earliest_timestamp" | "manual";
+
+/**
+ * 检测指定 claim_ref 下的冲突
+ * 对比同一 claim 下的多个事件，检测金额、状态矛盾
+ */
+async function detectConflictsForClaim(env: Env, claimRef: string): Promise<{
+  conflicts_found: number;
+  conflicts: { id: string; conflict_type: ConflictType; severity: ConflictSeverity; description: string }[];
+}> {
+  await initP1Tables(env);
+
+  const conflicts: { id: string; conflict_type: ConflictType; severity: ConflictSeverity; description: string }[] = [];
+
+  // 1. 查找该 claim 下所有已验证的事件
+  const events = await env.FLY_D1.prepare(
+    "SELECT id, source, event_type, normalized_data, status, created_at FROM external_events WHERE claim_ref = ? AND status != 'rejected'"
+  ).bind(claimRef).all();
+  const eventList = events.results as any[];
+
+  if (eventList.length < 2) {
+    return { conflicts_found: 0, conflicts: [] };
+  }
+
+  // 2. 提取金额数据，检测金额争议
+  const amounts: { source: string; amount: number | null; currency: string | null }[] = [];
+  for (const evt of eventList) {
+    try {
+      const nd = JSON.parse(evt.normalized_data as string || '{}');
+      const data = nd.data || {};
+      amounts.push({
+        source: evt.source as string,
+        amount: data.amount ?? data.total_price ?? null,
+        currency: data.currency ?? null,
+      });
+    } catch {
+      amounts.push({ source: evt.source as string, amount: null, currency: null });
+    }
+  }
+
+  // 检测金额不一致
+  const amountsBySource = amounts.filter(a => a.amount !== null);
+  const uniqueAmounts = new Set(amountsBySource.map(a => a.amount));
+  if (uniqueAmounts.size > 1) {
+    const conflictId = `cft_${crypto.randomUUID()}`;
+    const timestamp = new Date().toISOString();
+    const parties = JSON.stringify(amountsBySource.map(a => a.source));
+    const amountStr = [...uniqueAmounts].join(', ');
+    const description = `Amount dispute for claim ${claimRef}: different sources report different amounts (${amountStr})`;
+
+    await env.FLY_D1.prepare(
+      `INSERT INTO conflicts (id, claim_ref, conflict_type, severity, parties, description, resolution_rule, status, created_at)
+       VALUES (?, ?, 'amount_dispute', 'high', ?, ?, 'majority_evidence', 'open', ?)`
+    ).bind(conflictId, claimRef, parties, description, timestamp).run();
+
+    conflicts.push({ id: conflictId, conflict_type: "amount_dispute", severity: "high", description });
+  }
+
+  // 3. 检测归因冲突（同一 claim 不同来源的事件归因结果不同）
+  const sources = new Set(eventList.map(e => e.source as string));
+  if (sources.size > 1) {
+    // 检查 attribution_graph 是否有多条 executed 边（多个执行者）
+    const executedEdges = await env.FLY_D1.prepare(
+      "SELECT * FROM attribution_graph WHERE claim_ref = ? AND relation_type = 'executed'"
+    ).bind(claimRef).all();
+    const execList = executedEdges.results as any[];
+
+    if (execList.length > 1) {
+      const conflictId = `cft_${crypto.randomUUID()}`;
+      const timestamp = new Date().toISOString();
+      const parties = JSON.stringify(execList.map(e => e.to_party));
+      const description = `Attribution conflict for claim ${claimRef}: ${execList.length} parties claim execution`;
+
+      await env.FLY_D1.prepare(
+        `INSERT INTO conflicts (id, claim_ref, conflict_type, severity, parties, description, resolution_rule, status, created_at)
+         VALUES (?, ?, 'attribution_conflict', 'medium', ?, ?, 'highest_trust', 'open', ?)`
+      ).bind(conflictId, claimRef, parties, description, timestamp).run();
+
+      conflicts.push({ id: conflictId, conflict_type: "attribution_conflict", severity: "medium", description });
+    }
+  }
+
+  return { conflicts_found: conflicts.length, conflicts };
+}
+
+/**
+ * 全量冲突检测 — 扫描所有 claim_ref
+ */
+async function detectAllConflicts(env: Env): Promise<{
+  claims_scanned: number;
+  total_conflicts_found: number;
+}> {
+  await initP1Tables(env);
+
+  // 获取所有有事件的 claim_ref
+  const claims = await env.FLY_D1.prepare(
+    "SELECT DISTINCT claim_ref FROM external_events WHERE claim_ref IS NOT NULL AND status != 'rejected'"
+  ).all();
+  const claimList = claims.results as any[];
+
+  let totalConflicts = 0;
+  for (const row of claimList) {
+    const result = await detectConflictsForClaim(env, row.claim_ref as string);
+    totalConflicts += result.conflicts_found;
+  }
+
+  return { claims_scanned: claimList.length, total_conflicts_found: totalConflicts };
+}
+
+/**
+ * 解决冲突 — 应用仲裁规则或手动解决
+ */
+async function resolveConflictRecord(env: Env, conflictId: string, params: {
+  resolution_rule?: ConflictResolutionRule;
+  resolution: Record<string, any>;
+  resolved_by?: string;
+}): Promise<{ id: string; status: string; resolution: string }> {
+  await initP1Tables(env);
+
+  const conflict = await env.FLY_D1.prepare(
+    "SELECT * FROM conflicts WHERE id = ?"
+  ).bind(conflictId).first();
+
+  if (!conflict) {
+    return { id: conflictId, status: "not_found", resolution: "" };
+  }
+
+  if ((conflict.status as string) === 'resolved') {
+    return { id: conflictId, status: "already_resolved", resolution: conflict.resolution as string };
+  }
+
+  const resolutionRule = params.resolution_rule || (conflict.resolution_rule as string) || 'manual';
+  const timestamp = new Date().toISOString();
+
+  // 根据仲裁规则自动计算解决结果（如果未手动提供）
+  let finalResolution = params.resolution;
+
+  if (resolutionRule === 'highest_trust' && !params.resolution.resolved_by_rule) {
+    // 查询各方的 trust_score，选择最高的
+    const parties = JSON.parse(conflict.parties as string) as string[];
+    let highestTrust = -1;
+    let winner = '';
+    for (const party of parties) {
+      const agent = await env.FLY_D1.prepare(
+        "SELECT trust_score FROM agents WHERE id = ?"
+      ).bind(party).first();
+      const score = (agent?.trust_score as number) || 0;
+      if (score > highestTrust) {
+        highestTrust = score;
+        winner = party;
+      }
+    }
+    finalResolution = {
+      ...finalResolution,
+      resolved_by_rule: 'highest_trust',
+      winner,
+      trust_score: highestTrust,
+    };
+  } else if (resolutionRule === 'earliest_timestamp' && !params.resolution.resolved_by_rule) {
+    const parties = JSON.parse(conflict.parties as string) as string[];
+    let earliestTime = '';
+    let winner = '';
+    for (const party of parties) {
+      const evt = await env.FLY_D1.prepare(
+        "SELECT created_at FROM external_events WHERE claim_ref = ? AND source = ? ORDER BY created_at ASC LIMIT 1"
+      ).bind(conflict.claim_ref, party).first();
+      const createdAt = (evt?.created_at as string) || '';
+      if (!earliestTime || createdAt < earliestTime) {
+        earliestTime = createdAt;
+        winner = party;
+      }
+    }
+    finalResolution = {
+      ...finalResolution,
+      resolved_by_rule: 'earliest_timestamp',
+      winner,
+      earliest_event_at: earliestTime,
+    };
+  } else if (resolutionRule === 'majority_evidence' && !params.resolution.resolved_by_rule) {
+    const parties = JSON.parse(conflict.parties as string) as string[];
+    let maxCount = 0;
+    let winner = '';
+    for (const party of parties) {
+      const result = await env.FLY_D1.prepare(
+        "SELECT COUNT(*) as cnt FROM external_events WHERE claim_ref = ? AND source = ? AND status != 'rejected'"
+      ).bind(conflict.claim_ref, party).first();
+      const count = (result?.cnt as number) || 0;
+      if (count > maxCount) {
+        maxCount = count;
+        winner = party;
+      }
+    }
+    finalResolution = {
+      ...finalResolution,
+      resolved_by_rule: 'majority_evidence',
+      winner,
+      evidence_count: maxCount,
+    };
+  }
+
+  const resolutionJson = JSON.stringify(finalResolution);
+
+  await env.FLY_D1.prepare(
+    "UPDATE conflicts SET status = 'resolved', resolution_rule = ?, resolution = ?, resolved_at = ? WHERE id = ?"
+  ).bind(resolutionRule, resolutionJson, timestamp, conflictId).run();
+
+  // 写审计日志
+  await writeAuditEvent(env, {
+    request_id: `req_${crypto.randomUUID()}`,
+    entity_type: 'conflict',
+    entity_id: conflictId,
+    action: 'resolved',
+    actor_type: 'user',
+    actor_id: params.resolved_by || 'usr_owner',
+    actor_name: params.resolved_by || 'owner',
+    source: 'conflict_resolution',
+    reason: `conflict_resolved:${resolutionRule}`,
+    before: JSON.stringify({ status: 'open', conflict_type: conflict.conflict_type }),
+    after: resolutionJson,
+  });
+
+  return { id: conflictId, status: "resolved", resolution: resolutionJson };
+}
+
+/**
+ * 在 storeExternalEvent 后自动检测冲突
+ * 检查同一 claim_ref 下是否有矛盾数据
+ */
+async function checkConflictsOnEvent(env: Env, claimRef: string | null): Promise<void> {
+  if (!claimRef) return;
+  try {
+    await detectConflictsForClaim(env, claimRef);
+  } catch {
+    // 冲突检测失败不影响事件存储
+  }
 }
 
 // ============================================================
@@ -1386,7 +1889,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.14.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.16.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -2595,6 +3098,16 @@ export default {
           // 重放生成 Report（纯函数，无状态）
           const { report, replayId } = await replayReport(replayEvents, replayClaim, replayRule);
 
+          // v2.16.0: 自动构建归因图（从事件 sources 构建贡献路径）
+          try {
+            const claimRef = report.claim?.claim_id || body.claim.subject;
+            if (claimRef) {
+              await buildAttributionGraphFromEvents(env, claimRef, replayEvents);
+            }
+          } catch {
+            // 归因图构建失败不影响 Report 返回
+          }
+
           return json(report, 200, { 'X-Replay-Id': replayId });
         }
 
@@ -2634,7 +3147,183 @@ export default {
           // 验证重放
           const result = await verifyReplay(body.report, replayEvents);
 
+          // v2.16.0: 验证后自动触发冲突检测（evidence 数量/来源与原始 Report 对比）
+          try {
+            const claimRef = body.report.claim?.claim_id || body.report.claim?.subject;
+            if (claimRef) {
+              await detectConflictsForClaim(env, claimRef);
+            }
+          } catch {
+            // 冲突检测失败不影响验证结果返回
+          }
+
           return json(result, 200, { 'X-Replay-Id': `rpl_verify_${result.replay_report_id}` });
+        }
+
+        // ============================================================
+        // v2.16.0: Attribution Graph API
+        // ============================================================
+
+        // === POST /v1/attribution/graph — 手动添加归因边 ===
+        if (path === '/v1/attribution/graph' && method === 'POST') {
+          const body: any = await request.json().catch(() => null);
+          if (!body) return json({ error: "invalid JSON body" }, 400);
+          if (!body.claim_ref) return json({ error: "claim_ref is required" }, 400);
+          if (!body.from_party) return json({ error: "from_party is required" }, 400);
+          if (!body.to_party) return json({ error: "to_party is required" }, 400);
+          const validRelationTypes = ["influenced", "referred", "executed", "verified"];
+          if (!validRelationTypes.includes(body.relation_type)) {
+            return json({ error: `relation_type must be one of: ${validRelationTypes.join(', ')}` }, 400);
+          }
+          if (body.from_party === body.to_party) {
+            return json({ error: "from_party and to_party must be different" }, 400);
+          }
+
+          const result = await addAttributionEdge(env, {
+            claim_ref: body.claim_ref,
+            from_party: body.from_party,
+            to_party: body.to_party,
+            relation_type: body.relation_type,
+            weight: body.weight,
+            evidence_ref: body.evidence_ref,
+          });
+
+          // 写审计日志
+          await writeAuditEvent(env, {
+            request_id: `req_${crypto.randomUUID()}`,
+            entity_type: 'attribution_graph',
+            entity_id: result.id,
+            action: 'created',
+            actor_type: 'user',
+            actor_id: 'api_caller',
+            actor_name: 'attribution-graph-api',
+            source: 'attribution-graph',
+            reason: `edge_added:${body.relation_type}`,
+            before: '{}',
+            after: JSON.stringify({ claim_ref: body.claim_ref, from_party: body.from_party, to_party: body.to_party, relation_type: body.relation_type, weight: body.weight || 1.0 }),
+          });
+
+          return json({ success: true, id: result.id, claim_ref: body.claim_ref, from_party: body.from_party, to_party: body.to_party, relation_type: body.relation_type, weight: body.weight || 1.0 }, 201);
+        }
+
+        // === GET /v1/attribution/graph/:claim_ref — 查询某 claim 的完整归因图 ===
+        if (path.startsWith('/v1/attribution/graph/') && method === 'GET') {
+          const claimRef = path.split('/v1/attribution/graph/')[1];
+          if (!claimRef) return json({ error: "claim_ref is required" }, 400);
+          const graph = await queryAttributionGraph(env, claimRef);
+          return json(graph);
+        }
+
+        // === GET /v1/attribution/path/:from/:to — 查询两个 Agent 之间的贡献路径 ===
+        if (path.startsWith('/v1/attribution/path/') && method === 'GET') {
+          const pathParts = path.split('/v1/attribution/path/')[1].split('/');
+          if (pathParts.length < 2) return json({ error: "path format: /v1/attribution/path/:from/:to" }, 400);
+          const fromParty = decodeURIComponent(pathParts[0]);
+          const toParty = decodeURIComponent(pathParts[1]);
+          const pathResult = await findAttributionPath(env, fromParty, toParty);
+          return json(pathResult);
+        }
+
+        // ============================================================
+        // v2.16.0: Conflict Resolution API
+        // ============================================================
+
+        // === GET /v1/conflicts — 列出所有冲突（支持 ?status=open 过滤） ===
+        if (path === '/v1/conflicts' && method === 'GET') {
+          await initP1Tables(env);
+          const statusFilter = url.searchParams.get('status');
+          const conflictType = url.searchParams.get('conflict_type');
+          const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
+          const offset = parseInt(url.searchParams.get('offset') || '0');
+
+          let sql = "SELECT * FROM conflicts WHERE 1=1";
+          const binds: any[] = [];
+
+          if (statusFilter) {
+            sql += " AND status = ?";
+            binds.push(statusFilter);
+          }
+          if (conflictType) {
+            sql += " AND conflict_type = ?";
+            binds.push(conflictType);
+          }
+
+          // Count
+          let countSql = sql.replace("SELECT *", "SELECT COUNT(*) as total");
+          const countResult = await env.FLY_D1.prepare(countSql).bind(...binds).first();
+          const total = (countResult?.total as number) || 0;
+
+          // Query
+          sql += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+          binds.push(limit, offset);
+
+          const result = await env.FLY_D1.prepare(sql).bind(...binds).all();
+
+          return json({ total, limit, offset, conflicts: result.results });
+        }
+
+        // === POST /v1/conflicts/detect — 主动触发冲突检测 ===
+        if (path === '/v1/conflicts/detect' && method === 'POST') {
+          const body: any = await request.json().catch(() => ({}));
+
+          if (body.claim_ref) {
+            // 检测特定 claim
+            const result = await detectConflictsForClaim(env, body.claim_ref);
+            return json({ claim_ref: body.claim_ref, ...result });
+          } else {
+            // 全量检测
+            const result = await detectAllConflicts(env);
+            return json(result);
+          }
+        }
+
+        // === GET /v1/conflicts/:id — 查看单个冲突详情 ===
+        if (path.startsWith('/v1/conflicts/cft_') && method === 'GET') {
+          await initP1Tables(env);
+          const conflictId = path.split('/v1/conflicts/')[1];
+          const conflict = await env.FLY_D1.prepare("SELECT * FROM conflicts WHERE id = ?").bind(conflictId).first();
+          if (!conflict) return json({ error: "conflict not found" }, 404);
+
+          // 解析 JSON 字段
+          let parties: any[] = [];
+          let resolution: any = null;
+          try { parties = JSON.parse(conflict.parties as string); } catch {}
+          try { resolution = conflict.resolution ? JSON.parse(conflict.resolution as string) : null; } catch {}
+
+          return json({
+            conflict: {
+              id: conflict.id,
+              claim_ref: conflict.claim_ref,
+              conflict_type: conflict.conflict_type,
+              severity: conflict.severity,
+              parties,
+              description: conflict.description,
+              resolution_rule: conflict.resolution_rule,
+              resolution,
+              status: conflict.status,
+              created_at: conflict.created_at,
+              resolved_at: conflict.resolved_at,
+            },
+          });
+        }
+
+        // === POST /v1/conflicts/:id/resolve — 手动解决冲突 ===
+        if (path.startsWith('/v1/conflicts/cft_') && path.endsWith('/resolve') && method === 'POST') {
+          const conflictId = path.split('/v1/conflicts/')[1].replace('/resolve', '');
+          const body: any = await request.json().catch(() => null);
+          if (!body) return json({ error: "invalid JSON body" }, 400);
+          if (!body.resolution) return json({ error: "resolution object is required" }, 400);
+
+          const result = await resolveConflictRecord(env, conflictId, {
+            resolution_rule: body.resolution_rule,
+            resolution: body.resolution,
+            resolved_by: body.resolved_by,
+          });
+
+          if (result.status === 'not_found') return json({ error: "conflict not found" }, 404);
+          if (result.status === 'already_resolved') return json({ error: "conflict already resolved", id: conflictId }, 409);
+
+          return json({ success: true, id: result.id, status: result.status });
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);
