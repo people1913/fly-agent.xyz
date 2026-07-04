@@ -1,5 +1,5 @@
 /**
- * Fly API Worker v2.13.0 — Cloudflare Worker Entry Point
+ * Fly API Worker v2.15.0 — Cloudflare Worker Entry Point
  * 纯原生Worker API，无第三方依赖
  * 
  * 8层6协议架构：L1-L8
@@ -30,6 +30,17 @@
  *   GET  /v1/backup/d1/{backup_id}            — v2.11.0: 下载指定备份 SQL
  *   POST /v1/backup/d1/restore/{backup_id}    — v2.13.0: Dry-run 恢复计划
  *   GET  /v1/backup/d1/verify                 — v2.10.0: D1 备份完整性验证
+ * 
+ * v2.15.0 新增（Third-party Replay API）：
+ *   POST /v1/replay                           — 事件流重放→CTRS Report（确定性、无状态、无需鉴权）
+ *   POST /v1/replay/verify                    — 验证Report可通过重放重建（硬约束③）
+ *
+ * v2.14.0 新增（External Event Layer）：
+ *   POST /v1/webhooks/stripe                  — Stripe Webhook事件接收+签名验证
+ *   POST /v1/webhooks/shopify                 — Shopify Webhook事件接收+HMAC验证
+ *   POST /v1/webhooks/custom                  — 通用Webhook（Bearer鉴权）
+ *   GET  /v1/events                           — 外部事件列表查询（支持过滤+统计）
+ *   GET  /v1/events/:id                       — 单个外部事件详情（含raw_payload）
  * 
  * v2.10.0 新增：
  *   - Backup API：POST /v1/backup/d1 接收 SQL 存入 KV（SHA-256 哈希校验）
@@ -67,6 +78,9 @@ interface Env {
   // v2.8.0: 邮件告警配置
   ALERT_EMAIL_TO?: string;       // 告警收件邮箱（未配置则静默跳过）
   RESEND_API_KEY?: string;       // Resend API Key（免费3000封/月，未配置则静默跳过）
+  // v2.14.0: External Event Layer — Webhook签名验证密钥
+  STRIPE_WEBHOOK_SECRET?: string;  // Stripe Webhook签名密钥（未配置则事件存为pending）
+  SHOPIFY_WEBHOOK_SECRET?: string; // Shopify Webhook HMAC密钥（未配置则事件存为pending）
 }
 
 type SignalType = "impression" | "click" | "consult" | "booking" | "deal";
@@ -77,6 +91,12 @@ type PrincipalType = "human" | "agent" | "system";
 type Permission = "agent:create" | "agent:update" | "verification:create" | "verification:approve" | "trust:recalculate" | "audit:view" | "policy:update" | "policy:assign_role" | "data:delete";
 type ActorType = "user" | "agent" | "system";
 type AuditAction = "created" | "updated" | "deleted" | "status_changed" | "verified" | "confirmed" | "rejected";
+
+// ============================================================
+// v2.14.0: External Event Layer — 外部事件接收类型
+// ============================================================
+type ExternalEventSource = "stripe" | "shopify" | "custom";
+type ExternalEventStatus = "received" | "validated" | "linked" | "rejected";
 
 const RolePermissions: Record<string, Permission[]> = {
   owner: ["agent:create", "agent:update", "verification:create", "verification:approve", "trust:recalculate", "audit:view", "policy:update", "policy:assign_role", "data:delete"],
@@ -307,6 +327,411 @@ async function hmacUserId(plain: string, salt: string): Promise<string> {
 }
 
 // ============================================================
+// v2.15.0: Third-party Replay API — 确定性重放与验证
+// ============================================================
+
+/** Replay 输入事件 */
+interface ReplayEvent {
+  type: "webhook" | "stripe" | "payment" | "conversation" | "custom";
+  source: string;
+  timestamp: string;
+  data: Record<string, any>;
+  hash?: string;
+}
+
+/** Replay 输入 claim */
+interface ReplayClaim {
+  subject: string;
+  action: string;
+  context?: Record<string, any>;
+}
+
+/** Replay 输入 rule */
+interface ReplayRule {
+  method: "proportional" | "weighted" | "first_touch" | "last_touch";
+  parameters?: Record<string, any>;
+}
+
+/**
+ * 确定性 SHA-256 — 返回十六进制字符串
+ * 相同输入永远返回相同输出
+ */
+async function deterministicSha256(input: string): Promise<string> {
+  const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * 确定性 ID 生成 — 基于 SHA-256 内容派生
+ * 格式: prefix_hex12 (如 ev_a1b2c3d4e5f6)
+ * 相同内容永远生成相同 ID
+ */
+async function deterministicId(prefix: string, content: string): Promise<string> {
+  const hash = await deterministicSha256(content);
+  return `${prefix}_${hash.slice(0, 12)}`;
+}
+
+/**
+ * eventsToEvidence — 将输入事件流转换为 CTRS v1.2 Evidence 数组
+ * 确定性：相同事件 + 相同 claimId → 相同 Evidence 数组
+ */
+async function eventsToEvidence(events: ReplayEvent[], claimId: string): Promise<any[]> {
+  const evidenceArr: any[] = [];
+  for (let i = 0; i < events.length; i++) {
+    const ev = events[i];
+    // 确定性 evidence_id：基于事件内容的 SHA-256
+    const evCanonical = JSON.stringify({ idx: i, type: ev.type, source: ev.source, timestamp: ev.timestamp, data: ev.data }, Object.keys({ idx: i, type: ev.type, source: ev.source, timestamp: ev.timestamp, data: ev.data }).sort());
+    const evidenceId = await deterministicId('ev', evCanonical);
+
+    // 计算证据数据 hash（CTRS 要求 SHA-256(data)）
+    const dataCanonical = JSON.stringify(ev.data, Object.keys(ev.data).sort());
+    const dataHash = await deterministicSha256(dataCanonical);
+
+    // 验证输入 hash（如果提供）
+    const inputHashValid = ev.hash ? ev.hash === dataHash : true;
+
+    evidenceArr.push({
+      evidence_id: evidenceId,
+      claim_ref: claimId,
+      type: ev.type,
+      source: ev.source,
+      timestamp: ev.timestamp,
+      data: ev.data,
+      hash: dataHash,
+      _input_hash_valid: inputHashValid,
+    });
+  }
+  return evidenceArr;
+}
+
+/**
+ * calculateAttribution — 根据规则方法计算贡献分配
+ * 支持 proportional / first_touch / last_touch / weighted
+ * 确定性：相同事件 + 相同规则 → 相同结果
+ */
+function calculateAttribution(events: ReplayEvent[], rule: ReplayRule, totalValue: number, currency: string): {
+  method: string;
+  contributors: { party_id: string; contribution_pct: string; attributed_value: string }[];
+  confidence: number;
+  reasoning: string;
+} {
+  // 提取唯一来源（保持顺序）
+  const seenSources = new Set<string>();
+  const uniqueSources: string[] = [];
+  for (const ev of events) {
+    if (!seenSources.has(ev.source)) {
+      seenSources.add(ev.source);
+      uniqueSources.push(ev.source);
+    }
+  }
+
+  const n = uniqueSources.length;
+  if (n === 0) {
+    return {
+      method: rule.method,
+      contributors: [],
+      confidence: 0,
+      reasoning: "No events provided, cannot calculate attribution",
+    };
+  }
+
+  let contributors: { party_id: string; contribution_pct: string; attributed_value: string }[] = [];
+
+  switch (rule.method) {
+    case 'proportional': {
+      // 均等分配
+      const pct = Math.floor(100 / n);
+      const remainder = 100 - pct * n;
+      contributors = uniqueSources.map((src, i) => {
+        const extra = i < remainder ? 1 : 0;
+        const totalPct = pct + extra;
+        const value = Math.round((totalValue * totalPct / 100) * 100) / 100;
+        return { party_id: src, contribution_pct: String(totalPct), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'first_touch': {
+      // 100% 归给最早事件来源
+      contributors = uniqueSources.map((src, i) => {
+        const pct = i === 0 ? 100 : 0;
+        const value = i === 0 ? totalValue : 0;
+        return { party_id: src, contribution_pct: String(pct), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'last_touch': {
+      // 100% 归给最晚事件来源
+      contributors = uniqueSources.map((src, i) => {
+        const pct = i === n - 1 ? 100 : 0;
+        const value = i === n - 1 ? totalValue : 0;
+        return { party_id: src, contribution_pct: String(pct), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'weighted': {
+      // 基于 rule.parameters.weights 的权重分配
+      const weights: Record<string, number> = (rule.parameters?.weights as Record<string, number>) || {};
+      const defaultWeight = 1;
+      const rawWeights = uniqueSources.map(src => weights[src] ?? defaultWeight);
+      const totalWeight = rawWeights.reduce((a, b) => a + b, 0);
+
+      // 先分配整数百分比，再处理余数
+      const rawPcts = rawWeights.map(w => (w / totalWeight) * 100);
+      const intPcts = rawPcts.map(p => Math.floor(p));
+      const pctRemainder = 100 - intPcts.reduce((a, b) => a + b, 0);
+
+      // 按小数部分从大到小分配余数
+      const fractionalOrder = rawPcts.map((p, i) => ({ idx: i, frac: p - Math.floor(p) })).sort((a, b) => b.frac - a.frac);
+      for (let i = 0; i < pctRemainder; i++) {
+        intPcts[fractionalOrder[i].idx]++;
+      }
+
+      contributors = uniqueSources.map((src, i) => {
+        const value = Math.round((totalValue * intPcts[i] / 100) * 100) / 100;
+        return { party_id: src, contribution_pct: String(intPcts[i]), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    default: {
+      // 未知方法，回退到 proportional
+      const pct = Math.floor(100 / n);
+      const remainder = 100 - pct * n;
+      contributors = uniqueSources.map((src, i) => {
+        const extra = i < remainder ? 1 : 0;
+        const totalPct = pct + extra;
+        const value = Math.round((totalValue * totalPct / 100) * 100) / 100;
+        return { party_id: src, contribution_pct: String(totalPct), attributed_value: String(value) };
+      });
+    }
+  }
+
+  // 置信度：基于证据数量（0-1 浮点，CTRS v1.2 标准）
+  const confidence = Math.min(1.0, 0.5 + events.length * 0.1);
+
+  // 推理文本
+  const parts = contributors.map(c => `${c.party_id}: ${c.contribution_pct}% = ${currency} ${c.attributed_value}`);
+  const reasoning = `Replay attribution (${rule.method}): ${parts.join(', ')}`;
+
+  return { method: rule.method, contributors, confidence, reasoning };
+}
+
+/**
+ * replayReport — 从事件流重建完整的 CTRS v1.2 Report
+ * 确定性：相同输入永远生成相同 Report
+ * 无状态：不依赖 D1/KV
+ */
+async function replayReport(events: ReplayEvent[], claim: ReplayClaim, rule: ReplayRule): Promise<{ report: any; replayId: string }> {
+  // 1. 确定性 claim_id — 基于 claim 内容
+  const claimCanonical = JSON.stringify({ subject: claim.subject, action: claim.action, context: claim.context || {} }, Object.keys({ subject: claim.subject, action: claim.action, context: claim.context || {} }).sort());
+  const claimId = await deterministicId('clm', claimCanonical);
+
+  // 2. 确定性 report_id — 基于 claim + events + rule
+  const reportCanonical = JSON.stringify({
+    claim: { subject: claim.subject, action: claim.action },
+    events: events.map(e => ({ type: e.type, source: e.source, timestamp: e.timestamp, data: e.data })),
+    rule: { method: rule.method, parameters: rule.parameters || {} },
+  });
+  const reportId = await deterministicId('rpt', reportCanonical);
+  const replayId = await deterministicId('rpl', reportCanonical);
+
+  // 3. 确定性时间戳 — 使用事件流中最早的时间戳（确定性，不依赖 now）
+  const timestamps = events.map(e => e.timestamp).filter(Boolean).sort();
+  const createdAt = timestamps.length > 0 ? timestamps[0] : new Date().toISOString();
+
+  // 4. 转换事件为 Evidence
+  const evidenceArr = await eventsToEvidence(events, claimId);
+  // 移除内部验证标记（不写入最终 Report）
+  const cleanEvidence = evidenceArr.map((e: any) => {
+    const { _input_hash_valid, ...rest } = e;
+    return rest;
+  });
+
+  // 5. 计算 total_value
+  const totalValue = (rule.parameters?.total_value as number) || 0;
+  const currency = (rule.parameters?.currency as string) || "USD";
+
+  // 6. 计算归因
+  const attrResult = calculateAttribution(events, rule, totalValue, currency);
+
+  // 7. 确定性 rule 对象
+  const ruleDefinition = {
+    name: `replay-rule-${rule.method}`,
+    method: rule.method,
+    parameters: {
+      ...rule.parameters,
+    },
+    description: `Auto-generated rule for replay (method: ${rule.method})`,
+    visibility: "public" as const,
+  };
+  const ruleDefCanonical = JSON.stringify(ruleDefinition, Object.keys(ruleDefinition).sort());
+  const ruleHash = await deterministicSha256(ruleDefCanonical);
+  const ruleId = await deterministicId('rule', ruleDefCanonical);
+
+  const ruleObj = {
+    rule_id: ruleId,
+    issuer: "replay-api",
+    version: "1.0.0",
+    hash: ruleHash,
+    definition: ruleDefinition,
+    created_at: createdAt,
+  };
+
+  // 8. 确定性 attribution_id
+  const attrCanonical = JSON.stringify({ method: attrResult.method, contributors: attrResult.contributors, confidence: attrResult.confidence });
+  const attributionId = await deterministicId('attr', attrCanonical);
+
+  const attribution = {
+    attribution_id: attributionId,
+    claim_ref: claimId,
+    rule_hash: ruleHash,
+    method: attrResult.method,
+    confidence: attrResult.confidence,
+    result: attrResult.contributors,
+    reasoning: attrResult.reasoning,
+    attributed_at: createdAt,
+  };
+
+  // 9. Settlement
+  const settlementStatus = evidenceArr.length >= 2 ? "eligible" : "pending";
+  const settlementSplits = attrResult.contributors.map(c => ({
+    party_id: c.party_id,
+    share_pct: c.contribution_pct,
+    share_amount: c.attributed_value,
+  }));
+  const eligibleParties = attrResult.contributors.map(c => c.party_id);
+
+  const settlementCanonical = JSON.stringify({ attribution_ref: attributionId, status: settlementStatus, amount: String(totalValue), currency, splits: settlementSplits });
+  const settlementId = await deterministicId('stl', settlementCanonical);
+
+  const settlement = {
+    settlement_id: settlementId,
+    attribution_ref: attributionId,
+    status: settlementStatus,
+    amount: String(totalValue),
+    currency,
+    split: settlementSplits,
+    eligible_parties: eligibleParties,
+  };
+
+  // 10. Claim 对象
+  const claimObj = {
+    claim_id: claimId,
+    type: "conversion",
+    subject: claim.subject,
+    description: claim.action,
+    timestamp: createdAt,
+    parties: [
+      { id: claim.subject, role: "agent", name: claim.subject },
+      ...Object.keys(claim.context || {}).map(k => ({ id: k, role: "context", name: k })),
+    ],
+  };
+
+  // 11. 构建完整 CTRS Report
+  const report = {
+    report_id: reportId,
+    schema_version: "CTRS-v1.2",
+    type: "CommercialTrustReport",
+    created_at: createdAt,
+    status: settlementStatus === "eligible" ? "verified" : "draft",
+    issuer: { id: "fly-replay-api", name: "Fly Replay Engine" },
+    claim: claimObj,
+    evidence: cleanEvidence,
+    rule: ruleObj,
+    attribution,
+    settlement,
+    verification: {
+      schema_valid: true,
+      evidence_hashes_valid: evidenceArr.every((e: any) => e._input_hash_valid !== false),
+      replay_id: replayId,
+    },
+  };
+
+  return { report, replayId };
+}
+
+/**
+ * verifyReplay — 验证给定 Report 是否可通过重放重建
+ * 用 events 重新生成 Report，对比是否一致
+ */
+async function verifyReplay(report: any, events: ReplayEvent[]): Promise<{
+  valid: boolean;
+  checks: {
+    schema_valid: boolean;
+    evidence_count_match: boolean;
+    evidence_hashes_match: boolean;
+    attribution_reproducible: boolean;
+  };
+  replay_report_id: string;
+  original_report_id: string;
+  mismatches: string[];
+}> {
+  const mismatches: string[] = [];
+
+  // 1. Schema 基本验证
+  const requiredFields = ["report_id", "schema_version", "type", "created_at", "status", "issuer", "claim", "evidence", "rule", "attribution", "settlement"];
+  const missingFields = requiredFields.filter(f => !(f in report));
+  const schemaValid = missingFields.length === 0;
+  if (!schemaValid) mismatches.push(`Missing required fields: ${missingFields.join(', ')}`);
+
+  // 2. 用相同 events 重放生成 Report
+  const claim: ReplayClaim = {
+    subject: report.claim?.subject || report.claim?.parties?.[0]?.id || "unknown",
+    action: report.claim?.description || "",
+    context: {},
+  };
+  const rule: ReplayRule = {
+    method: (report.rule?.definition?.method as ReplayRule['method']) || "proportional",
+    parameters: report.rule?.definition?.parameters || {},
+  };
+
+  const { report: replayedReport } = await replayReport(events, claim, rule);
+
+  // 3. Evidence 数量匹配
+  const originalEvidence = report.evidence || [];
+  const replayedEvidence = replayedReport.evidence || [];
+  const evidenceCountMatch = originalEvidence.length === replayedEvidence.length;
+  if (!evidenceCountMatch) mismatches.push(`Evidence count: original=${originalEvidence.length}, replayed=${replayedEvidence.length}`);
+
+  // 4. Evidence hash 匹配
+  let evidenceHashesMatch = true;
+  for (let i = 0; i < Math.min(originalEvidence.length, replayedEvidence.length); i++) {
+    if (originalEvidence[i].hash !== replayedEvidence[i].hash) {
+      evidenceHashesMatch = false;
+      mismatches.push(`Evidence[${i}] hash mismatch: original=${originalEvidence[i].hash?.slice(0, 16)}..., replayed=${replayedEvidence[i].hash?.slice(0, 16)}...`);
+    }
+  }
+  if (!evidenceHashesMatch && !mismatches.some(m => m.includes('hash mismatch'))) mismatches.push("Evidence hashes do not match");
+
+  // 5. Attribution 可重放
+  const attributionReproducible = report.attribution?.method === replayedReport.attribution?.method
+    && JSON.stringify(report.attribution?.result) === JSON.stringify(replayedReport.attribution?.result);
+  if (!attributionReproducible) mismatches.push("Attribution result is not reproducible from the given events");
+
+  // 6. report_id 一致性
+  const reportIdMatch = report.report_id === replayedReport.report_id;
+  if (!reportIdMatch) mismatches.push(`report_id mismatch: original=${report.report_id}, replayed=${replayedReport.report_id}`);
+
+  const valid = schemaValid && evidenceCountMatch && evidenceHashesMatch && attributionReproducible && reportIdMatch;
+
+  return {
+    valid,
+    checks: {
+      schema_valid: schemaValid,
+      evidence_count_match: evidenceCountMatch,
+      evidence_hashes_match: evidenceHashesMatch,
+      attribution_reproducible: attributionReproducible,
+    },
+    replay_report_id: replayedReport.report_id,
+    original_report_id: report.report_id,
+    mismatches,
+  };
+}
+
+// ============================================================
 // API Auth（漏洞2：Bearer + HMAC签名）
 // ============================================================
 async function verifyBearerToken(authHeader: string | null, env: Env): Promise<{ ok: boolean; error?: string; token?: string; agentId?: string }> {
@@ -361,6 +786,243 @@ function json(data: any, status = 200, headers: Record<string, string> = {}): Re
     status,
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Fly-Signature, X-Fly-Timestamp', ...headers },
   });
+}
+
+// ============================================================
+// v2.14.0: External Event Layer — 签名验证与标准化
+// ============================================================
+
+/**
+ * 初始化 external_events 表（幂等，IF NOT EXISTS）
+ * 首次请求时调用，确保表结构就绪
+ */
+async function initExternalEventsTable(env: Env): Promise<void> {
+  await env.FLY_D1.prepare(`
+    CREATE TABLE IF NOT EXISTS external_events (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      source_event_id TEXT NOT NULL,
+      event_type TEXT NOT NULL,
+      raw_payload TEXT NOT NULL,
+      normalized_type TEXT,
+      normalized_data TEXT,
+      hash TEXT NOT NULL,
+      signature_valid INTEGER DEFAULT 0,
+      status TEXT DEFAULT 'received',
+      claim_ref TEXT,
+      created_at TEXT NOT NULL,
+      UNIQUE(source, source_event_id)
+    )
+  `).run();
+}
+
+/**
+ * 验证 Stripe Webhook 签名
+ * Stripe-Signature 头格式：t=timestamp,v1=signature[,v0=...]
+ * 签名计算：HMAC-SHA256(webhook_secret, "${timestamp}.${rawBody}")
+ * 
+ * @returns 0=未配置密钥(pending), 1=验证通过, 2=验证失败
+ */
+async function verifyStripeSignature(payload: string, signatureHeader: string | null, secret: string | undefined): Promise<number> {
+  if (!secret) return 0; // 未配置密钥，存为 pending
+  if (!signatureHeader) return 2; // 无签名头，验证失败
+
+  // 解析 Stripe-Signature 头
+  const parts: Record<string, string> = {};
+  for (const item of signatureHeader.split(',')) {
+    const [key, value] = item.split('=');
+    if (key && value) parts[key.trim()] = value.trim();
+  }
+
+  const timestamp = parts['t'];
+  const v1Signature = parts['v1'];
+  if (!timestamp || !v1Signature) return 2;
+
+  // 构造签名字符串：timestamp.payload
+  const signedPayload = `${timestamp}.${payload}`;
+  const computedSignature = await hmacSha256(secret, signedPayload);
+
+  // 比较签名（恒定时间比较，防时序攻击）
+  if (computedSignature.length !== v1Signature.length) return 2;
+  let mismatch = 0;
+  for (let i = 0; i < computedSignature.length; i++) {
+    mismatch |= computedSignature.charCodeAt(i) ^ v1Signature.charCodeAt(i);
+  }
+  return mismatch === 0 ? 1 : 2;
+}
+
+/**
+ * 验证 Shopify Webhook HMAC 签名
+ * X-Shopify-Hmac-Sha256 头：Base64编码的HMAC-SHA256签名
+ * 
+ * @returns 0=未配置密钥(pending), 1=验证通过, 2=验证失败
+ */
+async function verifyShopifyHmac(payload: string, hmacHeader: string | null, secret: string | undefined): Promise<number> {
+  if (!secret) return 0; // 未配置密钥，存为 pending
+  if (!hmacHeader) return 2; // 无签名头，验证失败
+
+  // 计算 HMAC-SHA256 并 Base64 编码
+  const cryptoKey = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(payload));
+  const computedBase64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
+
+  // 恒定时间比较
+  if (computedBase64.length !== hmacHeader.length) return 2;
+  let mismatch = 0;
+  for (let i = 0; i < computedBase64.length; i++) {
+    mismatch |= computedBase64.charCodeAt(i) ^ hmacHeader.charCodeAt(i);
+  }
+  return mismatch === 0 ? 1 : 2;
+}
+
+/**
+ * Stripe 事件标准化 → CTRS Evidence 格式
+ * 将 Stripe webhook 事件转换为 CTRS v1.2 标准 Evidence 对象
+ */
+function normalizeStripeEvent(payload: any): { normalized_type: string; normalized_data: string } {
+  const eventType = payload.type || 'unknown';
+  const eventId = payload.id || 'unknown';
+  const created = payload.created ? new Date(payload.created * 1000).toISOString() : new Date().toISOString();
+
+  // 提取核心业务数据
+  const dataObject = payload.data?.object || {};
+  const normalizedData = {
+    evidence_id: `ev_ext_${crypto.randomUUID()}`,
+    claim_ref: null, // 后续链接时填充
+    type: "stripe",
+    source: "stripe",
+    timestamp: created,
+    data: {
+      stripe_event_id: eventId,
+      stripe_event_type: eventType,
+      amount: dataObject.amount ?? null,
+      currency: dataObject.currency ?? null,
+      customer: dataObject.customer ?? null,
+      status: dataObject.status ?? null,
+      description: dataObject.description ?? null,
+      metadata: dataObject.metadata ?? null,
+    },
+    hash: "0", // 运行时计算
+  };
+
+  return {
+    normalized_type: "stripe",
+    normalized_data: JSON.stringify(normalizedData),
+  };
+}
+
+/**
+ * Shopify 事件标准化 → CTRS Evidence 格式
+ * 将 Shopify webhook 事件转换为 CTRS v1.2 标准 Evidence 对象
+ */
+function normalizeShopifyEvent(payload: any): { normalized_type: string; normalized_data: string } {
+  const topic = payload.topic || payload.event_type || 'unknown';
+  const orderId = payload.id || payload.order_id || 'unknown';
+
+  const normalizedData = {
+    evidence_id: `ev_ext_${crypto.randomUUID()}`,
+    claim_ref: null, // 后续链接时填充
+    type: "webhook",
+    source: "shopify",
+    timestamp: payload.created_at || payload.updated_at || new Date().toISOString(),
+    data: {
+      shopify_event_type: topic,
+      shopify_order_id: String(orderId),
+      order_number: payload.order_number ?? payload.number ?? null,
+      total_price: payload.total_price ?? null,
+      currency: payload.currency ?? null,
+      financial_status: payload.financial_status ?? null,
+      fulfillment_status: payload.fulfillment_status ?? null,
+      customer: payload.customer ? {
+        id: payload.customer.id ?? null,
+        email: payload.customer.email ?? null,
+      } : null,
+      line_items_count: payload.line_items?.length ?? null,
+    },
+    hash: "0", // 运行时计算
+  };
+
+  return {
+    normalized_type: "webhook",
+    normalized_data: JSON.stringify(normalizedData),
+  };
+}
+
+/**
+ * 存储外部事件到 D1
+ * 包含幂等去重、hash 计算、标准化转换
+ * 
+ * @returns { id, status, dedup } dedup=true 表示事件已存在（幂等）
+ */
+async function storeExternalEvent(env: Env, params: {
+  source: ExternalEventSource;
+  source_event_id: string;
+  event_type: string;
+  raw_payload: string;
+  signature_valid: number; // 0=未验证 1=有效 2=无效
+  normalized_type?: string;
+  normalized_data?: string;
+}): Promise<{ id: string; status: string; dedup: boolean }> {
+  // 确保 external_events 表存在
+  await initExternalEventsTable(env);
+
+  // 计算 SHA-256(raw_payload)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(params.raw_payload));
+  const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  // 幂等去重：检查是否已存在
+  const existing = await env.FLY_D1.prepare(
+    "SELECT id, status FROM external_events WHERE source = ? AND source_event_id = ?"
+  ).bind(params.source, params.source_event_id).first();
+
+  if (existing) {
+    return { id: existing.id as string, status: existing.status as string, dedup: true };
+  }
+
+  // 确定状态：签名有效 → validated，签名无效 → rejected，未验证 → received
+  let status: ExternalEventStatus = 'received';
+  if (params.signature_valid === 1) {
+    status = 'validated';
+  } else if (params.signature_valid === 2) {
+    status = 'rejected';
+  }
+
+  const eventId = `evt_${crypto.randomUUID()}`;
+  const timestamp = new Date().toISOString();
+
+  await env.FLY_D1.prepare(
+    `INSERT INTO external_events (id, source, source_event_id, event_type, raw_payload, normalized_type, normalized_data, hash, signature_valid, status, claim_ref, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`
+  ).bind(
+    eventId,
+    params.source,
+    params.source_event_id,
+    params.event_type,
+    params.raw_payload,
+    params.normalized_type || null,
+    params.normalized_data || null,
+    hash,
+    params.signature_valid,
+    status,
+    timestamp
+  ).run();
+
+  // 写审计日志
+  await writeAuditEvent(env, {
+    request_id: `req_${crypto.randomUUID()}`,
+    entity_type: 'external_event',
+    entity_id: eventId,
+    action: 'created',
+    actor_type: 'system',
+    actor_id: `sys_${params.source}_webhook`,
+    actor_name: `${params.source}-webhook-receiver`,
+    source: params.source,
+    reason: `external_event_received:${params.event_type}`,
+    before: '{}',
+    after: JSON.stringify({ id: eventId, source: params.source, event_type: params.event_type, signature_valid: params.signature_valid, status }),
+  });
+
+  return { id: eventId, status, dedup: false };
 }
 
 // ============================================================
@@ -724,7 +1386,7 @@ export default {
             if (v !== '1') kvStatus = 'error';
           } catch { kvStatus = 'error'; }
           const status = dbStatus === 'ok' && kvStatus === 'ok' ? 'ok' : 'degraded';
-          return json({ status, version: '2.12.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
+          return json({ status, version: '2.14.0', layers: 8, protocols: 6, db: dbStatus, kv: kvStatus, timestamp: new Date().toISOString() });
         }
 
         // === 漏洞1：Agent注册 + 身份验证（Public Endpoint，无需鉴权） ===
@@ -1644,6 +2306,335 @@ export default {
           };
           await env.FLY_KV.put(`ctrs:registry:issuers:${body.issuer_id}`, JSON.stringify(issuerRecord));
           return json({ success: true, ...issuerRecord }, 201);
+        }
+
+        // ============================================================
+        // v2.14.0: External Event Layer — Webhook 接收端点
+        // ============================================================
+
+        // === POST /v1/webhooks/stripe — 接收 Stripe Webhook 事件 ===
+        if (path === '/v1/webhooks/stripe' && method === 'POST') {
+          const rawBody = await request.text();
+          let payload: any;
+          try {
+            payload = JSON.parse(rawBody);
+          } catch {
+            return json({ error: "invalid JSON payload" }, 400);
+          }
+
+          // 验证 Stripe 签名
+          const signatureHeader = request.headers.get('Stripe-Signature');
+          const signatureValid = await verifyStripeSignature(rawBody, signatureHeader, env.STRIPE_WEBHOOK_SECRET);
+
+          // 硬约束：有签名但验证失败则拒绝（签名无效=rejected）
+          // 无签名密钥=0(pending)，签名有效=1(validated)
+          if (signatureValid === 2) {
+            // 签名验证失败：仍然入库但标记为 rejected
+            const result = await storeExternalEvent(env, {
+              source: 'stripe',
+              source_event_id: payload.id || `stripe_${Date.now()}`,
+              event_type: payload.type || 'unknown',
+              raw_payload: rawBody,
+              signature_valid: 2,
+              ...normalizeStripeEvent(payload),
+            });
+            return json({ received: true, id: result.id, status: 'rejected', reason: 'signature_verification_failed' }, 202);
+          }
+
+          // 标准化并存储
+          const normalized = normalizeStripeEvent(payload);
+          const result = await storeExternalEvent(env, {
+            source: 'stripe',
+            source_event_id: payload.id || `stripe_${Date.now()}`,
+            event_type: payload.type || 'unknown',
+            raw_payload: rawBody,
+            signature_valid: signatureValid,
+            ...normalized,
+          });
+
+          return json({
+            received: true,
+            id: result.id,
+            status: result.status,
+            dedup: result.dedup,
+            signature_valid: signatureValid === 1 ? true : signatureValid === 0 ? 'pending_no_secret' : false,
+            normalized_type: normalized.normalized_type,
+          }, result.dedup ? 200 : 201);
+        }
+
+        // === POST /v1/webhooks/shopify — 接收 Shopify Webhook 事件 ===
+        if (path === '/v1/webhooks/shopify' && method === 'POST') {
+          const rawBody = await request.text();
+          let payload: any;
+          try {
+            payload = JSON.parse(rawBody);
+          } catch {
+            return json({ error: "invalid JSON payload" }, 400);
+          }
+
+          // 验证 Shopify HMAC 签名
+          const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
+          const signatureValid = await verifyShopifyHmac(rawBody, hmacHeader, env.SHOPIFY_WEBHOOK_SECRET);
+
+          // 硬约束：签名验证失败则标记 rejected
+          if (signatureValid === 2) {
+            const result = await storeExternalEvent(env, {
+              source: 'shopify',
+              source_event_id: String(payload.id || payload.order_id || `shopify_${Date.now()}`),
+              event_type: payload.topic || payload.event_type || 'unknown',
+              raw_payload: rawBody,
+              signature_valid: 2,
+              ...normalizeShopifyEvent(payload),
+            });
+            return json({ received: true, id: result.id, status: 'rejected', reason: 'signature_verification_failed' }, 202);
+          }
+
+          // 标准化并存储
+          const normalized = normalizeShopifyEvent(payload);
+          const result = await storeExternalEvent(env, {
+            source: 'shopify',
+            source_event_id: String(payload.id || payload.order_id || `shopify_${Date.now()}`),
+            event_type: payload.topic || payload.event_type || 'unknown',
+            raw_payload: rawBody,
+            signature_valid: signatureValid,
+            ...normalized,
+          });
+
+          return json({
+            received: true,
+            id: result.id,
+            status: result.status,
+            dedup: result.dedup,
+            signature_valid: signatureValid === 1 ? true : signatureValid === 0 ? 'pending_no_secret' : false,
+            normalized_type: normalized.normalized_type,
+          }, result.dedup ? 200 : 201);
+        }
+
+        // === POST /v1/webhooks/custom — 通用 Webhook（需 Bearer 鉴权）===
+        if (path === '/v1/webhooks/custom' && method === 'POST') {
+          const auth = await verifyBearerToken(request.headers.get('Authorization'), env);
+          if (!auth.ok) return json({ error: auth.error }, 401);
+
+          const rawBody = await request.text();
+          let payload: any;
+          try {
+            payload = JSON.parse(rawBody);
+          } catch {
+            return json({ error: "invalid JSON payload" }, 400);
+          }
+
+          // 自定义 webhook 必须提供 source_event_id 和 event_type
+          const sourceEventId = payload.source_event_id || payload.event_id || `custom_${Date.now()}`;
+          const eventType = payload.event_type || payload.type || 'custom';
+
+          // 自定义来源不做签名验证（通过 Bearer token 鉴权）
+          const result = await storeExternalEvent(env, {
+            source: 'custom',
+            source_event_id: String(sourceEventId),
+            event_type: eventType,
+            raw_payload: rawBody,
+            signature_valid: 0, // 自定义来源无签名验证机制，标记为未验证
+            normalized_type: payload.normalized_type || 'custom',
+            normalized_data: payload.normalized_data ? JSON.stringify(payload.normalized_data) : JSON.stringify({
+              evidence_id: `ev_ext_${crypto.randomUUID()}`,
+              claim_ref: payload.claim_ref || null,
+              type: "custom",
+              source: payload.source_name || "custom",
+              timestamp: new Date().toISOString(),
+              data: payload.data || payload,
+              hash: "0",
+            }),
+          });
+
+          return json({
+            received: true,
+            id: result.id,
+            status: result.status,
+            dedup: result.dedup,
+          }, result.dedup ? 200 : 201);
+        }
+
+        // === GET /v1/events — 查询外部事件列表 ===
+        if (path === '/v1/events' && method === 'GET') {
+          const source = url.searchParams.get('source');
+          const status = url.searchParams.get('status');
+          const claimRef = url.searchParams.get('claim_ref');
+          const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
+          const offset = parseInt(url.searchParams.get('offset') || '0');
+
+          // 构建 SQL（不返回 raw_payload 以减少响应体积，详情接口返回完整数据）
+          let sql = "SELECT id, source, source_event_id, event_type, normalized_type, hash, signature_valid, status, claim_ref, created_at FROM external_events WHERE 1=1";
+          const binds: any[] = [];
+
+          if (source) {
+            sql += " AND source = ?";
+            binds.push(source);
+          }
+          if (status) {
+            sql += " AND status = ?";
+            binds.push(status);
+          }
+          if (claimRef) {
+            sql += " AND claim_ref = ?";
+            binds.push(claimRef);
+          }
+
+          // 统计总数
+          let countSql = sql.replace("SELECT id, source, source_event_id, event_type, normalized_type, hash, signature_valid, status, claim_ref, created_at", "SELECT COUNT(*) as total");
+          const countResult = await env.FLY_D1.prepare(countSql).bind(...binds).first();
+          const total = (countResult?.total as number) || 0;
+
+          // 查询列表
+          sql += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+          binds.push(limit, offset);
+
+          const result = await env.FLY_D1.prepare(sql).bind(...binds).all();
+
+          // 统计按 source 和 status 分布
+          const statsResult = await env.FLY_D1.prepare("SELECT source, status, COUNT(*) as cnt FROM external_events GROUP BY source, status").all();
+          const stats: Record<string, Record<string, number>> = {};
+          for (const row of statsResult.results as any[]) {
+            if (!stats[row.source]) stats[row.source] = {};
+            stats[row.source][row.status] = row.cnt;
+          }
+
+          return json({
+            total,
+            limit,
+            offset,
+            events: result.results,
+            stats,
+          });
+        }
+
+        // === GET /v1/events/:id — 查询单个外部事件详情 ===
+        if (path.startsWith('/v1/events/evt_') && method === 'GET') {
+          const eventId = path.split('/v1/events/')[1];
+          const event = await env.FLY_D1.prepare("SELECT * FROM external_events WHERE id = ?").bind(eventId).first();
+          if (!event) return json({ error: "event not found" }, 404);
+
+          // 解析 JSON 字段
+          let normalizedData: any = null;
+          try {
+            normalizedData = JSON.parse(event.normalized_data as string);
+          } catch {}
+
+          return json({
+            event: {
+              id: event.id,
+              source: event.source,
+              source_event_id: event.source_event_id,
+              event_type: event.event_type,
+              raw_payload: event.raw_payload,
+              normalized_type: event.normalized_type,
+              normalized_data: normalizedData,
+              hash: event.hash,
+              signature_valid: event.signature_valid,
+              status: event.status,
+              claim_ref: event.claim_ref,
+              created_at: event.created_at,
+            },
+          });
+        }
+
+        // ============================================================
+        // v2.15.0: Third-party Replay API — 确定性重放与验证
+        // ============================================================
+
+        // ── POST /v1/replay — 从事件流重建 CTRS Report ──
+        if (path === '/v1/replay' && method === 'POST') {
+          const body: any = await request.json().catch(() => null);
+          if (!body) return json({ error: "invalid JSON body" }, 400);
+
+          // 验证必填字段
+          if (!Array.isArray(body.events) || body.events.length === 0) {
+            return json({ error: "events array is required and must not be empty" }, 400);
+          }
+          if (!body.claim || !body.claim.subject) {
+            return json({ error: "claim.subject is required" }, 400);
+          }
+          if (!body.rule || !body.rule.method) {
+            return json({ error: "rule.method is required" }, 400);
+          }
+
+          // 验证 rule.method 合法性
+          const validMethods = ["proportional", "weighted", "first_touch", "last_touch"];
+          if (!validMethods.includes(body.rule.method)) {
+            return json({ error: `rule.method must be one of: ${validMethods.join(', ')}` }, 400);
+          }
+
+          // 验证每个 event 结构
+          for (let i = 0; i < body.events.length; i++) {
+            const ev = body.events[i];
+            if (!ev.type || !ev.source || !ev.timestamp) {
+              return json({ error: `events[${i}] missing required field (type, source, timestamp)` }, 400);
+            }
+            if (!ev.data || typeof ev.data !== 'object') {
+              return json({ error: `events[${i}].data must be an object` }, 400);
+            }
+          }
+
+          // 构建 Replay 输入
+          const replayEvents: ReplayEvent[] = body.events.map((ev: any) => ({
+            type: ev.type,
+            source: ev.source,
+            timestamp: ev.timestamp,
+            data: ev.data,
+            hash: ev.hash,
+          }));
+          const replayClaim: ReplayClaim = {
+            subject: body.claim.subject,
+            action: body.claim.action || "",
+            context: body.claim.context,
+          };
+          const replayRule: ReplayRule = {
+            method: body.rule.method,
+            parameters: body.rule.parameters,
+          };
+
+          // 重放生成 Report（纯函数，无状态）
+          const { report, replayId } = await replayReport(replayEvents, replayClaim, replayRule);
+
+          return json(report, 200, { 'X-Replay-Id': replayId });
+        }
+
+        // ── POST /v1/replay/verify — 验证 Report 可通过重放重建 ──
+        if (path === '/v1/replay/verify' && method === 'POST') {
+          const body: any = await request.json().catch(() => null);
+          if (!body) return json({ error: "invalid JSON body" }, 400);
+
+          // 验证必填字段
+          if (!body.report || typeof body.report !== 'object') {
+            return json({ error: "report object is required" }, 400);
+          }
+          if (!Array.isArray(body.events) || body.events.length === 0) {
+            return json({ error: "events array is required and must not be empty" }, 400);
+          }
+
+          // 验证每个 event 结构
+          for (let i = 0; i < body.events.length; i++) {
+            const ev = body.events[i];
+            if (!ev.type || !ev.source || !ev.timestamp) {
+              return json({ error: `events[${i}] missing required field (type, source, timestamp)` }, 400);
+            }
+            if (!ev.data || typeof ev.data !== 'object') {
+              return json({ error: `events[${i}].data must be an object` }, 400);
+            }
+          }
+
+          // 构建 Replay 事件
+          const replayEvents: ReplayEvent[] = body.events.map((ev: any) => ({
+            type: ev.type,
+            source: ev.source,
+            timestamp: ev.timestamp,
+            data: ev.data,
+            hash: ev.hash,
+          }));
+
+          // 验证重放
+          const result = await verifyReplay(body.report, replayEvents);
+
+          return json(result, 200, { 'X-Replay-Id': `rpl_verify_${result.replay_report_id}` });
         }
 
         return json({ error: "not found", hint: "try /v1/health" }, 404);
