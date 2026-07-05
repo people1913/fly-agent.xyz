@@ -3542,7 +3542,7 @@ export default {
           }
 
           // 验证 rule.method 合法性
-          const validMethods = ["proportional", "weighted", "first_touch", "last_touch"];
+          const validMethods = ["proportional", "weighted", "first_touch", "last_touch", "evidence_chain", "multi_hop", "time_window"];
           if (!validMethods.includes(body.rule.method)) {
             return json({ error: `rule.method must be one of: ${validMethods.join(', ')}` }, 400);
           }
