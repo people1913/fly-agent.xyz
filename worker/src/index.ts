@@ -364,7 +364,7 @@ interface ReplayClaim {
 
 /** Replay 输入 rule */
 interface ReplayRule {
-  method: "proportional" | "weighted" | "first_touch" | "last_touch";
+  method: "proportional" | "weighted" | "first_touch" | "last_touch" | "evidence_chain" | "multi_hop" | "time_window";
   parameters?: Record<string, any>;
 }
 
@@ -508,6 +508,73 @@ function calculateAttribution(events: ReplayEvent[], rule: ReplayRule, totalValu
       contributors = uniqueSources.map((src, i) => {
         const value = Math.round((totalValue * intPcts[i] / 100) * 100) / 100;
         return { party_id: src, contribution_pct: String(intPcts[i]), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'evidence_chain': {
+      // 证据链：需要至少 2 个事件，按事件数量均等分配
+      if (n < 2) {
+        contributors = uniqueSources.map(src => ({
+          party_id: src, contribution_pct: '0', attributed_value: '0'
+        }));
+        break;
+      }
+      const pct = Math.floor(100 / n);
+      const remainder = 100 - pct * n;
+      contributors = uniqueSources.map((src, i) => {
+        const extra = i < remainder ? 1 : 0;
+        const totalPct = pct + extra;
+        const value = Math.round((totalValue * totalPct / 100) * 100) / 100;
+        return { party_id: src, contribution_pct: String(totalPct), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'multi_hop': {
+      // 多跳协作：第一个 50%，其余平分剩余 50%
+      if (n === 1) {
+        contributors = [{ party_id: uniqueSources[0], contribution_pct: '100', attributed_value: String(totalValue) }];
+        break;
+      }
+      const firstPct = 50;
+      const restTotal = 50;
+      const restPct = Math.floor(restTotal / (n - 1));
+      const restRemainder = restTotal - restPct * (n - 1);
+      contributors = uniqueSources.map((src, i) => {
+        const pct = i === 0 ? firstPct : restPct + (i - 1 < restRemainder ? 1 : 0);
+        const value = Math.round((totalValue * pct / 100) * 100) / 100;
+        return { party_id: src, contribution_pct: String(pct), attributed_value: String(value) };
+      });
+      break;
+    }
+
+    case 'time_window': {
+      // 时间窗口：24小时内的事件权重 2x，超过 24h 权重 1x
+      const now = new Date().getTime();
+      const weights = events.map(e => {
+        const eventTime = new Date(e.timestamp).getTime();
+        const hoursAgo = (now - eventTime) / (1000 * 60 * 60);
+        return hoursAgo < 24 ? 2.0 : 1.0;
+      });
+      const totalWeight = weights.reduce((a, b) => a + b, 0);
+      const sourceWeights: Record<string, number> = {};
+      events.forEach((e, i) => {
+        const src = e.source || 'unknown';
+        sourceWeights[src] = (sourceWeights[src] || 0) + weights[i];
+      });
+      const weightedSources = uniqueSources.map(src => ({ src, weight: sourceWeights[src] || 0 }));
+      weightedSources.sort((a, b) => b.weight - a.weight);
+      const rawPcts = weightedSources.map(w => (w.weight / totalWeight) * 100);
+      const intPcts = rawPcts.map(p => Math.floor(p));
+      const pctRemainder = 100 - intPcts.reduce((a, b) => a + b, 0);
+      const fractionalOrder = rawPcts.map((p, i) => ({ idx: i, frac: p - Math.floor(p) })).sort((a, b) => b.frac - a.frac);
+      for (let i = 0; i < pctRemainder; i++) {
+        intPcts[fractionalOrder[i].idx]++;
+      }
+      contributors = weightedSources.map((w, i) => {
+        const value = Math.round((totalValue * intPcts[i] / 100) * 100) / 100;
+        return { party_id: w.src, contribution_pct: String(intPcts[i]), attributed_value: String(value) };
       });
       break;
     }
