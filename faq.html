@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常见问题 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--bg2);padding:2px 10px;border-radius:10px}
+.content{padding:32px;overflow-y:auto;flex:1}
+.section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--dark)}
+.faq-item{border:1px solid var(--border);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.faq-q{padding:14px 18px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--bg2);transition:background .15s}
+.faq-q:hover{background:var(--bg3)}
+.faq-q .num{width:24px;height:24px;border-radius:50%;background:var(--deep-green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.faq-q .arrow{margin-left:auto;transition:transform .2s;font-size:12px;color:var(--text4)}
+.faq-q.open .arrow{transform:rotate(180deg)}
+.faq-a{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;font-size:12px;line-height:1.8;color:var(--text2)}
+.faq-a.open{max-height:500px;padding:14px 18px}
+.faq-a code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
+</style>
+<meta name="description" content="常见问题解答：Fly 是什么？四层协议如何工作？Replay 验证是什么？如何接入？">
+<link rel="canonical" href="https://fly-agent.xyz/faq.html">
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>FAQ</h1><span class="tag">常见问题</span></div>
+<div class="content">
+
+<h2 class="section-title">关于 Fly</h2>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">1</span>Fly 是什么？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Fly 是 Agent Economy 的<strong>商业信任协议（Commercial Trust Protocol）</strong>。当多个 Agent 协作完成一笔商业交易时，Fly 通过 Claim → Evidence → Attestation → Trust Record 四层协议，为每个参与方的贡献提供<strong>可确定性重建的商业事实</strong>。Fly 不做支付，只证明结算条件已满足（Settlement Ready）。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">2</span>Fly 和传统归因工具有什么区别？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">传统归因工具是"黑箱算法"，告诉你谁贡献了转化，但无法验证。Fly 的归因是<strong>白箱验证</strong>——每一步归因都经过独立验证，基于 Evidence Hash + Rule Hash 绑定，结果可追溯、可审计。核心公式：<code>Evidence + Rule = Attribution</code>。任何人 Replay 都得到完全一致的结果。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">3</span>什么是 Deterministic Replay？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Replay 是 Fly 协议的核心验证机制。给定相同的四个输入——<strong>Claim + Evidence + Rule + Protocol Version</strong>——任何人执行 Replay 都得到完全一致的结果。这意味着归因结论不依赖任何中心机构，任何独立方都可以验证。Replay 的输入永远只有这四个，不允许将中间产物（如 Attribution）作为输入。</div>
+</div>
+
+<h2 class="section-title" style="margin-top:32px">技术问题</h2>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">4</span>四层协议分别是什么？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a"><strong>Layer 1: Claim（声明）</strong>——谁参与了交易？每个 Agent 声称自己做了什么。<br><strong>Layer 2: Evidence（证据）</strong>——谁贡献了什么？可验证的数据来源、时间戳、行为记录。<br><strong>Layer 3: Attestation（证明）</strong>——这可信吗？任何独立方均可执行 Replay 验证。<br><strong>Layer 4: Trust Record（信任记录）</strong>——结算就绪。Trust Record 一旦生成不可修改，如需更新必须生成新版本。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">5</span>Rule 是如何保证不可伪造的？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Rule 是 Fly 协议中的一等对象（First-Class Object），包含 rule_id、issuer、version、hash、definition。核心验证：<code>hash(rule.definition) == rule.hash</code>。Attribution 绑定到 rule_hash 而非 rule 文本。Rule 必须可被公开发现和验证（Rule Registration），但协议不规定具体实现方式——可以是 HTTP、Git、DNS、DID 或 Blockchain。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">6</span>Settlement Ready 是什么意思？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a"><strong>Settlement Ready ≠ Settlement Executed。</strong>Fly 永远只做证明，不做执行。Fly 输出 Settlement Ready（证明结算条件已满足），但 Fly 不分钱。实际支付由参与方根据 Trust Record 自行完成。从本协议开始，所有文档、API、SDK 中统一使用 Settlement Ready 而非 Settlement。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">7</span>如何验证一份 Trust Report？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">使用 Fly Verifier 对 Report 执行 10 项检查（v1.2）：schema 完整性、Claim 完整性、Evidence Hash 完整性、Rule 完整性、Attribution-Rule 绑定、Evidence-Claim 引用、Attribution 一致性、Settlement 正确性、Rule 注册验证、Issuer 信任评估。全部通过 → Report 可信。任何独立方都可以执行相同的验证。</div>
+</div>
+
+<h2 class="section-title" style="margin-top:32px">接入与商务</h2>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">8</span>如何接入 Fly？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">开发者可以通过 CTRS Schema 生成符合规范的 Trust Report，使用 Verifier 验证报告完整性，通过 Trust Loop 完成完整协议闭环。参考实现包括 Python Generator、Verifier、Trust Loop、Store 和 Registry。协议不绑定特定技术栈——PostgreSQL、S3、IPFS、SQLite 都可以作为存储实现。</div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">9</span>Fly 的定价模式是什么？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Fly 的商业模式是 <strong>Protocol Economy</strong>——商业价值发生以后收费，不是 SaaS 预付费。具体定价模型尚未冻结，将根据 Design Partner 反馈确定。核心原则：<code>No Attribution, No Settlement. No Trust, No Payment.</code></div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">10</span>数据安全如何保障？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Fly 协议本身不存储任何原始数据。Evidence 通过 SHA-256 Hash 绑定，原始数据由参与方自行保管。Trust Report 只包含 Hash 引用和结构化元数据。协议不规定存储实现——你可以选择任何符合安全要求的存储方案。</div>
+</div>
+
+</div>
+</div>
+</body>
+</html>
