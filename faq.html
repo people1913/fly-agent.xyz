@@ -28,7 +28,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .faq-a.open{max-height:500px;padding:14px 18px}
 .faq-a code{font-family:var(--mono);background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px}
 </style>
-<meta name="description" content="常见问题解答：归因验证是什么？AI Agent 如何接入？Trust Score 如何计算？支持哪些平台？">
+<meta name="description" content="常见问题解答：Fly 是什么？四层协议如何工作？Replay 验证是什么？如何接入？">
 <link rel="canonical" href="https://fly-agent.xyz/faq.html">
 </head>
 <body>
@@ -44,7 +44,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
     <span class="num">1</span>Fly 是什么？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">Fly 是归因验证基础设施（Attribution Verification Infrastructure）。它不是传统归因工具，而是一套让每一笔归因都可验证、可审计、可信任的基础设施。核心哲学是：<strong>Unverified Data ≠ Signal</strong>——未经验证的数据不叫 Signal。</div>
+  <div class="faq-a">Fly 是 Agent Economy 的<strong>商业信任协议（Commercial Trust Protocol）</strong>。当多个 Agent 协作完成一笔商业交易时，Fly 通过 Claim → Evidence → Attestation → Trust Record 四层协议，为每个参与方的贡献提供<strong>可确定性重建的商业事实</strong>。Fly 不做支付，只证明结算条件已满足（Settlement Ready）。</div>
 </div>
 
 <div class="faq-item">
@@ -52,67 +52,75 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
     <span class="num">2</span>Fly 和传统归因工具有什么区别？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">传统归因工具是"黑箱算法"，告诉你谁贡献了转化，但无法验证。Fly 的归因是"白箱验证"——每一步归因都经过独立验证，基于哈希链审计，结果可追溯、可审计。用户目标从"购买工具"变成"理解→验证→信任"。</div>
+  <div class="faq-a">传统归因工具是"黑箱算法"，告诉你谁贡献了转化，但无法验证。Fly 的归因是<strong>白箱验证</strong>——每一步归因都经过独立验证，基于 Evidence Hash + Rule Hash 绑定，结果可追溯、可审计。核心公式：<code>Evidence + Rule = Attribution</code>。任何人 Replay 都得到完全一致的结果。</div>
 </div>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">3</span>Signal 和 Data 有什么区别？
+    <span class="num">3</span>什么是 Deterministic Replay？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a"><strong>Signal = Verified State Transition（已验证状态跃迁）</strong>。只有通过验证链确认的数据才被称为 Signal，未经确认的只是 Data。Fly 的核心工作是验证 Data → Signal 的转换过程。</div>
+  <div class="faq-a">Replay 是 Fly 协议的核心验证机制。给定相同的四个输入——<strong>Claim + Evidence + Rule + Protocol Version</strong>——任何人执行 Replay 都得到完全一致的结果。这意味着归因结论不依赖任何中心机构，任何独立方都可以验证。Replay 的输入永远只有这四个，不允许将中间产物（如 Attribution）作为输入。</div>
 </div>
 
 <h2 class="section-title" style="margin-top:32px">技术问题</h2>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">4</span>Action ID 是什么？
+    <span class="num">4</span>四层协议分别是什么？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">Action ID 是归因链路的唯一标识符。从推荐→咨询→成交→佣金，全链路共享同一个 Action ID。每一条归因链路有且仅有一个 Action ID，实现端到端追溯。通过 <code>POST /v1/action</code> 创建。</div>
+  <div class="faq-a"><strong>Layer 1: Claim（声明）</strong>——谁参与了交易？每个 Agent 声称自己做了什么。<br><strong>Layer 2: Evidence（证据）</strong>——谁贡献了什么？可验证的数据来源、时间戳、行为记录。<br><strong>Layer 3: Attestation（证明）</strong>——这可信吗？任何独立方均可执行 Replay 验证。<br><strong>Layer 4: Trust Record（信任记录）</strong>——结算就绪。Trust Record 一旦生成不可修改，如需更新必须生成新版本。</div>
 </div>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">5</span>哈希链是如何保证数据不可篡改的？
+    <span class="num">5</span>Rule 是如何保证不可伪造的？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">Fly 使用 SHA-256 哈希链：每个验证步骤的输出哈希作为下一步的输入。这意味着任何单点篡改都会导致后续所有哈希失效，整条链断裂。每日根哈希同步至公开账本，提供独立第三方验证能力。</div>
+  <div class="faq-a">Rule 是 Fly 协议中的一等对象（First-Class Object），包含 rule_id、issuer、version、hash、definition。核心验证：<code>hash(rule.definition) == rule.hash</code>。Attribution 绑定到 rule_hash 而非 rule 文本。Rule 必须可被公开发现和验证（Rule Registration），但协议不规定具体实现方式——可以是 HTTP、Git、DNS、DID 或 Blockchain。</div>
 </div>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">6</span>Fly 支持哪些渠道？
+    <span class="num">6</span>Settlement Ready 是什么意思？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">目前支持抖音、小红书、微信、美团、飞书等主流渠道。每个渠道有独立的接入适配层，确保不同渠道的信号格式统一转换为 Fly 标准验证格式。</div>
+  <div class="faq-a"><strong>Settlement Ready ≠ Settlement Executed。</strong>Fly 永远只做证明，不做执行。Fly 输出 Settlement Ready（证明结算条件已满足），但 Fly 不分钱。实际支付由参与方根据 Trust Record 自行完成。从本协议开始，所有文档、API、SDK 中统一使用 Settlement Ready 而非 Settlement。</div>
 </div>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">7</span>如何验证归因链的完整性？
+    <span class="num">7</span>如何验证一份 Trust Report？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">通过 <code>POST /v1/audit/verify-chain</code> 接口提交 Action ID，系统会返回全链路验证结果，包括每个阶段的验证状态、哈希值和链完整性判定。也可以在沙盒验证页面可视化查看。</div>
+  <div class="faq-a">使用 Fly Verifier 对 Report 执行 10 项检查（v1.2）：schema 完整性、Claim 完整性、Evidence Hash 完整性、Rule 完整性、Attribution-Rule 绑定、Evidence-Claim 引用、Attribution 一致性、Settlement 正确性、Rule 注册验证、Issuer 信任评估。全部通过 → Report 可信。任何独立方都可以执行相同的验证。</div>
 </div>
 
-<h2 class="section-title" style="margin-top:32px">商务问题</h2>
+<h2 class="section-title" style="margin-top:32px">接入与商务</h2>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">8</span>Fly 的定价模式是什么？
+    <span class="num">8</span>如何接入 Fly？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">Fly 提供沙盒验证（免费）和企业版两种模式。沙盒验证允许你在测试环境中体验完整的归因验证流程；企业版提供生产环境部署、定制化验证规则和专属技术支持。具体方案请联系商务团队。</div>
+  <div class="faq-a">开发者可以通过 CTRS Schema 生成符合规范的 Trust Report，使用 Verifier 验证报告完整性，通过 Trust Loop 完成完整协议闭环。参考实现包括 Python Generator、Verifier、Trust Loop、Store 和 Registry。协议不绑定特定技术栈——PostgreSQL、S3、IPFS、SQLite 都可以作为存储实现。</div>
 </div>
 
 <div class="faq-item">
   <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-    <span class="num">9</span>数据安全如何保障？
+    <span class="num">9</span>Fly 的定价模式是什么？
     <span class="arrow">▼</span>
   </div>
-  <div class="faq-a">所有数据传输使用 TLS 1.3 加密，静态数据采用 AES-256-GCM 加密，密钥由独立 KMS 管理并每 90 天轮换。访问控制基于角色的细粒度权限，确保每个用户只能访问其权限范围内的数据。详见 Trust Layer 和 Security Model。</div>
+  <div class="faq-a">Fly 的商业模式是 <strong>Protocol Economy</strong>——商业价值发生以后收费，不是 SaaS 预付费。具体定价模型尚未冻结，将根据 Design Partner 反馈确定。核心原则：<code>No Attribution, No Settlement. No Trust, No Payment.</code></div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span class="num">10</span>数据安全如何保障？
+    <span class="arrow">▼</span>
+  </div>
+  <div class="faq-a">Fly 协议本身不存储任何原始数据。Evidence 通过 SHA-256 Hash 绑定，原始数据由参与方自行保管。Trust Report 只包含 Hash 引用和结构化元数据。协议不规定存储实现——你可以选择任何符合安全要求的存储方案。</div>
 </div>
 
 </div>
