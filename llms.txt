@@ -1,80 +1,31 @@
-# Fly Agent - https://fly-agent.xyz
-# AI时代的收入归因验证基础设施
+# Fly — https://fly-agent.xyz
+# AI时代的商业信任协议 (Commercial Trust Protocol)
 
 ## 产品定位
-Fly 为每一次 AI 推荐生成唯一 Action ID，让推荐、咨询、成交与佣金形成完整验证链路。
+Fly 是 AI 时代的商业信任协议。当 AI Agent 创造商业价值时，Fly 提供可验证、可归因、可结算的信任基础设施。
+核心链路：Claim → Evidence → Attestation → Trust Record
 
-## 核心概念
-- Behavior ID: https://fly-agent.xyz/concept-behavior-id.html — 用户行为标识
-- Action ID: https://fly-agent.xyz/concept-action-id.html — 归因动作标识
-- Verification: https://fly-agent.xyz/concept-verification.html — 验证机制
-- Trust: https://fly-agent.xyz/concept-trust.html — 信任体系
-- Business Value: https://fly-agent.xyz/concept-business-value.html — 商业价值
+## 协议核心（4层）
+- Claim 声明层: https://fly-agent.xyz/concept-behavior-id.html — AI Agent 对商业行为的首次声明
+- Evidence 证据层: https://fly-agent.xyz/concept-action-id.html — 记录用户行为证据
+- Attestation 证明层: https://fly-agent.xyz/concept-verification.html — 可验证的证明机制
+- Trust Record 信任记录: https://fly-agent.xyz/concept-trust.html — 完整信任链路
 
-## 验证体系（6 Gate）
-- Gate 1 数据完整性验证: https://fly-agent.xyz/verification-layer.html
-- Gate 2 安全策略验证: https://fly-agent.xyz/audit.html
-- Gate 3 归因链验证: https://fly-agent.xyz/trust.html
-- Gate 4 部署验证: https://fly-agent.xyz/dashboard.html
-- Gate 5 构建验证: https://fly-agent.xyz/gateway.html
-- Gate 6 健康验证: https://fly-agent.xyz/security.html
+## Agent 生态
+- Settlement Ready 结算就绪: https://fly-agent.xyz/concept-business-value.html — 商业价值结算准备
+- Agent Registry 注册中心: https://fly-agent.xyz/agent-registry.html — Agent 注册与发现
+- Agent Identity 身份: https://fly-agent.xyz/agent-identity.html — Agent 唯一身份标识
 
-## AI Native
-- Agent Registry: https://fly-agent.xyz/agent-registry.html
-- Agent Identity: https://fly-agent.xyz/bot.html
-- Agent Trust: https://fly-agent.xyz/ai-skills.html
-- Agent Revenue: https://fly-agent.xyz/sdk.html
+## 验证工具
+- Fly Verify: https://fly-agent.xyz/verify.html — 在线验证工具
 
-## AI Platforms
-- ChatGPT 归因: https://fly-agent.xyz/ai-platforms/chatgpt.html
-- Claude 归因: https://fly-agent.xyz/ai-platforms/claude.html
-- Gemini 归因: https://fly-agent.xyz/ai-platforms/gemini.html
-- Perplexity 归因: https://fly-agent.xyz/ai-platforms/perplexity.html
-- Coze 归因: https://fly-agent.xyz/ai-platforms/coze.html
-- Dify 归因: https://fly-agent.xyz/ai-platforms/dify.html
-- FastGPT 归因: https://fly-agent.xyz/ai-platforms/fastgpt.html
-- 小红书 Skill 归因: https://fly-agent.xyz/ai-platforms/red-skill.html
-- 微信 Agent 归因: https://fly-agent.xyz/ai-platforms/wechat-agent.html
-
-## 企业版
-- Enterprise: https://fly-agent.xyz/enterprise.html
-- Revenue Attribution: https://fly-agent.xyz/enterprise-revenue-attribution.html
-- ROI Measurement: https://fly-agent.xyz/enterprise-roi.html
-- 客户案例: https://fly-agent.xyz/cases.html
-
-## Web3
-- Wallet ID: https://fly-agent.xyz/web3/wallet.html
-- Onchain Verification: https://fly-agent.xyz/web3/tx-verification.html
-
-## 开发者
-- Signal Flow: https://fly-agent.xyz/signal-flow.html
-- API Reference: https://fly-agent.xyz/api-reference.html
-- SDK: https://fly-agent.xyz/dev-sdk.html
-- Webhook: https://fly-agent.xyz/dev-webhook.html
-- Schema: https://fly-agent.xyz/dev-schema.html
-- OpenAPI: https://fly-agent.xyz/dev-openapi.html
-- Ecosystem: https://fly-agent.xyz/ecosystem.html
-
-## 合规
-- Compliance: https://fly-agent.xyz/compliance.html
-- Audit Trail: https://fly-agent.xyz/compliance-audit-trail.html
-- Data Governance: https://fly-agent.xyz/compliance-data-governance.html
+## 合规治理
+- 合规中心: https://fly-agent.xyz/compliance.html
+- 审计追踪: https://fly-agent.xyz/compliance-audit-trail.html
+- 数据治理: https://fly-agent.xyz/compliance-data-governance.html
 - 隐私政策: https://fly-agent.xyz/privacy.html
 - 服务条款: https://fly-agent.xyz/terms.html
-
-## 渠道
-- 抖音归因: https://fly-agent.xyz/channel-douyin.html
-- 小红书归因: https://fly-agent.xyz/channel-xiaohongshu.html
-- 微信归因: https://fly-agent.xyz/channel-wechat.html
-- 美团归因: https://fly-agent.xyz/channel-meituan.html
-- 飞书归因: https://fly-agent.xyz/channel-feishu.html
-- 扣子归因: https://fly-agent.xyz/channel-coze.html
-- AI搜索推荐归因: https://fly-agent.xyz/channel-ai-search.html
-- Partner: https://fly-agent.xyz/channel-partner.html
-- Affiliate: https://fly-agent.xyz/channel-affiliate.html
-- Marketplace: https://fly-agent.xyz/channel-marketplace.html
-- Integration: https://fly-agent.xyz/channel-integration.html
-- Distribution: https://fly-agent.xyz/channel-distribution.html
+- 退款政策: https://fly-agent.xyz/refund.html
 
 ## FAQ
 - 常见问题: https://fly-agent.xyz/faq.html
