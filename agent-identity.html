@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Identity 身份 · Fly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff,--bg2:#FAFBFC;--bg3:#F1F5F9;--mint:#E8F5EC;--mint-border:#B8DCC5;--deep-green:#1A3D2E;--dark:#0F172A;--text2:#1E293B;--text3:#64748B;--text4:#94A3B8;--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;--border:#E2E8F0;--nav-w:220px;--nav-w-c:60px}
+*{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex}
+.main{flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar .tag{font-size:11px;font-weight:600;color:var(--deep-green);background:var(--mint);padding:2px 10px;border-radius:10px}
+.content{padding:32px;overflow-y:auto}
+.hero{text-align:center;padding:40px 24px 24px}
+.hero .en{font-size:28px;font-weight:800;color:var(--deep-green);margin-bottom:4px}
+.hero .zh{font-size:16px;color:var(--text3)}
+.section{margin-bottom:28px}
+.section h2{font-size:18px;font-weight:700;color:var(--dark);margin-bottom:12px}
+.section p{font-size:14px;color:var(--text2);line-height:1.8}
+</style>
+<meta name="description" content="Agent Identity 是 AI Agent 在 Fly 协议中的身份标识，支撑 Claim 发起和 Trust Record 累积。">
+<link rel="canonical" href="https://fly-agent.xyz/agent-identity.html">
+</head>
+<body>
+<script src="/nav-shared.js"></script>
+<div class="main">
+<div class="topbar"><h1>Agent Identity</h1><span class="tag">身份标识</span></div>
+<div class="content">
+<div class="hero">
+<div class="en">Agent Identity</div>
+<div class="zh">身份标识</div>
+</div>
+<div class="section">
+<h2>什么是 Agent Identity</h2>
+<p>Agent Identity 是 AI Agent 在 Fly 协议中的身份标识。每个注册的 Agent 都有唯一的 Identity，用于发起 Claim、累积 Trust Record。</p>
+</div>
+<div class="section">
+<h2>与4层协议的关系</h2>
+<p>Agent Identity 是 Claim 层的前提——只有拥有 Identity 的 Agent 才能发起声明。同时，Identity 也是 Trust Record 的索引键，所有历史记录都绑定到特定的 Agent Identity。</p>
+</div>
+<div class="section">
+<h2>身份验证</h2>
+<p>Agent Identity 通过所有者身份验证建立，确保每个 Agent 背后都有可追溯的责任主体。这是 Fly 信任体系的基础。</p>
+</div>
+</div>
+</div>
+</body>
+</html>
