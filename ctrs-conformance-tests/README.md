@@ -193,7 +193,7 @@ Layer 3 的两项检查（rule_registration、issuer_trust）需要访问 Regist
 
 1. **命令行指定**: `--registry /path/to/fly-registry`
 2. **环境变量**: `CTRS_REGISTRY_DIR=/path/to/fly-registry`
-3. **默认路径**: 自动查找 `../codeact/output/fly-registry/`
+3. **默认路径**: 自动查找 `../fly-registry/`（Trust Record 生产线目录，私有部署，不入本仓库）
 
 Registry 目录应包含：
 - `rule-registry.json` — 规则注册表

@@ -27,7 +27,7 @@ audit_events (entity_type=backup, action=created)
 
 **触发方式**: Calendar 日程，每天 12:50 执行
 
-**脚本**: `./codeact/scripts/d1-backup.py`
+**命令**: `wrangler d1 export fly-db --remote --output backup-$(date +%Y%m%d).sql`
 
 **流程**:
 1. 触发 D1 Export API（polling 模式）

@@ -1,3 +1,5 @@
+# 2026-07-20 安全清洗：真实密钥已移除，待用户轮换
+# 部署前执行: wrangler secret put IP_SALT && wrangler secret put API_KEYS
 name = "fly-api"
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
@@ -13,8 +15,8 @@ binding = "FLY_KV"
 id = "fea93561708c4272886554d83e546922"
 
 [vars]
-IP_SALT = "fly-salt-c520a69081ff1a4cd1971196"
-API_KEYS = "fly_d7939ae0cfe1003a72239094bf40b6b8509c47d7980ab16e"
+IP_SALT = "REPLACE_VIA_WRANGLER_SECRET"
+API_KEYS = "REPLACE_VIA_WRANGLER_SECRET"
 
 routes = [
   { pattern = "api.fly-agent.xyz/*", zone_name = "fly-agent.xyz" }

@@ -1,6 +1,6 @@
 # Fly
 
-**Agent Economy 的商业信任协议**
+**自动化经济时代的商业价值确认协议**
 
 > 当多个 Agent 协作促成一笔交易——谁创造了商业价值？Fly 让每一份贡献都被证明。
 
@@ -55,7 +55,7 @@ Agent Economy
 Today's commercial activities are created across multiple agents and platforms.
 ↓
 Fly
-A Commercial Trust Protocol for Agent Economy.
+A commercial value confirmation protocol for the automation economy.
 ↓
 CTRS
 The specification that defines how commercial facts are constructed and verified.

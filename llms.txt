@@ -1,20 +1,25 @@
 # Fly — https://fly-agent.xyz
-# AI时代的商业信任协议 (Commercial Trust Protocol)
+# 自动化经济时代的商业价值确认协议
 
 ## 产品定位
-Fly 是 AI 时代的商业信任协议。当 AI Agent 创造商业价值时，Fly 提供可验证、可归因、可结算的信任基础设施。
-核心链路：Claim → Evidence → Attestation → Trust Record
+Fly 是自动化经济时代的商业价值确认协议。它不创造交易，不执行服务，而是在真实商业事件发生后，通过 Claim → Evidence → Attribution → Trust Record，确认不同自动化参与者创造了多少商业价值。
+核心链路：Claim → Evidence → Attribution → Trust Record
 
 ## 协议核心（4层）
-- Claim 声明层: https://fly-agent.xyz/concept-behavior-id.html — AI Agent 对商业行为的首次声明
-- Evidence 证据层: https://fly-agent.xyz/concept-action-id.html — 记录用户行为证据
-- Attestation 证明层: https://fly-agent.xyz/concept-verification.html — 可验证的证明机制
+- Claim 声明层: https://fly-agent.xyz/concept-behavior-id.html — 谁参与了这笔商业事件
+- Evidence 证据层: https://fly-agent.xyz/concept-action-id.html — 每个参与者贡献了什么
+- Attribution 归因层: https://fly-agent.xyz/concept-verification.html — 基于 Evidence + Rule 确认贡献份额
 - Trust Record 信任记录: https://fly-agent.xyz/concept-trust.html — 完整信任链路
 
 ## Agent 生态
 - Settlement Ready 结算就绪: https://fly-agent.xyz/concept-business-value.html — 商业价值结算准备
 - Agent Registry 注册中心: https://fly-agent.xyz/agent-registry.html — Agent 注册与发现
 - Agent Identity 身份: https://fly-agent.xyz/agent-identity.html — Agent 唯一身份标识
+
+## 边界
+- Fly 不是 GEO 公司
+- Fly 不是 AI 客服公司
+- Fly 不是支付协议（Settlement Ready ≠ Settlement Executed，Fly 只出依据，不碰资金）
 
 ## 验证工具
 - Fly Verify: https://fly-agent.xyz/verify.html — 在线验证工具
@@ -32,8 +37,10 @@ Fly 是 AI 时代的商业信任协议。当 AI Agent 创造商业价值时，Fl
 
 ## API
 - 基础URL: https://api.fly-agent.xyz
-- 健康检查: https://api.fly-agent.xyz/v1/health
-- 认证: Bearer Token (Authorization Header)
+- 签发归因报告: POST /v1/verify (CTRS v1.2)
+- 确定性重放: POST /v1/replay
+- 最近归因记录: GET /v1/records/recent
+- 健康检查: GET /v1/health
 
 ## 数据原则
 - 只采集 action_id / 脱敏ID / 订单号 / 金额 / 时间

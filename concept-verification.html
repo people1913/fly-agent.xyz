@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attestation 证明层 · Fly</title>
+<title>Attribution 证明层 · Fly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -38,25 +38,25 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 .next-box .next-label{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:6px}
 .next-box .next-text{font-size:14px;font-weight:600;color:#5B21B6;line-height:1.6}
 .next-box .next-link{display:inline-block;margin-top:8px;font-size:13px;color:#7C3AED;font-weight:600;text-decoration:none;border-bottom:1px dashed #7C3AED}</style>
-<meta name="description" content="Attestation 是 Fly 的证明层——通过确定性重放验证 Claim 和 Evidence 的真实性，输出不可篡改的证明。">
+<meta name="description" content="Attribution 归因层：基于 Evidence + Rule 确认每个参与者创造了多少商业价值，确定性重放保证结果可审计。">
 <link rel="canonical" href="https://fly-agent.xyz/concept-verification.html">
 </head>
 <body>
 <script src="/nav-shared.js"></script>
 <div class="main">
-<div class="topbar"><h1>Attestation</h1><span class="tag">第3层 · 证明</span></div>
+<div class="topbar"><h1>Attribution</h1><span class="tag">第3层 · 归因</span></div>
 <div style="padding:32px;overflow-y:auto">
 
 <div class="concept-hero">
-<div class="en">Attestation</div>
-<div class="zh">证明层</div>
+<div class="en">Attribution</div>
+<div class="zh">归因层</div>
 </div>
 
 <!-- WHAT -->
 <div class="concept-section">
 <div class="sec-label what">这是什么</div>
 <div class="def-box">
-<div class="def-text">Attestation 是 Fly 的证明引擎，通过确定性重放验证 Claim 和 Evidence 是否真实。同一组输入永远产生同一组输出——这是可审计的证明。</div>
+<div class="def-text">Attribution 是 Fly 的归因引擎，基于 Evidence 与 Rule 计算每个参与者的贡献份额。确定性重放保证：同一组输入永远产生同一组输出——这是可审计的归因。</div>
 </div>
 </div>
 
@@ -64,7 +64,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="concept-section">
 <div class="sec-label why">为什么需要</div>
 <div class="axiom-box">
-<div class="axiom-text">「AI 带来了客户」——但这个客户是真的吗？<br>没有 Attestation，归因数据可以伪造。刷单、虚假注册、重复点击，都会让你以为 AI 有效，其实无效。确定性重放确保结果不可篡改。</div>
+<div class="axiom-text">「AI 带来了客户」——但这个客户是真的吗？<br>没有可验证的 Attribution，归因结论可以伪造。刷单、虚假注册、重复点击，都会让你以为 AI 有效，其实无效。确定性重放确保结果不可篡改。</div>
 </div>
 </div>
 
@@ -74,7 +74,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="step-row">
 <div class="step-card"><div class="step-num">STEP 1</div><div class="step-title">输入聚合</div><div class="step-desc">收集 Claim + Evidence + Rule，准备重放验证</div></div>
 <div class="step-card"><div class="step-num">STEP 2</div><div class="step-title">确定性重放</div><div class="step-desc">相同输入 → 相同输出，永远如此。排除随机性和人为干预</div></div>
-<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">生成证明</div><div class="step-desc">通过验证的生成 Attestation 证明，未通过的标记为 Rejected</div></div>
+<div class="step-card"><div class="step-num">STEP 3</div><div class="step-title">生成归因</div><div class="step-desc">通过验证的生成 Attribution 结果，未通过的标记为 Rejected</div></div>
 
 </div>
 </div>
@@ -83,7 +83,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--dark);display:flex
 <div class="concept-section">
 <div class="next-box">
 <div class="next-label">下一步</div>
-<div class="next-text">Attestation 证明了「这是真的」，接下来需要累积成可查询的信任记录——这就是 Trust Record。</div>
+<div class="next-text">Attribution 确认了「谁创造了多少价值」，接下来需要累积成可查询的信任记录——这就是 Trust Record。</div>
 <a href="/concept-trust.html" class="next-link">Trust Record →</a>
 </div>
 </div>
