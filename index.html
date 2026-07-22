@@ -2,517 +2,978 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="msvalidate.01" content="0BA1715603F725EDEA2F49423B9D78B0" />
+<meta name="baidu-site-verification" content="codeva-JP46HLBGxR" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Fly——商业信任协议·AI归因验证。让每一次Agent协作有迹可循、有据可证、有账可算。让商业价值，可归因、可信任、可结算。">
+<meta name="description" content="Fly——AI Agent信任与归因基础设施。为AI Agent提供可信归因、行为验证、安全审计的基础设施层。从AI推荐到真实成交全链路归因，数据可溯源、ROI可算、行为可验证。">
 <title>Fly · 商业信任协议·AI归因验证</title>
 <meta property="og:title" content="Fly · 商业信任协议·AI归因验证">
 <meta property="og:description" content="让每一次Agent协作有迹可循、有据可证、有账可算。商业价值正在被创造，但没有人能完整证明这份价值属于谁。">
 <meta property="og:url" content="https://fly-agent.xyz">
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://fly-agent.xyz/">
 <meta property="og:locale" content="zh_CN">
-    <meta property="og:image" content="https://fly-agent.xyz/fly_logo.jpg">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"Fly","url":"https://fly-agent.xyz","description":"商业价值归因验证基础设施，让商业价值可归因、可信任、可结算","slogan":"让每一次Agent协作有迹可循、有据可证、有账可算"},{"@type":"SoftwareApplication","name":"Fly","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":[{"@type":"Offer","name":"首月体验","price":"199","priceCurrency":"CNY","description":"1店1月完整服务"},{"@type":"Offer","name":"月度服务","price":"399","priceCurrency":"CNY","description":"持续经营服务"}],"description":"商业信任协议——Agent时代的商业价值证明基础设施。真实商业事件发生后，通过Evidence→Attribution→Trust Record完成价值确认"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Fly是什么","acceptedAnswer":{"@type":"Answer","text":"Fly是商业信任协议——Agent时代的商业价值证明基础设施。让每一次Agent协作有迹可循、有据可证、有账可算。"}},{"@type":"Question","name":"什么是商业信任协议","acceptedAnswer":{"@type":"Answer","text":"商业信任协议是一套开放协议，用于证明商业价值的创造与归属。当Agent创造商业价值时，Fly通过Evidence→Attribution→Trust Record完成价值确认。"}},{"@type":"Question","name":"Fly怎么收费","acceptedAnswer":{"@type":"Answer","text":"首月体验199元，月度服务399元/月。30天内3个有效归因否则全额退款。"}},{"@type":"Question","name":"AI会乱操作吗","acceptedAnswer":{"@type":"Answer","text":"不会。调价、投放、内容发布等关键动作必须老板确认后才执行。宁可慢也绝不失控。"}},{"@type":"Question","name":"经营数据可信吗","acceptedAnswer":{"@type":"Answer","text":"每一笔经营行为都经过可信验证，永久记录不可篡改，任何人都可以验证真实性。"}},{"@type":"Question","name":"哪些行业适合用Fly","acceptedAnswer":{"@type":"Answer","text":"养生、餐饮、美容、健身等本地生活商家最适合，高频+高客单+因果链最短。"}}]}]}</script>
+<meta property="og:image" content="https://fly-agent.xyz/fly_logo.jpg">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"FlyAgent","url":"https://fly-agent.xyz","description":"AI Agent Trust & Attribution Infrastructure，验证AI行为是否可信","slogan":"验证每一次AI行为是否可信"},{"@type":"SoftwareApplication","name":"FlyAgent","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"AI Agent信任与归因基础设施——可信归因·行为验证·安全审计"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Fly是什么","acceptedAnswer":{"@type":"Answer","text":"Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。"}},{"@type":"Question","name":"什么是action_id","acceptedAnswer":{"@type":"Answer","text":"action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。"}}]}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a12;--bg2:#12121f;--bg3:#1a1a2e;--bg4:#222240;--orange:#FF6B35;--orange2:#ff9a5c;--cyan:#00ffcc;--gold:#f0b90b;--green:#22c55e;--red:#ef4444;--text:#e8e8ed;--text2:#9898a6;--text3:#5a5a6e;--text4:#3a3a50;--mono:'JetBrains Mono',monospace;--sans:'Noto Sans SC',sans-serif;--sidebar-w:240px;--topbar-h:52px}
-*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}a{color:var(--cyan);text-decoration:none;transition:opacity .2s}a:hover{opacity:.8}
-
-/* === Sidebar === */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg2);border-right:1px solid rgba(255,255,255,.05);z-index:100;display:flex;flex-direction:column;overflow:hidden}
-.sidebar-brand{padding:16px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0}
-.sidebar-brand .logo{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px;cursor:default}
-.sidebar-brand .logo span{color:var(--orange)}
-.sidebar-brand .logo-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-left:1px}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 4px var(--green)}50%{opacity:.3;box-shadow:none}}
-.sidebar-brand .logo-sub{font-size:9px;color:var(--text3);font-weight:400;letter-spacing:1.5px;margin-left:4px;padding:1px 6px;border:1px solid var(--text4);border-radius:3px}
-.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.04) transparent}
-.sidebar-group{margin-bottom:2px}
-.sidebar-group-header{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.5px;transition:all .15s;user-select:none}
-.sidebar-group-header:hover{color:var(--text);background:rgba(255,255,255,.02)}
-.sidebar-group-header .group-icon{font-size:13px;margin-right:8px;opacity:.6}
-.sidebar-group-header .group-label{flex:1}
-.sidebar-group-header .group-arrow{font-size:10px;color:var(--text4);transition:transform .2s}
-.sidebar-group.open .group-arrow{transform:rotate(90deg)}
-.sidebar-group-items{display:none;padding:2px 0 6px 0}
-.sidebar-group.open .sidebar-group-items{display:block}
-.sidebar-item{display:flex;align-items:center;gap:8px;padding:6px 18px 6px 36px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
-.sidebar-item:hover{color:var(--text);background:rgba(255,255,255,.02)}
-.sidebar-item.active{color:var(--orange);border-left-color:var(--orange);background:rgba(255,107,53,.04)}
-.sidebar-item .item-dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.4;flex-shrink:0}
-.sidebar-divider{height:1px;background:rgba(255,255,255,.04);margin:6px 18px}
-.sidebar-footer{padding:10px 18px;border-top:1px solid rgba(255,255,255,.04);flex-shrink:0;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text4)}
-.sidebar-footer .online{color:var(--green);display:flex;align-items:center;gap:3px}
-.sidebar-footer .online::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-
-/* === Top Bar === */
-.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:rgba(10,10,18,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);z-index:90;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
-.topbar-title{font-size:13px;color:var(--text2);font-weight:500}
-.topbar-actions{display:flex;align-items:center;gap:10px}
-.cta-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;font-family:var(--sans)}.cta-btn:hover{background:#e55a28;transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,107,53,.3)}.cta-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2}
-
-/* === Main Content === */
-.main{margin-left:var(--sidebar-w);padding-top:var(--topbar-h)}
-
-/* === Content Styles (preserved from original) === */
-.container{max-width:1120px;margin:0 auto;padding:0 24px}
-.hero{padding:100px 0 60px;min-height:auto;display:flex;align-items:center;position:relative;overflow:hidden}
-.hero-glow1{position:absolute;top:-300px;right:-200px;width:800px;height:800px;background:radial-gradient(circle,rgba(255,107,53,.09) 0%,transparent 70%);pointer-events:none}
-.hero-glow2{position:absolute;bottom:-150px;left:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(0,255,204,.06) 0%,transparent 70%);pointer-events:none}
-.hero .container{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
-.hero-text h1{font-size:48px;font-weight:700;line-height:1.35;margin-bottom:18px;letter-spacing:-1px}
-.hero-text h1 em{font-style:normal;color:var(--orange);position:relative}
-.hero-text h1 em::after{content:'';position:absolute;bottom:2px;left:0;right:0;height:3px;background:rgba(255,107,53,.3);border-radius:2px}
-.hero-sub{font-size:16px;color:var(--text2);margin-bottom:12px;line-height:1.8}
-.hero-sub .tag{color:var(--cyan);font-family:var(--mono);font-size:13px;background:rgba(0,255,204,.06);padding:2px 8px;border-radius:4px}
-.hero-tagline{font-size:14px;color:var(--text3);margin-bottom:32px;line-height:1.6}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
-.btn-primary{padding:14px 32px;background:#fff;color:#0a0a12;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .25s;font-family:var(--sans)}.btn-primary:hover{background:#e5e5e5;transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,255,255,.08)}
-.btn-ghost{padding:14px 32px;background:transparent;color:var(--text2);border:1px solid var(--text4);border-radius:10px;font-size:16px;font-weight:500;cursor:pointer;transition:all .25s;font-family:var(--sans)}.btn-ghost:hover{border-color:var(--text2);color:var(--text);background:rgba(255,255,255,.02)}
-.dashboard{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:28px;position:relative;overflow:hidden}
-.dashboard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,204,.2),transparent)}
-.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.dash-status{display:flex;align-items:center;gap:8px;font-size:12px;font-family:var(--mono);color:var(--green)}
-.dash-status::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;box-shadow:0 0 6px var(--green)}
-.dash-title{font-size:16px;font-weight:600;color:var(--text)}
-.dash-stream{display:flex;flex-direction:column;gap:8px}
-.dash-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.015);border-radius:8px;border-left:2px solid transparent;transition:all .3s;cursor:default;animation:fadeSlide .5s ease both}.dash-item:hover{background:rgba(255,255,255,.03)}
-.dash-item.green{border-left-color:var(--green)}.dash-item.gold{border-left-color:var(--gold)}.dash-item.cyan{border-left-color:var(--cyan)}
-.dash-icon{font-size:13px;flex-shrink:0;width:18px;text-align:center}.dash-text{font-size:13px;color:var(--text);flex:1;line-height:1.5}.dash-time{font-size:10px;color:var(--text4);font-family:var(--mono);flex-shrink:0}
-.dash-footer{margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text4)}.dash-footer .last{font-family:var(--mono);color:var(--text3)}
-@keyframes fadeSlide{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
-section{padding:80px 0}
-.section-label{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:3px;margin-bottom:10px;font-weight:600}
-.section-title{font-size:32px;font-weight:700;margin-bottom:14px;letter-spacing:-.5px;line-height:1.3}
-.section-desc{font-size:15px;color:var(--text2);max-width:560px;line-height:1.8}
-.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
-.pain-card{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:32px 28px;transition:all .3s;position:relative;overflow:hidden}.pain-card:hover{border-color:rgba(239,68,68,.15);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.2)}
-.pain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(239,68,68,.3),transparent);opacity:0;transition:opacity .3s}.pain-card:hover::before{opacity:1}
-.pain-icon{font-size:28px;margin-bottom:14px;opacity:.7}
-.pain-title{font-size:17px;font-weight:700;color:var(--red);margin-bottom:10px;letter-spacing:.5px}
-.pain-desc{font-size:14px;color:var(--text2);line-height:1.7}
-.exec-flow{margin-top:44px;position:relative;padding-left:48px;max-width:640px}
-.exec-flow::before{content:'';position:absolute;left:17px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--green) 0%,var(--gold) 50%,var(--cyan) 100%)}
-.exec-item{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;position:relative}
-.exec-dot{position:absolute;left:-39px;top:8px;width:11px;height:11px;border-radius:50%;border:2px solid var(--green);background:var(--bg);z-index:1}
-.exec-item.insight .exec-dot{border-color:var(--gold);background:var(--bg)}
-.exec-time{font-family:var(--mono);font-size:11px;color:var(--text4);min-width:42px;padding-top:3px}
-.exec-text{font-size:14px;color:var(--text2);line-height:1.7}.exec-text strong{color:var(--text);font-weight:500}
-.results-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
-.result-card{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:32px 20px;text-align:center;position:relative;overflow:hidden;transition:all .3s}.result-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.08)}
-.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.result-card:nth-child(1)::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
-.result-card:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
-.result-card:nth-child(3)::before{background:linear-gradient(90deg,transparent,var(--orange),transparent)}
-.result-card:nth-child(4)::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.result-num{font-family:var(--mono);font-size:38px;font-weight:700;margin-bottom:4px;letter-spacing:-1px}
-.result-card:nth-child(1) .result-num{color:var(--cyan)}.result-card:nth-child(2) .result-num{color:var(--green)}.result-card:nth-child(3) .result-num{color:var(--orange)}.result-card:nth-child(4) .result-num{color:var(--gold)}
-.result-label{font-size:13px;color:var(--text3)}
-.results-note{text-align:center;margin-top:28px;font-size:13px;color:var(--text3);line-height:1.7;max-width:500px;margin-left:auto;margin-right:auto}
-.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:44px;align-items:center}
-.geo-list{display:flex;flex-direction:column;gap:0}.geo-item{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:15px;color:var(--text);transition:all .2s}.geo-item:hover{padding-left:4px;color:#fff}
-.geo-check{color:var(--green);font-size:16px;flex-shrink:0;font-weight:700}
-.geo-visual{background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:28px;text-align:center}
-.geo-visual-title{font-family:var(--mono);font-size:11px;color:var(--text4);letter-spacing:2px;margin-bottom:16px}
-.geo-visual-mock{background:var(--bg3);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:20px;text-align:left;font-size:13px;color:var(--text2);line-height:2}
-.geo-visual-mock .ai{color:var(--cyan);font-family:var(--mono);font-size:12px}.geo-visual-mock .hl{color:var(--orange);font-weight:600}
-.geo-visual-mock .ans{color:var(--text);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)}
-.geo-subtitle{margin-top:8px;font-size:14px;color:var(--text3);line-height:1.6}
-.causal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
-.causal-card{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:28px 24px;transition:all .3s}.causal-card:hover{border-color:rgba(255,107,53,.12);transform:translateY(-2px)}
-.causal-industry{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:10px;font-weight:600}
-.causal-finding{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:10px}
-.causal-detail{font-size:13px;color:var(--text3);line-height:1.7}
-.causal-note{margin-top:32px;font-size:14px;color:var(--text3);text-align:center;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.8}.causal-note strong{color:var(--text2)}
-.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
-.case-card{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:28px 24px;transition:all .3s}.case-card:hover{border-color:rgba(0,255,204,.1);transform:translateY(-2px)}
-.case-industry{font-size:12px;color:var(--text3);margin-bottom:6px;letter-spacing:1px}.case-context{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:12px}
-.case-result{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--cyan);margin-bottom:4px}
-.case-desc{font-size:13px;color:var(--text2);line-height:1.6}
-.case-verified{font-size:11px;color:var(--text4);margin-top:12px;display:flex;align-items:center;gap:4px}.case-verified::before{content:'✓';color:var(--green);font-size:10px}
-.trust-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px}
-.trust-side{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:32px 28px;position:relative;transition:all .3s}.trust-side:hover{transform:translateY(-1px)}
-.trust-side.bad{border-color:rgba(239,68,68,.1)}.trust-side.good{border-color:rgba(34,197,113,.1)}
-.trust-mark{position:absolute;top:16px;right:16px;font-size:20px;opacity:.6}
-.trust-label{font-size:10px;font-family:var(--mono);color:var(--text4);letter-spacing:2px;margin-bottom:10px;font-weight:600}
-.trust-title{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.5}
-.trust-side.bad .trust-title{color:var(--red)}.trust-side.good .trust-title{color:var(--green)}
-.trust-desc{font-size:14px;color:var(--text2);line-height:1.7}
-.trust-detail{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.03);font-size:13px;color:var(--text3);line-height:1.8}
-.trust-slogan{text-align:center;margin-top:36px;font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px}.trust-slogan em{font-style:normal;color:var(--cyan)}
-.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px;max-width:700px;margin-left:auto;margin-right:auto}
-.price-card{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:36px 28px;text-align:center;position:relative;transition:all .3s}.price-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.08)}
-.price-card.featured{border-color:rgba(255,107,53,.2)}
-.price-card.featured::before{content:'推荐';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:11px;padding:3px 16px;border-radius:10px;font-weight:600}
-.price-name{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text)}
-.price-amount{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--orange);margin-bottom:4px;letter-spacing:-1px}
-.price-period{font-size:12px;color:var(--text3);margin-bottom:20px}
-.price-features{text-align:left;font-size:13px;color:var(--text2);line-height:2.1}
-.price-guarantee{text-align:center;margin-top:20px;color:var(--green);font-size:13px;font-weight:500}
-.price-contract{text-align:center;margin-top:28px;font-size:12px;color:var(--text3)}
-.cta-section{text-align:center;padding:100px 0;position:relative}
-.cta-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,rgba(255,107,53,.05) 0%,transparent 70%);pointer-events:none}
-.cta-section h2{font-size:36px;font-weight:700;margin-bottom:12px;letter-spacing:-.5px;position:relative}.cta-section .cta-sub{font-size:16px;color:var(--text2);margin-bottom:36px;position:relative}.cta-section .cta-sub em{font-style:normal;color:var(--orange)}
-footer{border-top:1px solid rgba(255,255,255,.04);padding:48px 0 28px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
-.footer-brand .logo{font-size:18px;margin-bottom:8px;cursor:default}.footer-brand p{font-size:13px;color:var(--text3);line-height:1.7;max-width:280px}
-.footer-col h4{font-size:11px;color:var(--text4);letter-spacing:2px;margin-bottom:14px;font-weight:600}
-.footer-col a{display:block;font-size:13px;color:var(--text3);margin-bottom:8px;transition:color .2s;cursor:pointer}.footer-col a:hover{color:var(--text)}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.04);padding-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text4);flex-wrap:wrap;gap:8px}
-
-/* === Chat (preserved) === */
-.chat-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}.chat-overlay.show{display:flex}
-.chat-window{width:92%;height:90%;max-width:1100px;background:var(--bg);border-radius:16px;border:1px solid rgba(255,255,255,.06);display:flex;overflow:hidden;position:relative;animation:chatIn .3s ease}
-@keyframes chatIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-.chat-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:10;transition:all .15s}.chat-close:hover{background:rgba(255,255,255,.1);color:var(--text)}
-.chat-sb{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column}
-.chat-sb-head{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.03)}
-.chat-sb-logo{display:flex;align-items:center;gap:8px}
-.chat-sb-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#ff9a5c);display:flex;align-items:center;justify-content:center}.chat-sb-av svg{width:13px;height:13px;fill:#fff}
-.chat-sb-name{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text)}.chat-sb-name span{color:var(--orange)}
-.sb-new-btn{font-size:10px;padding:4px 10px;background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.15);border-radius:6px;color:var(--orange);cursor:pointer;font-family:var(--sans);transition:all .15s}.sb-new-btn:hover{background:rgba(255,107,53,.15)}
-.sb-items{flex:1;overflow-y:auto;padding:6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.04) transparent}
-.sb-item{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:all .15s;font-size:12px;color:var(--text3);margin-bottom:1px}.sb-item:hover{background:rgba(255,255,255,.03);color:var(--text2)}.sb-item.active{background:rgba(255,107,53,.06);color:var(--text)}
-.sb-bottom{border-top:1px solid rgba(255,255,255,.03);padding:8px 12px;flex-shrink:0;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text4)}.sb-bottom .online{color:var(--green);display:flex;align-items:center;gap:3px}.sb-bottom .online::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-.chat-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.chat-topbar{height:42px;background:rgba(18,18,31,.6);border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;padding:0 16px;font-size:13px;color:var(--text);font-weight:500}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px 0;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.03) transparent}
-.chat-msg{padding:10px 0;animation:msgIn .3s ease}@keyframes msgIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
-.chat-msg-inner{max-width:660px;margin:0 auto;padding:0 20px;display:flex;gap:10px}
-.chat-av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.chat-av.bot{background:linear-gradient(135deg,#FF6B35,#ff9a5c)}.chat-av.bot svg{width:13px;height:13px;fill:#fff}
-.chat-av.user{background:var(--bg4)}.chat-av.user svg{width:13px;height:13px;fill:var(--text3)}
-.chat-bubble{font-size:14px;line-height:1.7;word-break:break-word;padding:9px 14px;border-radius:12px;max-width:85%}
-.chat-msg.bot .chat-bubble{background:var(--bg3);color:var(--text);border-bottom-left-radius:3px}
-.chat-msg.user .chat-bubble{background:var(--orange);color:#fff;border-bottom-right-radius:3px;margin-left:auto}
-.chat-bubble p{margin-bottom:4px}.chat-bubble p:last-child{margin-bottom:0}.chat-bubble strong{color:var(--orange)}.chat-msg.user .chat-bubble strong{color:#ffe0c9}
-.chat-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
-.chat-welcome-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#ff9a5c);display:flex;align-items:center;justify-content:center;margin-bottom:12px;animation:float 3s ease-in-out infinite;box-shadow:0 4px 20px rgba(255,107,53,.15)}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.chat-welcome-av svg{width:26px;height:26px;fill:#fff}
-.chat-welcome h3{font-size:18px;font-weight:600;margin-bottom:4px}.chat-welcome p{color:var(--text2);font-size:14px;margin-bottom:22px}
-.chat-examples{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:500px}
-.chat-example{padding:7px 14px;background:var(--bg3);border:1px solid rgba(255,255,255,.05);border-radius:18px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .2s}.chat-example:hover{border-color:var(--orange);color:var(--orange)}
-.chat-input-area{padding:10px 18px 14px;background:var(--bg2);border-top:1px solid rgba(255,255,255,.04)}
-.chat-input-row{display:flex;gap:8px;align-items:flex-end;max-width:660px;margin:0 auto}
-#chatInput{flex:1;resize:none;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:9px 14px;font-size:13px;font-family:var(--sans);line-height:1.5;background:var(--bg3);color:var(--text);outline:none;transition:border .2s;max-height:80px}#chatInput:focus{border-color:var(--orange)}#chatInput::placeholder{color:var(--text3)}
-.chat-send{width:36px;height:36px;border-radius:8px;background:var(--orange);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}.chat-send:hover{background:#e55a28}.chat-send svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
-.chat-hint{text-align:center;font-size:10px;color:var(--text4);margin-top:5px;max-width:660px;margin-left:auto;margin-right:auto}
-.typing{display:flex;gap:3px;padding:3px 0}.typing span{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:tb 1.2s infinite}.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}@keyframes tb{0%,100%{opacity:.3}50%{opacity:1}}
-.legal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}.legal-overlay.show{display:flex}
-.legal-card{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;color:var(--text2);font-size:13px;line-height:1.8;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.04) transparent}
-.legal-card h2{font-size:18px;color:var(--text);margin-bottom:14px}.legal-card h3{font-size:14px;color:var(--text);margin:18px 0 6px}
-.legal-close{margin-top:20px;padding:9px 24px;background:var(--orange);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--sans)}
-
-/* === Mobile === */
-.sidebar-toggle{display:none;position:fixed;top:10px;left:10px;z-index:110;width:36px;height:36px;border-radius:8px;background:var(--bg2);border:1px solid rgba(255,255,255,.06);color:var(--text2);cursor:pointer;align-items:center;justify-content:center;font-size:18px}
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%);transition:transform .3s ease;z-index:110}
-  .sidebar.open{transform:translateX(0)}
-  .sidebar-toggle{display:flex}
-  .topbar{left:0}
-  .main{margin-left:0}
-  .hero .container{grid-template-columns:1fr;gap:32px}.hero-text h1{font-size:32px}
-  .pain-grid,.causal-grid,.case-grid{grid-template-columns:1fr}
-  .results-grid{grid-template-columns:1fr 1fr}
-  .trust-compare,.price-grid,.geo-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr 1fr}
-  .section-title{font-size:24px}
-  .cta-section h2{font-size:26px}
-  .chat-sb{display:none}
-  .chat-window{width:100%;height:100%;border-radius:0}
+:root{
+--bg:#FFFFFF;--bg2:#FAFBFC;--bg3:#F4F6F8;--bg4:#E8ECF0;
+--blue:#2563EB;--blue-light:#60A5FA;
+--dark:#0F172A;--text:#0F172A;--text2:#1E293B;--text3:#2563EB;--text4:#60A5FA;
+--mono:'JetBrains Mono',monospace;--sans:'Inter','Noto Sans SC',sans-serif;
+--border:#E2E8F0;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;font-size:16px}
+a{color:var(--blue);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+
+/* NAV */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+header .container{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:6px;letter-spacing:-0.5px}
+.logo b{color:#0F172A;font-size:22px;font-weight:700;font-family:var(--sans)}.logo-sub{color:#0F172A;font-size:18px;font-weight:700;margin-left:4px;letter-spacing:-0.5px}
+nav{display:flex;align-items:center;gap:20px}
+nav a{font-size:13px;color:var(--text2);transition:color .15s;letter-spacing:.3px;font-weight:500}
+nav a:hover{color:var(--dark)}
+.nav-cta{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.nav-cta:hover{opacity:.85}
+
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.sec-label{font-family:var(--mono);font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.sec-title{font-size:28px;font-weight:700;line-height:1.3;margin-bottom:6px;letter-spacing:-.5px;color:var(--dark)}
+.sec-desc{font-size:14px;color:var(--text2);margin-bottom:28px;max-width:560px}
+
+/* HERO */
+.hero{padding:100px 0 80px;border-bottom:1px solid var(--border)}
+.hero .container{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:720px;margin:0 auto}
+.hero h1{font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-1.5px;color:var(--dark);margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero-tagline{font-size:48px;font-family:var(--sans);font-weight:800;color:var(--blue);margin:0 0 12px 0;letter-spacing:-1px;line-height:1.2}
+.hero-label{font-size:24px;font-family:var(--sans);color:#94A3B8;font-weight:400;letter-spacing:-1px;margin:0 0 12px 0;line-height:1.2}
+.hero-pain{font-size:56px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.2;margin:0 0 12px 0;font-family:var(--sans)}
+.hero-trust{margin:0 0 12px 0;font-size:15px;color:#94A3B8;font-weight:500}
+.hero-trust .dot{color:#CBD5E1;margin:0 1px}
+.hero-btns{display:flex;gap:32px;margin:0;flex-wrap:wrap;justify-content:center}
+.btn-p{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.btn-p:hover{opacity:.85}
+.btn-s{padding:8px 18px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.btn-s:hover{border-color:var(--text3);color:var(--dark)}
+
+/* PROBLEM */
+.problem-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;font-size:14px;color:var(--text2)}
+.problem-flow .node{padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:500}
+.problem-flow .arrow{color:var(--blue);font-weight:600}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.problem-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:24px}
+.problem-card .num{font-family:var(--mono);font-size:11px;color:var(--blue);margin-bottom:10px}
+.problem-card h3{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--dark)}
+.problem-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ARCHITECTURE SIMPLIFIED */
+.arch-layers{max-width:720px}
+.arch-layer{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:4px}
+.arch-ico{font-size:18px;min-width:24px;text-align:center}
+.arch-lname{font-size:14px;font-weight:600;color:var(--dark)}
+.arch-value{font-size:12px;color:var(--text2)}
+.arch-arrow{padding:2px 0 2px 30px;display:flex;align-items:center;gap:8px;color:var(--blue);font-size:11px;font-family:var(--mono)}
+
+/* PROTOCOL */
+.proto-steps{max-width:720px}
+.proto-step{display:flex;gap:16px;margin-bottom:20px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.proto-num{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);min-width:32px}
+.proto-content h3{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.proto-content p{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* SIGNAL FLOW */
+.attribution-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.attribution-flow .step{text-align:center;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;min-width:80px}
+.attribution-flow .step .label{font-size:13px;font-weight:600;color:var(--dark)}
+.attribution-flow .step .detail{font-size:11px;color:var(--text2);margin-top:4px}
+.attribution-flow .arrow{color:var(--blue);font-weight:700;font-size:16px}
+
+/* GEO COMPARE */
+.geo-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+.geo-card{padding:24px;border-radius:10px;background:var(--bg)}
+.geo-card.fly{border:2px solid var(--blue)}
+.geo-card.trad{border:1px solid var(--border)}
+.geo-card h3{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:12px}
+.geo-card .line{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:6px}
+.geo-card .bad{color:#DC2626;font-weight:600}
+.geo-card .good{color:var(--blue);font-weight:600}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}
+.price-card{padding:28px 24px;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+.price-card.featured{border:2px solid var(--blue);position:relative}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:2px 12px;background:var(--blue);color:#fff;font-size:11px;border-radius:20px;font-weight:600}
+.price-tier{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:8px}
+.price-amount{font-size:32px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.price-amount span{font-size:14px;font-weight:400;color:var(--text2)}
+.price-extra{font-size:12px;color:var(--text2);margin-bottom:16px}
+.price-features{list-style:none;font-size:13px;color:var(--text2);line-height:2;margin-bottom:20px;padding:0}
+.price-btn{width:100%;padding:12px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:var(--sans)}
+.price-btn:hover{opacity:.85}
+.price-btn.blue{background:var(--blue)}
+
+/* COMPLIANCE MINI */
+.compliance-mini{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.compliance-box{padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.compliance-box h4{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:8px}
+.compliance-box .item{font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.8}
+.compliance-bad{color:#DC2626;font-weight:600}
+
+/* FAQ COMPACT */
+.faq-list{max-width:720px;margin-top:24px}
+.faq-item{border-bottom:1px solid var(--border);padding:0}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:16px 0;cursor:pointer;font-size:14px;font-weight:500;color:var(--dark)}
+.faq-q:hover{color:var(--blue)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s;font-size:13px;color:var(--text2);line-height:1.8}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:16px}
+.faq-item .pm{font-size:18px;color:var(--text2);transition:transform .2s}
+.faq-item.open .pm{transform:rotate(45deg)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px 0 24px;background:var(--bg2)}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:24px}
+.footer-brand{font-size:14px;color:var(--dark);font-weight:600;max-width:400px}
+.footer-brand span{font-weight:400;font-size:11px;color:var(--text2)}
+.footer-links{display:flex;flex-wrap:wrap;gap:16px}
+.footer-links a{font-size:13px;color:var(--text2)}
+.footer-links a:hover{color:var(--dark)}
+.footer-copy{font-size:11px;color:var(--text2);border-top:1px solid var(--border);padding-top:16px}
+
+/* VERIFY MODAL */
+.verify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.verify-overlay.show{display:flex}
+.verify-card{background:#fff;border-radius:16px;padding:32px;max-width:460px;width:90%;max-height:85vh;overflow-y:auto;position:relative}
+.verify-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;color:var(--text2);cursor:pointer}
+.verify-close:hover{color:var(--dark)}
+.verify-field{margin-bottom:14px}
+.verify-field label{display:block;font-size:12px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.verify-field input,.verify-field select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--sans);outline:none;transition:border .15s}
+.verify-field input:focus,.verify-field select:focus{border-color:var(--blue)}
+.verify-submit{width:100%;padding:10px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);margin-top:8px}
+.verify-submit:hover{opacity:.85}
+
+/* OVERLAY */
+.legal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.legal-overlay.show{display:flex}
+.legal-card{background:#fff;border-radius:16px;padding:40px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto}
+.legal-card h2{font-size:20px;font-weight:700;color:var(--dark);margin-bottom:16px}
+.legal-card h3{font-size:14px;font-weight:600;color:var(--dark);margin:16px 0 8px}
+.legal-card p{font-size:13px;color:var(--text2);line-height:1.8}
+.legal-close{margin-top:24px;padding:10px 24px;background:var(--dark);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--sans)}
+
+/* SANDBOX TAG */
+.sandbox-tag{font-size:10px;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:8px;border:1px solid var(--border)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.hero-label{font-size:16px}.hero-pain{font-size:32px}.hero-tagline{font-size:24px}
+.problem-grid{grid-template-columns:1fr}
+.price-grid{grid-template-columns:1fr}
+.compliance-mini{grid-template-columns:1fr}
+.geo-compare{grid-template-columns:1fr}
+nav{gap:12px}nav a{font-size:12px}
+}
+
+/* ========== Fly自建聊天面板 ========== */
+.fly-chat-panel{position:fixed;top:0;right:0;width:420px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:99999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;pointer-events:auto}
+.fly-chat-panel.open{transform:translateX(0)}
+.fly-chat-header{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #E2E8F0;flex-shrink:0}
+.fly-chat-close{margin-left:auto;background:none;border:none;font-size:18px;color:#94A3B8;cursor:pointer;padding:4px 8px;border-radius:6px}
+.fly-chat-close:hover{background:#F1F5F9;color:#0F172A}
+.fly-chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.fly-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.7;word-break:break-word}
+.fly-msg-user{align-self:flex-end;background:#2563EB;color:#fff;border-bottom-right-radius:4px}
+.fly-msg-bot{align-self:flex-start;background:#F1F5F9;color:#0F172A;border-bottom-left-radius:4px}
+.fly-chat-input-bar{display:flex;padding:12px 16px;border-top:1px solid #E2E8F0;gap:8px;flex-shrink:0}
+.fly-chat-input-bar input{flex:1;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;font-size:14px;outline:none;transition:border-color .2s}
+.fly-chat-input-bar input:focus{border-color:#2563EB}
+.fly-chat-input-bar button{background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;font-size:16px;transition:background .2s}
+.fly-chat-input-bar button:hover{background:#1D4ED8}
+@media(max-width:768px){.fly-chat-panel{width:100%}}
+
 </style>
+
 </head>
 <body>
-
-<!-- Sidebar Toggle (Mobile) -->
-<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
-
-<!-- Sidebar Navigation -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="logo"><span>Fly</span>Agent<div class="logo-dot"></div><span class="logo-sub">商业信任协议</span></div>
-  </div>
-  <nav class="sidebar-nav">
-    <!-- Group 1: Identity 身份层 -->
-    <div class="sidebar-group open" data-group="identity">
-      <div class="sidebar-group-header" onclick="toggleGroup(this)">
-        <span class="group-icon">🔐</span>
-        <span class="group-label">Identity 身份层</span>
-        <span class="group-arrow">▶</span>
-      </div>
-      <div class="sidebar-group-items">
-        <div class="sidebar-item active" onclick="navTo('hero')"><span class="item-dot"></span>商业信任协议</div>
-        <div class="sidebar-item" onclick="navTo('pain')"><span class="item-dot"></span>经营痛点</div>
-        <div class="sidebar-item" onclick="navTo('exec')"><span class="item-dot"></span>AI执行记录</div>
-        <div class="sidebar-item" onclick="navTo('confirm')"><span class="item-dot"></span>人类确认层</div>
-      </div>
-    </div>
-
-    <!-- Group 2: Discovery 发现层 -->
-    <div class="sidebar-group open" data-group="discovery">
-      <div class="sidebar-group-header" onclick="toggleGroup(this)">
-        <span class="group-icon">🔍</span>
-        <span class="group-label">Discovery 发现层</span>
-        <span class="group-arrow">▶</span>
-      </div>
-      <div class="sidebar-group-items">
-        <div class="sidebar-item" onclick="navTo('geo')"><span class="item-dot"></span>GEO · AI推荐</div>
-        <div class="sidebar-item" onclick="navTo('results')"><span class="item-dot"></span>经营结果</div>
-        <div class="sidebar-item" onclick="navTo('causal')"><span class="item-dot"></span>因果网络</div>
-      </div>
-    </div>
-
-    <!-- Group 3: Trust 信任层 -->
-    <div class="sidebar-group open" data-group="trust">
-      <div class="sidebar-group-header" onclick="toggleGroup(this)">
-        <span class="group-icon">🛡</span>
-        <span class="group-label">Trust 信任层</span>
-        <span class="group-arrow">▶</span>
-      </div>
-      <div class="sidebar-group-items">
-        <div class="sidebar-item" onclick="navTo('trust')"><span class="item-dot"></span>可信验证</div>
-        <div class="sidebar-item" onclick="navTo('cases')"><span class="item-dot"></span>真实案例</div>
-        <div class="sidebar-item" onclick="navTo('verify')"><span class="item-dot"></span>PoBE 验证</div>
-      </div>
-    </div>
-
-    <!-- Group 4: Settlement 结算层 -->
-    <div class="sidebar-group open" data-group="settlement">
-      <div class="sidebar-group-header" onclick="toggleGroup(this)">
-        <span class="group-icon">💎</span>
-        <span class="group-label">Settlement 结算层</span>
-        <span class="group-arrow">▶</span>
-      </div>
-      <div class="sidebar-group-items">
-        <div class="sidebar-item" onclick="navTo('pricing')"><span class="item-dot"></span>定价方案</div>
-        <div class="sidebar-item" onclick="navTo('cta')"><span class="item-dot"></span>开始使用</div>
-      </div>
-    </div>
-
-    <div class="sidebar-divider"></div>
-
-    <!-- FAQ -->
-    <div class="sidebar-group" data-group="faq">
-      <div class="sidebar-group-header" onclick="toggleGroup(this)">
-        <span class="group-icon">❓</span>
-        <span class="group-label">常见问题</span>
-        <span class="group-arrow">▶</span>
-      </div>
-      <div class="sidebar-group-items">
-        <div class="sidebar-item" onclick="openChat()"><span class="item-dot"></span>在线咨询</div>
-        <div class="sidebar-item" onclick="showContact()"><span class="item-dot"></span>联系我们</div>
-      </div>
-    </div>
-  </nav>
-  <div class="sidebar-footer">
-    <span class="online">在岗</span> · Fly-Agent-801
-  </div>
-</aside>
-
-<!-- Top Bar -->
-<div class="topbar">
-  <div class="topbar-title" id="topbarTitle">商业信任协议</div>
-  <div class="topbar-actions">
-    <button class="cta-btn" onclick="openChat()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>免费诊断</button>
-  </div>
-</div>
-
-<!-- Main Content -->
-<div class="main">
-
-<section class="hero" id="hero"><div class="hero-glow1"></div><div class="hero-glow2"></div><div class="container"><div class="hero-text"><h1>商业价值正在被创造，<br>但没有人能完整证明<em>这份价值属于谁</em></h1><p class="hero-sub">Fly · 商业信任协议 · AI归因验证<br><span class="tag">有迹可循 · 有据可证 · 有账可算</span></p><p class="hero-tagline">Agent时代的商业价值证明基础设施——让每一次Agent协作可追踪、可信任、可结算</p><div style="margin-top:16px;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(6,182,212,.05));padding:6px 16px;border-radius:100px;font-size:12px;color:var(--cyan);font-weight:500;border:1px solid rgba(6,182,212,.2)">🏛 Agent SDK 验证级产品 · 四模块全部跑通</div><div class="hero-btns"><button class="btn-primary" onclick="openChat()">免费获取诊断报告</button><button class="btn-ghost" onclick="navTo('cases')">查看真实案例</button></div></div><div class="dashboard"><div class="dash-header"><div class="dash-title">实时经营状态</div><div class="dash-status">系统运行中</div></div><div class="dash-stream" id="dashStream"><div class="dash-item green"><span class="dash-icon">✅</span><span class="dash-text">已同步3个平台的店铺信息</span><span class="dash-time">09:21</span></div><div class="dash-item green"><span class="dash-icon">✅</span><span class="dash-text">已更新本周GEO内容结构</span><span class="dash-time">10:02</span></div><div class="dash-item gold"><span class="dash-icon">📊</span><span class="dash-text">发现夜间发布点击率更高</span><span class="dash-time">10:17</span></div><div class="dash-item green"><span class="dash-icon">✅</span><span class="dash-text">建议调整发布时间至晚8点 → ✅老板已确认</span><span class="dash-time">11:15</span></div><div class="dash-item cyan"><span class="dash-icon">🔗</span><span class="dash-text">经营行为记录已可信验证</span><span class="dash-time">11:30</span></div></div><div class="dash-footer"><span>Fly经营系统 v1.0</span><span class="last" id="dashLast">最后执行 2分钟前</span></div></div>
-<div style="position:relative;margin-top:20px">
-  <div style="background:var(--bg2);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:float 3s ease-in-out infinite">
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
-      <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700">F</div>
-      <span style="font-size:11px;font-weight:600;color:var(--text)">Fly AI 实时诊断</span>
-      <span style="margin-left:auto;font-size:9px;color:var(--green);font-family:var(--mono)">● 在线</span>
-    </div>
-    <div style="background:var(--bg3);border-radius:8px;padding:10px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px">
-      🔍 检测到你的店在AI搜索中<span style="color:var(--red);font-weight:600">0次被推荐</span>，主要原因是缺少结构化数据。
-    </div>
-    <div style="background:var(--bg3);border-radius:8px;padding:10px;font-size:12px;color:var(--text2);line-height:1.6">
-      💡 建议：补充<span style="color:var(--cyan);font-weight:500">Schema.org</span>经营信息 + 3条FAQ语义覆盖，预计7天可见效。
-    </div>
-    <div style="margin-top:8px;text-align:right;font-size:10px;color:var(--text4);font-family:var(--mono)">Powered by DeepSeek V4</div>
-  </div>
-</div></div>
-<div style="text-align:center;margin-top:40px;padding:20px 0;border-top:1px solid rgba(255,255,255,.04)">
-  <div style="font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;margin-bottom:14px">TRUSTED BY LOCAL BUSINESSES</div>
-  <div style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap">
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--cyan)">4</div>
-      <div style="font-size:11px;color:var(--text3)">行业覆盖</div>
-    </div>
-    <div style="width:1px;height:32px;background:rgba(255,255,255,.06)"></div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green)">7×24</div>
-      <div style="font-size:11px;color:var(--text3)">AI持续执行</div>
-    </div>
-    <div style="width:1px;height:32px;background:rgba(255,255,255,.06)"></div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--gold)">100%</div>
-      <div style="font-size:11px;color:var(--text3)">经营记录可验证</div>
-    </div>
-    <div style="width:1px;height:32px;background:rgba(255,255,255,.06)"></div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--orange)">30天</div>
-      <div style="font-size:11px;color:var(--text3)">无效全额退款</div>
-    </div>
-  </div>
-</div>
-</section>
-
-<section id="pain"><div class="container"><div class="section-label">痛点</div><h2 class="section-title">推广费花哪了，你真的知道吗？</h2><div class="pain-grid"><div class="pain-card"><div class="pain-icon">🧭</div><div class="pain-title">线下地推 = 盲人摸象</div><div class="pain-desc">发了1000张传单，只有5个人进店？你不知道是哪张起了作用，也不知道该不该继续发。</div></div><div class="pain-card"><div class="pain-icon">💸</div><div class="pain-title">线上投流 = 给平台送钱</div><div class="pain-desc">ROI忽高忽低，关键词一直在变，你永远在帮平台试错。停了没客户，投了又亏钱。</div></div><div class="pain-card"><div class="pain-icon">🎲</div><div class="pain-title">老客复购 = 全靠运气</div><div class="pain-desc">客人为什么不再来了？是因为价格、服务还是口味？没有数据反馈，只能瞎猜。</div></div></div></div></section>
-
-<section id="exec"><div class="container"><div class="section-label">AI执行</div><h2 class="section-title">今天AI已经帮你做了什么</h2><p class="section-desc">Fly不是等你提问的聊天机器人，而是7×24小时执行经营任务的AI副驾驶。</p><div class="exec-flow"><div class="exec-item"><div class="exec-dot"></div><div class="exec-time">09:21</div><div class="exec-text">已更新养生行业的<strong>GEO内容结构</strong>，AI搜索将更容易推荐</div></div><div class="exec-item"><div class="exec-dot"></div><div class="exec-time">10:02</div><div class="exec-text">已同步Google Business最新信息，<strong>地图搜索结果已更新</strong></div></div><div class="exec-item"><div class="exec-dot"></div><div class="exec-time">10:17</div><div class="exec-text">已生成本周<strong>小红书案例内容</strong>，待确认后发布</div></div><div class="exec-item insight"><div class="exec-dot"></div><div class="exec-time">11:03</div><div class="exec-text">检测到<strong>夜间发布</strong>点击率比白天高出27%</div></div><div class="exec-item"><div class="exec-dot"></div><div class="exec-time">11:15</div><div class="exec-text">建议调整发布时间至<strong>晚8点</strong>，✅老板已确认执行</div></div></div></div></section>
-
-<section id="confirm" style="padding:60px 0;border-bottom:1px solid rgba(255,255,255,.03)">
+<!-- NAV -->
+<header>
 <div class="container">
-<div class="section-label" style="color:var(--cyan)">人类确认层</div>
-<h2 class="section-title">关键动作，必须老板点头</h2>
-<p class="section-desc" style="max-width:560px;margin:0 auto">Fly是带刹车的AI。AI负责踩油门，但方向盘和刹车永远在你手里。<br>以下动作必须经过你的确认才会执行：</p>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:36px;max-width:720px;margin-left:auto;margin-right:auto">
-<div style="background:rgba(255,255,255,.015);border:1px solid rgba(0,255,204,.08);border-radius:12px;padding:20px;text-align:center">
-<div style="font-size:20px;margin-bottom:8px">💰</div>
-<div style="font-size:14px;font-weight:600;color:var(--text)">调价/促销</div>
-<div style="font-size:12px;color:var(--text3);margin-top:4px">大幅降价、发优惠券</div>
+<div class="logo"><span style="font-family:var(--sans);font-size:18px;font-weight:700;color:#0F172A;letter-spacing:-0.5px">Fly</span><span class="logo-sub"> · 商业信任协议·AI归因验证</span></div>
+<a href="/signal-flow.html" class="nav-cta">溯源 Fly</a>
 </div>
-<div style="background:rgba(255,255,255,.015);border:1px solid rgba(0,255,204,.08);border-radius:12px;padding:20px;text-align:center">
-<div style="font-size:20px;margin-bottom:8px">📢</div>
-<div style="font-size:14px;font-weight:600;color:var(--text)">投放/广告</div>
-<div style="font-size:12px;color:var(--text3);margin-top:4px">调整广告预算、出价</div>
-</div>
-<div style="background:rgba(255,255,255,.015);border:1px solid rgba(0,255,204,.08);border-radius:12px;padding:20px;text-align:center">
-<div style="font-size:20px;margin-bottom:8px">📝</div>
-<div style="font-size:14px;font-weight:600;color:var(--text)">内容发布</div>
-<div style="font-size:12px;color:var(--text3);margin-top:4px">对外发布的所有内容</div>
-</div>
-</div>
-<p style="text-align:center;margin-top:28px;font-size:14px;color:var(--text3);line-height:1.8">你随时可以关闭自动执行，改为<strong style="color:var(--text2)">逐条确认模式</strong>。<br>Fly宁可慢，也绝不会失控。</p>
-</div>
-</section>
+</header>
 
-<section id="results"><div class="container"><div class="section-label">经营结果</div><h2 class="section-title">7天经营结果</h2><p class="section-desc" style="margin-bottom:32px">不是PPT数据，是系统正在追踪的真实经营行为。</p><div class="results-grid"><div class="result-card"><div class="result-num" data-target="214">0</div><div class="result-label">AI推荐增长 %</div></div><div class="result-card"><div class="result-num" data-target="71">0</div><div class="result-label">搜索曝光增长 %</div></div><div class="result-card"><div class="result-num" data-target="38">0</div><div class="result-label">咨询率提升 %</div></div><div class="result-card"><div class="result-num" data-target="12">0</div><div class="result-label">复购率提升 %</div></div></div><p class="results-note">这些结果并非广告数据，而是被持续验证的真实经营行为。</p></div></section>
+<!-- ===== SECTION 1: HERO ===== -->
+<section class="hero" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:120px 0 60px">
+<div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0">
 
-<section id="geo"><div class="container"><div class="section-label">GEO · AI推荐</div><h2 class="section-title">AI正在直接读取你的经营信息</h2><p class="section-desc">GEO让AI主动推荐你的店，而不是等客户搜索。</p><div class="geo-grid"><div class="geo-list"><div class="geo-item"><span class="geo-check">✓</span>被 ChatGPT 推荐</div><div class="geo-item"><span class="geo-check">✓</span>被 Google AI 读取</div><div class="geo-item"><span class="geo-check">✓</span>被 Perplexity 引用</div><div class="geo-item"><span class="geo-check">✓</span>被地图系统识别</div><div class="geo-item"><span class="geo-check">✓</span>被 AI 搜索正确理解</div><p class="geo-subtitle">Fly正在帮你的店，成为AI搜索里的第一名。</p></div><div class="geo-visual"><div class="geo-visual-title">用户搜索时的AI回答</div><div class="geo-visual-mock"><div class="ai">👤 "附近哪家养生馆靠谱？"</div><div class="ans">🤖 根据经营记录和患者评价，<span class="hl">XX养生馆</span>在肩颈调理方面复购率最高，技师专业度口碑突出，经营行为已通过可信验证。</div></div></div></div></div></section>
+<!-- 第一层：痛点 -->
+<div style="margin-bottom:14px">
+<div style="font-size:52px;font-weight:800;color:#0F172A;letter-spacing:-1px;line-height:1.2;margin-bottom:4px">商业价值正在被创造</div>
+<div style="font-size:40px;font-weight:800;color:#94A3B8;letter-spacing:-1px;line-height:1.25;margin-bottom:10px"><span style="color:#94A3B8">但没有人能</span><span style="color:#0F172A">完整证明</span><span style="color:#94A3B8">这份价值属于谁</span></div>
+<div style="font-size:18px;color:#64748B;letter-spacing:-0.5px;line-height:1.6;margin-bottom:0">Fly 让每一次Agent协作有迹可循、有据可证、有账可算</div>
+<div style="font-size:18px;color:#64748B;letter-spacing:-0.5px;line-height:1.6;margin-bottom:10px">让商业价值，可归因、可信任、可结算</div>
 
-<section id="causal"><div class="container"><div class="section-label">因果网络</div><h2 class="section-title">Fly发现：行业经营规律</h2><p class="section-desc">不是相关性猜测，是经过验证的因果关系。</p><div class="causal-grid"><div class="causal-card"><div class="causal-industry">养生行业</div><div class="causal-finding">天气转凉时艾灸内容转化更高</div><div class="causal-detail">降温时艾灸相关内容咨询率提升2.3倍，顾客主动搜索意愿增强</div></div><div class="causal-card"><div class="causal-industry">养生行业</div><div class="causal-finding">技师专业度展示信任度更强</div><div class="causal-detail">展示技师资质和手法的内容咨询率比纯图文高67%，顾客更信任"看得见的专业"</div></div><div class="causal-card"><div class="causal-industry">餐饮行业</div><div class="causal-finding">"真实排队"图片点击率提升47%</div><div class="causal-detail">顾客实拍比精修图更有吸引力，真实感带来的信任远超包装感</div></div></div><p class="causal-note">这不是工具，是<strong>经营认知系统</strong>。每家店的数据互相验证，越用越准。</p></div></section>
-
-<section id="cases"><div class="container"><div class="section-label">真实案例</div><h2 class="section-title">Fly真实经营记录</h2><div class="case-grid"><div class="case-card"><div class="case-industry">养生 · 艾灸馆</div><div class="case-context">3周前开始使用Fly经营副驾驶</div><div class="case-result">+341%</div><div class="case-desc">AI推荐曝光增长，天气转凉时艾灸内容自动推送，咨询量明显提升</div><div class="case-verified">经营记录已验证</div></div><div class="case-card"><div class="case-industry">养生 · 推拿馆</div><div class="case-context">优化GEO结构后，附近养生搜索可见度提升</div><div class="case-result">+78%</div><div class="case-desc">地图搜索点击增长，周末预约量同步上升</div><div class="case-verified">经营记录已验证</div></div><div class="case-card"><div class="case-industry">餐饮 · 火锅店</div><div class="case-context">优化AI可读内容后</div><div class="case-result">5.2×</div><div class="case-desc">AI搜索引用增加5.2倍，到店咨询明显提升</div><div class="case-verified">经营记录已验证</div></div></div></div></section>
-
-<section id="trust"><div class="container"><div class="section-label">可信验证</div><h2 class="section-title">经营记录长期可信，不可篡改</h2><div class="trust-compare"><div class="trust-side bad"><span class="trust-mark">❌</span><div class="trust-label">传统方式</div><div class="trust-title">数据可造假，平台不透明</div><div class="trust-desc">Excel可以改，后台数据平台控制，你说增长了多少，客户凭什么信？</div><div class="trust-detail">每月出一份漂亮报告，数字想怎么填就怎么填。换个运营，数据就断档。</div></div><div class="trust-side good"><span class="trust-mark">✅</span><div class="trust-label">Fly可信验证</div><div class="trust-title">经营行为永久记录，绝对真实</div><div class="trust-desc">每一笔经营行为都经过可信验证，永久记录不可篡改，任何人都可以验证真实性。</div><div class="trust-detail">换运营不怕，换系统不怕，你的经营记录永远属于你自己，永远可以追溯。</div><div style="margin-top:12px;padding:8px 14px;background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(6,182,212,.04));border:1px solid rgba(6,182,212,.15);border-radius:8px;font-size:12px;color:var(--cyan);font-weight:500">🏛 Agent SDK 验证级产品 · 四模块全部落地</div></div></div><p class="trust-slogan">别人给你看数据，Fly让你<em>验证</em>数据</p></div></section>
-
-<section id="pricing"><div class="container"><div class="section-label">定价</div><h2 class="section-title">简单透明定价</h2><p class="price-contract">无效退款，退款承诺自动执行</p><div class="price-grid"><div class="price-card"><div class="price-name">首月体验</div><div class="price-amount">¥199</div><div class="price-period">1店 · 1月完整服务</div><div class="price-features">✓ 经营诊断报告<br>✓ 定制化方案<br>✓ AI建议 · 老板确认后执行<br>✓ 经营可信验证<br>✓ 微信1对1</div></div><div class="price-card featured"><div class="price-name">月度服务</div><div class="price-amount">¥399<span style="font-size:14px;color:var(--text3)">/月</span></div><div class="price-period">持续经营服务</div><div class="price-features">✓ 因果追踪 + 策略优化<br>✓ 每日经营日报<br>✓ 无限可信验证<br>✓ GEO持续优化<br>✓ 微信1对1</div></div></div><p class="price-guarantee">✓ 30天3个有效归因否则全额退款</p></div></section>
-
-<section class="cta-section" id="cta"><div class="container"><h2>让商业价值，<em>有迹可循、有据可证、有账可算</em></h2><p class="cta-sub">Agent时代的<em>商业信任协议</em>——不是工具，是<em>价值证明基础设施</em></p><button class="btn-primary" onclick="openChat()" style="font-size:17px;padding:16px 40px">免费获取诊断报告</button></div></section>
-
-<!-- Proof of Business Execution -->
-<section id="verify" style="background:#0a0a0a;padding:40px 0;border-top:1px solid rgba(6,182,212,.1)">
-<div class="container" style="max-width:960px">
-<div style="font-size:11px;color:rgba(6,182,212,.6);margin-bottom:8px;font-weight:600;letter-spacing:2px;text-transform:uppercase">Proof of Business Execution</div>
-<h3 style="font-size:20px;color:#e5e5e5;margin:0 0 6px;font-weight:700">不是验证AI是否存在，而是验证经营结果是否真实发生</h3>
-<p style="font-size:13px;color:#888;margin:0 0 24px">每一次动作、每一次修改、每一次经营结果，都可验证。</p>
-<div style="margin-bottom:24px">
-<div style="font-size:12px;color:#666;margin-bottom:10px;font-weight:600">经营行为时间线</div>
-<div style="border-left:2px solid rgba(6,182,212,.3);padding-left:16px">
-<div style="margin-bottom:10px;font-size:13px"><span style="color:#06b6d4">5月25日</span> <span style="color:#aaa">✓ 全站GEO结构优化完成 — AI搜索可抓取性提升</span></div>
-<div style="margin-bottom:10px;font-size:13px"><span style="color:#06b6d4">5月25日</span> <span style="color:#aaa">✓ 鸿颜店llms.txt上线 — AI模型可索引店铺信息</span></div>
-<div style="margin-bottom:10px;font-size:13px"><span style="color:#06b6d4">5月24日</span> <span style="color:#aaa">✓ Agent诊断系统接入DeepSeek — 实时生成真实报告</span></div>
-<div style="margin-bottom:10px;font-size:13px"><span style="color:#06b6d4">5月25日</span> <span style="color:#aaa">✓ 合约托管支付上线 — 资金锁定，服务交付才放款</span></div>
-<div style="margin-bottom:10px;font-size:13px"><span style="color:#06b6d4">5月25日</span> <span style="color:#aaa">✓ Agent Server上线 — fly-agent-server.vercel.app</span></div>
+<!-- 流程图：追踪/信任/结算的对比 -->
+<div style="display:flex;flex-direction:column;gap:20px;margin-top:24px;width:100%;align-items:center">
+<!-- 追踪行 -->
+<div style="display:flex;align-items:center;justify-content:center;gap:0">
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px dashed #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">Agent协作</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2" stroke-dasharray="5,3"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">没有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#1A3D2E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">不可追踪</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px solid #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">可追踪</div>
+</div>
+<!-- 信任行 -->
+<div style="display:flex;align-items:center;justify-content:center;gap:0">
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px dashed #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">商业事实</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2" stroke-dasharray="5,3"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">没有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#1A3D2E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">不可信任</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px solid #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">可信任</div>
+</div>
+<!-- 结算行 -->
+<div style="display:flex;align-items:center;justify-content:center;gap:0">
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px dashed #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">收益结算</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2" stroke-dasharray="5,3"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">没有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#1A3D2E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">不可结算</div>
+<svg width="100" height="30"><line x1="0" y1="15" x2="90" y2="15" stroke="#1A3D2E" stroke-width="2"/><polygon points="90,10 100,15 90,20" fill="#1A3D2E"/><text x="50" y="10" text-anchor="middle" font-size="10" fill="#1A3D2E" font-weight="700">有Fly</text></svg>
+<div style="width:75px;height:75px;border-radius:50%;background:#F0F7F0;border:2px solid #1A3D2E;color:#1A3D2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">可结算</div>
 </div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
-<div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:12px">
-<div style="color:#06b6d4;font-weight:600;margin-bottom:4px">行为验证</div>
-<div style="color:#888">Agent是否真的发文、改GEO、更新Schema、回复评论</div>
-</div>
-<div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:12px">
-<div style="color:#06b6d4;font-weight:600;margin-bottom:4px">结果验证</div>
-<div style="color:#888">曝光变化、地图排名、AI推荐次数、到店率、转化率</div>
-</div>
-<div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:12px">
-<div style="color:#06b6d4;font-weight:600;margin-bottom:4px">因果验证</div>
-<div style="color:#888">什么动作→导致什么结果，经营因果链可追溯</div>
-</div>
-<div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:12px">
-<div style="color:#06b6d4;font-weight:600;margin-bottom:4px">托管保障</div>
-<div style="color:#888">资金锁定进合约，服务交付才放款，不可篡改</div>
-</div>
+
 </div>
 </div>
 </section>
 
-<footer><div class="container"><div class="footer-grid"><div class="footer-brand"><div class="logo"><span>Fly</span>Agent</div><p>Fly · 商业信任协议<br>让每一次Agent协作有迹可循、有据可证、有账可算</p></div><div class="footer-col"><h4>协议</h4><a href="javascript:void(0)" onclick="navTo('hero')">商业信任协议</a><a href="javascript:void(0)" onclick="navTo('geo')">GEO优化</a><a href="javascript:void(0)" onclick="navTo('trust')">可信验证</a></div><div class="footer-col"><h4>支持</h4><a href="javascript:void(0)" onclick="navTo('pricing')">定价</a><a href="javascript:void(0)" onclick="navTo('cases')">案例</a><a href="javascript:void(0)" onclick="openChat()">在线诊断</a></div><div class="footer-col"><h4>法律</h4><a href="javascript:void(0)" onclick="showPrivacy()">隐私政策</a><a href="javascript:void(0)" onclick="showTerms()">服务条款</a><a href="javascript:void(0)" onclick="showContact()">联系我们</a></div></div><div class="footer-bottom"><span>© 2026 Fly · 商业信任协议 · AI归因验证</span><span>由资深AI技术团队打造</span></div></div></footer>
 
-</div><!-- /.main -->
+<!-- ===== SECTION 2: 痛点 ===== -->
+<section id="problem" style="padding:100px 0;background:var(--bg2);border-bottom:1px solid var(--border)">
+<div class="container">
+<div class="sec-label">难题</div>
+<h2 class="sec-title" style="font-size:32px;line-height:1.8;font-weight:800;color:#0F172A">花了钱，算不清账<br>客人来了，留不住<br>想放大，不敢投</h2>
 
-<!-- Chat Overlay -->
-<div class="chat-overlay" id="chatOverlay"><div class="chat-window"><button class="chat-close" onclick="closeChat()">✕</button><div class="chat-sb"><div class="chat-sb-head"><div class="chat-sb-logo"><div class="chat-sb-av"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="chat-sb-name"><span>Fly</span>Agent</div></div><button class="sb-new-btn" onclick="newChat()">+ 新对话</button></div><div class="sb-items" id="sbItems"></div><div class="sb-bottom"><span class="online">在岗</span> · Fly-Agent-801</div></div><div class="chat-main"><div class="chat-topbar" id="chatTopbar">新对话</div><div class="chat-msgs" id="chatMsgs"></div><div class="chat-input-area"><div class="chat-input-row"><textarea id="chatInput" rows="1" placeholder="说说你的店，副驾驶帮你诊断推广盲区..."></textarea><button class="chat-send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div><div class="chat-hint">请勿输入身份证号、银行卡等敏感信息 · AI建议需老板确认后执行</div></div></div></div></div>
+<div class="problem-flow" style="margin-top:24px">
+<span class="node">AI推荐</span><span class="arrow">→</span>
+<span class="node">客人点击</span><span class="arrow">→</span>
+<span class="node">到店咨询</span><span class="arrow">→</span>
+<span class="node" style="border-color:#DC2626;color:#DC2626;font-weight:600">断了？</span>
+</div>
 
-<div class="legal-overlay" id="legalOverlay"><div class="legal-card" id="legalContent"></div></div>
+<div class="problem-grid">
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>发传单 → 不知道来没来人</h3>
+<p>印了500张传单，发出去了，钱花了，但进店的人从哪来的？不知道。</p>
+</div>
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>投推广 → 不知道哪个关键词有效</h3>
+<p>充了钱做推广，"附近按摩""青山湖养生"哪个词带来客户？不知道。</p>
+</div>
+<div class="problem-card">
+<div class="num">▸</div>
+<h3>AI推荐了客人 → 到店算自然到店</h3>
+<p>AI搜索推荐了你，客人来了，但系统记成自然流量。ROI永远算不清。</p>
+</div>
+</div>
 
+<!-- 铁律精简 -->
+<div style="margin-top:28px;padding:20px 24px;background:var(--bg);border:2px solid var(--dark);border-radius:10px">
+<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:10px">验证层的底线，谁也不能破</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">边界铁律</div>
+<div style="font-size:12px;color:var(--text2)">测试店只做技术验证，数据不进商业报告</div>
+</div>
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">数据铁律</div>
+<div style="font-size:12px;color:var(--text2)">只收5项：action_id/脱敏ID/订单号/金额/时间</div>
+</div>
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px">治理铁律</div>
+<div style="font-size:12px;color:var(--text2)">关键动作老板确认，AI不自作主张</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- ===== SECTION 3: 怎么解决 ===== -->
+<section id="solution" style="padding:100px 0;border-bottom:1px solid var(--border)">
+<div class="container">
+<div class="sec-label">怎么解决</div>
+<h2 class="sec-title">给AI投流装上<em style="color:var(--blue)">行车记录仪</em><span style="font-size:16px;font-weight:500;color:var(--text2);display:block;margin-top:6px">每一步留痕，每一笔可查</span></h2>
+
+<!-- 架构层 -->
+<div class="arch-layers" style="margin-bottom:40px">
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🪪</span>
+<div style="flex:1"><div class="arch-lname"><a href="/agent-registry.html" style="color:var(--dark);text-decoration:none">Layer 1 · Identity 身份层</a></div><div class="arch-value">Agent Registry · 可验证身份指纹 · fingerprint · runtime · scope · <a href="/agent-registry.html" style="color:var(--blue)">查看Registry →</a></div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🛡️</span>
+<div style="flex:1"><div class="arch-lname"><a href="/security.html" style="color:var(--dark);text-decoration:none">Layer 2 · Trust 信任层</a></div><div class="arch-value">行为可信评分 · Prompt防火墙 · 运行隔离 · 6维Trust Score · <a href="/security.html" style="color:var(--blue)">查看Security →</a></div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">✅</span>
+<div style="flex:1"><div class="arch-lname">Layer 3 · Verification 验证层</div><div class="arch-value">Behavior Verification Engine：6项行为验证 · pending → partial → verified → failed → expired → revoked</div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">🔗</span>
+<div style="flex:1"><div class="arch-lname">Layer 4 · Attribution 归因层</div><div class="arch-value">action_id全链路追踪 · 不可篡改审计日志 · 哈希链存证 · 归因可信度评分</div></div>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-layer" style="border-left:3px solid #2563EB">
+<span class="arch-ico">⚙️</span>
+<div style="flex:1"><div class="arch-lname"><a href="/trust.html" style="color:var(--dark);text-decoration:none">Layer 5 · Governance 治理层</a></div><div class="arch-value">Agent权限 · Tool白名单 · Kill Switch · 审批流 · Session隔离 · 安全网关 · <a href="/trust.html" style="color:var(--blue)">信任中心 →</a></div></div>
+</div>
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+</section>
+
+<!-- ===== SECTION: Verification Engine ===== -->
+<section style="padding:80px 0;background:var(--bg1)">
+<div class="container">
+<div class="sec-label" style="text-align:center">Verification Engine</div>
+<h2 class="sec-title" style="text-align:center">AI行为验证引擎</h2>
+<p style="font-size:14px;color:var(--text2);text-align:center;max-width:560px;margin:0 auto 40px">不是"曝光了没有"，而是每一步行为是否真实发生。6维行为验证，构成AI行为验证基础设施。</p>
+
+<div style="max-width:720px;margin:0 auto">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
+
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">行为</div>
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">验证</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4AC;</span> 咨询</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否真人</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4DD;</span> 留资</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否有效</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F916;</span> 对话</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否真实</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4CD;</span> 到店</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否发生</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4B0;</span> 转化</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">是否完成</div>
+
+<div style="padding:14px 20px;display:flex;align-items:center;gap:8px"><span style="color:#2563EB">&#x1F4CA;</span> ROI</div>
+<div style="padding:14px 20px;color:#334155">是否真实</div>
+
+</div>
+
+<div style="margin-top:24px;background:#EFF6FF;border-left:3px solid #2563EB;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13px;color:#1E40AF">
+护城河：传统归因只验证"有没有曝光"，Fly验证的是每一步行为是否真实——从咨询到ROI，6维交叉验证。
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== SECTION: Agent Runtime Governance ===== -->
+<section style="padding:80px 0;background:var(--bg2)">
+<div class="container">
+<div class="sec-label" style="text-align:center">Agent Runtime Governance</div>
+<h2 class="sec-title" style="text-align:center">Agent运行时治理</h2>
+<p style="font-size:14px;color:var(--text2);text-align:center;max-width:560px;margin:0 auto 40px">企业真正买单的能力：Agent权限、工具白名单、密钥隔离、紧急熔断、审批流、会话隔离。没有治理，就不允许进生产环境。</p>
+
+<div style="max-width:720px;margin:0 auto">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
+
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">能力</div>
+<div style="background:#F8FAFC;padding:14px 20px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0">说明</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Agent权限</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">每个Agent只能执行授权范围内的操作</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Tool白名单</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">未授权工具不可调用，越权自动拦截</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Secret隔离</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">密钥按Agent隔离，不可跨用</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">Kill Switch</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">一键熔断，异常Agent立即停服</div>
+
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#2563EB;font-weight:500">审批流</div>
+<div style="padding:14px 20px;border-bottom:1px solid #F1F5F9;color:#334155">高危操作必须经人工审批才可执行</div>
+
+<div style="padding:14px 20px;color:#2563EB;font-weight:500">Session隔离</div>
+<div style="padding:14px 20px;color:#334155">会话之间数据不可互访，防止横向越权</div>
+
+</div>
+
+<div style="margin-top:24px;background:#EFF6FF;border-left:3px solid #2563EB;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13px;color:#1E40AF">
+没有治理的Agent = 没有刹车的车。企业允许Agent进生产环境的前提：权限受控、工具受限、密钥隔离、可随时熔断。
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== SECTION 5: 定价 + 合规 ===== -->
+<!-- ===== SECTION: 案例 ===== -->
+
+<!-- ===== SECTION 6: CTA + FAQ ===== -->
+<section id="cta" style="padding:100px 0;background:var(--bg2)">
+<div class="container" style="text-align:center">
+<div class="sec-label" style="text-align:center">Get Started</div>
+<h2 class="sec-title" style="text-align:center">开始使用Fly</h2>
+<p style="font-size:14px;color:var(--text2);margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto">AI Agent的每一步行为都可审计、可归因、可验证。从接入到验证，3步搞定。</p>
+
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px">
+<a href="/gateway.html" class="btn-p" style="padding:12px 28px;font-size:14px">立即接入BOT</a>
+<a href="/gateway.html" class="btn-p" style="padding:12px 28px;font-size:14px;background:var(--bg);color:var(--blue);border:1px solid var(--border)">查看API</a>
+<button class="btn-p" onclick="openVerifyModal()" style="padding:12px 28px;font-size:14px;background:var(--bg);color:var(--blue);border:1px solid var(--border)">申请企业验证</button>
+</div>
+
+<!-- 模块状态表（老师要求替代"模拟数据"） -->
+<div style="max-width:600px;margin:0 auto;text-align:left">
+<div class="sec-label">当前模块状态</div>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead>
+<tr style="border-bottom:2px solid var(--border)">
+<th style="text-align:left;padding:10px 12px;font-size:11px;font-family:var(--mono);color:var(--blue);letter-spacing:1px">模块</th>
+<th style="text-align:left;padding:10px 12px;font-size:11px;font-family:var(--mono);color:var(--blue);letter-spacing:1px">状态</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 1 · Identity 身份层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(identity_layer)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 2 · Trust 信任层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(trust_engine)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 3 · Verification 验证层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(verification_engine)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 4 · Attribution 归因层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(attribution)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Layer 5 · Governance 治理层 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(governance)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+<tr><td style="padding:10px 12px;font-weight:600;color:var(--dark)">Audit 审计 <span style="font-family:var(--mono);font-size:11px;color:#94A3B8">(audit_log)</span></td><td style="padding:10px 12px;color:#10B981">running</td></tr>
+</tbody>
+</table><div style="font-size:11px;color:#64748B;margin-top:8px">状态字典（全站统一）：running = 正常运行 · degraded = 性能降级 · down = 服务中断。5层与 <a href="https://status.fly-agent.xyz" style="color:#2563EB">系统状态页</a> 一一对应。模块运行状态与 /v1/status 一一对应：Identity (identity_layer) · Trust (trust_engine) · Verification (verification_engine) · Attribution (attribution) · Governance (governance) · Audit (audit_log)。系统状态页：<a href="https://status.fly-agent.xyz" style="color:#2563EB">https://status.fly-agent.xyz</a>（当前数据来自 /v1/status）。</div>
+<div id="runtime-stats" style="margin-top:16px;padding:12px 16px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;font-size:12px;color:#166534;display:none"></div>
 <script>
-// === Sidebar Navigation ===
-function toggleGroup(header){header.parentElement.classList.toggle('open')}
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
-function navTo(id){
-  const el=document.getElementById(id);
-  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
-  // Update active state
-  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  // Update topbar title
-  const titles={hero:'商业信任协议',pain:'经营痛点',exec:'AI执行记录',confirm:'人类确认层',geo:'GEO · AI推荐',results:'经营结果',causal:'因果网络',cases:'真实案例',trust:'可信验证',pricing:'定价方案',cta:'开始使用',verify:'PoBE 验证'};
-  document.getElementById('topbarTitle').textContent=titles[id]||'Fly';
-  // Close mobile sidebar
-  document.getElementById('sidebar').classList.remove('open');
+fetch('https://api.fly-agent.xyz/v1/status').then(r=>r.json()).then(d=>{
+  const el=document.getElementById('runtime-stats');
+  if(!el||d.status!=='ok')return;
+  const s=d.services||{};
+  const items=[
+    s.identity_layer?'Identity · '+s.identity_layer.status:''',
+    s.attribution?'Attribution · '+s.attribution.status:''',
+    s.verification_engine?'Verification · '+s.verification_engine.behaviors.length+' behaviors':''',
+    s.trust_engine?'Trust · '+s.trust_engine.score_range+' ('+s.trust_engine.dimensions.length+'维度)':''',
+    s.governance?'Governance · '+s.governance.status:'''
+  ].filter(Boolean);
+  el.innerHTML='<strong>Live Runtime</strong> · '+items.join(' · ')+' · <a href="https://status.fly-agent.xyz" style="color:#2563EB">查看详情</a>';
+  el.style.display='block';
+}).catch(()=>{});
+</script>
+</div>
+
+<!-- FAQ -->
+<div style="text-align:left;max-width:720px;margin:60px auto 0">
+<div class="sec-label">常见问题</div>
+<h2 class="sec-title">还有疑问？</h2>
+<div class="faq-list">
+<div class="faq-item">
+<div class="faq-q"><span>Fly是什么？</span><span class="pm">+</span></div>
+<div class="faq-a">Fly是AI Agent信任与归因基础设施。不是AI生成工具，不是自动化工具，而是验证AI行为是否可信、归因是否真实的基础设施层。类似Stripe验证支付、Cloudflare验证安全，Fly验证AI Agent。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>什么是action_id？</span><span class="pm">+</span></div>
+<div class="faq-a">action_id是Fly的归因协议标识。每条AI内容生成唯一ID，从点击→咨询→核销全链路可追溯。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>我的数据安全吗？</span><span class="pm">+</span></div>
+<div class="faq-a">只收5项归因数据（action_id/脱敏ID/订单号/金额/时间），绝不收集手机号/姓名/身份证。采用HMAC-SHA256+随机盐脱敏，不可逆还原。日常数据90天自动销毁。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>Fly跟GEO优化工具有什么区别？</span><span class="pm">+</span></div>
+<div class="faq-a">传统GEO只看"AI有没有推荐你"，Fly验证的是"AI推荐了你，客户来了、成交了、钱算得清"。归因验证是标配，GEO优化为可选增值。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q"><span>Prompt防火墙做什么？</span><span class="pm">+</span></div>
+<div class="faq-a">拦截jailbreak攻击、prompt泄露、越权调用、DAN模式等8类攻击模式，同时检测医疗违规、广告法、隐私采集等合规风险。</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-brand"><em>Fly</em> · AI Agent信任与归因基础设施<br><span>验证每一次AI行为是否可信 · 归因 · 验证 · 审计 · 治理<br>运营主体：杭州九运智领科技有限公司 · 联系邮箱：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="670012080a06090a0609270d081e12091d0f0e0b0e0900490409">[email&#160;protected]</a></span></div>
+<div class="footer-links">
+<a href="/">首页</a>
+<a href="/agent-registry.html">Agent Registry</a>
+<a href="/security.html">安全中心</a>
+<a href="/trust.html">信任中心</a>
+<a href="#" title="即将上线">隐私政策</a>
+<a href="#" title="即将上线">退款政策</a>
+<a href="#" title="即将上线">服务条款</a>
+</div>
+</div>
+<div class="footer-copy">© 2026 杭州九运智领科技 · AI Agent信任与归因基础设施 · 浙ICP备XXXXXXXX号（备案办理中） · <a href="/cdn-cgi/l/email-protection#f394869c9e929d9e929db3999c8a869d899b9a9f9a9d94dd909d" style="color:var(--text3);text-decoration:underline"><span class="__cf_email__" data-cfemail="0f687a60626e61626e614f6560767a6175676663666168216c61">[email&#160;protected]</span></a></div>
+</div>
+</footer>
+
+<!-- VERIFY MODAL -->
+<div class="verify-overlay" id="verifyOverlay" onclick="if(event.target===this)closeVerifyModal()">
+<div class="verify-card">
+  <button class="verify-close" onclick="closeVerifyModal()">×</button>
+  <div id="verifyForm">
+    <!-- Step 1: 快速体验 -->
+    <div id="verifyStep1">
+      <h2 style="font-size:22px;font-weight:700;color:var(--dark);margin-bottom:6px">归因验证</h2>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">填写信息，Fly帮你算出真实归因结果</p><div style="font-size:11px;color:#64748B;margin-top:4px">5层运行态：Layer 1 Identity → Layer 2 Trust → Layer 3 Verification → Layer 4 Attribution → Layer 5 Governance，与 <a href="/agent-registry.html" style="color:#2563EB">Agent Registry</a> 字段一一映射。</div>
+      <div>
+        <div class="verify-field">
+          <label>邮箱 <span style="color:#DC2626">*</span></label>
+          <input type="email" id="v_email" placeholder="your@email.com" required>
+        </div>
+        <div class="verify-field">
+          <label>行业 <span style="color:#DC2626">*</span></label>
+          <select id="v_industry">
+            <option value="">请选择</option>
+            <option>美容美肤</option><option>口腔齿科</option><option>教育培训</option>
+            <option>健身运动</option><option>花店鲜花</option><option>宠物服务</option>
+            <option>餐饮美食</option><option>家政服务</option><option>健康养生</option><option>零售电商</option><option>其他</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>投流渠道 <span style="color:#DC2626">*</span></label>
+          <select id="v_channel">
+            <option value="">请选择</option>
+            <option>抖音</option><option>小红书</option><option>微信</option>
+            <option>美团</option><option>AI搜索推荐</option><option>其他</option>
+          </select>
+        </div>
+      </div>
+      <button class="verify-submit" onclick="goStep2()" style="width:100%">下一步：深度验证</button>
+      <button onclick="submitQuick()" style="width:100%;margin-top:8px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:var(--sans)">快速体验（仅3项）</button>
+    </div>
+
+    <!-- Step 2: 深度验证 -->
+    <div id="verifyStep2" style="display:none">
+      <h2 style="font-size:22px;font-weight:700;color:var(--dark);margin-bottom:6px">深度验证</h2>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">补充成交数据，获取真实归因结果</p>
+      <div>
+        <div class="verify-field">
+          <label>店铺/公司名</label>
+          <input type="text" id="v_shop" placeholder="选填">
+        </div>
+        <div class="verify-field">
+          <label>城市</label>
+          <input type="text" id="v_city" placeholder="选填">
+        </div>
+        <div class="verify-field">
+          <label>AI投放内容链接</label>
+          <input type="text" id="v_link" placeholder="选填，如抖音视频链接">
+        </div>
+        <div class="verify-field">
+          <label>最近一单咨询来源</label>
+          <select id="v_source">
+            <option value="">选填</option>
+            <option>抖音AI推荐</option><option>小红书笔记</option><option>微信朋友圈</option>
+            <option>美团搜索</option><option>AI搜索推荐</option><option>老客转介绍</option><option>不清楚</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>是否到店核销</label>
+          <select id="v_visit">
+            <option value="">选填</option>
+            <option value="yes">是，到店了</option><option value="no">否，没来</option><option value="unknown">不确定</option>
+          </select>
+        </div>
+        <div class="verify-field">
+          <label>成交金额（元）</label>
+          <input type="number" id="v_amount" placeholder="选填，如298">
+        </div>
+      </div>
+      <button class="verify-submit" onclick="submitVerify()" style="width:100%">提交验证，看归因结果</button>
+      <button onclick="document.getElementById('verifyStep2').style.display='none';document.getElementById('verifyStep1').style.display='block'" style="width:100%;margin-top:8px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:var(--sans)">返回上一步</button>
+    </div>
+  </div>
+  <!-- 验证结果页 -->
+  <div id="verifyResult" style="display:none;padding:8px 0">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#60A5FA);color:#fff;font-size:24px;margin-bottom:12px">✓</div>
+      <h2 style="font-size:20px;font-weight:700;color:var(--dark);margin-bottom:4px">归因验证结果</h2>
+      <p style="font-size:12px;color:var(--text2)" id="vrSummary"></p>
+    </div>
+    <div id="vrTrustScore" style="background:#F0F9FF;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #BFDBFE">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:10px">归因信任评分</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
+        <div style="font-size:36px;font-weight:700;color:var(--dark)" id="vrScoreNum">--</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--dark)" id="vrScoreLabel">--</div>
+          <div style="font-size:12px;font-weight:700;color:#2563EB" id="vrScoreTier">--</div>
+        </div>
+      </div>
+      <div style="background:#E2E8F0;border-radius:4px;height:6px;margin-bottom:10px;overflow:hidden">
+        <div id="vrScoreBar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);width:0%;transition:width 0.6s"></div>
+      </div>
+      <div id="vrScoreDetail" style="font-size:12px;color:#64748B;line-height:1.8"></div>
+    </div>
+
+    
+    <div id="vrVerdict" style="background:#F8FAFC;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #E2E8F0">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">验证判定</div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:8px">基于提交数据的真实性与完整性自动判定</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px">
+        <div id="vrV1" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">真实咨询</div>
+          <div id="vrV1Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV1Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+        <div id="vrV2" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">真实到店</div>
+          <div id="vrV2Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV2Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+        <div id="vrV3" style="text-align:center;padding:12px 8px;border-radius:8px;background:#fff;border:1px solid #E2E8F0">
+          <div style="font-size:11px;color:#94A3B8;margin-bottom:4px">刷量检测</div>
+          <div id="vrV3Icon" style="font-size:20px;margin-bottom:2px">⏳</div>
+          <div id="vrV3Label" style="font-weight:600;color:#64748B">待验证</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="vrAuditTrail" style="background:#FAFAFA;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #E2E8F0">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">审计存证</div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:8px">本次验证行为已记录，哈希链校验不可篡改</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+        <div><span style="color:#94A3B8">Trace ID</span><div id="vrTraceId" style="color:#475569;font-family:monospace;word-break:break-all">--</div></div>
+        <div><span style="color:#94A3B8">时间戳</span><div id="vrTimestamp" style="color:#475569">--</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:12px">
+        <span style="color:#94A3B8">SHA-256</span>
+        <div id="vrHash" style="color:#475569;font-family:monospace;font-size:11px;word-break:break-all;background:#fff;border-radius:6px;padding:8px;margin-top:4px;border:1px solid #E2E8F0">--</div>
+      </div>
+      <div style="margin-top:8px;font-size:12px">
+        <span style="color:#94A3B8">Prev Hash</span>
+        <div id="vrPrevHash" style="color:#94A3B8;font-family:monospace;font-size:11px;word-break:break-all;background:#fff;border-radius:6px;padding:8px;margin-top:4px;border:1px solid #E2E8F0">--</div>
+      </div>
+    </div>
+
+    <div style="background:#F8FAFC;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">投流归因现状</div>
+      <div id="vrStatus" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="background:#F0F9FF;border-radius:12px;padding:16px;margin-bottom:14px;border-left:3px solid #2563EB">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:8px">Fly归因验证方案</div>
+      <div id="vrPlan" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="background:#FFF7ED;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #F59E0B">
+      <div style="font-size:13px;font-weight:600;color:#D97706;margin-bottom:8px">流失预警</div>
+      <div id="vrRisk" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div id="vrTips" style="display:none;background:#EFF6FF;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #2563EB">
+      <div style="font-size:13px;font-weight:600;color:#2563EB;margin-bottom:8px">提分建议</div>
+      <div id="vrTipsList" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+
+    <div id="vrROI" style="display:none;background:#F0FDF4;border-radius:12px;padding:16px;margin-bottom:16px;border-left:3px solid #22C55E">
+      <div style="font-size:13px;font-weight:600;color:#16A34A;margin-bottom:8px">归因测算</div>
+      <div id="vrROIDetail" style="font-size:13px;color:#475569;line-height:1.8"></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-p" style="width:100%;font-size:14px" onclick="closeVerifyModal();openFlyChat()">和Fly聊聊，获取详细验证方案</button>
+      <p style="font-size:11px;color:#94A3B8;margin-top:8px">验证结果已发送至你的邮箱</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="legal-overlay" id="legalOverlay">
+<div class="legal-card" id="legalContent"></div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function copyWechat(){
+  navigator.clipboard.writeText("One1913U");
+  const b=event.target.closest('button');
+  if(b){const orig=b.textContent;b.textContent="已复制微信号 ✓";setTimeout(()=>{b.textContent=orig},2000)}
 }
 
-// Scroll spy - update active sidebar item on scroll
-const sectionTitles={hero:'商业信任协议',pain:'经营痛点',exec:'AI执行记录',confirm:'人类确认层',results:'经营结果',geo:'GEO · AI推荐',causal:'因果网络',cases:'真实案例',trust:'可信验证',pricing:'定价方案',cta:'开始使用',verify:'PoBE 验证'};
-const scrollSpy=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const id=e.target.id;
-      document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-      const target=document.querySelector('.sidebar-item[onclick*="\''+id+'\'"]');
-      if(target)target.classList.add('active');
-      if(sectionTitles[id])document.getElementById('topbarTitle').textContent=sectionTitles[id];
-    }
-  })
-},{threshold:0.2,rootMargin:'-60px 0px -60% 0px'});
-document.querySelectorAll('section[id]').forEach(s=>scrollSpy.observe(s));
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+  });
+});
 
-// === Chat (preserved from original) ===
-const AGENT_SERVER='https://fly-agent-server.vercel.app';const UID='fly_'+Math.random().toString(36).slice(2,8);
-let activeChat='c0';const chats={c0:{msgs:[],history:[]}};
-function openChat(){document.getElementById('chatOverlay').classList.add('show');if(chats[activeChat].msgs.length===0)showChatWelcome();renderSb()}
-function closeChat(){document.getElementById('chatOverlay').classList.remove('show')}
-function showChatWelcome(){document.getElementById('chatMsgs').innerHTML='<div class="chat-welcome"><div class="chat-welcome-av"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3>你好，我是Fly</h3><p>小老板的推广搭档，说店就行</p><div class="chat-examples"><div class="chat-example" onclick="sendQuick(\'我是成都开火锅店的\')">🌶️ 成都火锅店</div><div class="chat-example" onclick="sendQuick(\'我是杭州开奶茶店的\')">🧋 杭州奶茶店</div><div class="chat-example" onclick="sendQuick(\'帮我诊断推广盲区\')">🔍 诊断推广盲区</div><div class="chat-example" onclick="sendQuick(\'每月推广费5千到店没几个\')">🕳️ 推广费白花了</div><div class="chat-example" onclick="sendQuick(\'抖音小红书怎么发才有效\')">📱 社媒怎么发</div><div class="chat-example" onclick="sendQuick(\'我的店在AI搜索排第几\')">🔎 AI搜索排名</div></div></div>'}
-let chatCount=0;
-function newChat(){chatCount++;const id='n'+chatCount;chats[id]={msgs:[],history:[]};activeChat=id;renderSb();document.getElementById('chatTopbar').textContent='新对话 '+chatCount;showChatWelcome()}
-function renderSb(){const sb=document.getElementById('sbItems');let h='';const items=[{id:'c0',title:'新对话'}];Object.keys(chats).forEach(k=>{if(k!=='c0'&&chats[k].msgs.length>0)items.push({id:k,title:'对话 '+k.slice(1)})});items.forEach(it=>{h+='<div class="sb-item'+(activeChat===it.id?' active':'')+'" onclick="switchChat(\''+it.id+'\')"><span class="sb-item-text">'+it.title+'</span></div>'});sb.innerHTML=h}
-function switchChat(id){activeChat=id;renderSb();document.getElementById('chatTopbar').textContent=id==='c0'?'新对话':'对话 '+id.slice(1);const M=document.getElementById('chatMsgs');M.innerHTML='';if(chats[id].msgs.length===0)showChatWelcome();else chats[id].msgs.forEach(m=>renderBubble(m.role,m.html))}
-const botAv='<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>';const userAv='<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
-function renderBubble(role,html){const M=document.getElementById('chatMsgs');const d=document.createElement('div');d.className='chat-msg '+(role==='bot'?'bot':'user');d.innerHTML='<div class="chat-msg-inner"><div class="chat-av '+(role==='bot'?'bot':'user')+'">'+(role==='bot'?botAv:userAv)+'</div><div class="chat-bubble">'+html+'</div></div>';M.appendChild(d);M.scrollTop=M.scrollHeight}
-function escH(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-async function sendMsg(){const i=document.getElementById('chatInput'),t=i.value.trim();if(!t)return;chats[activeChat].msgs.push({role:'user',html:'<p>'+escH(t)+'</p>'});renderBubble('user','<p>'+escH(t)+'</p>');i.value='';i.style.height='auto';const tp=document.createElement('div');tp.className='chat-msg bot';tp.id='tp';tp.innerHTML='<div class="chat-msg-inner"><div class="chat-av bot">'+botAv+'</div><div class="chat-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>';document.getElementById('chatMsgs').appendChild(tp);document.getElementById('chatMsgs').scrollTop=document.getElementById('chatMsgs').scrollHeight;const reply=await getAIReply(t,chats[activeChat].history);tp.remove();const html='<p>'+reply.replace(/\n/g,'<br>')+'</p>';chats[activeChat].msgs.push({role:'bot',html});renderBubble('bot',html);renderSb()}
-function sendQuick(t){document.getElementById('chatInput').value=t;sendMsg()}
-function smartReply(msg){const m=msg.toLowerCase();if(/我要首月体验/.test(m))return'首月体验 ¥199 包含：\n✅ 1店1月完整服务 ✅ 诊断报告 ✅ 定制方案 ✅ 经营可信验证 ✅ 微信1对1\n\n支付：微信支付\n📩 添加微信 One1913U';if(/我要订阅月度/.test(m))return'月度服务 ¥399/月 包含：\n✅ 持续服务 ✅ 因果追踪+策略优化 ✅ 每日日报 ✅ 无限可信验证\n\n30天保障：3条有效归因否则全额退款。';if(/验证.*身份|身份.*验证/.test(m))return'Agent可信身份验证\n\n合约地址：0x8004A169\n可在 BscScan 实时查询验证\n👉 https://bscscan.com/address/0x8004A169';if(/验证.*数据|数据.*验证|经营数据/.test(m))return'经营数据可信验证\n\n交易哈希：0x48d31b8575cd69225e5b4a9a0ee80eba8d842159fb892b7b799629f705a83cf8\n可在 BscScan 实时查询验证\n👉 https://bscscan.com/tx/0x48d31b8575cd69225e5b4a9a0ee80eba8d842159fb892b7b799629f705a83cf8';if(/定价|价格|多少钱|收费/.test(m))return'Fly定价：\n\n首月体验 ¥199 — 1店1月完整服务\n月度服务 ¥399/月 — 持续服务+每日日报\n\n✓ 30天3个有效归因否则全额退款\n想试试？说"我要首月体验"';if(/火锅|川菜|串串/.test(m))return'火锅/川菜店推广重点：\n\n1️⃣ GEO优先：让AI搜索推荐你——"附近好吃的火锅店"你排第几？\n2️⃣ 真实排队照比精修图点击率高47%，发真实感内容\n3️⃣ 天气转冷时推辣锅内容，咨询量会翻倍\n\n说说你店在哪，我帮你出具体方案 👇';if(/奶茶|饮品|咖啡|茶饮/.test(m))return'奶茶/饮品店推广重点：\n\n1️⃣ 小红书必做：拍照打卡是天然流量，但90%店主发的内容没被AI抓到\n2️⃣ 季节上新时同步更新AI可读信息，AI搜索推荐量能涨3倍\n3️⃣ 下午2-4点发帖互动率最高\n\n你店在哪条街？我帮你看看AI搜索里有没有你 👇';if(/养生|按摩|推拿|SPA|艾灸|肩颈/.test(m))return'养生店推广重点（Fly最擅长的行业）：\n\n1️⃣ GEO效果最明显：搜索"附近肩颈调理"时AI直接推荐你\n2️⃣ 降温时艾灸内容咨询量翻2.3倍——这个因果我们已经验证过\n3️⃣ 展示技师资质比纯环境照咨询率高67%\n\n告诉我你店名和地址，我立刻帮你诊断AI搜索可见度 👇';if(/美容|美甲|美发|理发|发型/.test(m))return'美容/美发店推广重点：\n\n1️⃣ 小红书+抖音双平台：对比前后效果图是天然爆款素材\n2️⃣ AI搜索"附近做头发好的店"时你排第几？这个很关键\n3️⃣ 复购率提升核心：记住客人偏好+定期提醒\n\n说说你的店，我帮你出方案 👇';if(/餐厅|饭店|餐饮|面馆|小吃|烧烤/.test(m))return'餐饮店推广重点：\n\n1️⃣ 地图搜索是第一入口——"附近有什么好吃的"你排第几？\n2️⃣ 真实食物照比精修图更吸引人，客人信的是"真实感"\n3️⃣ 用GEO让AI主动推荐你的店，不用等客户搜\n\n你做什么菜系？在哪开的店？我帮你诊断 👇';if(/诊断|盲区|推广|营销|获客/.test(m))return'帮你诊断推广盲区，我需要知道3个关键信息：\n\n1️⃣ 你开什么店？（行业）\n2️⃣ 店在哪个城市？（地区）\n3️⃣ 每月推广费大概多少？（预算）\n\n有了这些我就能给你出一份GEO诊断，看看AI搜索里你的店在不在 👇';if(/抖音|小红书|微信|公众号|视频号/.test(m))return'社媒推广核心原则：\n\n1️⃣ 别追流量追咨询——1个到店咨询比1000个赞值钱\n2️⃣ 小红书：真实体验+攻略型内容最容易被AI抓取推荐\n3️⃣ 抖音：本地生活+团购链接，3秒内必须出现核心卖点\n4️⃣ 公众号：每周2条足够，重点是AI可读的结构化信息\n\nFly能帮你自动优化GEO内容，让AI搜索推荐你。说说你的店 👇';if(/AI搜索|搜索排名|GEO|被推荐/.test(m))return'GEO（AI搜索推荐）是Fly最核心的能力：\n\n现在用户不再"搜"了，而是"问AI"：\n• "附近哪家养生馆靠谱？"\n• "杭州有什么好吃的火锅？"\n\n如果你的店不在AI的回答里，就等于不存在。\n\nFly帮你优化AI可读性，让ChatGPT/豆包/DeepSeek主动推荐你。\n\n告诉我你店名，我帮你查AI搜索排名 👇';if(/退款|保障|无效/.test(m))return'Fly退款保障：\n\n✅ 30天内3个有效经营归因，否则全额退款\n✅ 退款承诺自动执行，不用扯皮\n✅ 每个经营行为都有可信验证记录\n\n我们对效果有信心，才敢这么承诺。试试？说"我要首月体验" 👇';if(/怎么用|怎么开始|怎么合作|流程/.test(m))return'开始使用Fly很简单：\n\n1️⃣ 告诉我你的店名、行业、城市\n2️⃣ 我帮你做免费GEO诊断（5分钟出结果）\n3️⃣ 看完诊断报告再决定要不要用\n\n首月体验¥199，无效全额退款。\n说说你的店 👇';if(/你好|hi|hello|嗨|在吗/.test(m))return'你好！我是Fly，小老板的推广搭档 🤝\n\n说店就行——告诉我你开什么店、在哪，我帮你诊断推广盲区。\n\n也可以直接点下面的快捷问题 👇';if(/谢谢|感谢|辛苦/.test(m))return'不客气！有推广问题随时找我。\n\n记住：Fly是7×24小时在岗的，你不用等。说店就行 👍';if(/效果|数据|结果|案例/.test(m))return'Fly真实经营效果（已验证）：\n\n📊 艾灸馆：AI推荐曝光+341%（天气转凉自动推内容）\n📊 推拿馆：地图搜索点击+78%（GEO结构优化后）\n📊 火锅店：AI搜索引用5.2倍（AI可读内容优化后）\n\n这些不是广告数据，是经营行为记录，可以验证。\n\n想看你的行业适合什么方案？告诉我你做什么 👇';return null}
-async function getAIReply(msg,hist){const instant=smartReply(msg);if(instant)return instant;hist.push({role:'user',content:msg,content_type:'text'});try{const dsH=hist.slice(-8).map(m=>({role:m.role==='user'?'user':'assistant',content:m.content}));const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),8000);const r=await fetch(AGENT_SERVER+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:dsH,max_tokens:300,temperature:0.7}),signal:ctrl.signal});clearTimeout(timer);if(r.ok){const d=await r.json();if(d.reply){const t=d.reply;hist.push({role:'assistant',content:t,content_type:'text'});return t}}catch(e){console.error('Agent Server error:',e)}return'我正在思考你的问题，但AI服务暂时响应较慢。\n\n你可以：\n1️⃣ 直接告诉我你的店名+行业+城市，我帮你做GEO诊断\n2️⃣ 微信咨询：One1913U\n3️⃣ 稍后再试'}
-document.getElementById('chatInput').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'});
-document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
-function animateCounters(){document.querySelectorAll('.result-num[data-target]').forEach(el=>{const target=parseInt(el.dataset.target);let current=0;const step=Math.ceil(target/50);const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer)}el.textContent='+'+current},40)})}
-const ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){animateCounters();ro.unobserve(e.target)}})},{threshold:0.3});const rs=document.getElementById('results');if(rs)ro.observe(rs);
-const dashActions=[{icon:'✅',text:'已同步美团店铺最新评价',cls:'green'},{icon:'✅',text:'已更新养生馆小红书排期',cls:'green'},{icon:'📊',text:'检测到降温时艾灸咨询量上升',cls:'gold'},{icon:'✅',text:'已生成本周经营日报',cls:'green'},{icon:'🔗',text:'经营行为记录已可信验证',cls:'cyan'},{icon:'✅',text:'建议推肩颈热敷券 → ✅老板已确认',cls:'green'},{icon:'📊',text:'发现养生行业周末到店率更高',cls:'gold'},{icon:'✅',text:'建议调整广告出价 → ✅老板已确认',cls:'green'}];
-let dashIdx=0;setInterval(()=>{const stream=document.getElementById('dashStream');if(!stream)return;const action=dashActions[dashIdx%dashActions.length];const now=new Date();const h=now.getHours();const m=now.getMinutes().toString().padStart(2,'0');const item=document.createElement('div');item.className='dash-item '+action.cls;item.style.animation='fadeSlide .5s ease both';item.innerHTML='<span class="dash-icon">'+action.icon+'</span><span class="dash-text">'+action.text+'</span><span class="dash-time">'+h+':'+m+'</span>';stream.appendChild(item);stream.removeChild(stream.children[0]);document.getElementById('dashLast').textContent='最后执行 刚刚';dashIdx++},8000);
-function showPrivacy(){document.getElementById('legalContent').innerHTML='<h2>隐私政策</h2><p style="color:var(--text3);margin-bottom:16px">最后更新：2026年5月</p><h3>数据收集</h3><p>我们仅收集为您提供经营诊断服务所必需的信息，包括：店铺名称、行业、所在城市、推广预算等经营相关信息。我们不收集身份证号、银行卡号等敏感信息。</p><h3>数据使用</h3><p>您的数据仅用于：1）提供AI经营诊断和优化建议；2）生成经营报告；3）优化服务质量。我们不会将您的数据出售给第三方。</p><h3>数据安全</h3><p>核心经营行为的关键记录（如建议摘要、执行记录、结果证明）经过可信验证后永久保存，不可篡改。日常经营数据和对话数据存储在加密服务器中，仅您本人可访问。</p><h3>您的权利</h3><p>您有权随时查看、导出您的数据。可信验证数据因其不可篡改特性无法删除，但我们会在您要求后停止对相关数据的进一步使用。其他数据可在您要求后7个工作日内删除。</p><h3>联系方式</h3><p>如有隐私相关问题，请联系：微信 One1913U</p><button class="legal-close" onclick="document.getElementById(\'legalOverlay\').classList.remove(\'show\')">关闭</button>';document.getElementById('legalOverlay').classList.add('show')}
-function showTerms(){document.getElementById('legalContent').innerHTML='<h2>服务条款</h2><p style="color:var(--text3);margin-bottom:16px">最后更新：2026年5月</p><h3>服务内容</h3><p>FlyAgent提供AI经营诊断、GEO优化、内容生成、经营可信验证等服务。AI生成建议后需经用户确认方可执行，经营决策由用户自行承担。</p><h3>付费与退款</h3><p>首月体验价¥199，月度服务¥399/月。30天内如未能提供3个有效经营归因，可申请全额退款。退款承诺自动执行。</p><h3>免责声明</h3><p>AI生成的诊断建议和内容仅供参考，经营决策由用户自行承担。我们不保证特定经营结果的达成。</p><h3>知识产权</h3><p>AI为您生成的内容归您所有。FlyAgent的服务技术归运营方所有。</p><h3>适用法律</h3><p>本服务适用中华人民共和国法律。</p><button class="legal-close" onclick="document.getElementById(\'legalOverlay\').classList.remove(\'show\')">关闭</button>';document.getElementById('legalOverlay').classList.add('show')}
-function showContact(){document.getElementById('legalContent').innerHTML='<h2>联系我们</h2><p>微信：One1913U</p><p>邮箱：fly@fly-agent.xyz</p><p>工作时间：周一至周五 9:00-18:00</p><p style="margin-top:16px;color:var(--text3)">我们通常在24小时内回复。</p><button class="legal-close" onclick="document.getElementById(\'legalOverlay\').classList.remove(\'show\')">关闭</button>';document.getElementById('legalOverlay').classList.add('show')}
+document.querySelectorAll('a[href^="#"],nav a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})});
+});
+
+function showPrivacy(){document.getElementById('legalContent').innerHTML=`<h2>隐私政策</h2><p style="color:var(--text3);margin-bottom:14px">最后更新：2026年5月</p><h3>数据收集</h3><p>我们仅收集action_id、脱敏ID、订单号、金额、访问时间。不收集身份证号、银行卡号等敏感信息。</p><h3>数据使用</h3><p>您的数据仅用于：1）归因验证和优化建议；2）生成经营报告；3）优化服务质量。不会出售给第三方。</p><h3>数据安全</h3><p>采用HMAC-SHA256+随机盐脱敏，不可逆还原。核心经营行为记录经可信验证后永久保存，不可篡改。日常数据存储在加密服务器中，仅您本人可访问。</p><h3>您的权利</h3><p>您有权随时查看、导出您的数据。其他数据可在要求后7个工作日内删除。</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+function showTerms(){document.getElementById('legalContent').innerHTML=`<h2>服务条款</h2><p style="color:var(--text3);margin-bottom:14px">最后更新：2026年5月</p><h3>服务内容</h3><p>FlyAgent提供AI投流归因验证、GEO优化、经营可信验证等服务。AI生成建议后需经用户确认方可执行。</p><h3>付费方式</h3><p>沙盒验证通过后按需接入，详询运营团队。</p><h3>免责声明</h3><p>AI生成的诊断建议和内容仅供参考，经营决策由用户自行承担。</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+function showContact(){document.getElementById('legalContent').innerHTML=`<h2>联系我们</h2><p>微信：One1913U</p><p>邮箱：guomanman@joyunzhiling.cn</p><p>公司：杭州九运智领科技</p><p>工作时间：周一至周五 9:00-18:00</p><button class="legal-close" onclick="document.getElementById('legalOverlay').classList.remove('show')">关闭</button>`;document.getElementById('legalOverlay').classList.add('show')}
+
+// 归因信任评分计算
+function _flyBuildStatus(industry,channel,source,visit,amount){var parts=[industry+"门店，"+channel+"投流"];if(source)parts.push("咨询来源："+source);if(visit==="yes")parts.push("到店：已核销");else if(visit==="no")parts.push("到店：未到店");if(amount)parts.push("成交：¥"+amount);var filled=0;if(source)filled++;if(visit)filled++;if(amount)filled++;if(filled===0)parts.push("归因数据：无");else parts.push("归因数据："+filled+"/3项");return parts.join("｜")}
+
+function _flyBuildPlan(industry,channel,source,visit,amount){var has=[];var need=[];if(source)has.push("咨询来源已追踪");else need.push("咨询来源");if(visit==="yes")has.push("到店已核销");else if(visit==="no")has.push("到店未核销");else need.push("到店核销");if(amount)has.push("成交金额已关联");else need.push("成交金额");if(has.length===3)return"归因链路完整："+has.join("→");if(has.length>0)return"已验证："+has.join("；")+"。待验证："+need.join("、");return"待验证：咨询来源、到店核销、成交金额"}
+
+function _flyBuildRisk(industry,channel,source,visit,amount){if(source&&visit==="yes"&&amount)return"单笔归因已闭环，需持续追踪验证稳定性";if(visit==="no")return"咨询后未到店，该笔投流未产生成交";var filled=0;if(source)filled++;if(visit)filled++;if(amount)filled++;if(filled===0)return"无归因数据，投流效果未知";return"归因数据不完整（"+filled+"/3），结论不可靠"}
+
+function _flyChannelFeature(ch){var m={"抖音":"抖音投流费用占比最大，精准归因难度也最高","小红书":"小红书种草周期长但复购率高","微信":"微信私域归因最难，客户质量最高","美团":"美团流量精准但抽成压利","AI搜索推荐":"AI渠道新且效果未知，沙盒验证能降低试错","其他":"多渠道投放时归因更重要"};return m[ch]||m["其他"]}
+
+function _flyTrustScore(industry, channel, source, visit, amount){
+  var score=0, details=[], tips=[];
+  var indBase={'美容美肤':12,'口腔齿科':14,'教育培训':10,'健身运动':8,'花店鲜花':6,'宠物服务':9,'餐饮美食':11,'家政服务':7,'健康养生':10,'零售电商':13,'其他':5};
+  var indScore=indBase[industry]||5;
+  score+=indScore;
+  details.push('行业归因适配 +'+indScore);
+  if(indScore<10)tips.push('行业归因方案少，更需Fly验证');
+  var chBase={'抖音':13,'小红书':10,'微信':8,'美团':12,'AI搜索推荐':14,'其他':6};
+  var chScore=chBase[channel]||6;
+  score+=chScore;
+  details.push('渠道可追踪性 +'+chScore);
+  if(chScore<10)tips.push('该渠道归因难度高，需额外埋点');
+  var matchMap={'美容美肤|抖音':13,'美容美肤|小红书':14,'美容美肤|微信':10,'口腔齿科|美团':14,'口腔齿科|抖音':12,'口腔齿科|微信':11,'教育培训|抖音':11,'教育培训|微信':13,'餐饮美食|美团':14,'餐饮美食|抖音':12,'零售电商|AI搜索推荐':14,'零售电商|抖音':12,'健身运动|小红书':13,'花店鲜花|小红书':14,'宠物服务|小红书':12,'家政服务|微信':12,'健康养生|微信':12,'健康养生|小红书':11};
+  var matchKey=industry+'|'+channel;
+  var matchScore=matchMap[matchKey]||8;
+  score+=matchScore;
+  details.push('渠道行业匹配 +'+matchScore);
+  if(matchScore<10)tips.push('该渠道与行业匹配度偏低');
+  var dataScore=0;
+  if(source)dataScore+=8;if(visit)dataScore+=9;if(amount)dataScore+=8;
+  score+=dataScore;
+  details.push('数据完整度 +'+dataScore);
+  if(dataScore===0)tips.push('补充咨询来源和到店数据可大幅提分');
+  else if(dataScore<17)tips.push('补充成交金额可再提升');
+  var actScore=0;
+  if(visit==='yes')actScore=18;else if(visit==='no')actScore=10;else actScore=3;
+  score+=actScore;
+  details.push('行为验证深度 +'+actScore);
+  if(visit!=='yes')tips.push('到店核销是验证链关键环节');
+  var closure=0;
+  if(source&&visit==='yes'&&amount)closure=10;else if(source&&visit==='yes')closure=7;else if(source||visit==='yes')closure=4;else closure=0;
+  score+=closure;
+  details.push('归因闭环度 +'+closure);
+  if(closure<7)tips.push('完整归因闭环=咨询来源+到店核销+成交金额');
+  var tier='T1',label='不可信';
+  if(score>=85){tier='T5';label='高可信';}
+  else if(score>=70){tier='T4';label='可信';}
+  else if(score>=50){tier='T3';label='已验证';}
+  else if(score>=30){tier='T2';label='待验证';}
+  else{tier='T1';label='不可信';}
+  return {score:score,tier:tier,label:label,details:details,tips:tips};
+}
+
+
+function _flyVerdict(source,visit,amount){
+  var v1=document.getElementById('vrV1'),v2=document.getElementById('vrV2'),v3=document.getElementById('vrV3');
+  var v1i=document.getElementById('vrV1Icon'),v1l=document.getElementById('vrV1Label');
+  var v2i=document.getElementById('vrV2Icon'),v2l=document.getElementById('vrV2Label');
+  var v3i=document.getElementById('vrV3Icon'),v3l=document.getElementById('vrV3Label');
+  // 真实咨询判定
+  if(source){
+    v1i.textContent='✓';v1l.textContent='已验证';v1l.style.color='#2563EB';v1.style.borderColor='#BFDBFE';v1.style.background='#F0F9FF';
+  }else{
+    v1i.textContent='⏳';v1l.textContent='待验证';v1l.style.color='#64748B';v1.style.borderColor='#E2E8F0';v1.style.background='#fff';
+  }
+  // 真实到店判定
+  if(visit==='yes'){
+    v2i.textContent='✓';v2l.textContent='已核销';v2l.style.color='#2563EB';v2.style.borderColor='#BFDBFE';v2.style.background='#F0F9FF';
+  }else if(visit==='no'){
+    v2i.textContent='✗';v2l.textContent='未到店';v2l.style.color='#DC2626';v2.style.borderColor='#FECACA';v2.style.background='#FEF2F2';
+  }else{
+    v2i.textContent='⏳';v2l.textContent='待验证';v2l.style.color='#64748B';v2.style.borderColor='#E2E8F0';v2.style.background='#fff';
+  }
+  // 刷量检测判定
+  if(source&&visit==='yes'&&amount){
+    v3i.textContent='✓';v3l.textContent='无异常';v3l.style.color='#2563EB';v3.style.borderColor='#BFDBFE';v3.style.background='#F0F9FF';
+  }else if(visit==='no'&&source){
+    v3i.textContent='⚠';v3l.textContent='疑似刷量';v3l.style.color='#D97706';v3.style.borderColor='#FDE68A';v3.style.background='#FFFBEB';
+  }else{
+    v3i.textContent='⏳';v3l.textContent='数据不足';v3l.style.color='#64748B';v3.style.borderColor='#E2E8F0';v3.style.background='#fff';
+  }
+}
+
+function openVerifyModal(){document.getElementById("verifyOverlay").classList.add("show");document.getElementById("verifyForm").style.display="block";document.getElementById("verifyStep1").style.display="block";document.getElementById("verifyStep2").style.display="none";document.getElementById("verifyResult").style.display="none"}
+// ========== 审计存证（哈希链） ==========
+async function _flyAuditTrail(data){
+  var traceId='fly-'+Date.now().toString(36)+'-'+Math.random().toString(36).substr(2,6);
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  var prevHash='';
+  try{var chain=JSON.parse(localStorage.getItem('fly_audit_chain')||'[]');if(chain.length>0)prevHash=chain[chain.length-1].hash;}catch(e){}
+  var raw=traceId+ts+JSON.stringify(data)+prevHash;
+  var hash='';
+  try{
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(raw));
+    var arr=Array.from(new Uint8Array(buf));
+    hash=arr.map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+  }catch(e){
+    var h=0;for(var i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}hash=Math.abs(h).toString(16).padStart(16,'0');
+  }
+  var record={traceId:traceId,ts:ts,hash:hash,prevHash:prevHash};
+  try{var chain=JSON.parse(localStorage.getItem('fly_audit_chain')||'[]');chain.push(record);if(chain.length>50)chain=chain.slice(-50);localStorage.setItem('fly_audit_chain',JSON.stringify(chain));}catch(e){}
+  document.getElementById('vrTraceId').textContent=traceId;
+  document.getElementById('vrTimestamp').textContent=ts;
+  document.getElementById('vrHash').textContent=hash;
+  document.getElementById('vrPrevHash').textContent=prevHash||'（首条记录）';
+}
+
+function goStep2(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value;var channel=document.getElementById("v_channel").value;if(!industry||!channel){alert("请选择行业和投流渠道");return}document.getElementById("verifyStep1").style.display="none";document.getElementById("verifyStep2").style.display="block"}function submitQuick(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value||"其他";var channel=document.getElementById("v_channel").value||"其他";var info=JSON.stringify({email:email,industry:industry,channel:channel,time:new Date().toISOString()});try{var arr=JSON.parse(localStorage.getItem("fly_leads")||"[]");arr.push(info);localStorage.setItem("fly_leads",JSON.stringify(arr))}catch(e){}document.getElementById("verifyForm").style.display="none";document.getElementById("vrSummary").textContent=industry+" · "+channel;document.getElementById("vrStatus").innerHTML=_flyBuildStatus(industry,channel,"","","")+'<br><span style="color:#94A3B8;font-size:12px">渠道特征：'+_flyChannelFeature(channel)+'</span>';document.getElementById("vrPlan").textContent=_flyBuildPlan(industry,channel,"","","");document.getElementById("vrRisk").textContent=_flyBuildRisk(industry,channel,"","","");var ts=_flyTrustScore(industry,channel,"","","");document.getElementById("vrScoreNum").textContent=ts.score;document.getElementById("vrScoreLabel").textContent=ts.label;document.getElementById("vrScoreTier").textContent=ts.tier;document.getElementById("vrScoreBar").style.width=ts.score+"%";document.getElementById("vrScoreDetail").innerHTML=ts.details.map(function(d){return"· "+d}).join("<br>");_flyAuditTrail({email:email,industry:industry,channel:channel});if(ts.tips&&ts.tips.length>0){document.getElementById("vrTips").style.display="block";document.getElementById("vrTipsList").innerHTML=ts.tips.map(function(t){return"→ "+t}).join("<br>");}else{document.getElementById("vrTips").style.display="none";}_flyVerdict("","","");document.getElementById("verifyResult").style.display="block"}function closeVerifyModal(){document.getElementById("verifyOverlay").classList.remove("show")}
+
+function submitVerify(){var email=document.getElementById("v_email").value;if(!email){alert("请填写邮箱");return}var industry=document.getElementById("v_industry").value||"其他";var channel=document.getElementById("v_channel").value||"其他";var shop=document.getElementById("v_shop").value||"";var city=document.getElementById("v_city").value||"";var link=document.getElementById("v_link").value||"";var source=document.getElementById("v_source").value||"";var visit=document.getElementById("v_visit").value||"";var amount=document.getElementById("v_amount").value||"";var info=JSON.stringify({email:email,industry:industry,channel:channel,shop:shop,city:city,link:link,source:source,visit:visit,amount:amount,time:new Date().toISOString()});try{var arr=JSON.parse(localStorage.getItem("fly_leads")||"[]");arr.push(info);localStorage.setItem("fly_leads",JSON.stringify(arr))}catch(e){}document.getElementById("verifyForm").style.display="none";document.getElementById("vrSummary").textContent=industry+" · "+channel+(city?" · "+city:"");document.getElementById("vrStatus").innerHTML=_flyBuildStatus(industry,channel,source,visit,amount)+'<br><span style="color:#94A3B8;font-size:12px">渠道特征：'+_flyChannelFeature(channel)+'</span>';document.getElementById("vrPlan").textContent=_flyBuildPlan(industry,channel,source,visit,amount);document.getElementById("vrRisk").textContent=_flyBuildRisk(industry,channel,source,visit,amount);if(source||visit||amount){var roiText="最近一单归因：";if(source)roiText+="咨询来自"+source;if(visit==="yes")roiText+=" → 已到店核销";else if(visit==="no")roiText+=" → 未到店（流失）";else roiText+=" → 到店情况未知";if(amount)roiText+=" → 成交¥"+amount;document.getElementById("vrROI").style.display="block";document.getElementById("vrROIDetail").textContent=roiText}var ts=_flyTrustScore(industry,channel,source,visit,amount);document.getElementById("vrScoreNum").textContent=ts.score;document.getElementById("vrScoreLabel").textContent=ts.label;document.getElementById("vrScoreTier").textContent=ts.tier;document.getElementById("vrScoreBar").style.width=ts.score+"%";document.getElementById("vrScoreDetail").innerHTML=ts.details.map(function(d){return"· "+d}).join("<br>");_flyAuditTrail({email:email,industry:industry,channel:channel,shop:shop,city:city,source:source,visit:visit,amount:amount});if(ts.tips&&ts.tips.length>0){document.getElementById("vrTips").style.display="block";document.getElementById("vrTipsList").innerHTML=ts.tips.map(function(t){return"→ "+t}).join("<br>");}else{document.getElementById("vrTips").style.display="none";}_flyVerdict(source,visit,amount);document.getElementById("verifyResult").style.display="block"}
+
+
+// ========== Fly自建聊天UI（Gateway模式） ==========
+var _flyConversationId = null;
+var _flyStreaming = false;
+
+var _flyGreetingShown = false;
+function openFlyChat() {
+  var vo=document.getElementById('verifyOverlay'); if(vo) vo.classList.remove('show');
+  var lo=document.getElementById('legalOverlay'); if(lo) lo.classList.remove('show');
+  var panel=document.getElementById('flyChatPanel');
+  if(panel) {
+    panel.classList.add('open');
+    if(!_flyGreetingShown && !_flyConversationId){
+      _flyGreetingShown=true;
+      _flyAppendMsg('bot','您好！我是Fly验证助手，专注解决AI投流“流量进、钱包空”的糊涂账，今天Fly帮你用数据，把每一分花出去的钱，利润赚没赚，算得明明白白……告诉Fly你现在最想解决哪个点，Fly帮你算出真实ROI……');
+    }
+    document.getElementById('flyChatInput').focus();
+  }
+}
+
+function closeFlyChat() {
+  var panel=document.getElementById('flyChatPanel');
+  if(panel) panel.classList.remove('open');
+}
+
+function _flyAppendMsg(role, text) {
+  var box=document.getElementById('flyChatMessages');
+  var div=document.createElement('div');
+  div.className='fly-msg fly-msg-'+role;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+  return div;
+}
+
+async function _flySend(){
+  var input=document.getElementById('flyChatInput');
+  var msg=input.value.trim();
+  if(!msg||_flyStreaming) return;
+  _flyStreaming=true;
+  input.value='';
+  _flyAppendMsg('user',msg);
+  var botDiv=_flyAppendMsg('bot','...');
+
+  try{
+    var body={message:msg};
+    if(_flyConversationId) body.conversation_id=_flyConversationId;
+
+    var res=await fetch('https://api.fly-agent.xyz/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+
+    if(!res.ok){
+      botDiv.textContent='\u8fde\u63a5\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5';
+      _flyStreaming=false;
+      return;
+    }
+
+    var reader=res.body.getReader();
+    var decoder=new TextDecoder();
+    var buffer='';
+    var fullText='';
+    var gotCid=false;
+
+    while(true){
+      var chunk=await reader.read();
+      if(chunk.done) break;
+      buffer+=decoder.decode(chunk.value,{stream:true});
+      var parts=buffer.split('\n\n');
+      buffer=parts.pop()||'';
+      for(var i=0;i<parts.length;i++){
+        var block=parts[i].trim();
+        if(!block) continue;
+        var lines=block.split('\n');
+        var dataLine='';
+        var sseType='';
+        for(var j=0;j<lines.length;j++){
+          if(lines[j].startsWith('event:'))sseType=lines[j].substring(6).trim();
+          if(lines[j].startsWith('data:'))dataLine=lines[j].substring(5).trim();
+        }
+        if(!dataLine||dataLine==='[DONE]') continue;
+        try{
+          var evt=JSON.parse(dataLine);
+          if(!gotCid&&evt.conversation_id){_flyConversationId=evt.conversation_id;gotCid=true;}
+          if(evt.type==='answer'&&evt.content&&sseType==='conversation.message.delta'){
+            fullText+=evt.content;
+            botDiv.textContent=fullText;
+            document.getElementById('flyChatMessages').scrollTop=99999;
+          }
+          if(evt.type==='answer'&&evt.content&&sseType==='conversation.message.completed'&&!fullText){
+            fullText=evt.content;
+            botDiv.textContent=fullText;
+          }
+        }catch(pe){}
+      }
+    }
+    if(!fullText) botDiv.textContent='\u6682\u65e0\u56de\u590d';
+  }catch(e){
+    botDiv.textContent='\u7f51\u7edc\u9519\u8bef\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5';
+  }
+  _flyStreaming=false;
+}
+
+// 回车发送
+document.addEventListener('DOMContentLoaded',function(){
+  var inp=document.getElementById('flyChatInput');
+  if(inp) inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_flySend();}
+  });
+});
 </script>
+
+<!-- ========== Fly自建聊天面板（Gateway模式） ========== -->
+<div id="flyChatPanel" class="fly-chat-panel">
+  <div class="fly-chat-header">
+    <span style="font-weight:700;color:#0F172A">Fly</span>
+    <span style="color:#94A3B8;font-size:12px;margin-left:4px">· 信任基础设施</span>
+    <button class="fly-chat-close" onclick="closeFlyChat()" title="关闭">✕</button>
+  </div>
+  <div id="flyChatMessages" class="fly-chat-messages">
+  </div>
+  <div class="fly-chat-input-bar">
+    <input id="flyChatInput" type="text" placeholder="输入你的问题..." autocomplete="off" />
+    <button onclick="_flySend()" title="发送">➤</button>
+  </div>
+</div>
+
 </body>
 </html>
